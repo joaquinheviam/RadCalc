@@ -621,7 +621,7 @@
             ],
           },
           siderosis: {
-            title: 'Siderosis Hepática por RM',
+            title: 'Siderosis Hepática por RM (1.5 T)',
             enterT2: 'Ingresar T2* (ms)',
             enterR2: 'Ingresar R2* (Hz)',
             valueOf: 'Valor de',
@@ -630,11 +630,13 @@
             catMild: 'Sobrecarga Leve',
             catModerate: 'Sobrecarga Moderada',
             catSevere: 'Sobrecarga Severa',
+            fieldStrengthNote: 'Esta calculadora está calibrada y validada solo para equipos de RM de 1.5 T (fórmula de St Pierre et al. 2005 y puntos de corte ESGAR/SAR 2023, citados abajo). La relación entre R2* y la concentración de hierro hepático (LIC) depende del campo magnético: a 3 T los valores de R2* para una misma LIC son distintos (sustancialmente más altos) que a 1.5 T, por lo que esta fórmula no debe aplicarse a estudios adquiridos en 3 T. Esta calculadora no incluye actualmente una calibración específica para 3 T.',
             reportText: (t2, r2, lic, cat) =>
-              `Siderosis hepática por RM (método R2*):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nLIC estimado: ${lic} mg/g de tejido seco.\nCategoría: ${cat}.`,
+              `Siderosis hepática por RM (método R2*, 1.5 T):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nLIC estimado: ${lic} mg/g de tejido seco.\nCategoría: ${cat}.`,
             usage: [
-              'R2* (=1000/T2*) se relaciona linealmente con la concentración de hierro hepático (LIC) según la calibración de St Pierre et al. 2005: LIC = 0.0254 × R2* + 0.202 (mg/g de tejido seco).',
+              'R2* (=1000/T2*) se relaciona linealmente con la concentración de hierro hepático (LIC) según la calibración de St Pierre et al. 2005, derivada en RM de 1.5 T: LIC = 0.0254 × R2* + 0.202 (mg/g de tejido seco).',
               'Puntos de corte aproximados de LIC (guía ESGAR/SAR 2023): normal < 1.8 mg/g (1.8-3.2 mg/g se considera "borderline"); sobrecarga leve 1.8-7.0 mg/g; moderada 7.0-15.0 mg/g; severa > 15.0 mg/g.',
+              'La relación R2*-LIC es dependiente del campo magnético y no es directamente extrapolable entre 1.5 T y 3 T. Un estudio multicéntrico publicado en Radiology (2022) comparando ambos campos encontró pendientes de calibración LIC-R2* claramente distintas (sustancialmente menor a 3 T que a 1.5 T para el mismo R2*), confirmando que las fórmulas no son intercambiables; no ingrese aquí valores de R2* obtenidos en un equipo de 3 T sin una calibración específica para ese campo.',
             ],
           },
           thymic: {
@@ -873,6 +875,44 @@
               lrM: 'En continuidad con una lesión LR-M',
               unspecified: 'No se puede especificar la continuidad',
             },
+            afSectionTitle: 'Paso 2 (opcional): Características auxiliares (AF)',
+            afIntro: 'Las características auxiliares (AF) pueden usarse a criterio del radiólogo para mejorar la detección, aumentar la confianza diagnóstica, o ajustar la categoría numérica (LR-1 a LR-5). Si no está seguro de la presencia de una característica auxiliar, considérela ausente.',
+            afRuleNote: 'Regla de ajuste: la presencia de ≥1 AF a favor de malignidad sube la categoría 1 nivel, pero nunca por encima de LR-4 (las AF nunca alcanzan LR-5 por sí solas). La presencia de ≥1 AF a favor de benignidad baja la categoría 1 nivel. Si hay AF de ambos tipos a la vez, no se ajusta la categoría. Este ajuste no se aplica a las categorías LR-TIV ni LR-M.',
+            afMalignantGeneralTitle: 'A favor de malignidad en general (no específicas de CHC)',
+            afMalignantHccTitle: 'A favor específicamente de CHC',
+            afBenignTitle: 'A favor de benignidad',
+            afMalignantGeneral: [
+              'Visibilidad como nódulo discreto en ecografía (US)',
+              'Crecimiento subumbral',
+              'Restricción a la difusión',
+              'Hiperintensidad leve-moderada en T2',
+              'Realce en "corona"',
+              'Ausencia de grasa en la masa sólida ("fat sparing")',
+              'Ausencia de hierro en la masa sólida ("iron sparing")',
+              'Hipointensidad en fase transicional',
+              'Hipointensidad en fase hepatobiliar',
+            ],
+            afMalignantHcc: [
+              'Cápsula no realzante',
+              'Nódulo-en-nódulo',
+              'Arquitectura en mosaico',
+              'Productos sanguíneos en la masa',
+              'Grasa en la masa, más que en el hígado adyacente',
+            ],
+            afBenign: [
+              'Estabilidad de tamaño > 2 años',
+              'Reducción de tamaño',
+              'Señal paralela al pool sanguíneo',
+              'Vasos no distorsionados',
+              'Hierro en la masa, más que en el hígado',
+              'Hiperintensidad marcada en T2',
+              'Isointensidad en fase hepatobiliar',
+            ],
+            afUpgradedTo: (base, adjusted) => `↑ Subida de ${base} a ${adjusted} por característica(s) auxiliar(es) a favor de malignidad.`,
+            afDowngradedTo: (base, adjusted) => `↓ Bajada de ${base} a ${adjusted} por característica(s) auxiliar(es) a favor de benignidad.`,
+            afConflictNote: 'Hay características auxiliares a favor de malignidad Y de benignidad presentes: no se ajusta la categoría (se mantiene la categoría base de la tabla numérica).',
+            afCappedNote: (base) => `Hay característica(s) auxiliar(es) a favor de malignidad, pero la categoría (${base}) ya no puede subir más mediante AF (las AF nunca alcanzan LR-5).`,
+            afSummaryText: (base, malPart, benPart) => `Características auxiliares — a favor de malignidad: ${malPart}; a favor de benignidad: ${benPart}. Categoría base (tabla numérica): ${base}.`,
             categories: {
               'LR-1': 'Definitivamente benigno',
               'LR-2': 'Probablemente benigno',
@@ -882,13 +922,14 @@
               'LR-M': 'Probablemente o definitivamente maligno, no específico de CHC',
               'LR-TIV': 'Tumor en vena (invasión macrovascular tumoral)',
             },
-            reportText: (size, aphe, feats, override, cat) =>
-              `LI-RADS v2018 (TC/RM):\nTamaño: ${size}\nAPHE no periférico: ${aphe}\nCaracterísticas adicionales: ${feats}\n${override ? override + '\n' : ''}Categoría: ${cat}`,
+            reportText: (size, aphe, feats, override, cat, afSummary) =>
+              `LI-RADS v2018 (TC/RM):\nTamaño: ${size}\nAPHE no periférico: ${aphe}\nCaracterísticas adicionales: ${feats}\n${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Categoría: ${cat}`,
             usage: [
               'LI-RADS v2018 se aplica a observaciones hepáticas en pacientes con riesgo establecido de carcinoma hepatocelular (CHC): cirrosis, hepatitis B crónica, o CHC previo.',
               'LR-TIV y LR-M tienen prioridad sobre la categoría numérica: si hay tumor en vena o rasgos no específicos de CHC, esa categoría reemplaza al LR-1 a 5 calculado por tamaño/APHE/características.',
-              'La categoría numérica combina el tamaño de la lesión, la presencia de realce arterial no periférico (APHE) y el número de características adicionales (lavado no periférico, cápsula realzante, crecimiento umbral), con una regla especial en la "celda diagonal": 10-19 mm + APHE + 1 característica = LR-4, pero + ≥2 características = LR-5; ≥20 mm + APHE + ≥1 característica = LR-5.',
-              'Esta calculadora implementa el "LI-RADS Core" (algoritmo diagnóstico principal); no reemplaza el manual completo del ACR LI-RADS para casos especiales (lesiones tratadas, hallazgos ancilares, etc.).',
+              'La categoría numérica combina el tamaño de la lesión, la presencia de realce arterial no periférico (APHE) y el número y tipo de características adicionales (lavado no periférico, cápsula realzante, crecimiento umbral). Para observaciones de 10-19 mm con APHE: 0 características adicionales = LR-3; exactamente 1 característica = LR-4 si es cápsula realzante, pero LR-5 si es lavado no periférico o crecimiento umbral (a diferencia del lavado y el crecimiento, la cápsula por sí sola no alcanza LR-5 en este rango de tamaño); ≥2 características = LR-5. Para observaciones ≥20 mm con APHE, cualquier característica adicional (una o más) ya corresponde a LR-5.',
+              'El Paso 2 (características auxiliares, opcional) permite ajustar la categoría numérica ±1 nivel a criterio del radiólogo: ≥1 AF a favor de malignidad sube 1 nivel sin superar nunca LR-4; ≥1 AF a favor de benignidad baja 1 nivel; si hay de ambos tipos, no se ajusta. Este paso no aplica a LR-TIV ni LR-M.',
+              'Esta calculadora implementa el "LI-RADS Core" (algoritmo diagnóstico principal, incluyendo el paso opcional de características auxiliares); no reemplaza el manual completo del ACR LI-RADS para casos especiales (lesiones tratadas, hallazgos ancilares adicionales no listados aquí, etc.).',
             ],
           },
           liradsTr: {
@@ -1329,7 +1370,7 @@
             ],
           },
           siderosis: {
-            title: 'MRI Hepatic Siderosis',
+            title: 'MRI Hepatic Siderosis (1.5 T)',
             enterT2: 'Enter T2* (ms)',
             enterR2: 'Enter R2* (Hz)',
             valueOf: 'Value of',
@@ -1338,11 +1379,13 @@
             catMild: 'Mild overload',
             catModerate: 'Moderate overload',
             catSevere: 'Severe overload',
+            fieldStrengthNote: 'This calculator is calibrated and validated only for 1.5 T MRI (St Pierre et al. 2005 formula and ESGAR/SAR 2023 cutoffs, cited below). The relationship between R2* and liver iron concentration (LIC) is field-strength dependent: at 3 T, R2* values for the same LIC are different (substantially higher) than at 1.5 T, so this formula should not be applied to studies acquired at 3 T. This calculator does not currently include a 3 T-specific calibration.',
             reportText: (t2, r2, lic, cat) =>
-              `MRI hepatic siderosis (R2* method):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nEstimated LIC: ${lic} mg/g dry tissue.\nCategory: ${cat}.`,
+              `MRI hepatic siderosis (R2* method, 1.5 T):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nEstimated LIC: ${lic} mg/g dry tissue.\nCategory: ${cat}.`,
             usage: [
-              'R2* (=1000/T2*) correlates linearly with liver iron concentration (LIC) per the St Pierre et al. 2005 calibration: LIC = 0.0254 × R2* + 0.202 (mg/g dry tissue).',
+              'R2* (=1000/T2*) correlates linearly with liver iron concentration (LIC) per the St Pierre et al. 2005 calibration, derived on 1.5 T MRI: LIC = 0.0254 × R2* + 0.202 (mg/g dry tissue).',
               'Approximate LIC cutoffs (ESGAR/SAR 2023 guideline): normal < 1.8 mg/g (1.8-3.2 mg/g is considered "borderline"); mild overload 1.8-7.0 mg/g; moderate 7.0-15.0 mg/g; severe > 15.0 mg/g.',
+              'The R2*-LIC relationship is field-strength dependent and is not directly extrapolable between 1.5 T and 3 T. A multicenter study published in Radiology (2022) comparing both field strengths found clearly different LIC-R2* calibration slopes (substantially lower at 3 T than at 1.5 T for the same R2*), confirming the formulas are not interchangeable; do not enter R2* values obtained on a 3 T scanner here without a field-strength-specific calibration.',
             ],
           },
           thymic: {
@@ -1581,6 +1624,44 @@
               lrM: 'Continuous with an LR-M lesion',
               unspecified: 'Continuity cannot be specified',
             },
+            afSectionTitle: 'Step 2 (optional): Ancillary features (AFs)',
+            afIntro: 'Ancillary features (AFs) may be used at radiologist discretion to improve detection, increase diagnostic confidence, or adjust the numeric category (LR-1 to LR-5). If unsure about the presence of an ancillary feature, characterize it as absent.',
+            afRuleNote: 'Adjustment rule: ≥1 AF favoring malignancy upgrades the category by 1 level, but never above LR-4 (AFs alone never reach LR-5). ≥1 AF favoring benignity downgrades the category by 1 level. If AFs of both types are present, the category is not adjusted. This adjustment does not apply to the LR-TIV or LR-M categories.',
+            afMalignantGeneralTitle: 'Favoring malignancy in general (not HCC specific)',
+            afMalignantHccTitle: 'Favoring HCC in particular',
+            afBenignTitle: 'Favoring benignity',
+            afMalignantGeneral: [
+              'US visibility as discrete nodule',
+              'Subthreshold growth',
+              'Restricted diffusion',
+              'Mild-moderate T2 hyperintensity',
+              'Corona enhancement',
+              'Fat sparing in solid mass',
+              'Iron sparing in solid mass',
+              'Transitional phase hypointensity',
+              'Hepatobiliary phase hypointensity',
+            ],
+            afMalignantHcc: [
+              'Nonenhancing "capsule"',
+              'Nodule-in-nodule',
+              'Mosaic architecture',
+              'Blood products in mass',
+              'Fat in mass, more than adjacent liver',
+            ],
+            afBenign: [
+              'Size stability > 2 yrs',
+              'Size reduction',
+              'Parallels blood pool',
+              'Undistorted vessels',
+              'Iron in mass, more than liver',
+              'Marked T2 hyperintensity',
+              'Hepatobiliary phase isointensity',
+            ],
+            afUpgradedTo: (base, adjusted) => `↑ Upgraded from ${base} to ${adjusted} due to ancillary feature(s) favoring malignancy.`,
+            afDowngradedTo: (base, adjusted) => `↓ Downgraded from ${base} to ${adjusted} due to ancillary feature(s) favoring benignity.`,
+            afConflictNote: 'Ancillary features favoring both malignancy AND benignity are present: the category is not adjusted (base numeric-table category is kept).',
+            afCappedNote: (base) => `Ancillary feature(s) favoring malignancy are present, but the category (${base}) cannot be upgraded further by AFs (AFs alone never reach LR-5).`,
+            afSummaryText: (base, malPart, benPart) => `Ancillary features — favoring malignancy: ${malPart}; favoring benignity: ${benPart}. Base category (numeric table): ${base}.`,
             categories: {
               'LR-1': 'Definitely benign',
               'LR-2': 'Probably benign',
@@ -1590,13 +1671,14 @@
               'LR-M': 'Probably or definitely malignant, not HCC-specific',
               'LR-TIV': 'Tumor in vein (macrovascular tumor invasion)',
             },
-            reportText: (size, aphe, feats, override, cat) =>
-              `LI-RADS v2018 (CT/MRI):\nSize: ${size}\nNonrim APHE: ${aphe}\nAdditional features: ${feats}\n${override ? override + '\n' : ''}Category: ${cat}`,
+            reportText: (size, aphe, feats, override, cat, afSummary) =>
+              `LI-RADS v2018 (CT/MRI):\nSize: ${size}\nNonrim APHE: ${aphe}\nAdditional features: ${feats}\n${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Category: ${cat}`,
             usage: [
               'LI-RADS v2018 applies to hepatic observations in patients at established risk for hepatocellular carcinoma (HCC): cirrhosis, chronic hepatitis B, or prior HCC.',
               'LR-TIV and LR-M take priority over the numeric category: if there is tumor in vein or non-HCC-specific malignant features, that category replaces the LR-1 to 5 category computed from size/APHE/features.',
-              'The numeric category combines lesion size, presence of nonrim arterial phase hyperenhancement (APHE), and the number of additional features (nonperipheral washout, enhancing capsule, threshold growth), with a special "diagonal cell" rule: 10-19 mm + APHE + 1 feature = LR-4, but + ≥2 features = LR-5; ≥20 mm + APHE + ≥1 feature = LR-5.',
-              'This calculator implements the "LI-RADS Core" (main diagnostic algorithm); it does not replace the full ACR LI-RADS manual for special cases (treated lesions, ancillary features, etc.).',
+              'The numeric category combines lesion size, presence of nonrim arterial phase hyperenhancement (APHE), and the number and type of additional major features (nonperipheral washout, enhancing capsule, threshold growth). For 10-19 mm observations with APHE: 0 additional features = LR-3; exactly 1 feature = LR-4 if it is enhancing capsule, but LR-5 if it is nonperipheral washout or threshold growth (unlike washout or growth, capsule alone does not reach LR-5 at this size); ≥2 features = LR-5. For observations ≥20 mm with APHE, any additional feature (one or more) already corresponds to LR-5.',
+              'Step 2 (ancillary features, optional) lets the category be adjusted ±1 level at radiologist discretion: ≥1 AF favoring malignancy upgrades 1 level, never exceeding LR-4; ≥1 AF favoring benignity downgrades 1 level; if both types are present, no adjustment is made. This step does not apply to LR-TIV or LR-M.',
+              'This calculator implements the "LI-RADS Core" (main diagnostic algorithm, including the optional ancillary-features step); it does not replace the full ACR LI-RADS manual for special cases (treated lesions, additional ancillary findings not listed here, etc.).',
             ],
           },
           liradsTr: {
@@ -1941,6 +2023,7 @@
       ],
       lirads: [
         'Chernyak V, Fowler KJ, Kamaya A, et al. Liver Imaging Reporting and Data System (LI-RADS) Version 2018: imaging of hepatocellular carcinoma in at-risk patients. Radiology. 2018;289(3):816-830.',
+        'American College of Radiology. CT/MRI LI-RADS v2018 CORE (diagnostic table). ACR, 2018 (acr.org/LI-RADS).',
       ],
       liradsTr: [
         'American College of Radiology. CT/MRI LI-RADS Treatment Response Algorithm, LI-RADS v2018. ACR, 2018 (acr.org/LI-RADS).',
@@ -2339,6 +2422,7 @@
 
       return (
         <div className="space-y-4 animate-in fade-in">
+          <InfoBox tone="amber">{c.fieldStrengthNote}</InfoBox>
           <Card>
             <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-1">
               <button
@@ -2874,16 +2958,43 @@
     /* ============================================================
        CALCULADORA: LI-RADS v2018 (TC/RM DE HÍGADO)
     ============================================================ */
-    function computeLiRads(size, aphe, featCount) {
+    function computeLiRads(size, aphe, feats) {
       // size: 1 (<10mm) | 2 (10-19mm) | 3 (>=20mm)
+      const featCount = Object.values(feats).filter(Boolean).length;
       if (!aphe) {
         if (size === 3) return featCount >= 1 ? 'LR-4' : 'LR-3';
         return featCount >= 2 ? 'LR-4' : 'LR-3';
       }
       // APHE presente
       if (size === 1) return featCount >= 1 ? 'LR-4' : 'LR-3';
-      if (size === 2) return featCount >= 2 ? 'LR-5' : 'LR-4';
+      if (size === 2) {
+        // Celda diagonal de la tabla oficial CT/MRI LI-RADS v2018 CORE (10-19 mm + APHE):
+        // 0 características = LR-3; con exactamente 1 característica, la cápsula realzante
+        // por sí sola solo alcanza LR-4, mientras que el lavado no periférico o el crecimiento
+        // umbral por sí solos ya son LR-5; ≥2 características = LR-5.
+        if (featCount === 0) return 'LR-3';
+        if (featCount === 1) return feats.capsule ? 'LR-4' : 'LR-5';
+        return 'LR-5';
+      }
       return featCount >= 1 ? 'LR-5' : 'LR-4';
+    }
+
+    // Paso 2 (opcional) de LI-RADS v2018: ajuste por características auxiliares (AF).
+    // ≥1 AF a favor de malignidad sube 1 nivel, con tope en LR-4 (las AF nunca alcanzan LR-5
+    // por sí solas). ≥1 AF a favor de benignidad baja 1 nivel. Si hay de ambos tipos a la vez,
+    // no se ajusta. Solo aplica a categorías numéricas (LR-1 a LR-5), nunca a LR-TIV/LR-M.
+    function adjustLiRadsForAF(baseCat, hasMalignantAF, hasBenignAF) {
+      const order = ['LR-1', 'LR-2', 'LR-3', 'LR-4', 'LR-5'];
+      const idx = order.indexOf(baseCat);
+      if (idx === -1) return baseCat;
+      if (hasMalignantAF && hasBenignAF) return baseCat;
+      if (hasMalignantAF) {
+        if (baseCat === 'LR-5') return baseCat;
+        const capIdx = order.indexOf('LR-4');
+        return order[Math.min(idx + 1, capIdx)];
+      }
+      if (hasBenignAF) return order[Math.max(idx - 1, 0)];
+      return baseCat;
     }
 
     function LIRADS() {
@@ -2895,21 +3006,45 @@
       const [lrM, setLrM] = useState(null);
       const [lrTiv, setLrTiv] = useState(null);
       const [lrTivCont, setLrTivCont] = useState('');
+      const [afMalignant, setAfMalignant] = useState({});
+      const [afBenignSel, setAfBenignSel] = useState({});
 
-      const featCount = Object.values(feats).filter(Boolean).length;
       const hasBasics = size > 0 && aphe !== null;
-      const baseCat = hasBasics ? computeLiRads(size, aphe, featCount) : null;
-      const finalCat = lrTiv ? 'LR-TIV' : (lrM ? 'LR-M' : baseCat);
+      const baseCat = hasBasics ? computeLiRads(size, aphe, feats) : null;
+      // El Paso 2 (características auxiliares) solo aplica a la vía numérica (LR-1 a LR-5),
+      // nunca cuando la categoría final ya quedó fijada por LR-TIV o LR-M.
+      const showAfStep = hasBasics && lrTiv === false && lrM === false;
+      const hasMalignantAF = showAfStep && Object.values(afMalignant).some(Boolean);
+      const hasBenignAF = showAfStep && Object.values(afBenignSel).some(Boolean);
+      const adjustedCat = showAfStep ? adjustLiRadsForAF(baseCat, hasMalignantAF, hasBenignAF) : baseCat;
+      const finalCat = lrTiv ? 'LR-TIV' : (lrM ? 'LR-M' : adjustedCat);
+      const afApplied = hasMalignantAF || hasBenignAF;
+      const afNote = !afApplied ? null
+        : (hasMalignantAF && hasBenignAF) ? c.afConflictNote
+        : hasMalignantAF ? (adjustedCat !== baseCat ? c.afUpgradedTo(baseCat, adjustedCat) : c.afCappedNote(baseCat))
+        : (adjustedCat !== baseCat ? c.afDowngradedTo(baseCat, adjustedCat) : null);
 
       const toggleFeat = (key) => setFeats(prev => ({ ...prev, [key]: !prev[key] }));
+      const toggleAfMal = (key) => setAfMalignant(prev => ({ ...prev, [key]: !prev[key] }));
+      const toggleAfBen = (key) => setAfBenignSel(prev => ({ ...prev, [key]: !prev[key] }));
 
       const handleCopy = () => {
         if (!finalCat) return;
         const sizeLabel = size === 1 ? c.size1 : size === 2 ? c.size2 : c.size3;
         const featLabels = Object.entries(feats).filter(([,v]) => v).map(([k]) => k === 'washout' ? c.featWashout : k === 'capsule' ? c.featCapsule : c.featGrowth);
-        let override = lrTiv ? c.lrTiv : (lrM ? c.lrM : '');
-        if (lrTiv && lrTivCont) override += ' — ' + c.lrTivContinuity[lrTivCont];
-        const text = c.reportText(sizeLabel, aphe ? t.common.yes : t.common.no, featLabels.length ? featLabels.join(', ') : t.common.none, override, `${finalCat} — ${c.categories[finalCat]}`);
+        const override = lrTiv ? c.lrTiv : (lrM ? c.lrM : '');
+        const contPhrase = (lrTiv && lrTivCont) ? c.lrTivContinuity[lrTivCont] : '';
+        const catLabel = `${finalCat} — ${c.categories[finalCat]}` + (contPhrase ? ', ' + contPhrase.charAt(0).toLowerCase() + contPhrase.slice(1) : '');
+        let afSummary = '';
+        if (afApplied) {
+          const malLabels = [
+            ...c.afMalignantGeneral.map((l, i) => ({ l, k: 'g' + i })),
+            ...c.afMalignantHcc.map((l, i) => ({ l, k: 'h' + i })),
+          ].filter(x => afMalignant[x.k]).map(x => x.l);
+          const benLabels = c.afBenign.map((l, i) => ({ l, k: 'b' + i })).filter(x => afBenignSel[x.k]).map(x => x.l);
+          afSummary = c.afSummaryText(baseCat, malLabels.length ? malLabels.join(', ') : t.common.none, benLabels.length ? benLabels.join(', ') : t.common.none);
+        }
+        const text = c.reportText(sizeLabel, aphe ? t.common.yes : t.common.no, featLabels.length ? featLabels.join(', ') : t.common.none, override, catLabel, afSummary);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
 
@@ -2970,10 +3105,64 @@
               </div>
             </Card>
           )}
+          {showAfStep && (
+            <Card className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{c.afSectionTitle}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.afIntro}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.afMalignantGeneralTitle}</label>
+                <div className="space-y-2">
+                  {c.afMalignantGeneral.map((label, i) => {
+                    const key = 'g' + i;
+                    return (
+                      <button key={key} onClick={() => toggleAfMal(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afMalignant[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                        {afMalignant[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.afMalignantHccTitle}</label>
+                <div className="space-y-2">
+                  {c.afMalignantHcc.map((label, i) => {
+                    const key = 'h' + i;
+                    return (
+                      <button key={key} onClick={() => toggleAfMal(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afMalignant[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                        {afMalignant[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.afBenignTitle}</label>
+                <div className="space-y-2">
+                  {c.afBenign.map((label, i) => {
+                    const key = 'b' + i;
+                    return (
+                      <button key={key} onClick={() => toggleAfBen(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afBenignSel[key] ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                        {afBenignSel[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.afRuleNote}</p>
+            </Card>
+          )}
           {finalCat && (
             <Card className="text-center">
               <span className={`text-4xl font-black ${finalCat === 'LR-5' || finalCat === 'LR-M' || finalCat === 'LR-TIV' ? 'text-red-500' : finalCat === 'LR-4' ? 'text-orange-500' : finalCat === 'LR-3' ? 'text-amber-500' : 'text-emerald-500'}`}>{finalCat}</span>
               <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{c.categories[finalCat]}</p>
+              {lrTiv && lrTivCont && (
+                <p className={`text-sm font-semibold mt-1 ${lrTivCont === 'unspecified' ? 'text-amber-500' : 'text-red-500'}`}>{c.lrTivContinuity[lrTivCont]}</p>
+              )}
+              {afNote && (
+                <p className="text-xs font-medium mt-2 text-blue-600 dark:text-blue-400 leading-snug">{afNote}</p>
+              )}
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
