@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Calculadoras radiológicas clínicas: PSAD, fracción grasa por RM, lavado adrenal, siderosis hepática, TI-RADS, O-RADS, PI-RADS y más. / Clinical radiology calculators: PSAD, MRI fat fraction, adrenal washout, hepatic siderosis, TI-RADS, O-RADS, PI-RADS and more.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>RadioCalc Clinical</title>
-  
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='9' fill='none' stroke='white' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='white' stroke-opacity='0.55' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='3.4' fill='white'/%3E%3C/svg%3E">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -18,1079 +20,1473 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
   <style>
     body { -webkit-tap-highlight-color: transparent; font-family: system-ui, -apple-system, sans-serif; }
-    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     .fade-in { animation: fadeIn 0.3s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .refs-enter { animation: fadeIn 0.2s ease-in-out; }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 min-h-screen">
   <div id="root"></div>
-
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useContext, createContext } = React;
 
-    const copyToClipboard = async (text) => {
+    /* ============================================================
+       IDIOMA / LANGUAGE
+    ============================================================ */
+    const LangContext = createContext({ lang: 'es', t: null, toggleLang: () => {} });
+    const useLang = () => useContext(LangContext);
+
+    /* ============================================================
+       UTILIDADES
+    ============================================================ */
+    const copyToClipboard = async (text, msgOk, msgErr) => {
       try {
         await navigator.clipboard.writeText(text);
-        alert('Texto copiado al portapapeles');
+        alert(msgOk);
       } catch (err) {
-        alert('Error al copiar');
+        alert(msgErr);
       }
     };
 
-    const IconCopy = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>;
-    const IconAlertTriangle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>;
-    const IconCheckCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
+    const REPORT_EMAIL = 'drjoaquinhevia@gmail.com';
+    const LINKEDIN_URL = 'https://www.linkedin.com/in/joaqu%C3%ADn-hevia-morel-07421675/';
+
+    const buildMailto = (calcTitle, lang) => {
+      const subject = lang === 'es'
+        ? `RadioCalc Clinical - Reporte de error${calcTitle ? ' (' + calcTitle + ')' : ''}`
+        : `RadioCalc Clinical - Bug report${calcTitle ? ' (' + calcTitle + ')' : ''}`;
+      const body = lang === 'es'
+        ? `Hola Dr. Hevia,\n\nEncontré un posible error en la calculadora: ${calcTitle || '(general del sitio)'}.\n\nDescripción del problema:\n- \n\nValores ingresados (si aplica):\n- \n\nResultado esperado vs. obtenido:\n- \n\nGracias.`
+        : `Hi Dr. Hevia,\n\nI found a possible error in the calculator: ${calcTitle || '(general site issue)'}.\n\nDescription of the issue:\n- \n\nInput values (if applicable):\n- \n\nExpected vs. obtained result:\n- \n\nThanks.`;
+      return `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    };
+
+    /* ============================================================
+       ICONOS (inline SVG, estilo lucide)
+    ============================================================ */
+    const IconCopy = ({size=18}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>;
+    const IconAlertTriangle = ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>;
+    const IconCheckCircle = ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
     const IconChevronLeft = ({className}) => <svg className={className || ""} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
+    const IconChevronDown = ({className, size=18}) => <svg className={className || ""} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>;
     const IconMoon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>;
     const IconSun = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>;
-    const IconStethoscope = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path><circle cx="20" cy="10" r="2"></circle></svg>;
-    const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>;
-    const IconInfo = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
+    const IconArrowRight = ({size=16}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>;
+    const IconInfo = ({size=20, className}) => <svg className={className||""} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
     const IconAlertCircle = IconInfo;
+    const IconMail = ({size=18}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>;
+    const IconLinkedin = ({size=18}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>;
+    const IconBookOpen = ({size=16}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>;
+    const IconStethoscope = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path><circle cx="20" cy="10" r="2"></circle></svg>;
 
-    
-
-function PSADCalculator() {
-  const [ap, setAp] = useState('');
-  const [tr, setTr] = useState('');
-  const [long, setLong] = useState('');
-  const [psa, setPsa] = useState('');
-  const [factor, setFactor] = useState(0.52);
-
-  const vol = (parseFloat(ap) || 0) * (parseFloat(tr) || 0) * (parseFloat(long) || 0) * factor;
-  const psad = (parseFloat(psa) || 0) / (vol || 1);
-  const showResults = ap && tr && long && psa;
-  const isHighRisk = psad >= 0.15;
-
-  const handleCopy = () => {
-    const text = `Volumen prostÃ¡tico: ${vol.toFixed(1)} cc.
-PSA Total: ${psa} ng/mL.
-Densidad de PSA (PSAD): ${psad.toFixed(2)} ng/mL/cc (${isHighRisk ? 'Elevado' : 'Normal'}).`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 animate-in fade-in">
-      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Dimensiones (cm)</label>
-          <div className="grid grid-cols-3 gap-2">
-            <input type="number" placeholder="AP" value={ap} onChange={e => setAp(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-center focus:ring-2 focus:ring-blue-500 outline-none" />
-            <input type="number" placeholder="TR" value={tr} onChange={e => setTr(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-center focus:ring-2 focus:ring-blue-500 outline-none" />
-            <input type="number" placeholder="LONG" value={long} onChange={e => setLong(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-center focus:ring-2 focus:ring-blue-500 outline-none" />
-          </div>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">PSA Total (ng/mL)</label>
-          <input type="number" placeholder="Ej: 5.4" value={psa} onChange={e => setPsa(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-
-        <div className="flex items-center justify-between mt-2 text-sm text-slate-500">
-          <span>Factor fÃ³rmula:</span>
-          <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
-            <button onClick={() => setFactor(0.52)} className={`px-3 py-1 rounded-md ${factor === 0.52 ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : ''}`}>0.52</button>
-            <button onClick={() => setFactor(0.523)} className={`px-3 py-1 rounded-md ${factor === 0.523 ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : ''}`}>0.523</button>
-          </div>
-        </div>
-      </div>
-
-      {showResults && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-          <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-700">
-            <span className="text-slate-500 dark:text-slate-400">Volumen</span>
-            <span className="text-xl font-bold">{vol.toFixed(1)} cc</span>
-          </div>
-          
-          <div className="flex justify-between items-center">
-            <span className="text-slate-500 dark:text-slate-400">PSAD</span>
-            <span className={`text-2xl font-bold flex items-center gap-2 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
-              {isHighRisk ? <IconAlertTriangle size={20} /> : <IconCheckCircle size={20} />}
-              {psad.toFixed(2)}
-            </span>
-          </div>
-
-          <button onClick={handleCopy} className="w-full mt-4 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
-            <IconCopy size={18} /> Copiar texto para informe
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-function MRIFatFraction() {
-  const [inPhase, setInPhase] = useState('');
-  const [outPhase, setOutPhase] = useState('');
-
-  const sIn = parseFloat(inPhase);
-  const sOut = parseFloat(outPhase);
-  const isValid = !isNaN(sIn) && !isNaN(sOut) && sIn !== 0;
-  
-  // (In - Out) / (2 * In) * 100 for standard phase-inversion fat fraction
-  const ff = isValid ? ((sIn - sOut) / (2 * sIn)) * 100 : 0;
-
-  const handleCopy = () => {
-    const text = `FracciÃ³n Grasa por RM (Dixon/Phase-Inversion): ${ff.toFixed(1)}%. (In-phase: ${inPhase}, Out-phase: ${outPhase}).`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 animate-in fade-in">
-      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">SeÃ±al Fase (In-Phase)</label>
-          <input type="number" placeholder="Ej: 450" value={inPhase} onChange={e => setInPhase(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">SeÃ±al Fuera de Fase (Out-Phase)</label>
-          <input type="number" placeholder="Ej: 380" value={outPhase} onChange={e => setOutPhase(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-      </div>
-
-      {isValid && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-          <div className="flex flex-col items-center justify-center p-4">
-            <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">FracciÃ³n Grasa Estimada</span>
-            <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{ff.toFixed(1)}%</span>
-          </div>
-
-          <button onClick={handleCopy} className="w-full mt-4 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
-            <IconCopy size={18} /> Copiar texto para informe
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-function AdrenalWashout() {
-  const [nc, setNc] = useState('');
-  const [ven, setVen] = useState('');
-  const [del, setDel] = useState('');
-
-  const hNc = parseFloat(nc);
-  const hVen = parseFloat(ven);
-  const hDel = parseFloat(del);
-  
-  const isValid = !isNaN(hNc) && !isNaN(hVen) && !isNaN(hDel);
-  
-  const apw = isValid ? ((hVen - hDel) / (hVen - hNc)) * 100 : 0;
-  const rpw = isValid ? ((hVen - hDel) / hVen) * 100 : 0;
-
-  const isAdenomaAPW = apw >= 60;
-  const isAdenomaRPW = rpw >= 40;
-  const isAdenoma = isAdenomaAPW || isAdenomaRPW;
-
-  const handleCopy = () => {
-    const text = `TC Adrenal:
-UH sin contraste: ${nc}
-UH fase portal: ${ven}
-UH tardÃ­a (15 min): ${del}
-Lavado Absoluto (APW): ${apw.toFixed(1)}% (${isAdenomaAPW ? 'Compatible con adenoma' : 'No sugestivo de adenoma'}).
-Lavado Relativo (RPW): ${rpw.toFixed(1)}% (${isAdenomaRPW ? 'Compatible con adenoma' : 'No sugestivo de adenoma'}).`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 animate-in fade-in">
-      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Sin contraste (UH)</label>
-          <input type="number" value={nc} onChange={e => setNc(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Fase portal (UH)</label>
-          <input type="number" value={ven} onChange={e => setVen(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Fase tardÃ­a 15m (UH)</label>
-          <input type="number" value={del} onChange={e => setDel(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-      </div>
-
-      {isValid && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
-              <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Absoluto (APW)</span>
-              <span className={`text-xl font-bold ${isAdenomaAPW ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}`}>
-                {apw.toFixed(1)}%
-              </span>
-              <span className="block text-[10px] text-slate-400 mt-1">Corte &ge; 60%</span>
-            </div>
-            <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
-              <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">Relativo (RPW)</span>
-              <span className={`text-xl font-bold ${isAdenomaRPW ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}`}>
-                {rpw.toFixed(1)}%
-              </span>
-              <span className="block text-[10px] text-slate-400 mt-1">Corte &ge; 40%</span>
-            </div>
-          </div>
-          
-          <div className={`p-3 rounded-lg flex items-start gap-3 text-sm ${isAdenoma ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' : 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400'}`}>
-            <IconAlertCircle size={20} className="shrink-0 mt-0.5" />
-            <p>
-              {isAdenoma 
-                ? 'Los valores de lavado son sugerentes de un adenoma suprarrenal.' 
-                : 'Los valores no alcanzan el punto de corte tÃ­pico para adenoma. Considerar otros diferenciales.'}
-            </p>
-          </div>
-
-          <button onClick={handleCopy} className="w-full flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
-            <IconCopy size={18} /> Copiar texto para informe
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-function AdrenalCSI() {
-  const [lesionIn, setLesionIn] = useState('');
-  const [lesionOut, setLesionOut] = useState('');
-  const [refIn, setRefIn] = useState('');
-  const [refOut, setRefOut] = useState('');
-
-  const lIn = parseFloat(lesionIn);
-  const lOut = parseFloat(lesionOut);
-  const rIn = parseFloat(refIn);
-  const rOut = parseFloat(refOut);
-  
-  const isValid = !isNaN(lIn) && !isNaN(lOut) && !isNaN(rIn) && !isNaN(rOut) && lIn !== 0 && rOut !== 0 && rIn !== 0;
-  
-  const ratioIn = isValid ? (lIn / rIn) : 0;
-  const ratioOut = isValid ? (lOut / rOut) : 0;
-  const csi = isValid ? (ratioOut / ratioIn) * 100 : 0;
-
-  const isAdenoma = csi < 71;
-
-  const handleCopy = () => {
-    const text = `RM Adrenal (Chemical Shift):
-LesiÃ³n (Fase/Fuera): ${lesionIn} / ${lesionOut}
-Referencia (Fase/Fuera): ${refIn} / ${refOut}
-Ãndice CSI: ${csi.toFixed(1)}% (${isAdenoma ? '<71% Sugestivo de adenoma rico en lÃ­pidos' : '>71% No concluyente para adenoma rico en lÃ­pidos'}).`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 animate-in fade-in">
-      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-5">
-        
-        <div>
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">LesiÃ³n Adrenal</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">In-Phase</label>
-              <input type="number" value={lesionIn} onChange={e => setLesionIn(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">Out-Phase</label>
-              <input type="number" value={lesionOut} onChange={e => setLesionOut(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">Ã“rgano Referencia (Bazo/HÃ­gado)</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">In-Phase</label>
-              <input type="number" value={refIn} onChange={e => setRefIn(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">Out-Phase</label>
-              <input type="number" value={refOut} onChange={e => setRefOut(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {isValid && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-          <div className="flex flex-col items-center justify-center p-2">
-            <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">Ãndice CSI</span>
-            <span className={`text-4xl font-bold ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>
-              {csi.toFixed(1)}%
-            </span>
-          </div>
-          
-          <div className={`p-3 rounded-lg flex items-start gap-3 text-sm ${isAdenoma ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' : 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400'}`}>
-            <IconAlertCircle size={20} className="shrink-0 mt-0.5" />
-            <p>
-              {isAdenoma 
-                ? 'Ãndice < 71%, compatible con pÃ©rdida de seÃ±al y presencia de lÃ­pidos intracelulares (adenoma).' 
-                : 'Ãndice â‰¥ 71%, sin evidencia significativa de pÃ©rdida de seÃ±al. No patognomÃ³nico de adenoma.'}
-            </p>
-          </div>
-
-          <button onClick={handleCopy} className="w-full flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
-            <IconCopy size={18} /> Copiar texto para informe
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-function HepaticSiderosis() {
-  const [inputType, setInputType] = useState('t2star');
-  const [val, setVal] = useState('');
-
-  const numericVal = parseFloat(val);
-  const isValid = !isNaN(numericVal) && numericVal > 0;
-
-  let r2star = 0;
-  let t2star = 0;
-
-  if (isValid) {
-    if (inputType === 't2star') {
-      t2star = numericVal;
-      r2star = 1000 / t2star;
-    } else {
-      r2star = numericVal;
-      t2star = 1000 / r2star;
+    /* ============================================================
+       LOGO
+    ============================================================ */
+    function Logo({ size = 40 }) {
+      const id = React.useId ? React.useId() : 'logo';
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+          <defs>
+            <linearGradient id={`grad-${id}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#2563eb" />
+              <stop offset="1" stopColor="#06b6d4" />
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="16" fill={`url(#grad-${id})`} />
+          <circle cx="32" cy="32" r="9" fill="none" stroke="white" strokeWidth="3" />
+          <circle cx="32" cy="32" r="18" fill="none" stroke="white" strokeOpacity="0.55" strokeWidth="3" />
+          <circle cx="32" cy="32" r="3.4" fill="white" />
+        </svg>
+      );
     }
-  }
 
-  // LIC (mg/g) = 0.0254 * R2* + 0.202
-  const lic = isValid ? (0.0254 * r2star) + 0.202 : 0;
-
-  let category = '';
-  let color = '';
-  if (isValid) {
-    if (lic < 1.8) {
-      category = 'Normal';
-      color = 'text-emerald-500';
-    } else if (lic <= 7.0) {
-      category = 'Sobrecarga Leve';
-      color = 'text-amber-500';
-    } else if (lic <= 15.0) {
-      category = 'Sobrecarga Moderada';
-      color = 'text-orange-500';
-    } else {
-      category = 'Sobrecarga Severa';
-      color = 'text-red-500';
-    }
-  }
-
-  const handleCopy = () => {
-    const text = `Siderosis HepÃ¡tica por RM (MÃ©todo R2*):
-T2*: ${t2star.toFixed(2)} ms
-R2*: ${r2star.toFixed(2)} Hz
-LIC Estimado: ${lic.toFixed(2)} mg/g tejido seco.
-CategorÃ­a: ${category}.`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 animate-in fade-in">
-      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-        
-        <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-4">
-          <button 
-            onClick={() => {setInputType('t2star'); setVal('');}} 
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${inputType === 't2star' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
-          >
-            Ingresar T2* (ms)
-          </button>
-          <button 
-            onClick={() => {setInputType('r2star'); setVal('');}} 
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${inputType === 'r2star' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
-          >
-            Ingresar R2* (Hz)
-          </button>
+    /* ============================================================
+       COMPONENTES REUTILIZABLES
+    ============================================================ */
+    function Card({ children, className = '' }) {
+      return (
+        <div className={`bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4 ${className}`}>
+          {children}
         </div>
+      );
+    }
 
+    function NumberField({ label, value, onChange, placeholder, small }) {
+      return (
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Valor de {inputType === 't2star' ? 'T2*' : 'R2*'}
-          </label>
-          <input 
-            type="number" 
-            placeholder={`Ej: ${inputType === 't2star' ? '12.5' : '80'}`} 
-            value={val} 
-            onChange={e => setVal(e.target.value)} 
-            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+          {label && <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{label}</label>}
+          <input
+            type="number"
+            inputMode="decimal"
+            placeholder={placeholder}
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            className={`w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg ${small ? 'p-2.5 text-center' : 'p-3 text-lg'} focus:ring-2 focus:ring-blue-500 outline-none`}
           />
         </div>
-      </div>
-
-      {isValid && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-          
-          <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-100 dark:border-slate-700">
-            <div>
-              <span className="block text-xs text-slate-500">T2*</span>
-              <span className="text-lg font-bold">{t2star.toFixed(2)} ms</span>
-            </div>
-            <div>
-              <span className="block text-xs text-slate-500">R2*</span>
-              <span className="text-lg font-bold">{r2star.toFixed(2)} Hz</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center justify-center py-2">
-            <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">LIC Estimado (mg/g)</span>
-            <span className={`text-4xl font-bold ${color}`}>
-              {lic.toFixed(2)}
-            </span>
-            <span className={`mt-2 font-medium px-3 py-1 rounded-full text-sm ${color.replace('text', 'bg').replace('500', '50 dark:bg-opacity-20')} ${color}`}>
-              {category}
-            </span>
-          </div>
-
-          <button onClick={handleCopy} className="w-full mt-2 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
-            <IconCopy size={18} /> Copiar texto para informe
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-function ThymicFat() {
-  const [thymusIn, setThymusIn] = useState('');
-  const [thymusOut, setThymusOut] = useState('');
-  const [muscleIn, setMuscleIn] = useState('');
-  const [muscleOut, setMuscleOut] = useState('');
-
-  const tIn = parseFloat(thymusIn);
-  const tOut = parseFloat(thymusOut);
-  const mIn = parseFloat(muscleIn);
-  const mOut = parseFloat(muscleOut);
-  
-  const isValid = !isNaN(tIn) && !isNaN(tOut) && !isNaN(mIn) && !isNaN(mOut) && tIn !== 0 && mIn !== 0;
-  
-  // Chemical Shift Ratio (CSR)
-  const csr = isValid ? (tOut / tIn) / (mOut / mIn) : 0;
-  // Signal Intensity Index (SII)
-  const sii = isValid ? ((tIn - tOut) / tIn) * 100 : 0;
-
-  const isFatty = csr < 0.9 || sii > 9; // Typical cutoffs for fat presence (hyperplasia/normal)
-
-  const handleCopy = () => {
-    const text = `RM Timo (Chemical Shift):
-Timo (Fase/Fuera): ${tIn} / ${tOut}
-MÃºsculo (Fase/Fuera): ${mIn} / ${mOut}
-Chemical Shift Ratio (CSR): ${csr.toFixed(2)}
-Signal Intensity Index (SII): ${sii.toFixed(1)}%
-ConclusiÃ³n: ${isFatty ? 'Hallazgos compatibles con presencia de grasa microscÃ³pica (sugiere hiperplasia tÃ­mica o tejido normal).' : 'Sin evidencia de caÃ­da de seÃ±al (sugiere lesiÃ³n sÃ³lida / timoma).'}`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 animate-in fade-in">
-      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-5">
-        
-        <div>
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">ROI Timo</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">In-Phase</label>
-              <input type="number" value={thymusIn} onChange={e => setThymusIn(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">Out-Phase</label>
-              <input type="number" value={thymusOut} onChange={e => setThymusOut(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">ROI MÃºsculo</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">In-Phase</label>
-              <input type="number" value={muscleIn} onChange={e => setMuscleIn(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">Out-Phase</label>
-              <input type="number" value={muscleOut} onChange={e => setMuscleOut(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {isValid && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
-              <span className="block text-xs text-slate-500 mb-1">Ratio (CSR)</span>
-              <span className={`text-2xl font-bold ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{csr.toFixed(2)}</span>
-            </div>
-            <div className="text-center">
-              <span className="block text-xs text-slate-500 mb-1">Ãndice (SII)</span>
-              <span className={`text-2xl font-bold ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{sii.toFixed(1)}%</span>
-            </div>
-          </div>
-          
-          <div className={`p-3 rounded-lg flex items-start gap-3 text-sm ${isFatty ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' : 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400'}`}>
-            <IconInfo size={20} className="shrink-0 mt-0.5" />
-            <p>
-              {isFatty 
-                ? 'Presencia de grasa demostrable. Sugerente de hiperplasia o tejido normal.' 
-                : 'Sin caÃ­da de seÃ±al significativa. Evaluar por posible lesiÃ³n tumoral (ej. Timoma).'}
-            </p>
-          </div>
-
-          <button onClick={handleCopy} className="w-full flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
-            <IconCopy size={18} /> Copiar texto para informe
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-const TIRADS_CRITERIA = {
-  composition: {
-    title: 'ComposiciÃ³n',
-    options: [
-      { label: 'QuÃ­stico o casi completamente quÃ­stico', points: 0 },
-      { label: 'Espongiforme', points: 0 },
-      { label: 'Mixto (quÃ­stico y sÃ³lido)', points: 1 },
-      { label: 'SÃ³lido o casi completamente sÃ³lido', points: 2 }
-    ]
-  },
-  echogenicity: {
-    title: 'Ecogenicidad',
-    options: [
-      { label: 'Anecoico', points: 0 },
-      { label: 'Hiperecoico o isoecoico', points: 1 },
-      { label: 'Hipoecoico', points: 2 },
-      { label: 'Muy hipoecoico', points: 3 }
-    ]
-  },
-  shape: {
-    title: 'Forma',
-    options: [
-      { label: 'MÃ¡s ancho que alto', points: 0 },
-      { label: 'MÃ¡s alto que ancho', points: 3 }
-    ]
-  },
-  margin: {
-    title: 'Margen',
-    options: [
-      { label: 'Liso', points: 0 },
-      { label: 'Mal definido', points: 0 },
-      { label: 'Lobulado o irregular', points: 2 },
-      { label: 'ExtensiÃ³n extratiroidea', points: 3 }
-    ]
-  },
-  echogenicFoci: {
-    title: 'Focos EcogÃ©nicos (Suma todos los que apliquen)',
-    multi: true,
-    options: [
-      { label: 'Ninguno o artefacto en cola de cometa grande', points: 0 },
-      { label: 'Macrocalcificaciones', points: 1 },
-      { label: 'Calcificaciones perifÃ©ricas (en anillo)', points: 2 },
-      { label: 'Focos ecogÃ©nicos puntiformes', points: 3 }
-    ]
-  }
-};
-
-function TIRADS() {
-  const [selections, setSelections] = useState({
-    composition: null,
-    echogenicity: null,
-    shape: null,
-    margin: null,
-    echogenicFoci: []
-  });
-
-  const toggleSelection = (category, index, multi = false) => {
-    if (multi) {
-      const current = selections[category];
-      if (current.includes(index)) {
-        setSelections({ ...selections, [category]: current.filter(i => i !== index) });
-      } else {
-        setSelections({ ...selections, [category]: [...current, index] });
-      }
-    } else {
-      setSelections({ ...selections, [category]: index });
+      );
     }
-  };
 
-  const calculatePoints = () => {
-    let pts = 0;
-    if (selections.composition !== null) pts += TIRADS_CRITERIA.composition.options[selections.composition].points;
-    if (selections.echogenicity !== null) pts += TIRADS_CRITERIA.echogenicity.options[selections.echogenicity].points;
-    if (selections.shape !== null) pts += TIRADS_CRITERIA.shape.options[selections.shape].points;
-    if (selections.margin !== null) pts += TIRADS_CRITERIA.margin.options[selections.margin].points;
-    
-    selections.echogenicFoci.forEach(i => {
-      pts += TIRADS_CRITERIA.echogenicFoci.options[i].points;
-    });
-    return pts;
-  };
-
-  const pts = calculatePoints();
-  
-  let category = '';
-  let risk = '';
-  let recs = '';
-  let color = '';
-
-  if (pts === 0) { category = 'TR1'; risk = 'Benigno'; recs = 'No FNA'; color = 'text-emerald-500'; }
-  else if (pts <= 2) { category = 'TR2'; risk = 'No sospechoso'; recs = 'No FNA'; color = 'text-emerald-500'; }
-  else if (pts === 3) { category = 'TR3'; risk = 'Levemente sospechoso'; recs = 'FNA si â‰¥ 2.5 cm. Seguir si â‰¥ 1.5 cm'; color = 'text-amber-500'; }
-  else if (pts <= 6) { category = 'TR4'; risk = 'Moderadamente sospechoso'; recs = 'FNA si â‰¥ 1.5 cm. Seguir si â‰¥ 1.0 cm'; color = 'text-orange-500'; }
-  else { category = 'TR5'; risk = 'Altamente sospechoso'; recs = 'FNA si â‰¥ 1.0 cm. Seguir si â‰¥ 0.5 cm'; color = 'text-red-500'; }
-
-  const handleCopy = () => {
-    const c = selections.composition !== null ? TIRADS_CRITERIA.composition.options[selections.composition].label : 'No evaluado';
-    const e = selections.echogenicity !== null ? TIRADS_CRITERIA.echogenicity.options[selections.echogenicity].label : 'No evaluado';
-    const s = selections.shape !== null ? TIRADS_CRITERIA.shape.options[selections.shape].label : 'No evaluado';
-    const m = selections.margin !== null ? TIRADS_CRITERIA.margin.options[selections.margin].label : 'No evaluado';
-    const f = selections.echogenicFoci.length ? selections.echogenicFoci.map(i => TIRADS_CRITERIA.echogenicFoci.options[i].label).join(', ') : 'Ninguno';
-
-    const text = `NÃ³dulo Tiroideo (ACR TI-RADS):
-- ComposiciÃ³n: ${c}
-- Ecogenicidad: ${e}
-- Forma: ${s}
-- Margen: ${m}
-- Focos EcogÃ©nicos: ${f}
-
-Puntaje total: ${pts} puntos.
-CategorÃ­a: ${category} (${risk}).
-RecomendaciÃ³n: ${recs}.`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 pb-20">
-      {Object.entries(TIRADS_CRITERIA).map(([key, data]) => (
-        <div key={key} className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-          <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-3 text-sm">{data.title}</h3>
-          <div className="space-y-2">
-            {data.options.map((opt, i) => {
-              const isSelected = data.multi ? selections[key].includes(i) : selections[key] === i;
-              return (
-                <button
-                  key={i}
-                  onClick={() => toggleSelection(key, i, data.multi)}
-                  className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'}`}
-                >
-                  <div className="flex justify-between items-center">
-                    <span>{opt.label}</span>
-                    <span className="text-xs font-medium bg-white dark:bg-slate-900 px-2 py-1 rounded-md opacity-70">+{opt.points} pt</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-4 shadow-lg safe-area-pb z-40">
-        <div className="max-w-md mx-auto flex items-center justify-between">
-          <div>
-            <span className="block text-xs text-slate-500 mb-0.5">Puntaje Total: {pts}</span>
-            <div className="flex items-center gap-2">
-              <span className={`font-bold text-xl ${color}`}>{category}</span>
-              <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{risk}</span>
-            </div>
-            <span className="block text-[10px] text-slate-500 mt-0.5 leading-tight">{recs}</span>
-          </div>
-          
-          <button onClick={handleCopy} className="p-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors shrink-0">
-            <IconCopy size={20} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-const ORADS_TREE = {
-  id: 'start',
-  q: 'Seleccione el tipo de lesiÃ³n:',
-  options: [
-    { label: 'Ovario Normal', next: 'orads1' },
-    { label: 'LesiÃ³n unilocular', next: 'unilocular' },
-    { label: 'LesiÃ³n multilocular', next: 'multilocular' },
-    { label: 'LesiÃ³n sÃ³lida o sÃ³lido-quÃ­stica', next: 'solid' },
-    { label: 'Presencia de ascitis', next: 'orads5' }
-  ]
-};
-
-const NODES = {
-  orads1: { cat: 'O-RADS 1', risk: 'Normal (0%)', recs: 'Seguimiento habitual' },
-  unilocular: {
-    q: 'CaracterÃ­sticas del quiste unilocular:',
-    options: [
-      { label: 'Quiste simple < 10 cm', next: 'orads2' },
-      { label: 'Quiste simple â‰¥ 10 cm', next: 'orads3' },
-      { label: 'LesiÃ³n benigna clÃ¡sica < 10 cm (Dermoide, endometrioma, etc)', next: 'orads2' },
-      { label: 'LesiÃ³n benigna clÃ¡sica â‰¥ 10 cm', next: 'orads3' },
-      { label: 'Pared irregular (<3mm)', next: 'orads3' }
-    ]
-  },
-  multilocular: {
-    q: 'CaracterÃ­sticas del quiste multilocular (sin componente sÃ³lido):',
-    options: [
-      { label: '< 10 cm', next: 'orads3' },
-      { label: 'â‰¥ 10 cm', next: 'orads4' },
-      { label: 'Pared irregular / tabiques irregulares o gruesos', next: 'orads4' }
-    ]
-  },
-  solid: {
-    q: 'CaracterÃ­sticas del componente sÃ³lido:',
-    options: [
-      { label: 'Contorno liso, cualquier tamaÃ±o, score color 1', next: 'orads3' },
-      { label: 'Contorno liso, < 3 cm, score color 2-3', next: 'orads3' },
-      { label: 'Contorno liso, â‰¥ 3 cm, score color 2-3', next: 'orads4' },
-      { label: 'Cualquier tamaÃ±o, score color 4', next: 'orads5' },
-      { label: 'Contorno irregular, cualquier tamaÃ±o', next: 'orads5' },
-      { label: 'Componente sÃ³lido con papilas (â‰¥1)', next: 'orads4' }
-    ]
-  },
-  orads2: { cat: 'O-RADS 2', risk: 'Casi ciertamente benigno (<1%)', recs: 'Seguimiento por ginecologÃ­a (Eco anual)' },
-  orads3: { cat: 'O-RADS 3', risk: 'Bajo riesgo (1-10%)', recs: 'Referir a ginecÃ³logo. Considerar RM.' },
-  orads4: { cat: 'O-RADS 4', risk: 'Riesgo intermedio (10-50%)', recs: 'Manejo por ginecÃ³logo oncÃ³logo. RM o interconsulta.' },
-  orads5: { cat: 'O-RADS 5', risk: 'Alto riesgo (>50%)', recs: 'Manejo por ginecÃ³logo oncÃ³logo.' }
-};
-
-function ORADS() {
-  const [history, setHistory] = useState(['start']);
-  const [selectedLabels, setSelectedLabels] = useState([]);
-
-  const currentId = history[history.length - 1];
-  const currentNode = currentId === 'start' ? ORADS_TREE : NODES[currentId];
-  
-  const isResult = !!currentNode.cat;
-
-  const handleSelect = (nextId, label) => {
-    setHistory([...history, nextId]);
-    setSelectedLabels([...selectedLabels, label]);
-  };
-
-  const handleReset = () => {
-    setHistory(['start']);
-    setSelectedLabels([]);
-  };
-
-  const handleUndo = () => {
-    if (history.length > 1) {
-      setHistory(history.slice(0, -1));
-      setSelectedLabels(selectedLabels.slice(0, -1));
-    }
-  };
-
-  const handleCopy = () => {
-    if (!isResult) return;
-    const path = selectedLabels.join(' -> ');
-    const text = `CaracterizaciÃ³n Anexial (ACR O-RADS Eco):
-Hallazgos: ${path}
-ClasificaciÃ³n: ${currentNode.cat}
-Riesgo de Malignidad: ${currentNode.risk}
-RecomendaciÃ³n: ${currentNode.recs}`;
-    copyToClipboard(text);
-  };
-
-  return (
-    <div className="space-y-4 pb-4 animate-in fade-in">
-      
-      {history.length > 1 && (
-        <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-semibold uppercase">Historial</span>
-            <button onClick={handleUndo} className="text-blue-500 font-medium">Volver</button>
-          </div>
-          <ol className="list-decimal pl-4 space-y-1">
-            {selectedLabels.map((lbl, i) => (
-              <li key={i}>{lbl}</li>
-            ))}
-          </ol>
-        </div>
-      )}
-
-      {!isResult ? (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-          <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">{currentNode.q}</h3>
-          <div className="space-y-2">
-            {currentNode.options.map((opt, i) => (
-              <button
-                key={i}
-                onClick={() => handleSelect(opt.next, opt.label)}
-                className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center"
-              >
-                <span>{opt.label}</span>
-                <IconArrowRight size={16} className="text-slate-400" />
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-blue-200 dark:border-blue-800 text-center space-y-4">
-          <div>
-            <h2 className="text-4xl font-black text-blue-600 dark:text-blue-400 mb-1">{currentNode.cat}</h2>
-            <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{currentNode.risk}</p>
-          </div>
-          
-          <div className="bg-blue-50 dark:bg-slate-900 p-4 rounded-xl text-sm text-slate-700 dark:text-slate-300">
-            <span className="block font-semibold mb-1 text-blue-800 dark:text-blue-300">RecomendaciÃ³n:</span>
-            {currentNode.recs}
-          </div>
-
-          <div className="flex gap-2 pt-2">
-            <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
-              Reiniciar
-            </button>
-            <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-              <IconCopy size={18} /> Copiar
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-function PIRADS() {
-  const [zone, setZone] = useState('pz'); // pz = Peripheral, tz = Transition
-  
-  // Score inputs
-  const [dwi, setDwi] = useState(0);
-  const [t2, setT2] = useState(0);
-  const [dce, setDce] = useState(''); // '+', '-', ''
-
-  // Calculation logic based on v2.1
-  let finalScore = 0;
-  
-  if (zone === 'pz') {
-    // Dominant is DWI
-    if (dwi > 0) {
-      if (dwi === 3 && dce === '+') {
-        finalScore = 4;
-      } else {
-        finalScore = dwi;
-      }
-    }
-  } else {
-    // Dominant is T2W
-    if (t2 > 0) {
-      if (t2 === 3 && dwi === 5) {
-        finalScore = 4;
-      } else {
-        finalScore = t2;
-      }
-    }
-  }
-
-  const handleCopy = () => {
-    if (!finalScore) return;
-    const txtZone = zone === 'pz' ? 'Zona PerifÃ©rica (PZ)' : 'Zona de TransiciÃ³n (TZ)';
-    const text = `PI-RADS v2.1:
-LocalizaciÃ³n: ${txtZone}
-DWI/ADC Score: ${dwi || 'N/A'}
-T2W Score: ${t2 || 'N/A'}
-DCE: ${dce === '+' ? 'Positivo (+)' : dce === '-' ? 'Negativo (-)' : 'N/A'}
-
-PuntuaciÃ³n Final: PI-RADS ${finalScore}`;
-    copyToClipboard(text);
-  };
-
-  const isSignificant = finalScore >= 3;
-
-  return (
-    <div className="space-y-4 animate-in fade-in pb-10">
-      <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex">
-        <button 
-          onClick={() => {setZone('pz'); setDwi(0); setT2(0); setDce('');}} 
-          className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'pz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
-        >
-          Zona PerifÃ©rica (PZ)
+    function CopyButton({ onClick, children }) {
+      return (
+        <button onClick={onClick} className="w-full flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
+          <IconCopy size={18} /> {children}
         </button>
-        <button 
-          onClick={() => {setZone('tz'); setDwi(0); setT2(0); setDce('');}} 
-          className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'tz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
-        >
-          Zona TransiciÃ³n (TZ)
-        </button>
-      </div>
-
-      <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-6">
-        
-        {zone === 'pz' && (
-          <>
-            <div>
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">1. Score DWI/ADC (Secuencia Dominante)</h3>
-              <div className="flex gap-2">
-                {[1,2,3,4,5].map(s => (
-                  <button key={`dwi-${s}`} onClick={() => setDwi(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {dwi === 3 && (
-              <div className="animate-in fade-in slide-in-from-top-2">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">2. DCE (Contraste)</h3>
-                <div className="flex gap-2">
-                  <button onClick={() => setDce('-')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '-' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
-                    Negativo (-)
-                  </button>
-                  <button onClick={() => setDce('+')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '+' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
-                    Positivo (+)
-                  </button>
-                </div>
-                <p className="text-xs text-slate-500 mt-2">DCE positivo sube el PI-RADS de 3 a 4.</p>
-              </div>
-            )}
-          </>
-        )}
-
-        {zone === 'tz' && (
-          <>
-            <div>
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">1. Score T2W (Secuencia Dominante)</h3>
-              <div className="flex gap-2">
-                {[1,2,3,4,5].map(s => (
-                  <button key={`t2-${s}`} onClick={() => setT2(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${t2 === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {t2 === 3 && (
-              <div className="animate-in fade-in slide-in-from-top-2">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">2. Score DWI/ADC</h3>
-                <div className="flex gap-2">
-                  {[1,2,3,4,5].map(s => (
-                    <button key={`dwitz-${s}`} onClick={() => setDwi(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
-                      {s}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-xs text-slate-500 mt-2">DWI Score 5 sube el PI-RADS de 3 a 4.</p>
-              </div>
-            )}
-          </>
-        )}
-
-      </div>
-
-      {finalScore > 0 && (
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center space-y-4">
-          <div className="flex flex-col items-center justify-center">
-            <span className="text-sm text-slate-500 font-medium mb-1">CategorÃ­a Final</span>
-            <span className={`text-4xl font-black ${finalScore >= 4 ? 'text-red-500' : finalScore === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>
-              PI-RADS {finalScore}
-            </span>
-          </div>
-
-          <button onClick={handleCopy} className="w-full mt-2 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
-            <IconCopy size={18} /> Copiar texto para informe
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-    
-const calculators = [
-  { id: 'psad', title: 'PSAD y Volumen ProstÃ¡tico', category: 'Abdomen y Pelvis', component: PSADCalculator },
-  { id: 'mri-ff', title: 'FracciÃ³n Grasa por RM (Dixon)', category: 'Abdomen y Pelvis', component: MRIFatFraction },
-  { id: 'adrenal-ct', title: 'Adrenales: Lavado en TC', category: 'Abdomen y Pelvis', component: AdrenalWashout },
-  { id: 'adrenal-mri', title: 'Adrenales: Ãndice CSI en RM', category: 'Abdomen y Pelvis', component: AdrenalCSI },
-  { id: 'siderosis', title: 'Siderosis HepÃ¡tica por RM', category: 'Abdomen y Pelvis', component: HepaticSiderosis },
-  { id: 'thymic', title: 'Grasa TÃ­mica / Hiperplasia', category: 'TÃ³rax', component: ThymicFat },
-  { id: 'tirads', title: 'ACR TI-RADS (Tiroides)', category: 'EstratificaciÃ³n', component: TIRADS },
-  { id: 'orads', title: 'ACR O-RADS (Ovario)', category: 'EstratificaciÃ³n', component: ORADS },
-  { id: 'pirads', title: 'PI-RADS v2.1 (PrÃ³stata)', category: 'EstratificaciÃ³n', component: PIRADS },
-];
-
-function App() {
-  const [darkMode, setDarkMode] = useState(true);
-  const [activeCalc, setActiveCalc] = useState(null);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+      );
     }
-  }, [darkMode]);
 
-  const categories = [...new Set(calculators.map(c => c.category))];
+    function InfoBox({ tone = 'amber', children }) {
+      const tones = {
+        amber: 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400',
+        emerald: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+      };
+      return (
+        <div className={`p-3 rounded-lg flex items-start gap-3 text-sm ${tones[tone]}`}>
+          <IconAlertCircle size={20} className="shrink-0 mt-0.5" />
+          <p>{children}</p>
+        </div>
+      );
+    }
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-10">
-      <header className="sticky top-0 z-50 bg-blue-600 dark:bg-slate-800 text-white shadow-md px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {activeCalc ? (
-            <button onClick={() => setActiveCalc(null)} className="p-1 -ml-1 hover:bg-white/20 rounded-full transition-colors">
-              <IconChevronLeft className="w-6 h-6" />
-            </button>
-          ) : (
-            <IconStethoscope />
+    // Sección de referencias bibliográficas, colapsable, al pie de cada calculadora
+    function References({ items }) {
+      const { t } = useLang();
+      const [open, setOpen] = useState(false);
+      if (!items || items.length === 0) return null;
+      return (
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+          <button
+            onClick={() => setOpen(!open)}
+            className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors"
+          >
+            <span className="flex items-center gap-2"><IconBookOpen size={16} /> {t.common.references}</span>
+            <IconChevronDown className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+          </button>
+          {open && (
+            <ol className="refs-enter px-5 pb-4 space-y-2 text-xs text-slate-500 dark:text-slate-400 list-decimal list-inside border-t border-slate-100 dark:border-slate-700 pt-3">
+              {items.map((ref, i) => <li key={i} className="leading-relaxed">{ref}</li>)}
+            </ol>
           )}
-          <h1 className="text-xl font-bold tracking-tight">
-            {activeCalc ? calculators.find(c => c.id === activeCalc).title : 'RadioCalc Clinical'}
-          </h1>
         </div>
-        <button onClick={() => setDarkMode(!darkMode)} className="p-2 hover:bg-white/20 rounded-full transition-colors">
-          {darkMode ? <IconSun /> : <IconMoon />}
-        </button>
-      </header>
+      );
+    }
 
-      <main className="max-w-md mx-auto p-4">
-        {activeCalc ? (
-          <div>
-            {React.createElement(calculators.find(c => c.id === activeCalc).component)}
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {categories.map(category => (
-              <div key={category}>
-                <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1">
-                  {category}
-                </h2>
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
-                  {calculators.filter(c => c.category === category).map(calc => (
-                    <button
-                      key={calc.id}
-                      onClick={() => setActiveCalc(calc.id)}
-                      className="w-full text-left px-5 py-4 active:bg-slate-50 dark:active:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex justify-between items-center"
-                    >
-                      <span className="font-medium text-slate-700 dark:text-slate-200">{calc.title}</span>
-                      <IconChevronLeft className="text-slate-400 transform rotate-180 w-4 h-4" />
-                    </button>
-                  ))}
+    // Botón para reportar un error, disponible dentro de cada calculadora
+    function ReportBugLink({ calcTitle }) {
+      const { t, lang } = useLang();
+      return (
+        <a
+          href={buildMailto(calcTitle, lang)}
+          className="flex items-center justify-center gap-2 text-xs text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-2"
+        >
+          <IconMail size={14} /> {t.common.reportBug}
+        </a>
+      );
+    }
+
+    /* ============================================================
+       TEXTOS / STRINGS (ES / EN)
+    ============================================================ */
+    const STRINGS = {
+      es: {
+        appName: 'RadioCalc Clinical',
+        tagline: 'Calculadoras radiológicas para la práctica clínica diaria',
+        common: {
+          copyReport: 'Copiar texto para informe',
+          copy: 'Copiar',
+          copiedOk: 'Texto copiado al portapapeles',
+          copiedErr: 'Error al copiar',
+          references: 'Referencias bibliográficas',
+          reportBug: 'Reportar un error en esta calculadora',
+          reportBugGeneral: 'Reportar un error',
+          createdBy: 'Creado por',
+          disclaimer: 'Esta herramienta es un apoyo de referencia rápida para el informe radiológico y no reemplaza el juicio clínico ni las guías vigentes de cada sociedad científica. Verifique siempre los criterios actualizados antes de tomar decisiones clínicas.',
+          back: 'Volver',
+          reset: 'Reiniciar',
+          langSwitch: 'English',
+          notEvaluated: 'No evaluado',
+          none: 'Ninguno',
+          cutoff: 'Corte',
+        },
+        categories: {
+          abdomen: 'Abdomen y Pelvis',
+          torax: 'Tórax',
+          strat: 'Estratificación de riesgo',
+        },
+        calc: {
+          psad: {
+            title: 'PSAD y Volumen Prostático',
+            dims: 'Dimensiones (cm)',
+            ap: 'AP', tr: 'TR', long: 'LONG',
+            psaLabel: 'PSA Total (ng/mL)',
+            psaPh: 'Ej: 5.4',
+            formulaFactor: 'Factor fórmula',
+            volume: 'Volumen',
+            psad: 'PSAD',
+            highRisk: 'Elevado',
+            normal: 'Normal',
+            reportText: (vol, psa, psad, risk) =>
+              `Volumen prostático: ${vol} cc.\nPSA Total: ${psa} ng/mL.\nDensidad de PSA (PSAD): ${psad} ng/mL/cc (${risk}).`,
+          },
+          mriFf: {
+            title: 'Fracción Grasa por RM (Dixon)',
+            inPhase: 'Señal Fase (In-Phase)',
+            outPhase: 'Señal Fuera de Fase (Out-Phase)',
+            inPh: 'Ej: 450', outPh: 'Ej: 380',
+            estimated: 'Fracción Grasa Estimada',
+            reportText: (ff, sIn, sOut) =>
+              `Fracción grasa por RM (Dixon/phase-inversion): ${ff}%. (In-phase: ${sIn}, Out-phase: ${sOut}).`,
+          },
+          adrenalCt: {
+            title: 'Adrenales: Lavado en TC',
+            nonContrast: 'Sin contraste (UH)',
+            portal: 'Fase portal (UH)',
+            delayed: 'Fase tardía 15 min (UH)',
+            absolute: 'Absoluto (APW)',
+            relative: 'Relativo (RPW)',
+            adenomaCompatible: 'Los valores de lavado son compatibles con un adenoma suprarrenal.',
+            adenomaNot: 'Los valores no alcanzan el punto de corte típico para adenoma. Considerar otros diagnósticos diferenciales.',
+            compatible: 'Compatible con adenoma',
+            notSuggestive: 'No sugestivo de adenoma',
+            reportText: (nc, ven, del, apw, apwR, rpw, rpwR) =>
+              `TC Adrenal:\nUH sin contraste: ${nc}\nUH fase portal: ${ven}\nUH tardía (15 min): ${del}\nLavado absoluto (APW): ${apw}% (${apwR}).\nLavado relativo (RPW): ${rpw}% (${rpwR}).`,
+          },
+          adrenalMri: {
+            title: 'Adrenales: Índice CSI en RM',
+            lesion: 'Lesión Adrenal',
+            reference: 'Órgano Referencia (Bazo/Hígado)',
+            inPhase: 'In-Phase', outPhase: 'Out-Phase',
+            csiIndex: 'Índice CSI',
+            csiAdenoma: 'Índice < 71%, compatible con caída de señal y presencia de lípidos intracelulares (adenoma).',
+            csiNot: 'Índice ≥ 71%, sin caída de señal significativa. No es patognomónico de adenoma.',
+            reportText: (lIn, lOut, rIn, rOut, csi, concl) =>
+              `RM Adrenal (Chemical Shift):\nLesión (Fase/Fuera): ${lIn} / ${lOut}\nReferencia (Fase/Fuera): ${rIn} / ${rOut}\nÍndice CSI: ${csi}% (${concl}).`,
+            conclAdenoma: '<71% sugestivo de adenoma rico en lípidos',
+            conclNot: '≥71% no concluyente para adenoma rico en lípidos',
+          },
+          siderosis: {
+            title: 'Siderosis Hepática por RM',
+            enterT2: 'Ingresar T2* (ms)',
+            enterR2: 'Ingresar R2* (Hz)',
+            valueOf: 'Valor de',
+            licEstimated: 'LIC Estimado (mg/g)',
+            catNormal: 'Normal',
+            catMild: 'Sobrecarga Leve',
+            catModerate: 'Sobrecarga Moderada',
+            catSevere: 'Sobrecarga Severa',
+            reportText: (t2, r2, lic, cat) =>
+              `Siderosis hepática por RM (método R2*):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nLIC estimado: ${lic} mg/g de tejido seco.\nCategoría: ${cat}.`,
+          },
+          thymic: {
+            title: 'Grasa Tímica / Hiperplasia',
+            roiThymus: 'ROI Timo',
+            roiMuscle: 'ROI Músculo',
+            inPhase: 'In-Phase', outPhase: 'Out-Phase',
+            ratioCsr: 'Ratio (CSR)',
+            indexSii: 'Índice (SII)',
+            fattyConcl: 'Presencia de grasa demostrable. Sugerente de hiperplasia tímica o tejido normal.',
+            notFattyConcl: 'Sin caída de señal significativa. Evaluar por posible lesión tumoral (ej. timoma).',
+            reportText: (tIn, tOut, mIn, mOut, csr, sii, concl) =>
+              `RM Timo (Chemical Shift):\nTimo (Fase/Fuera): ${tIn} / ${tOut}\nMúsculo (Fase/Fuera): ${mIn} / ${mOut}\nChemical Shift Ratio (CSR): ${csr}\nSignal Intensity Index (SII): ${sii}%\nConclusión: ${concl}`,
+            conclFatty: 'Hallazgos compatibles con presencia de grasa microscópica (sugiere hiperplasia tímica o tejido normal).',
+            conclNotFatty: 'Sin evidencia de caída de señal (sugiere lesión sólida / timoma).',
+          },
+          tirads: {
+            title: 'ACR TI-RADS (Tiroides)',
+            totalScore: 'Puntaje Total',
+            recommendation: 'Recomendación',
+            points: 'pt',
+            criteria: {
+              composition: {
+                title: 'Composición',
+                options: [
+                  'Quístico o casi completamente quístico',
+                  'Espongiforme',
+                  'Mixto (quístico y sólido)',
+                  'Sólido o casi completamente sólido',
+                ],
+              },
+              echogenicity: {
+                title: 'Ecogenicidad',
+                options: ['Anecoico', 'Hiperecoico o isoecoico', 'Hipoecoico', 'Muy hipoecoico'],
+              },
+              shape: {
+                title: 'Forma',
+                options: ['Más ancho que alto', 'Más alto que ancho'],
+              },
+              margin: {
+                title: 'Margen',
+                options: ['Liso', 'Mal definido', 'Lobulado o irregular', 'Extensión extratiroidea'],
+              },
+              echogenicFoci: {
+                title: 'Focos ecogénicos (sume todos los que apliquen)',
+                options: [
+                  'Ninguno o artefacto en cola de cometa grande',
+                  'Macrocalcificaciones',
+                  'Calcificaciones periféricas (en anillo)',
+                  'Focos ecogénicos puntiformes',
+                ],
+              },
+            },
+            categories: {
+              TR1: { risk: 'Benigno', recs: 'No requiere PAAF' },
+              TR2: { risk: 'No sospechoso', recs: 'No requiere PAAF' },
+              TR3: { risk: 'Levemente sospechoso', recs: 'PAAF si ≥ 2.5 cm. Seguimiento si ≥ 1.5 cm' },
+              TR4: { risk: 'Moderadamente sospechoso', recs: 'PAAF si ≥ 1.5 cm. Seguimiento si ≥ 1.0 cm' },
+              TR5: { risk: 'Altamente sospechoso', recs: 'PAAF si ≥ 1.0 cm. Seguimiento si ≥ 0.5 cm' },
+            },
+            reportText: (c, e, s, m, f, pts, cat, risk, recs) =>
+              `Nódulo tiroideo (ACR TI-RADS):\n- Composición: ${c}\n- Ecogenicidad: ${e}\n- Forma: ${s}\n- Margen: ${m}\n- Focos ecogénicos: ${f}\nPuntaje total: ${pts} puntos.\nCategoría: ${cat} (${risk}).\nRecomendación: ${recs}.`,
+          },
+          orads: {
+            title: 'ACR O-RADS (Ovario)',
+            history: 'Historial',
+            undo: 'Volver atrás',
+            malignancyRisk: 'Riesgo de malignidad',
+            recommendation: 'Recomendación',
+            start: { q: 'Seleccione el tipo de lesión:', options: [
+              { label: 'Ovario normal', next: 'orads1' },
+              { label: 'Lesión unilocular', next: 'unilocular' },
+              { label: 'Lesión multilocular', next: 'multilocular' },
+              { label: 'Lesión sólida o sólido-quística', next: 'solid' },
+              { label: 'Presencia de ascitis', next: 'orads5' },
+            ]},
+            nodes: {
+              orads1: { cat: 'O-RADS 1', risk: 'Normal (0%)', recs: 'Seguimiento ginecológico habitual' },
+              unilocular: { q: 'Características del quiste unilocular:', options: [
+                { label: 'Quiste simple < 10 cm', next: 'orads2' },
+                { label: 'Quiste simple ≥ 10 cm', next: 'orads3' },
+                { label: 'Lesión benigna clásica < 10 cm (dermoide, endometrioma, etc.)', next: 'orads2' },
+                { label: 'Lesión benigna clásica ≥ 10 cm', next: 'orads3' },
+                { label: 'Pared irregular (< 3 mm)', next: 'orads3' },
+              ]},
+              multilocular: { q: 'Características del quiste multilocular (sin componente sólido):', options: [
+                { label: '< 10 cm', next: 'orads3' },
+                { label: '≥ 10 cm', next: 'orads4' },
+                { label: 'Pared o tabiques irregulares o gruesos', next: 'orads4' },
+              ]},
+              solid: { q: 'Características del componente sólido:', options: [
+                { label: 'Contorno liso, cualquier tamaño, score color 1', next: 'orads3' },
+                { label: 'Contorno liso, < 3 cm, score color 2-3', next: 'orads3' },
+                { label: 'Contorno liso, ≥ 3 cm, score color 2-3', next: 'orads4' },
+                { label: 'Cualquier tamaño, score color 4', next: 'orads5' },
+                { label: 'Contorno irregular, cualquier tamaño', next: 'orads5' },
+                { label: 'Componente sólido con papilas (≥ 1)', next: 'orads4' },
+              ]},
+              orads2: { cat: 'O-RADS 2', risk: 'Casi ciertamente benigno (< 1%)', recs: 'Seguimiento por ginecología (ecografía anual)' },
+              orads3: { cat: 'O-RADS 3', risk: 'Bajo riesgo (1-10%)', recs: 'Referir a ginecólogo. Considerar RM.' },
+              orads4: { cat: 'O-RADS 4', risk: 'Riesgo intermedio (10-50%)', recs: 'Manejo por ginecólogo oncólogo. RM o interconsulta.' },
+              orads5: { cat: 'O-RADS 5', risk: 'Alto riesgo (> 50%)', recs: 'Manejo por ginecólogo oncólogo.' },
+            },
+            reportText: (path, cat, risk, recs) =>
+              `Caracterización anexial (ACR O-RADS ecografía):\nHallazgos: ${path}\nClasificación: ${cat}\nRiesgo de malignidad: ${risk}\nRecomendación: ${recs}`,
+          },
+          pirads: {
+            title: 'PI-RADS v2.1 (Próstata)',
+            pz: 'Zona Periférica (PZ)',
+            tz: 'Zona de Transición (TZ)',
+            dwiDominant: '1. Score DWI/ADC (secuencia dominante)',
+            t2Dominant: '1. Score T2W (secuencia dominante)',
+            dceStep: '2. DCE (contraste)',
+            dwiStep: '2. Score DWI/ADC',
+            dceNeg: 'Negativo (-)',
+            dcePos: 'Positivo (+)',
+            dceNote: 'DCE positivo sube el PI-RADS de 3 a 4.',
+            dwiNote: 'DWI score 5 sube el PI-RADS de 3 a 4.',
+            finalCategory: 'Categoría final',
+            reportText: (zone, dwi, t2, dce, score) =>
+              `PI-RADS v2.1:\nLocalización: ${zone}\nDWI/ADC score: ${dwi}\nT2W score: ${t2}\nDCE: ${dce}\nPuntuación final: PI-RADS ${score}`,
+            naText: 'N/D',
+          },
+        },
+      },
+      en: {
+        appName: 'RadioCalc Clinical',
+        tagline: 'Radiology calculators for everyday clinical practice',
+        common: {
+          copyReport: 'Copy text for report',
+          copy: 'Copy',
+          copiedOk: 'Text copied to clipboard',
+          copiedErr: 'Error copying text',
+          references: 'References',
+          reportBug: 'Report an error in this calculator',
+          reportBugGeneral: 'Report an error',
+          createdBy: 'Created by',
+          disclaimer: 'This tool is a quick reference aid for radiology reporting and does not replace clinical judgment or the current guidelines of each scientific society. Always verify up-to-date criteria before making clinical decisions.',
+          back: 'Back',
+          reset: 'Reset',
+          langSwitch: 'Español',
+          notEvaluated: 'Not evaluated',
+          none: 'None',
+          cutoff: 'Cutoff',
+        },
+        categories: {
+          abdomen: 'Abdomen and Pelvis',
+          torax: 'Chest',
+          strat: 'Risk stratification',
+        },
+        calc: {
+          psad: {
+            title: 'PSAD and Prostate Volume',
+            dims: 'Dimensions (cm)',
+            ap: 'AP', tr: 'TR', long: 'LONG',
+            psaLabel: 'Total PSA (ng/mL)',
+            psaPh: 'E.g.: 5.4',
+            formulaFactor: 'Formula factor',
+            volume: 'Volume',
+            psad: 'PSAD',
+            highRisk: 'Elevated',
+            normal: 'Normal',
+            reportText: (vol, psa, psad, risk) =>
+              `Prostate volume: ${vol} cc.\nTotal PSA: ${psa} ng/mL.\nPSA density (PSAD): ${psad} ng/mL/cc (${risk}).`,
+          },
+          mriFf: {
+            title: 'MRI Fat Fraction (Dixon)',
+            inPhase: 'In-Phase Signal',
+            outPhase: 'Out-of-Phase Signal',
+            inPh: 'E.g.: 450', outPh: 'E.g.: 380',
+            estimated: 'Estimated Fat Fraction',
+            reportText: (ff, sIn, sOut) =>
+              `MRI fat fraction (Dixon/phase-inversion): ${ff}%. (In-phase: ${sIn}, Out-of-phase: ${sOut}).`,
+          },
+          adrenalCt: {
+            title: 'Adrenal: CT Washout',
+            nonContrast: 'Non-contrast (HU)',
+            portal: 'Portal phase (HU)',
+            delayed: 'Delayed phase 15 min (HU)',
+            absolute: 'Absolute (APW)',
+            relative: 'Relative (RPW)',
+            adenomaCompatible: 'Washout values are compatible with an adrenal adenoma.',
+            adenomaNot: 'Values do not reach the typical cutoff for adenoma. Consider other differential diagnoses.',
+            compatible: 'Compatible with adenoma',
+            notSuggestive: 'Not suggestive of adenoma',
+            reportText: (nc, ven, del, apw, apwR, rpw, rpwR) =>
+              `Adrenal CT:\nNon-contrast HU: ${nc}\nPortal phase HU: ${ven}\nDelayed HU (15 min): ${del}\nAbsolute washout (APW): ${apw}% (${apwR}).\nRelative washout (RPW): ${rpw}% (${rpwR}).`,
+          },
+          adrenalMri: {
+            title: 'Adrenal: MRI CSI Index',
+            lesion: 'Adrenal Lesion',
+            reference: 'Reference organ (spleen/liver)',
+            inPhase: 'In-Phase', outPhase: 'Out-of-Phase',
+            csiIndex: 'CSI Index',
+            csiAdenoma: 'Index < 71%, compatible with signal drop and intracellular lipid content (adenoma).',
+            csiNot: 'Index ≥ 71%, without significant signal drop. Not pathognomonic of adenoma.',
+            reportText: (lIn, lOut, rIn, rOut, csi, concl) =>
+              `Adrenal MRI (Chemical Shift):\nLesion (In/Out): ${lIn} / ${lOut}\nReference (In/Out): ${rIn} / ${rOut}\nCSI index: ${csi}% (${concl}).`,
+            conclAdenoma: '<71% suggestive of lipid-rich adenoma',
+            conclNot: '≥71% not conclusive for lipid-rich adenoma',
+          },
+          siderosis: {
+            title: 'MRI Hepatic Siderosis',
+            enterT2: 'Enter T2* (ms)',
+            enterR2: 'Enter R2* (Hz)',
+            valueOf: 'Value of',
+            licEstimated: 'Estimated LIC (mg/g)',
+            catNormal: 'Normal',
+            catMild: 'Mild overload',
+            catModerate: 'Moderate overload',
+            catSevere: 'Severe overload',
+            reportText: (t2, r2, lic, cat) =>
+              `MRI hepatic siderosis (R2* method):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nEstimated LIC: ${lic} mg/g dry tissue.\nCategory: ${cat}.`,
+          },
+          thymic: {
+            title: 'Thymic Fat / Hyperplasia',
+            roiThymus: 'Thymus ROI',
+            roiMuscle: 'Muscle ROI',
+            inPhase: 'In-Phase', outPhase: 'Out-of-Phase',
+            ratioCsr: 'Ratio (CSR)',
+            indexSii: 'Index (SII)',
+            fattyConcl: 'Demonstrable fat content. Suggestive of thymic hyperplasia or normal tissue.',
+            notFattyConcl: 'No significant signal drop. Evaluate for possible solid lesion (e.g., thymoma).',
+            reportText: (tIn, tOut, mIn, mOut, csr, sii, concl) =>
+              `Thymus MRI (Chemical Shift):\nThymus (In/Out): ${tIn} / ${tOut}\nMuscle (In/Out): ${mIn} / ${mOut}\nChemical Shift Ratio (CSR): ${csr}\nSignal Intensity Index (SII): ${sii}%\nConclusion: ${concl}`,
+            conclFatty: 'Findings compatible with microscopic fat content (suggests thymic hyperplasia or normal tissue).',
+            conclNotFatty: 'No evidence of signal drop (suggests solid lesion / thymoma).',
+          },
+          tirads: {
+            title: 'ACR TI-RADS (Thyroid)',
+            totalScore: 'Total Score',
+            recommendation: 'Recommendation',
+            points: 'pt',
+            criteria: {
+              composition: {
+                title: 'Composition',
+                options: [
+                  'Cystic or almost completely cystic',
+                  'Spongiform',
+                  'Mixed cystic and solid',
+                  'Solid or almost completely solid',
+                ],
+              },
+              echogenicity: {
+                title: 'Echogenicity',
+                options: ['Anechoic', 'Hyperechoic or isoechoic', 'Hypoechoic', 'Very hypoechoic'],
+              },
+              shape: {
+                title: 'Shape',
+                options: ['Wider than tall', 'Taller than wide'],
+              },
+              margin: {
+                title: 'Margin',
+                options: ['Smooth', 'Ill-defined', 'Lobulated or irregular', 'Extrathyroidal extension'],
+              },
+              echogenicFoci: {
+                title: 'Echogenic foci (sum all that apply)',
+                options: [
+                  'None or large comet-tail artifact',
+                  'Macrocalcifications',
+                  'Peripheral (rim) calcifications',
+                  'Punctate echogenic foci',
+                ],
+              },
+            },
+            categories: {
+              TR1: { risk: 'Benign', recs: 'No FNA' },
+              TR2: { risk: 'Not suspicious', recs: 'No FNA' },
+              TR3: { risk: 'Mildly suspicious', recs: 'FNA if ≥ 2.5 cm. Follow-up if ≥ 1.5 cm' },
+              TR4: { risk: 'Moderately suspicious', recs: 'FNA if ≥ 1.5 cm. Follow-up if ≥ 1.0 cm' },
+              TR5: { risk: 'Highly suspicious', recs: 'FNA if ≥ 1.0 cm. Follow-up if ≥ 0.5 cm' },
+            },
+            reportText: (c, e, s, m, f, pts, cat, risk, recs) =>
+              `Thyroid nodule (ACR TI-RADS):\n- Composition: ${c}\n- Echogenicity: ${e}\n- Shape: ${s}\n- Margin: ${m}\n- Echogenic foci: ${f}\nTotal score: ${pts} points.\nCategory: ${cat} (${risk}).\nRecommendation: ${recs}.`,
+          },
+          orads: {
+            title: 'ACR O-RADS (Ovary)',
+            history: 'History',
+            undo: 'Go back',
+            malignancyRisk: 'Malignancy risk',
+            recommendation: 'Recommendation',
+            start: { q: 'Select the lesion type:', options: [
+              { label: 'Normal ovary', next: 'orads1' },
+              { label: 'Unilocular lesion', next: 'unilocular' },
+              { label: 'Multilocular lesion', next: 'multilocular' },
+              { label: 'Solid or solid-cystic lesion', next: 'solid' },
+              { label: 'Presence of ascites', next: 'orads5' },
+            ]},
+            nodes: {
+              orads1: { cat: 'O-RADS 1', risk: 'Normal (0%)', recs: 'Routine gynecologic follow-up' },
+              unilocular: { q: 'Unilocular cyst features:', options: [
+                { label: 'Simple cyst < 10 cm', next: 'orads2' },
+                { label: 'Simple cyst ≥ 10 cm', next: 'orads3' },
+                { label: 'Classic benign lesion < 10 cm (dermoid, endometrioma, etc.)', next: 'orads2' },
+                { label: 'Classic benign lesion ≥ 10 cm', next: 'orads3' },
+                { label: 'Irregular wall (< 3 mm)', next: 'orads3' },
+              ]},
+              multilocular: { q: 'Multilocular cyst features (no solid component):', options: [
+                { label: '< 10 cm', next: 'orads3' },
+                { label: '≥ 10 cm', next: 'orads4' },
+                { label: 'Irregular or thick wall/septa', next: 'orads4' },
+              ]},
+              solid: { q: 'Solid component features:', options: [
+                { label: 'Smooth contour, any size, color score 1', next: 'orads3' },
+                { label: 'Smooth contour, < 3 cm, color score 2-3', next: 'orads3' },
+                { label: 'Smooth contour, ≥ 3 cm, color score 2-3', next: 'orads4' },
+                { label: 'Any size, color score 4', next: 'orads5' },
+                { label: 'Irregular contour, any size', next: 'orads5' },
+                { label: 'Solid component with papillary projections (≥ 1)', next: 'orads4' },
+              ]},
+              orads2: { cat: 'O-RADS 2', risk: 'Almost certainly benign (< 1%)', recs: 'Gynecologic follow-up (annual ultrasound)' },
+              orads3: { cat: 'O-RADS 3', risk: 'Low risk (1-10%)', recs: 'Refer to gynecologist. Consider MRI.' },
+              orads4: { cat: 'O-RADS 4', risk: 'Intermediate risk (10-50%)', recs: 'Management by gynecologic oncologist. MRI or referral.' },
+              orads5: { cat: 'O-RADS 5', risk: 'High risk (> 50%)', recs: 'Management by gynecologic oncologist.' },
+            },
+            reportText: (path, cat, risk, recs) =>
+              `Adnexal characterization (ACR O-RADS ultrasound):\nFindings: ${path}\nClassification: ${cat}\nMalignancy risk: ${risk}\nRecommendation: ${recs}`,
+          },
+          pirads: {
+            title: 'PI-RADS v2.1 (Prostate)',
+            pz: 'Peripheral Zone (PZ)',
+            tz: 'Transition Zone (TZ)',
+            dwiDominant: '1. DWI/ADC Score (dominant sequence)',
+            t2Dominant: '1. T2W Score (dominant sequence)',
+            dceStep: '2. DCE (contrast)',
+            dwiStep: '2. DWI/ADC Score',
+            dceNeg: 'Negative (-)',
+            dcePos: 'Positive (+)',
+            dceNote: 'Positive DCE raises PI-RADS from 3 to 4.',
+            dwiNote: 'DWI score 5 raises PI-RADS from 3 to 4.',
+            finalCategory: 'Final category',
+            reportText: (zone, dwi, t2, dce, score) =>
+              `PI-RADS v2.1:\nLocation: ${zone}\nDWI/ADC score: ${dwi}\nT2W score: ${t2}\nDCE: ${dce}\nFinal score: PI-RADS ${score}`,
+            naText: 'N/A',
+          },
+        },
+      },
+    };
+
+    /* ============================================================
+       REFERENCIAS BIBLIOGRÁFICAS POR CALCULADORA
+    ============================================================ */
+    const REFERENCES = {
+      psad: [
+        'Benson MC, Whang IS, Pantuck A, Ring K, Kaplan SA, Olsson CA, Cooner WH. Prostate specific antigen density: a means of distinguishing benign prostatic hypertrophy and prostate cancer. J Urol. 1992;147(3 Pt 2):815-816.',
+        'Terris MK, Stamey TA. Determination of prostate volume by transrectal ultrasound. J Urol. 1991;145(5):984-987.',
+      ],
+      mriFf: [
+        'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.',
+      ],
+      adrenalCt: [
+        'Caoili EM, Korobkin M, Francis IR, Cohan RH, Platt JF, Dunnick NR, Raghupathi KI. Adrenal masses: characterization with combined unenhanced and delayed enhanced CT. Radiology. 2002;222(3):629-633.',
+      ],
+      adrenalMri: [
+        'Mitchell DG, Crovello M, Matteucci T, Petersen RO, Miettinen MM. Benign adrenocortical masses: diagnosis with chemical shift MR imaging. Radiology. 1992;185(2):345-351.',
+        'Israel GM, Korobkin M, Wang C, Hecht EN, Krinsky GA. Comparison of unenhanced CT and chemical shift MRI in evaluating lipid-rich adrenal adenomas. AJR Am J Roentgenol. 2004;183(1):215-219.',
+      ],
+      siderosis: [
+        'St Pierre TG, Clark PR, Chua-Anusorn W, et al. Noninvasive measurement and imaging of liver iron concentrations using proton magnetic resonance. Blood. 2005;105(2):855-861.',
+      ],
+      thymic: [
+        'Inaoka T, Takahashi K, Mineta M, Yamada T, Shuke N, Okizaki A, Nagasawa K, Sugimori H, Aburano T. Thymic hyperplasia and thymus gland tumors: differentiation with chemical shift MR imaging. Radiology. 2007;243(3):869-876.',
+        'Priola AM, Priola SM, Ciccone G, et al. Differentiation of rebound and lymphoid thymic hyperplasia from anterior mediastinal tumors with dual-echo chemical-shift MR imaging in adulthood: reliability of the chemical-shift ratio and signal intensity index. Radiology. 2015;274(1):238-249.',
+      ],
+      tirads: [
+        'Tessler FN, Middleton WD, Grant EG, et al. ACR Thyroid Imaging, Reporting and Data System (TI-RADS): white paper of the ACR TI-RADS Committee. J Am Coll Radiol. 2017;14(5):587-595.',
+      ],
+      orads: [
+        'Andreotti RF, Timmerman D, Strachowski LM, et al. O-RADS US risk stratification and management system: a consensus guideline from the ACR Ovarian-Adnexal Reporting and Data System Committee. Radiology. 2020;294(1):168-185.',
+      ],
+      pirads: [
+        'Turkbey B, Rosenkrantz AB, Haider MA, et al. Prostate Imaging Reporting and Data System Version 2.1: 2019 update of Prostate Imaging Reporting and Data System Version 2. Eur Urol. 2019;76(3):340-351.',
+      ],
+    };
+
+    /* ============================================================
+       CALCULADORA: PSAD Y VOLUMEN PROSTÁTICO
+    ============================================================ */
+    function PSADCalculator() {
+      const { t, lang } = useLang();
+      const c = t.calc.psad;
+      const [ap, setAp] = useState('');
+      const [tr, setTr] = useState('');
+      const [long, setLong] = useState('');
+      const [psa, setPsa] = useState('');
+      const [factor, setFactor] = useState(0.52);
+      const vol = (parseFloat(ap) || 0) * (parseFloat(tr) || 0) * (parseFloat(long) || 0) * factor;
+      const psad = (parseFloat(psa) || 0) / (vol || 1);
+      const showResults = ap && tr && long && psa;
+      const isHighRisk = psad >= 0.15;
+
+      const handleCopy = () => {
+        const text = c.reportText(vol.toFixed(1), psa, psad.toFixed(2), isHighRisk ? c.highRisk : c.normal);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{c.dims}</label>
+              <div className="grid grid-cols-3 gap-2">
+                <NumberField small placeholder={c.ap} value={ap} onChange={setAp} />
+                <NumberField small placeholder={c.tr} value={tr} onChange={setTr} />
+                <NumberField small placeholder={c.long} value={long} onChange={setLong} />
+              </div>
+            </div>
+            <NumberField label={c.psaLabel} placeholder={c.psaPh} value={psa} onChange={setPsa} />
+            <div className="flex items-center justify-between mt-2 text-sm text-slate-500">
+              <span>{c.formulaFactor}:</span>
+              <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
+                <button onClick={() => setFactor(0.52)} className={`px-3 py-1 rounded-md ${factor === 0.52 ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : ''}`}>0.52</button>
+                <button onClick={() => setFactor(0.523)} className={`px-3 py-1 rounded-md ${factor === 0.523 ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : ''}`}>0.523</button>
+              </div>
+            </div>
+          </Card>
+          {showResults && (
+            <Card>
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-700">
+                <span className="text-slate-500 dark:text-slate-400">{c.volume}</span>
+                <span className="text-xl font-bold">{vol.toFixed(1)} cc</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 dark:text-slate-400">{c.psad}</span>
+                <span className={`text-2xl font-bold flex items-center gap-2 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
+                  {isHighRisk ? <IconAlertTriangle size={20} /> : <IconCheckCircle size={20} />}
+                  {psad.toFixed(2)}
+                </span>
+              </div>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <References items={REFERENCES.psad} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: FRACCIÓN GRASA POR RM (DIXON)
+    ============================================================ */
+    function MRIFatFraction() {
+      const { t } = useLang();
+      const c = t.calc.mriFf;
+      const [inPhase, setInPhase] = useState('');
+      const [outPhase, setOutPhase] = useState('');
+      const sIn = parseFloat(inPhase);
+      const sOut = parseFloat(outPhase);
+      const isValid = !isNaN(sIn) && !isNaN(sOut) && sIn !== 0;
+      const ff = isValid ? ((sIn - sOut) / (2 * sIn)) * 100 : 0;
+
+      const handleCopy = () => {
+        const text = c.reportText(ff.toFixed(1), inPhase, outPhase);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <NumberField label={c.inPhase} placeholder={c.inPh} value={inPhase} onChange={setInPhase} />
+            <NumberField label={c.outPhase} placeholder={c.outPh} value={outPhase} onChange={setOutPhase} />
+          </Card>
+          {isValid && (
+            <Card>
+              <div className="flex flex-col items-center justify-center p-4">
+                <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{c.estimated}</span>
+                <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{ff.toFixed(1)}%</span>
+              </div>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <References items={REFERENCES.mriFf} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: ADRENALES - LAVADO EN TC
+    ============================================================ */
+    function AdrenalWashout() {
+      const { t } = useLang();
+      const c = t.calc.adrenalCt;
+      const [nc, setNc] = useState('');
+      const [ven, setVen] = useState('');
+      const [del, setDel] = useState('');
+      const hNc = parseFloat(nc);
+      const hVen = parseFloat(ven);
+      const hDel = parseFloat(del);
+      const isValid = !isNaN(hNc) && !isNaN(hVen) && !isNaN(hDel);
+      const apw = isValid ? ((hVen - hDel) / (hVen - hNc)) * 100 : 0;
+      const rpw = isValid ? ((hVen - hDel) / hVen) * 100 : 0;
+      const isAdenomaAPW = apw >= 60;
+      const isAdenomaRPW = rpw >= 40;
+      const isAdenoma = isAdenomaAPW || isAdenomaRPW;
+
+      const handleCopy = () => {
+        const text = c.reportText(
+          nc, ven, del,
+          apw.toFixed(1), isAdenomaAPW ? c.compatible : c.notSuggestive,
+          rpw.toFixed(1), isAdenomaRPW ? c.compatible : c.notSuggestive
+        );
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <NumberField label={c.nonContrast} value={nc} onChange={setNc} />
+            <NumberField label={c.portal} value={ven} onChange={setVen} />
+            <NumberField label={c.delayed} value={del} onChange={setDel} />
+          </Card>
+          {isValid && (
+            <Card>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+                  <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.absolute}</span>
+                  <span className={`text-xl font-bold ${isAdenomaAPW ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}`}>
+                    {apw.toFixed(1)}%
+                  </span>
+                  <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; 60%</span>
+                </div>
+                <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+                  <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.relative}</span>
+                  <span className={`text-xl font-bold ${isAdenomaRPW ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}`}>
+                    {rpw.toFixed(1)}%
+                  </span>
+                  <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; 40%</span>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
+              <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
+                {isAdenoma ? c.adenomaCompatible : c.adenomaNot}
+              </InfoBox>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <References items={REFERENCES.adrenalCt} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
 
+    /* ============================================================
+       CALCULADORA: ADRENALES - ÍNDICE CSI EN RM
+    ============================================================ */
+    function AdrenalCSI() {
+      const { t } = useLang();
+      const c = t.calc.adrenalMri;
+      const [lesionIn, setLesionIn] = useState('');
+      const [lesionOut, setLesionOut] = useState('');
+      const [refIn, setRefIn] = useState('');
+      const [refOut, setRefOut] = useState('');
+      const lIn = parseFloat(lesionIn);
+      const lOut = parseFloat(lesionOut);
+      const rIn = parseFloat(refIn);
+      const rOut = parseFloat(refOut);
+      const isValid = !isNaN(lIn) && !isNaN(lOut) && !isNaN(rIn) && !isNaN(rOut) && lIn !== 0 && rOut !== 0 && rIn !== 0;
+      const ratioIn = isValid ? (lIn / rIn) : 0;
+      const ratioOut = isValid ? (lOut / rOut) : 0;
+      const csi = isValid ? (ratioOut / ratioIn) * 100 : 0;
+      const isAdenoma = csi < 71;
+
+      const handleCopy = () => {
+        const text = c.reportText(lesionIn, lesionOut, refIn, refOut, csi.toFixed(1), isAdenoma ? c.conclAdenoma : c.conclNot);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card className="space-y-5">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">{c.lesion}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <NumberField small label={c.inPhase} value={lesionIn} onChange={setLesionIn} />
+                <NumberField small label={c.outPhase} value={lesionOut} onChange={setLesionOut} />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">{c.reference}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <NumberField small label={c.inPhase} value={refIn} onChange={setRefIn} />
+                <NumberField small label={c.outPhase} value={refOut} onChange={setRefOut} />
+              </div>
+            </div>
+          </Card>
+          {isValid && (
+            <Card>
+              <div className="flex flex-col items-center justify-center p-2">
+                <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{c.csiIndex}</span>
+                <span className={`text-4xl font-bold ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>{csi.toFixed(1)}%</span>
+              </div>
+              <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
+                {isAdenoma ? c.csiAdenoma : c.csiNot}
+              </InfoBox>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <References items={REFERENCES.adrenalMri} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: SIDEROSIS HEPÁTICA POR RM
+    ============================================================ */
+    function HepaticSiderosis() {
+      const { t } = useLang();
+      const c = t.calc.siderosis;
+      const [inputType, setInputType] = useState('t2star');
+      const [val, setVal] = useState('');
+      const numericVal = parseFloat(val);
+      const isValid = !isNaN(numericVal) && numericVal > 0;
+      let r2star = 0, t2star = 0;
+      if (isValid) {
+        if (inputType === 't2star') { t2star = numericVal; r2star = 1000 / t2star; }
+        else { r2star = numericVal; t2star = 1000 / r2star; }
+      }
+      const lic = isValid ? (0.0254 * r2star) + 0.202 : 0;
+      let category = '', color = '';
+      if (isValid) {
+        if (lic < 1.8) { category = c.catNormal; color = 'text-emerald-500'; }
+        else if (lic <= 7.0) { category = c.catMild; color = 'text-amber-500'; }
+        else if (lic <= 15.0) { category = c.catModerate; color = 'text-orange-500'; }
+        else { category = c.catSevere; color = 'text-red-500'; }
+      }
+
+      const handleCopy = () => {
+        const text = c.reportText(t2star.toFixed(2), r2star.toFixed(2), lic.toFixed(2), category);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-1">
+              <button
+                onClick={() => { setInputType('t2star'); setVal(''); }}
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${inputType === 't2star' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+              >
+                {c.enterT2}
+              </button>
+              <button
+                onClick={() => { setInputType('r2star'); setVal(''); }}
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${inputType === 'r2star' ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+              >
+                {c.enterR2}
+              </button>
+            </div>
+            <NumberField
+              label={`${c.valueOf} ${inputType === 't2star' ? 'T2*' : 'R2*'}`}
+              placeholder={inputType === 't2star' ? 'Ej: 12.5' : 'Ej: 80'}
+              value={val}
+              onChange={setVal}
+            />
+          </Card>
+          {isValid && (
+            <Card>
+              <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-100 dark:border-slate-700">
+                <div>
+                  <span className="block text-xs text-slate-500">T2*</span>
+                  <span className="text-lg font-bold">{t2star.toFixed(2)} ms</span>
+                </div>
+                <div>
+                  <span className="block text-xs text-slate-500">R2*</span>
+                  <span className="text-lg font-bold">{r2star.toFixed(2)} Hz</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center py-2">
+                <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{c.licEstimated}</span>
+                <span className={`text-4xl font-bold ${color}`}>{lic.toFixed(2)}</span>
+                <span className={`mt-2 font-medium px-3 py-1 rounded-full text-sm ${color.replace('text', 'bg').replace('500', '50 dark:bg-opacity-20')} ${color}`}>
+                  {category}
+                </span>
+              </div>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <References items={REFERENCES.siderosis} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: GRASA TÍMICA / HIPERPLASIA
+    ============================================================ */
+    function ThymicFat() {
+      const { t } = useLang();
+      const c = t.calc.thymic;
+      const [thymusIn, setThymusIn] = useState('');
+      const [thymusOut, setThymusOut] = useState('');
+      const [muscleIn, setMuscleIn] = useState('');
+      const [muscleOut, setMuscleOut] = useState('');
+      const tIn = parseFloat(thymusIn);
+      const tOut = parseFloat(thymusOut);
+      const mIn = parseFloat(muscleIn);
+      const mOut = parseFloat(muscleOut);
+      const isValid = !isNaN(tIn) && !isNaN(tOut) && !isNaN(mIn) && !isNaN(mOut) && tIn !== 0 && mIn !== 0;
+      const csr = isValid ? (tOut / tIn) / (mOut / mIn) : 0;
+      const sii = isValid ? ((tIn - tOut) / tIn) * 100 : 0;
+      const isFatty = csr < 0.9 || sii > 9;
+
+      const handleCopy = () => {
+        const text = c.reportText(thymusIn, thymusOut, muscleIn, muscleOut, csr.toFixed(2), sii.toFixed(1), isFatty ? c.conclFatty : c.conclNotFatty);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card className="space-y-5">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">{c.roiThymus}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <NumberField small label={c.inPhase} value={thymusIn} onChange={setThymusIn} />
+                <NumberField small label={c.outPhase} value={thymusOut} onChange={setThymusOut} />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">{c.roiMuscle}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <NumberField small label={c.inPhase} value={muscleIn} onChange={setMuscleIn} />
+                <NumberField small label={c.outPhase} value={muscleOut} onChange={setMuscleOut} />
+              </div>
+            </div>
+          </Card>
+          {isValid && (
+            <Card>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <span className="block text-xs text-slate-500 mb-1">{c.ratioCsr}</span>
+                  <span className={`text-2xl font-bold ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{csr.toFixed(2)}</span>
+                </div>
+                <div className="text-center">
+                  <span className="block text-xs text-slate-500 mb-1">{c.indexSii}</span>
+                  <span className={`text-2xl font-bold ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{sii.toFixed(1)}%</span>
+                </div>
+              </div>
+              <InfoBox tone={isFatty ? 'emerald' : 'amber'}>
+                {isFatty ? c.fattyConcl : c.notFattyConcl}
+              </InfoBox>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <References items={REFERENCES.thymic} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: ACR TI-RADS (TIROIDES)
+    ============================================================ */
+    const TIRADS_POINTS = {
+      composition: [0, 0, 1, 2],
+      echogenicity: [0, 1, 2, 3],
+      shape: [0, 3],
+      margin: [0, 0, 2, 3],
+      echogenicFoci: [0, 1, 2, 3],
+    };
+
+    function TIRADS() {
+      const { t } = useLang();
+      const c = t.calc.tirads;
+      const [selections, setSelections] = useState({
+        composition: null, echogenicity: null, shape: null, margin: null, echogenicFoci: [],
+      });
+
+      const toggleSelection = (category, index, multi = false) => {
+        setSelections(prev => {
+          if (multi) {
+            const current = prev[category];
+            return {
+              ...prev,
+              [category]: current.includes(index) ? current.filter(i => i !== index) : [...current, index],
+            };
+          }
+          return { ...prev, [category]: index };
+        });
+      };
+
+      const calculatePoints = () => {
+        let pts = 0;
+        ['composition', 'echogenicity', 'shape', 'margin'].forEach(cat => {
+          if (selections[cat] !== null) pts += TIRADS_POINTS[cat][selections[cat]];
+        });
+        selections.echogenicFoci.forEach(i => { pts += TIRADS_POINTS.echogenicFoci[i]; });
+        return pts;
+      };
+      const pts = calculatePoints();
+
+      let catKey = '', color = '';
+      if (pts === 0) { catKey = 'TR1'; color = 'text-emerald-500'; }
+      else if (pts <= 2) { catKey = 'TR2'; color = 'text-emerald-500'; }
+      else if (pts === 3) { catKey = 'TR3'; color = 'text-amber-500'; }
+      else if (pts <= 6) { catKey = 'TR4'; color = 'text-orange-500'; }
+      else { catKey = 'TR5'; color = 'text-red-500'; }
+      const catInfo = c.categories[catKey];
+
+      const handleCopy = () => {
+        const critEs = c.criteria;
+        const label = (cat) => selections[cat] !== null ? critEs[cat].options[selections[cat]] : t.common.notEvaluated;
+        const foci = selections.echogenicFoci.length
+          ? selections.echogenicFoci.map(i => critEs.echogenicFoci.options[i]).join(', ')
+          : t.common.none;
+        const text = c.reportText(
+          label('composition'), label('echogenicity'), label('shape'), label('margin'), foci,
+          pts, catKey, catInfo.risk, catInfo.recs
+        );
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 pb-28">
+          {Object.entries(c.criteria).map(([key, data]) => (
+            <div key={key} className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-3 text-sm">{data.title}</h3>
+              <div className="space-y-2">
+                {data.options.map((label, i) => {
+                  const multi = key === 'echogenicFoci';
+                  const isSelected = multi ? selections[key].includes(i) : selections[key] === i;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => toggleSelection(key, i, multi)}
+                      className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'}`}
+                    >
+                      <div className="flex justify-between items-center gap-2">
+                        <span>{label}</span>
+                        <span className="text-xs font-medium bg-white dark:bg-slate-900 px-2 py-1 rounded-md opacity-70 shrink-0">+{TIRADS_POINTS[key][i]} {c.points}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <References items={REFERENCES.tirads} />
+          <ReportBugLink calcTitle={c.title} />
+          <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-4 shadow-lg z-40">
+            <div className="max-w-md mx-auto flex items-center justify-between">
+              <div>
+                <span className="block text-xs text-slate-500 mb-0.5">{c.totalScore}: {pts}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-bold text-xl ${color}`}>{catKey}</span>
+                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{catInfo.risk}</span>
+                </div>
+                <span className="block text-[10px] text-slate-500 mt-0.5 leading-tight">{catInfo.recs}</span>
+              </div>
+              <button onClick={handleCopy} className="p-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors shrink-0">
+                <IconCopy size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: ACR O-RADS (OVARIO)
+    ============================================================ */
+    function ORADS() {
+      const { t } = useLang();
+      const c = t.calc.orads;
+      const [history, setHistory] = useState(['start']);
+      const [selectedLabels, setSelectedLabels] = useState([]);
+      const currentId = history[history.length - 1];
+      const currentNode = currentId === 'start' ? c.start : c.nodes[currentId];
+      const isResult = !!currentNode.cat;
+
+      const handleSelect = (nextId, label) => {
+        setHistory([...history, nextId]);
+        setSelectedLabels([...selectedLabels, label]);
+      };
+      const handleReset = () => { setHistory(['start']); setSelectedLabels([]); };
+      const handleUndo = () => {
+        if (history.length > 1) {
+          setHistory(history.slice(0, -1));
+          setSelectedLabels(selectedLabels.slice(0, -1));
+        }
+      };
+      const handleCopy = () => {
+        if (!isResult) return;
+        const path = selectedLabels.join(' -> ');
+        const text = c.reportText(path, currentNode.cat, currentNode.risk, currentNode.recs);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 pb-4 animate-in fade-in">
+          {history.length > 1 && (
+            <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold uppercase">{c.history}</span>
+                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+              </div>
+              <ol className="list-decimal pl-4 space-y-1">
+                {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
+              </ol>
+            </div>
+          )}
+          {!isResult ? (
+            <Card>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">{currentNode.q}</h3>
+              <div className="space-y-2">
+                {currentNode.options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(opt.next, opt.label)}
+                    className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center"
+                  >
+                    <span>{opt.label}</span>
+                    <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+                  </button>
+                ))}
+              </div>
+            </Card>
+          ) : (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-blue-200 dark:border-blue-800 text-center space-y-4">
+              <div>
+                <h2 className="text-4xl font-black text-blue-600 dark:text-blue-400 mb-1">{currentNode.cat}</h2>
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{currentNode.risk}</p>
+              </div>
+              <div className="bg-blue-50 dark:bg-slate-900 p-4 rounded-xl text-sm text-slate-700 dark:text-slate-300 text-left">
+                <span className="block font-semibold mb-1 text-blue-800 dark:text-blue-300">{c.recommendation}:</span>
+                {currentNode.recs}
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
+                  {t.common.reset}
+                </button>
+                <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                  <IconCopy size={18} /> {t.common.copy}
+                </button>
+              </div>
+            </div>
+          )}
+          <References items={REFERENCES.orads} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: PI-RADS v2.1 (PRÓSTATA)
+    ============================================================ */
+    function PIRADS() {
+      const { t } = useLang();
+      const c = t.calc.pirads;
+      const [zone, setZone] = useState('pz');
+      const [dwi, setDwi] = useState(0);
+      const [t2, setT2] = useState(0);
+      const [dce, setDce] = useState('');
+
+      let finalScore = 0;
+      if (zone === 'pz') {
+        if (dwi > 0) finalScore = (dwi === 3 && dce === '+') ? 4 : dwi;
+      } else {
+        if (t2 > 0) finalScore = (t2 === 3 && dwi === 5) ? 4 : t2;
+      }
+
+      const handleCopy = () => {
+        if (!finalScore) return;
+        const txtZone = zone === 'pz' ? c.pz : c.tz;
+        const text = c.reportText(
+          txtZone,
+          dwi || c.naText,
+          t2 || c.naText,
+          dce === '+' ? c.dcePos : dce === '-' ? c.dceNeg : c.naText,
+          finalScore
+        );
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in pb-10">
+          <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex">
+            <button
+              onClick={() => { setZone('pz'); setDwi(0); setT2(0); setDce(''); }}
+              className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'pz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
+            >
+              {c.pz}
+            </button>
+            <button
+              onClick={() => { setZone('tz'); setDwi(0); setT2(0); setDce(''); }}
+              className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'tz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
+            >
+              {c.tz}
+            </button>
+          </div>
+          <Card className="space-y-6">
+            {zone === 'pz' && (
+              <>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.dwiDominant}</h3>
+                  <div className="flex gap-2">
+                    {[1,2,3,4,5].map(s => (
+                      <button key={`dwi-${s}`} onClick={() => setDwi(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {dwi === 3 && (
+                  <div className="animate-in fade-in slide-in-from-top-2">
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.dceStep}</h3>
+                    <div className="flex gap-2">
+                      <button onClick={() => setDce('-')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '-' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                        {c.dceNeg}
+                      </button>
+                      <button onClick={() => setDce('+')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '+' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                        {c.dcePos}
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-2">{c.dceNote}</p>
+                  </div>
+                )}
+              </>
+            )}
+            {zone === 'tz' && (
+              <>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.t2Dominant}</h3>
+                  <div className="flex gap-2">
+                    {[1,2,3,4,5].map(s => (
+                      <button key={`t2-${s}`} onClick={() => setT2(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${t2 === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {t2 === 3 && (
+                  <div className="animate-in fade-in slide-in-from-top-2">
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.dwiStep}</h3>
+                    <div className="flex gap-2">
+                      {[1,2,3,4,5].map(s => (
+                        <button key={`dwitz-${s}`} onClick={() => setDwi(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-2">{c.dwiNote}</p>
+                  </div>
+                )}
+              </>
+            )}
+          </Card>
+          {finalScore > 0 && (
+            <Card className="text-center">
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-sm text-slate-500 font-medium mb-1">{c.finalCategory}</span>
+                <span className={`text-4xl font-black ${finalScore >= 4 ? 'text-red-500' : finalScore === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                  PI-RADS {finalScore}
+                </span>
+              </div>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <References items={REFERENCES.pirads} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       LISTADO DE CALCULADORAS
+    ============================================================ */
+    const calculators = [
+      { id: 'psad', catKey: 'abdomen', component: PSADCalculator },
+      { id: 'mriFf', catKey: 'abdomen', component: MRIFatFraction },
+      { id: 'adrenalCt', catKey: 'abdomen', component: AdrenalWashout },
+      { id: 'adrenalMri', catKey: 'abdomen', component: AdrenalCSI },
+      { id: 'siderosis', catKey: 'abdomen', component: HepaticSiderosis },
+      { id: 'thymic', catKey: 'torax', component: ThymicFat },
+      { id: 'tirads', catKey: 'strat', component: TIRADS },
+      { id: 'orads', catKey: 'strat', component: ORADS },
+      { id: 'pirads', catKey: 'strat', component: PIRADS },
+    ];
+
+    /* ============================================================
+       PIE DE PÁGINA (crédito + contacto + disclaimer)
+    ============================================================ */
+    function SiteFooter() {
+      const { t, lang } = useLang();
+      return (
+        <footer className="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4 text-center">
+          <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed max-w-sm mx-auto">
+            {t.common.disclaimer}
+          </p>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <IconLinkedin size={16} />
+              {t.common.createdBy} Dr. Joaquín Hevia M.
+            </a>
+            <a
+              href={buildMailto(null, lang)}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <IconMail size={16} />
+              {t.common.reportBugGeneral}
+            </a>
+          </div>
+          <p className="text-[11px] text-slate-300 dark:text-slate-600">RadioCalc Clinical</p>
+        </footer>
+      );
+    }
+
+    /* ============================================================
+       APP PRINCIPAL
+    ============================================================ */
+    function App() {
+      const [darkMode, setDarkMode] = useState(true);
+      const [lang, setLang] = useState('es');
+      const [activeCalc, setActiveCalc] = useState(null);
+
+      useEffect(() => {
+        document.documentElement.classList.toggle('dark', darkMode);
+      }, [darkMode]);
+
+      useEffect(() => {
+        document.documentElement.lang = lang;
+      }, [lang]);
+
+      const t = STRINGS[lang];
+      const toggleLang = () => setLang(l => (l === 'es' ? 'en' : 'es'));
+
+      const activeEntry = activeCalc ? calculators.find(cc => cc.id === activeCalc) : null;
+      const activeTitle = activeEntry ? t.calc[activeEntry.id].title : null;
+
+      const categoryOrder = ['abdomen', 'torax', 'strat'];
+
+      return (
+        <LangContext.Provider value={{ lang, t, toggleLang }}>
+          <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-10">
+            <header className="sticky top-0 z-50 bg-blue-600 dark:bg-slate-800 text-white shadow-md px-4 py-3 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                {activeCalc ? (
+                  <button onClick={() => setActiveCalc(null)} aria-label={t.common.back} className="p-1 -ml-1 hover:bg-white/20 rounded-full transition-colors shrink-0">
+                    <IconChevronLeft className="w-6 h-6" />
+                  </button>
+                ) : (
+                  <Logo size={32} />
+                )}
+                <h1 className="text-base sm:text-lg font-bold tracking-tight truncate">
+                  {activeTitle || t.appName}
+                </h1>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  onClick={toggleLang}
+                  aria-label="Toggle language"
+                  className="px-2.5 py-1.5 text-xs font-bold rounded-full hover:bg-white/20 transition-colors border border-white/30"
+                >
+                  {lang === 'es' ? 'EN' : 'ES'}
+                </button>
+                <button onClick={() => setDarkMode(!darkMode)} aria-label="Toggle theme" className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                  {darkMode ? <IconSun /> : <IconMoon />}
+                </button>
+              </div>
+            </header>
+            <main className="max-w-md mx-auto p-4">
+              {activeEntry ? (
+                <div>{React.createElement(activeEntry.component)}</div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="flex flex-col items-center text-center gap-3 py-4">
+                    <Logo size={56} />
+                    <div>
+                      <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t.appName}</h2>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xs">{t.tagline}</p>
+                    </div>
+                  </div>
+                  {categoryOrder.map(catKey => (
+                    <div key={catKey}>
+                      <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1">
+                        {t.categories[catKey]}
+                      </h2>
+                      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
+                        {calculators.filter(cc => cc.catKey === catKey).map(cc => (
+                          <button
+                            key={cc.id}
+                            onClick={() => setActiveCalc(cc.id)}
+                            className="w-full text-left px-5 py-4 active:bg-slate-50 dark:active:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex justify-between items-center gap-3"
+                          >
+                            <span className="font-medium text-slate-700 dark:text-slate-200">{t.calc[cc.id].title}</span>
+                            <IconChevronLeft className="text-slate-400 transform rotate-180 w-4 h-4 shrink-0" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <SiteFooter />
+                </div>
+              )}
+            </main>
+          </div>
+        </LangContext.Provider>
+      );
+    }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
 </body>
 </html>
+
