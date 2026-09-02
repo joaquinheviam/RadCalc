@@ -96,6 +96,7 @@
        ICONOS (inline SVG, estilo lucide)
     ============================================================ */
     const IconCopy = ({size=18}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>;
+    const IconRefresh = ({size=18}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>;
     const IconAlertTriangle = ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>;
     const IconCheckCircle = ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
     const IconChevronLeft = ({className}) => <svg className={className || ""} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
@@ -171,6 +172,34 @@
       return (
         <button onClick={onClick} className="w-full flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 py-3 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-500/20 active:scale-95 transition-all">
           <IconCopy size={18} /> {children}
+        </button>
+      );
+    }
+
+    // Barra de resultado fija al final de la página (mismo patrón visual que TIRADS).
+    // Uso: <StickyBar><div>...contenido del resultado...</div><div className="flex items-center gap-1.5 shrink-0"><ResetIconButton .../><CopyIconButton .../></div></StickyBar>
+    function StickyBar({ children }) {
+      return (
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-4 shadow-lg z-40">
+          <div className="max-w-md mx-auto flex items-center justify-between gap-3">
+            {children}
+          </div>
+        </div>
+      );
+    }
+
+    function ResetIconButton({ onClick, label }) {
+      return (
+        <button onClick={onClick} aria-label={label} title={label} className="p-3 bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all shrink-0">
+          <IconRefresh size={20} />
+        </button>
+      );
+    }
+
+    function CopyIconButton({ onClick, disabled, label }) {
+      return (
+        <button onClick={onClick} disabled={disabled} aria-label={label} title={label} className={`p-3 rounded-full transition-all shrink-0 ${disabled ? 'bg-slate-100 text-slate-300 dark:bg-slate-700 dark:text-slate-600 cursor-not-allowed' : 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 active:scale-95'}`}>
+          <IconCopy size={20} />
         </button>
       );
     }
@@ -548,7 +577,7 @@
           mriFf: {
             title: 'Fracción Grasa por RM (Dixon)',
             methodLabel: 'Método',
-            methodFf: 'Fracción grasa (doble eco único, misma excitación)',
+            methodFf: 'Fracción grasa (doble eco único, misma excitación — método Dixon)',
             methodPct: 'Porcentaje graso (ecos adquiridos por separado — normalizado por bazo)',
             inPhase: 'Señal Hígado Fase (In-Phase)',
             outPhase: 'Señal Hígado Fuera de Fase (Out-Phase)',
@@ -567,7 +596,6 @@
               'Método alternativo — porcentaje graso normalizado por bazo (Ma et al., RadioGraphics 2009): Porcentaje (%) = 100 × [(SI-hígado-IP/SI-bazo-IP) − (SI-hígado-OP/SI-bazo-OP)] / (2 × SI-hígado-IP/SI-bazo-IP). Al normalizar la señal hepática con la esplénica en cada fase se compensan las diferencias de T2* entre adquisiciones cuando las fases in-phase y out-of-phase se obtienen en secuencias o excitaciones separadas (no en una única adquisición de doble eco); el bazo se usa como tejido de referencia sin grasa.',
               'Ambas fórmulas son útiles para cuantificar esteatosis hepática (>5-6% sugiere esteatosis) y para caracterizar lesiones con contenido graso microscópico (ej. adenoma adrenal, adenoma hepatocelular).',
               'Limitación: la técnica de doble eco simple (ambos métodos) sobreestima la grasa en hígados con alto contenido graso por efectos de T2* y no es tan precisa como PDFF (proton density fat fraction) multi-eco.',
-              'Nota de transparencia: se investigó, a solicitud del usuario, si existe una corrección equivalente y respaldada por evidencia que use la señal del MÚSCULO esquelético (en vez del bazo) para esta fórmula de RM. No se encontró en la literatura revisada (incluyendo la calculadora de referencia de Phillip Cheng, MD, en pcheng.org/calc/hepatic_fat_mri.html, y la revisión de Ma et al. 2009) una fórmula publicada de corrección muscular equivalente para RM; la razón hígado/músculo (o hígado/bazo) en unidades Hounsfield es un método establecido para esteatosis por TC, pero no se identificó su equivalente validado en RM. Por eso esta calculadora solo incorpora la corrección por bazo.',
             ],
           },
           adrenalCt: {
@@ -641,7 +669,7 @@
             catMild: 'Sobrecarga Leve',
             catModerate: 'Sobrecarga Moderada',
             catSevere: 'Sobrecarga Severa',
-            fieldStrengthNote: 'Esta calculadora está calibrada y validada solo para equipos de RM de 1.5 T (fórmula de St Pierre et al. 2005 y puntos de corte ESGAR/SAR 2023, citados abajo). La relación entre R2* y la concentración de hierro hepático (LIC) depende del campo magnético: a 3 T los valores de R2* para una misma LIC son distintos (sustancialmente más altos) que a 1.5 T, por lo que esta fórmula no debe aplicarse a estudios adquiridos en 3 T. Esta calculadora no incluye actualmente una calibración específica para 3 T.',
+            fieldStrengthNote: 'Calibrada y validada solo para RM de 1.5 T (St Pierre et al. 2005; puntos de corte ESGAR/SAR 2023). No aplique estos valores a estudios de 3 T — la relación R2*-LIC difiere sustancialmente entre campos.',
             reportText: (t2, r2, lic, cat) =>
               `Siderosis hepática por RM (método R2*, 1.5 T):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nLIC estimado: ${lic} mg/g de tejido seco.\nCategoría: ${cat}.`,
             usage: [
@@ -1041,6 +1069,7 @@
           },
           lungNodule: {
             title: 'Nódulo Pulmonar Incidental (Fleischner / NCCN)',
+            stepBack: 'Paso anterior',
             pfnTitle: 'Paso 1: ¿Es un nódulo perifisural (ganglio linfático intrapulmonar)?',
             pfnIntro: 'Antes de aplicar el algoritmo por tamaño, evalúe si el nódulo cumple los criterios de nódulo perifisural (PFN) — la representación en TC de un ganglio linfático intrapulmonar (IPLN), típicamente benigno — que no requiere seguimiento adicional.',
             pfnGate1Q: '¿Cumple TODOS estos criterios?',
@@ -1069,6 +1098,9 @@
             pfnRestart: 'Reevaluar como nódulo perifisural',
             pfnYes: 'Sí', pfnNo: 'No',
             pfnReportText: (result) => `Evaluación de nódulo perifisural (PFN): ${result}`,
+            frameworkLabel: 'Marco de referencia para la recomendación',
+            frameworkFleischner: 'Fleischner 2017',
+            frameworkNccn: 'NCCN (algoritmo de nódulo incidental)',
             typeLabel: 'Tipo de nódulo',
             typeSolid: 'Sólido', typePartSolid: 'Subsólido - parcialmente sólido', typeGgn: 'Subsólido - vidrio esmerilado puro',
             countLabel: 'Número de nódulos',
@@ -1078,7 +1110,8 @@
             sizeLabel: 'Tamaño (mm, promedio de diámetros)',
             sizePh: 'ej. 7',
             fleischnerResult: 'Recomendación Fleischner 2017',
-            nccnTable: 'Tabla comparativa NCCN (referencia)',
+            nccnResult: 'Recomendación NCCN (nódulo incidental)',
+            nccnTable: 'Tabla completa NCCN (referencia)',
             recs: {
               none: 'No requiere seguimiento de rutina.',
               optionalCt12: 'TC opcional a los 12 meses. Los nódulos < 6 mm no requieren seguimiento de rutina, pero en pacientes de alto riesgo con morfología sospechosa, localización en lóbulo superior, o ambas, puede justificarse un control a los 12 meses.',
@@ -1090,6 +1123,17 @@
               ggnFollow: 'TC a los 6-12 meses para confirmar persistencia; si persiste, TC cada 2 años hasta completar 5 años.',
               partSolidFollow: 'TC a los 3-6 meses para confirmar persistencia; si no cambia y el componente sólido permanece < 6 mm, TC anual por un mínimo de 5 años; si el componente sólido crece o es sospechoso, considerar PET-TC, biopsia o resección.',
               multiSubsolidUnder6: 'TC a los 3-6 meses; si estable, considerar TC a los 2 y 4 años (especialmente en pacientes de alto riesgo).',
+              multiSubsolidGeq6: 'TC a los 3-6 meses; manejo posterior guiado por el/los nódulo(s) más sospechoso(s).',
+            },
+            nccnRecs: {
+              none: 'Sin seguimiento de rutina.',
+              solidLowMid: 'TC a los 6-12 meses; si estable, considerar TC a los 18-24 meses.',
+              solidOver8: 'Considerar TC a los 3 meses, PET-TC, o biopsia.',
+              solidHighUnder6: 'TC a los 12 meses (opcional); si estable, sin seguimiento de rutina.',
+              solidHighMid: 'TC a los 6-12 meses; si estable, repetir TC a los 18-24 meses.',
+              ggnSoloFollow: 'TC a los 6-12 meses para confirmar ausencia de crecimiento o de un componente sólido nuevo; luego TC cada 2 años hasta 5 años.',
+              partSolidSoloFollow: 'TC a los 3-6 meses para confirmar ausencia de crecimiento/cambio del componente sólido; luego TC anual por 5 años. Si el componente sólido ≥ 6 mm, considerar PET-TC o biopsia.',
+              multiSubsolidUnder6: 'TC a los 3-6 meses; si estable, considerar TC a los 2 y 4 años.',
               multiSubsolidGeq6: 'TC a los 3-6 meses; manejo posterior guiado por el/los nódulo(s) más sospechoso(s).',
             },
             nccnCaveat: 'Tabla basada en el algoritmo de nódulo incidental de las NCCN Clinical Practice Guidelines in Oncology: Non-Small Cell Lung Cancer, v6.2026 (páginas DIAG-2 y DIAG-3). NCCN actualiza sus guías con frecuencia; verifique la versión vigente en NCCN.org (requiere registro gratuito) antes de basar decisiones clínicas únicamente en esta tabla.',
@@ -1107,13 +1151,14 @@
               ['Subsólidos múltiples', '< 6 mm', 'TC a los 3-6 meses; si estable, considerar TC a los 2 y 4 años.'],
               ['Subsólidos múltiples', '≥ 6 mm', 'TC a los 3-6 meses; manejo posterior guiado por el/los nódulo(s) más sospechoso(s).'],
             ],
-            reportText: (type, count, size, risk, rec) =>
-              `Nódulo pulmonar incidental:\nTipo: ${type}\nNúmero: ${count}\nTamaño: ${size} mm${risk ? '\nRiesgo: ' + risk : ''}\nRecomendación (Fleischner 2017): ${rec}`,
+            reportText: (type, count, size, risk, rec, frameworkLabel) =>
+              `Nódulo pulmonar incidental:\nTipo: ${type}\nNúmero: ${count}\nTamaño: ${size} mm${risk ? '\nRiesgo: ' + risk : ''}\nRecomendación (${frameworkLabel}): ${rec}`,
             usage: [
+              'Tras el Paso 1 (PFN), elija el marco de referencia (Fleischner 2017 o NCCN) para calcular la recomendación a partir del tipo, número y tamaño del nódulo. Ambos algoritmos comparten en gran medida los mismos umbrales de tamaño, ya que NCCN deriva su tabla de nódulo incidental de Fleischner 2017.',
               'Las guías Fleischner 2017 aplican a nódulos pulmonares incidentales (hallados fuera de un programa de tamizaje) en adultos ≥ 35 años, excluyendo pacientes inmunosuprimidos o con cáncer conocido. El umbral mínimo de tamaño para recomendar seguimiento se basa en un riesgo de cáncer estimado del orden de ≥ 1%.',
-              'El tamaño se mide como el promedio de los diámetros mayor y menor en TC de cortes finos (≤ 1.5 mm). "Alto riesgo" incluye antecedente de tabaquismo importante u otros factores de riesgo de cáncer pulmonar; la categoría de riesgo de Fleischner solo se define para nódulos sólidos, no para subsólidos.',
-              'Para nódulos sólidos únicos, el umbral > 8 mm indica una vía de estudio más activa (TC a 3 meses, PET-TC o biopsia); para nódulos sólidos múltiples, incluso por encima de 8 mm, Fleischner mantiene la vía más conservadora de TC a 3-6 meses (se prioriza el nódulo dominante).',
-              'Los nódulos subsólidos (en vidrio esmerilado o parcialmente sólidos) requieren seguimiento más prolongado que los sólidos porque el adenocarcinoma in situ/mínimamente invasivo puede crecer lentamente.',
+              'El tamaño se mide como el promedio de los diámetros mayor y menor en TC de cortes finos (≤ 1.5 mm). "Alto riesgo" incluye antecedente de tabaquismo importante u otros factores de riesgo de cáncer pulmonar; la categoría de riesgo se define solo para nódulos sólidos, no para subsólidos, en ambos marcos.',
+              'Para nódulos sólidos únicos, el umbral > 8 mm indica una vía de estudio más activa (TC a 3 meses, PET-TC o biopsia); para nódulos sólidos múltiples, incluso por encima de 8 mm, Fleischner mantiene la vía más conservadora de TC a 3-6 meses (se prioriza el nódulo dominante). Diferencia entre marcos: la tabla NCCN de nódulo incidental no distingue entre nódulo sólido único y múltiple (usa el mismo manejo por tamaño/riesgo en ambos casos); esa distinción por conteo es específica de Fleischner 2017.',
+              'Los nódulos subsólidos (en vidrio esmerilado o parcialmente sólidos) requieren seguimiento más prolongado que los sólidos porque el adenocarcinoma in situ/mínimamente invasivo puede crecer lentamente. Para subsólidos múltiples, ambos marcos coinciden en el manejo guiado por el nódulo más sospechoso.',
               'El Paso 1 (nódulo perifisural / PFN) se basa en el árbol de decisión de Schreuder et al. (Radiology: Cardiothoracic Imaging 2020), que estandariza cuatro definiciones previas de PFN en la literatura. Aplica solo a nódulos sólidos, no calcificados, sin grasa, de morfología típica; un nódulo que no cumple el Paso 1 simplemente continúa por la vía Fleischner/NCCN habitual — no implica mayor sospecha de malignidad por sí solo.',
             ],
           },
@@ -1546,6 +1591,9 @@
               peripancreatic: { label: 'Necrosis solo peripancreática', desc: 'Parénquima pancreático viable (realza normalmente) con necrosis confinada a la grasa/tejidos peripancreáticos.' },
               combined: { label: 'Necrosis combinada (parenquimatosa + peripancreática)', desc: 'La forma más frecuente (~75-80%): ausencia de realce parenquimatoso y necrosis peripancreática asociada.' },
             },
+            necrosisExtentQ: 'Extensión de la necrosis parenquimatosa (índice de severidad por TC modificado, Mortele et al. 2004):',
+            necrosisExtentUnder30: '≤ 30% del parénquima',
+            necrosisExtentOver30: '> 30% del parénquima',
             collectionTitle: 'Paso 2: Colección local (si presente)',
             collectionQ: '¿Hay colección peripancreática? Seleccione el tiempo de evolución:',
             collectionEarly: '< 4 semanas desde el inicio de los síntomas',
@@ -1569,12 +1617,135 @@
               moderate: { label: 'Moderadamente severa', desc: 'Falla orgánica transitoria (< 48 h) y/o complicaciones locales o exacerbación de comorbilidad preexistente, sin falla orgánica persistente.' },
               severe: { label: 'Severa', desc: 'Falla orgánica persistente (> 48 h), de uno o más órganos. Se asocia a mayor mortalidad, especialmente si hay necrosis infectada asociada.' },
             },
-            reportText: (morph, collection, severity) => `Pancreatitis aguda (Clasificación de Atlanta revisada):\nTipo morfológico: ${morph}\nColección local: ${collection}\nGravedad clínica: ${severity}`,
+            reportText: (morph, extent, collection, severity) => `Pancreatitis aguda (Clasificación de Atlanta revisada):\nTipo morfológico: ${morph}${extent ? '\nExtensión de necrosis: ' + extent : ''}\nColección local: ${collection}\nGravedad clínica: ${severity}`,
             usage: [
               'La clasificación de Atlanta revisada (2012) distingue dos tipos morfológicos: pancreatitis intersticial edematosa (parénquima viable, realce homogéneo) y pancreatitis necrotizante (necrosis parenquimatosa, peripancreática, o combinada, esta última la más frecuente).',
               'Las colecciones locales se nombran según el tipo morfológico subyacente y el tiempo de evolución (corte a las 4 semanas): APFC → pseudoquiste (intersticial edematosa) y ANC → WON (necrotizante). El componente sólido/no líquido y la presencia de pared definida son las claves para diferenciarlas en la imagen.',
+              'La extensión de la necrosis parenquimatosa (≤ 30% vs. > 30%) no es un criterio de la clasificación de Atlanta en sí, sino del índice de severidad por TC modificado (Modified CTSI, Mortele et al., AJR 2004), que simplificó a solo dos categorías la gradación original de Balthazar (< 30%, 30-50%, > 50%); se incluye aquí porque suele reportarse junto con la clasificación morfológica de Atlanta.',
               'La gravedad clínica (leve/moderadamente severa/severa) se basa en la presencia y duración de la falla orgánica (criterio central) y la presencia de complicaciones locales o sistémicas; requiere correlación con el equipo tratante y no puede determinarse solo con la imagen.',
               'Esta calculadora resume el algoritmo diagnóstico y de clasificación descrito en los artículos pictóricos de Thoeni sobre la clasificación de Atlanta revisada en RadioGraphics/Radiology; no reemplaza el documento de consenso original (Banks et al., Gut 2013) ni el juicio clínico.',
+            ],
+          },
+          renalScore: {
+            title: 'Score de Nefrometría R.E.N.A.L.',
+            radiusLabel: 'R — Radio: diámetro máximo del tumor (cm)',
+            radiusPh: 'Ej: 4.5',
+            exoLabel: 'E — Propiedades exofítica/endofítica',
+            exoOptions: [
+              { key: 'exo50', label: '≥ 50% exofítico', pts: 1 },
+              { key: 'exoLt50', label: '< 50% exofítico', pts: 2 },
+              { key: 'endo', label: 'Enteramente endofítico', pts: 3 },
+            ],
+            nearLabel: 'N — Cercanía del tumor al sistema colector o seno renal (mm)',
+            nearPh: 'Ej: 5',
+            locLabel: 'L — Localización respecto a las líneas polares',
+            locOptions: [
+              { key: 'aboveBelow', label: 'Enteramente por encima de la línea polar superior, o por debajo de la inferior', pts: 1 },
+              { key: 'crosses', label: 'La lesión cruza una línea polar', pts: 2 },
+              { key: 'across', label: '> 50% de la masa cruza la línea polar, o la masa cruza la línea media axial renal, o la masa está enteramente entre ambas líneas polares', pts: 3 },
+            ],
+            anteriorLabel: 'A — Localización anterior/posterior (descriptor, sin puntos)',
+            anteriorOptions: [
+              { key: 'a', label: 'Anterior (a)' },
+              { key: 'p', label: 'Posterior (p)' },
+              { key: 'x', label: 'Indeterminada (x)' },
+            ],
+            hilarLabel: '¿El tumor toca la arteria o vena renal principal? (sufijo "h", localización hiliar)',
+            resultLabel: 'Score R.E.N.A.L.',
+            riskLow: 'Baja complejidad',
+            riskIntermediate: 'Complejidad intermedia',
+            riskHigh: 'Alta complejidad',
+            pending: 'Complete el radio y la cercanía al sistema colector para calcular el score total.',
+            reportText: (formula, total, risk) => `Score de nefrometría R.E.N.A.L.: ${formula} = ${total} puntos (${risk}).`,
+            usage: [
+              'El score R.E.N.A.L. (Kutikov y Uzzo, J Urol 2009) estandariza la descripción anatómica de las masas renales sólidas para planificación preoperatoria (ej. elegibilidad para cirugía conservadora de nefronas). Suma los puntos de R (radio), E (exo/endofítico) y N (cercanía al sistema colector), más L (localización polar); A (anterior/posterior/indeterminado) es solo un descriptor y no suma puntos.',
+              'Puntaje total 4-12: baja complejidad 4-6, complejidad intermedia 7-9, alta complejidad 10-12. Se añade el sufijo "h" si el tumor toca la arteria o vena renal principal (localización hiliar).',
+              'Formato de reporte habitual: "R{r}E{e}N{n}A{a}L{l} = {total}" (ej. "R2E2N2AaL2 = 8h, complejidad intermedia").',
+              'La reproducibilidad interobservador del score R.E.N.A.L. es sustancial a casi perfecta para el puntaje total (kappa 0.72-0.88 según cohortes), siendo la N y el radio los componentes con mejor concordancia, y la E el de mayor variabilidad subjetiva.',
+              'Existen sistemas alternativos con objetivos similares (PADUA, índice de centralidad/C-index) no implementados en esta calculadora.',
+            ],
+          },
+          ccls: {
+            title: 'Clear Cell Likelihood Score (ccLS v2) — RM Renal',
+            gateQ: 'Paso 1: ¿La lesión es una masa renal sólida realzante (> 25% de componente sólido realzante), sin grasa macroscópica?',
+            gateFat: 'Contiene grasa macroscópica (pérdida de señal con supresión grasa, o hiperintensidad en secuencia Dixon solo-grasa similar a la grasa retroperitoneal)',
+            gateCystic: '< 25% de componente sólido realzante (masa predominantemente quística)',
+            gateProceed: 'Sí — masa renal sólida indeterminada, > 25% realzante, sin grasa macroscópica',
+            resultAmlTitle: 'AML clásico (rico en grasa)',
+            resultAmlDesc: 'La presencia de grasa macroscópica es diagnóstica de angiomiolipoma clásico (rico en grasa); no se aplica el ccLS a esta lesión.',
+            resultBosniakTitle: 'Masa predominantemente quística',
+            resultBosniakDesc: 'El ccLS solo se aplica a masas sólidas realzantes (> 25% de componente sólido). Para masas con < 25% de componente sólido, utilice la clasificación de Bosniak (ver calculadora "Bosniak" en esta app).',
+            t2Label: 'Paso 2: Señal en T2 de la lesión respecto a la corteza renal normal',
+            t2Options: [
+              { key: 'hyper', label: 'Hiperintensa' },
+              { key: 'iso', label: 'Isointensa' },
+              { key: 'hypo', label: 'Hipointensa' },
+            ],
+            cmpLabel: 'Paso 3: Realce en fase corticomedular (CMP) respecto a la corteza renal normal',
+            cmpOptions: [
+              { key: 'intense', label: 'Intenso (> 75% del realce cortical)' },
+              { key: 'moderate', label: 'Moderado (40-75% del realce cortical)' },
+              { key: 'mild', label: 'Leve (< 40% del realce cortical)' },
+            ],
+            fatQ: '¿Grasa microscópica presente? (pérdida de señal en fase opuesta vs. en fase; o hiperintensidad en Dixon solo-grasa menor que la grasa retroperitoneal adyacente)',
+            seiQ: '¿Inversión de realce segmentario (SEI)? (segmentos hiper/hiporrealzantes en fase corticomedular que se invierten — se vuelven hipo/hiperrealzantes — en fase tardía, ej. a los 5 min)',
+            aderQ: '¿Relación de realce arterial-a-tardío (ADER) ≥ 1.5? (ADER = [CMP − precontraste] / [tardía − precontraste])',
+            dwiQ: '¿Restricción difusional marcada? (hiperintensidad en b ≥ 800 s/mm² con hipointensidad correspondiente en el mapa de ADC)',
+            homogQ: '¿La lesión es homogénea? (criterio de desempate)',
+            resultLabel: 'Clear Cell Likelihood Score (ccLS)',
+            likert: { 1: 'Muy improbable', 2: 'Improbable', 3: 'Intermedio (indeterminado)', 4: 'Probable', 5: 'Muy probable' },
+            diffOncocytoma: 'Considerar oncocitoma como diagnóstico diferencial.',
+            diffChrrccOncocytoma: 'Considerar carcinoma renal cromófobo (chrRCC) y oncocitoma como diagnósticos diferenciales.',
+            diffPrccFpaml: 'Considerar carcinoma renal papilar (pRCC) y angiomiolipoma pobre en grasa (fpAML, infrecuente en esta combinación) como diagnósticos diferenciales.',
+            diffFpaml: 'Considerar angiomiolipoma pobre en grasa (fpAML) como diagnóstico diferencial alternativo a ccCCR.',
+            mgmtLow: 'ccLS ≤ 2: alto valor predictivo negativo (88%) para descartar histología de células claras.',
+            mgmtMid: 'ccLS 3: probabilidad intermedia/indeterminada; considerar biopsia percutánea para caracterización histológica antes de decidir manejo.',
+            mgmtHigh: 'ccLS ≥ 4: sensibilidad 75-85% y especificidad 78-82% para el diagnóstico de ccCCR en estudios de validación.',
+            reportText: (path, score, likert, diff, mgmt) =>
+              `Clear Cell Likelihood Score (ccLS): ${score}/5 (${likert}).\nRuta: ${path}${diff ? '\nDiferencial: ' + diff : ''}\n${mgmt}`,
+            usage: [
+              'El ccLS v2 (Shetty et al., RadioGraphics 2023) es un algoritmo por RM multiparamétrica que estratifica masas renales sólidas indeterminadas (SRM) según la probabilidad de que correspondan a carcinoma renal de células claras (ccCCR), en una escala de 1 (muy improbable) a 5 (muy probable). Solo se aplica a lesiones sólidas realzantes (> 25%) sin grasa macroscópica; las masas con grasa macroscópica corresponden a AML clásico, y las masas con < 25% de componente sólido se caracterizan con Bosniak.',
+              'El algoritmo evalúa primero los criterios mayores en orden: señal en T2 relativa a la corteza (hiper/iso/hipointensa), luego el grado de realce en fase corticomedular relativo a la corteza (intenso/moderado/leve), y luego la presencia de grasa microscópica. Los criterios ancilares (SEI, ADER ≥ 1.5, restricción difusional marcada, homogeneidad como desempate) solo se evalúan cuando el árbol de decisión lo indica.',
+              'La homogeneidad se usa como criterio de desempate para masas T2-hipointensas con realce intenso o moderado, ya que el fpAML (angiomiolipoma pobre en grasa) es más frecuentemente homogéneo que el ccCCR.',
+              'Nota de transparencia: las ramas correspondientes a realce leve (< 40%) en masas isointensas, y las ramas de masas T2-hipointensas con realce intenso o moderado, se reconstruyeron combinando los valores numéricos visibles en la Figura 6 del artículo original con las explicaciones textuales sobre ADER, restricción difusional y homogeneidad como desempate; en casos atípicos o de duda en estas combinaciones específicas, verifique directamente contra la Figura 6 del artículo original (Shetty et al., RadioGraphics 2023;43(7):e220209) o el recurso en línea que los autores mencionan haber desarrollado para trabajar el algoritmo.',
+              'En estudios de validación multicéntrica, un ccLS ≥ 4 tuvo sensibilidad 75-85% y especificidad 78-82% para ccCCR; un ccLS ≤ 2 tuvo un valor predictivo negativo del 88%. Estas cifras no reemplazan la correlación con biopsia quando esté clínicamente indicada.',
+              'Requiere protocolo de RM renal dedicado (secuencias T2, Dixon/desplazamiento químico, difusión con b ≥ 800, y fases dinámicas poscontraste incluyendo fase corticomedular y tardía) según lo recomendado por el Disease-Focused Panel de Carcinoma Renal de la Society of Abdominal Radiology.',
+            ],
+          },
+          leiomyoma: {
+            title: 'Riesgo de Leiomiosarcoma en Lesión Miometrial (RM)',
+            stepBack: 'Paso anterior',
+            step1Q: 'Paso 1: ¿Se trata de un tumor miometrial (mesenquimal uterino: leiomioma, STUMP, o leiomiosarcoma)?',
+            step1No: 'No — patología extra-miometrial (anexial, cervical, endometrial, etc.)',
+            step1Yes: 'Sí — tumor miometrial',
+            step2Q: 'Paso 2: Señal en T2 de la lesión',
+            step2Low: 'Homogénea y baja (similar al músculo psoas)',
+            step2HighInt: 'Intermedia o alta',
+            step3Q: 'Paso 3: Señal en difusión (b alto) comparada con la orina/vejiga',
+            step3Low: 'Baja (menor que la orina)',
+            step3High: 'Alta (igual o mayor que la orina)',
+            step4Q: 'Paso 4: Valor de ADC (× 10⁻³ mm²/s), ROI en el área de mayor restricción evitando artefactos de interfase tumor/aire o flujo',
+            step4Ph: 'Ej: 0.95',
+            step5Q: 'Paso 5: Márgenes tumorales',
+            step5Smooth: 'Lisos o lobulados',
+            step5Irregular: 'Irregulares',
+            step6Q: 'Paso 6: Estado menopáusico',
+            step6Pre: 'Premenopáusica',
+            step6Post: 'Menopáusica',
+            resultLabel: 'Categoría de riesgo (score de 5 categorías)',
+            score1: { label: 'Score 1 — No aplica', ppv: '', mgmt: 'Tumor no miometrial: esta herramienta no se aplica. Caracterice la lesión según su órgano/compartimento de origen.' },
+            score2: { label: 'Score 2', ppv: 'VPP 0% (0/350)', mgmt: 'Muy baja probabilidad de malignidad; hallazgos característicos de leiomioma benigno.' },
+            score3: { label: 'Score 3', ppv: 'VPP 3,6% (3/82)', mgmt: 'Probabilidad baja; dado que la mayoría de los tumores en esta categoría son benignos, puede considerarse seguimiento imagenológico a corto plazo en lugar de biopsia o cirugía inmediata.' },
+            score4: { label: 'Score 4 (premenopáusica)', ppv: 'VPP 44,4% (4/9)', mgmt: 'Probabilidad intermedia-alta en paciente premenopáusica; considere discutir biopsia percutánea para análisis molecular antes de decidir el abordaje quirúrgico, para evitar el riesgo de diseminación asociado a la morcelación si el resultado sugiere malignidad.' },
+            score5: { label: 'Score 5 (menopáusica)', ppv: 'VPP 91,6% (11/12)', mgmt: 'Alta probabilidad de malignidad en paciente menopáusica con estos hallazgos; respalda un abordaje quirúrgico radical (histerectomía sin morcelación).' },
+            reportText: (path, score, ppv, mgmt) =>
+              `Estratificación de riesgo de lesión miometrial (RM):\n${path}\nCategoría: ${score}${ppv ? ' (' + ppv + ')' : ''}\n${mgmt}`,
+            usage: [
+              'Este modelo de 5 categorías (Zlotykamien-Taïeb et al., Eur J Radiol 2025) es una modificación, validada en una cohorte biocéntrica retrospectiva de 455 mujeres con tumores mesenquimales uterinos (437 leiomiomas, 2 STUMP, 16 malignos), de un algoritmo de consenso multidisciplinario previo (Hindman et al., "BETTER check", Radiology 2023) para diferenciar leiomioma benigno de leiomiosarcoma/STUMP maligno por RM.',
+              'Los 5 criterios se evalúan de forma secuencial y jerárquica: señal en T2 (baja homogénea vs. intermedia/alta), señal en difusión comparada con la orina, valor de ADC (punto de corte 1.23 × 10⁻³ mm²/s), márgenes tumorales (lisos/lobulados vs. irregulares), y estado menopáusico (solo relevante si hay márgenes irregulares).',
+              'El modelo modificado de 5 categorías mostró una exactitud del 98% (446/455), sensibilidad 83,3% y especificidad 98,6% para distinguir tumores benignos de STUMP/malignos, superior al algoritmo de consenso original evaluado en la misma cohorte (exactitud 92,5%, sensibilidad 61,1%, especificidad 93,8%).',
+              'Los STUMP (tumores de músculo liso de potencial maligno incierto) se agrupan junto con los leiomiosarcomas como "maligno o STUMP" en este modelo, ya que ambos requieren manejo cauteloso distinto al leiomioma típico.',
+              'El valor de ADC es dependiente del equipo y protocolo de RM (1.5 T o 3 T en la cohorte original); los propios autores señalan que este es un modelo desarrollado y validado en un solo estudio bicéntrico, pendiente de validación externa adicional en poblaciones más diversas.',
             ],
           },
         },
@@ -1646,7 +1817,7 @@
           mriFf: {
             title: 'MRI Fat Fraction (Dixon)',
             methodLabel: 'Method',
-            methodFf: 'Fat fraction (single dual-echo, same excitation)',
+            methodFf: 'Fat fraction (single dual-echo, same excitation — Dixon method)',
             methodPct: 'Fat percentage (echoes acquired separately — spleen-normalized)',
             inPhase: 'Liver In-Phase Signal',
             outPhase: 'Liver Out-of-Phase Signal',
@@ -1665,7 +1836,6 @@
               'Alternative method — spleen-normalized fat percentage (Ma et al., RadioGraphics 2009): Percentage (%) = 100 × [(Liver SI-IP/Spleen SI-IP) − (Liver SI-OP/Spleen SI-OP)] / (2 × Liver SI-IP/Spleen SI-IP). Normalizing hepatic signal against splenic signal at each phase compensates for T2* differences between acquisitions when the in-phase and out-of-phase images are obtained on separate sequences/excitations (not a single dual-echo acquisition); the spleen is used as a fat-free reference tissue.',
               'Both formulas are useful for quantifying hepatic steatosis (>5-6% suggests steatosis) and for characterizing lesions with microscopic fat content (e.g., adrenal adenoma, hepatocellular adenoma).',
               'Limitation: the simple dual-echo technique (either method) overestimates fat in livers with high fat content due to T2* effects and is less accurate than multi-echo proton density fat fraction (PDFF).',
-              'Transparency note: at the user\'s request, we investigated whether an equivalent, evidence-based correction using SKELETAL MUSCLE signal (instead of spleen) exists for this MRI formula. No published equivalent muscle-based correction formula for MRI was found in the literature reviewed (including the reference calculator by Phillip Cheng, MD, at pcheng.org/calc/hepatic_fat_mri.html, and the Ma et al. 2009 review); the liver-to-muscle (or liver-to-spleen) Hounsfield-unit ratio is an established method for steatosis on CT, but no validated MRI equivalent was identified. For that reason, this calculator only incorporates the spleen-based correction.',
             ],
           },
           adrenalCt: {
@@ -1739,7 +1909,7 @@
             catMild: 'Mild overload',
             catModerate: 'Moderate overload',
             catSevere: 'Severe overload',
-            fieldStrengthNote: 'This calculator is calibrated and validated only for 1.5 T MRI (St Pierre et al. 2005 formula and ESGAR/SAR 2023 cutoffs, cited below). The relationship between R2* and liver iron concentration (LIC) is field-strength dependent: at 3 T, R2* values for the same LIC are different (substantially higher) than at 1.5 T, so this formula should not be applied to studies acquired at 3 T. This calculator does not currently include a 3 T-specific calibration.',
+            fieldStrengthNote: 'Calibrated and validated only for 1.5 T MRI (St Pierre et al. 2005; ESGAR/SAR 2023 cutoffs). Do not apply these values to 3 T studies — the R2*-LIC relationship differs substantially between field strengths.',
             reportText: (t2, r2, lic, cat) =>
               `MRI hepatic siderosis (R2* method, 1.5 T):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nEstimated LIC: ${lic} mg/g dry tissue.\nCategory: ${cat}.`,
             usage: [
@@ -2139,6 +2309,7 @@
           },
           lungNodule: {
             title: 'Incidental Pulmonary Nodule (Fleischner / NCCN)',
+            stepBack: 'Previous step',
             pfnTitle: 'Step 1: Is this a perifissural nodule (intrapulmonary lymph node)?',
             pfnIntro: 'Before applying the size-based algorithm, assess whether the nodule meets the criteria for a perifissural nodule (PFN) — the CT representation of an intrapulmonary lymph node (IPLN), typically benign — which does not require further follow-up.',
             pfnGate1Q: 'Does it meet ALL of these criteria?',
@@ -2167,6 +2338,9 @@
             pfnRestart: 'Re-evaluate as a perifissural nodule',
             pfnYes: 'Yes', pfnNo: 'No',
             pfnReportText: (result) => `Perifissural nodule (PFN) evaluation: ${result}`,
+            frameworkLabel: 'Reference framework for the recommendation',
+            frameworkFleischner: 'Fleischner 2017',
+            frameworkNccn: 'NCCN (incidental nodule algorithm)',
             typeLabel: 'Nodule type',
             typeSolid: 'Solid', typePartSolid: 'Subsolid - part-solid', typeGgn: 'Subsolid - pure ground-glass',
             countLabel: 'Number of nodules',
@@ -2176,7 +2350,8 @@
             sizeLabel: 'Size (mm, average of diameters)',
             sizePh: 'e.g. 7',
             fleischnerResult: 'Fleischner 2017 recommendation',
-            nccnTable: 'NCCN comparison table (reference)',
+            nccnResult: 'NCCN recommendation (incidental nodule)',
+            nccnTable: 'Full NCCN table (reference)',
             recs: {
               none: 'No routine follow-up needed.',
               optionalCt12: 'Optional CT at 12 months. Nodules < 6 mm do not require routine follow-up, but in high-risk patients with suspicious nodule morphology, upper-lobe location, or both, 12-month follow-up may be warranted.',
@@ -2188,6 +2363,17 @@
               ggnFollow: 'CT at 6-12 months to confirm persistence; if persistent, CT every 2 years until 5 years.',
               partSolidFollow: 'CT at 3-6 months to confirm persistence; if unchanged and the solid component remains < 6 mm, annual CT for a minimum of 5 years; if the solid component grows or is suspicious, consider PET/CT, biopsy, or resection.',
               multiSubsolidUnder6: 'CT at 3-6 months; if stable, consider CT at 2 and 4 years (especially in high-risk patients).',
+              multiSubsolidGeq6: 'CT at 3-6 months; subsequent management guided by the most suspicious nodule(s).',
+            },
+            nccnRecs: {
+              none: 'No routine follow-up.',
+              solidLowMid: 'CT at 6-12 months; if stable, consider CT at 18-24 months.',
+              solidOver8: 'Consider CT at 3 months, PET/CT, or biopsy.',
+              solidHighUnder6: 'CT at 12 months (optional); if stable, no routine follow-up.',
+              solidHighMid: 'CT at 6-12 months; if stable, repeat CT at 18-24 months.',
+              ggnSoloFollow: 'CT at 6-12 months to confirm no growth or new solid component; then CT every 2 years until 5 years.',
+              partSolidSoloFollow: 'CT at 3-6 months to confirm no growth/change in the solid component; then annual CT for 5 years. If solid component ≥ 6 mm, consider PET/CT or biopsy.',
+              multiSubsolidUnder6: 'CT at 3-6 months; if stable, consider CT at 2 and 4 years.',
               multiSubsolidGeq6: 'CT at 3-6 months; subsequent management guided by the most suspicious nodule(s).',
             },
             nccnCaveat: 'Table based on the incidental nodule algorithm from the NCCN Clinical Practice Guidelines in Oncology: Non-Small Cell Lung Cancer, v6.2026 (pages DIAG-2 and DIAG-3). NCCN updates its guidelines frequently; verify the current version at NCCN.org (free registration required) before basing clinical decisions solely on this table.',
@@ -2205,13 +2391,14 @@
               ['Multiple subsolid', '< 6 mm', 'CT at 3-6 months; if stable, consider CT at 2 and 4 years.'],
               ['Multiple subsolid', '≥ 6 mm', 'CT at 3-6 months; subsequent management guided by the most suspicious nodule(s).'],
             ],
-            reportText: (type, count, size, risk, rec) =>
-              `Incidental pulmonary nodule:\nType: ${type}\nNumber: ${count}\nSize: ${size} mm${risk ? '\nRisk: ' + risk : ''}\nRecommendation (Fleischner 2017): ${rec}`,
+            reportText: (type, count, size, risk, rec, frameworkLabel) =>
+              `Incidental pulmonary nodule:\nType: ${type}\nNumber: ${count}\nSize: ${size} mm${risk ? '\nRisk: ' + risk : ''}\nRecommendation (${frameworkLabel}): ${rec}`,
             usage: [
+              'After Step 1 (PFN), choose the reference framework (Fleischner 2017 or NCCN) to compute the recommendation from the nodule\'s type, count, and size. Both algorithms largely share the same size thresholds, since NCCN\'s incidental nodule table is derived from Fleischner 2017.',
               'The Fleischner 2017 guidelines apply to incidental pulmonary nodules (found outside a screening program) in adults ≥ 35 years, excluding immunosuppressed patients or those with known cancer. The minimum size threshold for recommending follow-up is based on an estimated cancer risk on the order of ≥ 1%.',
-              'Size is measured as the average of the long- and short-axis diameters on thin-section CT (≤ 1.5 mm). "High risk" includes significant smoking history or other lung cancer risk factors; the Fleischner risk category is only defined for solid nodules, not for subsolid ones.',
-              'For single solid nodules, the > 8 mm threshold triggers a more active work-up (CT at 3 months, PET/CT, or biopsy); for multiple solid nodules, even above 8 mm, Fleischner keeps the more conservative CT at 3-6 months pathway (the dominant nodule is prioritized).',
-              'Subsolid nodules (ground-glass or part-solid) require longer follow-up than solid nodules because in situ/minimally invasive adenocarcinoma can grow slowly.',
+              'Size is measured as the average of the long- and short-axis diameters on thin-section CT (≤ 1.5 mm). "High risk" includes significant smoking history or other lung cancer risk factors; the risk category is only defined for solid nodules, not for subsolid ones, in either framework.',
+              'For single solid nodules, the > 8 mm threshold triggers a more active work-up (CT at 3 months, PET/CT, or biopsy); for multiple solid nodules, even above 8 mm, Fleischner keeps the more conservative CT at 3-6 months pathway (the dominant nodule is prioritized). Difference between frameworks: the NCCN incidental nodule table does not distinguish between single and multiple solid nodules (it uses the same size/risk-based management for both) — that count-based distinction is specific to Fleischner 2017.',
+              'Subsolid nodules (ground-glass or part-solid) require longer follow-up than solid nodules because in situ/minimally invasive adenocarcinoma can grow slowly. For multiple subsolid nodules, both frameworks agree on management guided by the most suspicious nodule.',
               'Step 1 (perifissural nodule / PFN) is based on the decision tree from Schreuder et al. (Radiology: Cardiothoracic Imaging 2020), which standardizes four prior PFN definitions from the literature. It applies only to solid, non-calcified, fat-free nodules of typical morphology; a nodule that does not meet Step 1 simply continues down the usual Fleischner/NCCN pathway — that alone does not imply higher suspicion of malignancy.',
             ],
           },
@@ -2644,6 +2831,9 @@
               peripancreatic: { label: 'Peripancreatic necrosis only', desc: 'Viable pancreatic parenchyma (normal enhancement) with necrosis confined to peripancreatic fat/tissues.' },
               combined: { label: 'Combined necrosis (parenchymal + peripancreatic)', desc: 'The most common form (~75-80%): absent parenchymal enhancement with associated peripancreatic necrosis.' },
             },
+            necrosisExtentQ: 'Extent of parenchymal necrosis (Modified CT Severity Index, Mortele et al. 2004):',
+            necrosisExtentUnder30: '≤ 30% of the parenchyma',
+            necrosisExtentOver30: '> 30% of the parenchyma',
             collectionTitle: 'Step 2: Local collection (if present)',
             collectionQ: 'Is there a peripancreatic collection? Select time course:',
             collectionEarly: '< 4 weeks from symptom onset',
@@ -2667,12 +2857,135 @@
               moderate: { label: 'Moderately severe', desc: 'Transient organ failure (< 48 h) and/or local complications or exacerbation of pre-existing comorbidity, without persistent organ failure.' },
               severe: { label: 'Severe', desc: 'Persistent organ failure (> 48 h), affecting one or more organs. Associated with higher mortality, especially with infected necrosis.' },
             },
-            reportText: (morph, collection, severity) => `Acute pancreatitis (Revised Atlanta Classification):\nMorphologic type: ${morph}\nLocal collection: ${collection}\nClinical severity: ${severity}`,
+            reportText: (morph, extent, collection, severity) => `Acute pancreatitis (Revised Atlanta Classification):\nMorphologic type: ${morph}${extent ? '\nNecrosis extent: ' + extent : ''}\nLocal collection: ${collection}\nClinical severity: ${severity}`,
             usage: [
               'The revised Atlanta classification (2012) distinguishes two morphologic types: interstitial edematous pancreatitis (viable parenchyma, homogeneous enhancement) and necrotizing pancreatitis (parenchymal, peripancreatic, or combined necrosis, the latter being most common).',
               'Local collections are named according to the underlying morphologic type and time course (4-week cutoff): APFC → pseudocyst (interstitial edematous) and ANC → WON (necrotizing). The presence of a solid/non-liquid component and a well-defined wall are the key imaging features that distinguish them.',
+              'The extent of parenchymal necrosis (≤ 30% vs. > 30%) is not itself an Atlanta classification criterion — it comes from the Modified CT Severity Index (Modified CTSI, Mortele et al., AJR 2004), which simplified Balthazar\'s original necrosis grading (< 30%, 30-50%, > 50%) to just two categories; it is included here because it is commonly reported alongside the Atlanta morphologic classification.',
               'Clinical severity (mild/moderately severe/severe) is based on the presence and duration of organ failure (the central criterion) and the presence of local or systemic complications; it requires correlation with the treating team and cannot be determined from imaging alone.',
               'This calculator summarizes the diagnostic and classification algorithm described in Thoeni\'s pictorial essays on the revised Atlanta classification in RadioGraphics/Radiology; it does not replace the original consensus document (Banks et al., Gut 2013) or clinical judgment.',
+            ],
+          },
+          renalScore: {
+            title: 'R.E.N.A.L. Nephrometry Score',
+            radiusLabel: 'R — Radius: maximal tumor diameter (cm)',
+            radiusPh: 'E.g.: 4.5',
+            exoLabel: 'E — Exophytic/endophytic properties',
+            exoOptions: [
+              { key: 'exo50', label: '≥ 50% exophytic', pts: 1 },
+              { key: 'exoLt50', label: '< 50% exophytic', pts: 2 },
+              { key: 'endo', label: 'Entirely endophytic', pts: 3 },
+            ],
+            nearLabel: 'N — Nearness of tumor to the collecting system or renal sinus (mm)',
+            nearPh: 'E.g.: 5',
+            locLabel: 'L — Location relative to the polar lines',
+            locOptions: [
+              { key: 'aboveBelow', label: 'Entirely above the upper polar line, or below the lower polar line', pts: 1 },
+              { key: 'crosses', label: 'Lesion crosses a polar line', pts: 2 },
+              { key: 'across', label: '> 50% of the mass crosses a polar line, or the mass crosses the axial renal midline, or the mass is entirely between the polar lines', pts: 3 },
+            ],
+            anteriorLabel: 'A — Anterior/posterior location (descriptor, no points)',
+            anteriorOptions: [
+              { key: 'a', label: 'Anterior (a)' },
+              { key: 'p', label: 'Posterior (p)' },
+              { key: 'x', label: 'Indeterminate (x)' },
+            ],
+            hilarLabel: 'Does the tumor abut the main renal artery or vein? ("h" suffix, hilar location)',
+            resultLabel: 'R.E.N.A.L. Score',
+            riskLow: 'Low complexity',
+            riskIntermediate: 'Intermediate complexity',
+            riskHigh: 'High complexity',
+            pending: 'Complete the radius and the nearness to the collecting system to calculate the total score.',
+            reportText: (formula, total, risk) => `R.E.N.A.L. nephrometry score: ${formula} = ${total} points (${risk}).`,
+            usage: [
+              'The R.E.N.A.L. nephrometry score (Kutikov and Uzzo, J Urol 2009) standardizes the anatomic description of solid renal masses for preoperative planning (e.g., eligibility for nephron-sparing surgery). It sums points for R (radius), E (exophytic/endophytic), and N (nearness to the collecting system), plus L (polar location); A (anterior/posterior/indeterminate) is a descriptor only and does not add points.',
+              'Total score 4-12: low complexity 4-6, intermediate complexity 7-9, high complexity 10-12. An "h" suffix is added if the tumor abuts the main renal artery or vein (hilar location).',
+              'Common reporting format: "R{r}E{e}N{n}A{a}L{l} = {total}" (e.g., "R2E2N2AaL2 = 8h, intermediate complexity").',
+              'Interobserver reproducibility of the R.E.N.A.L. score is substantial to almost perfect for the total score (kappa 0.72-0.88 across cohorts), with N and radius showing the best agreement and E the most subjective variability.',
+              'Alternative systems with similar goals exist (PADUA, centrality index/C-index) but are not implemented in this calculator.',
+            ],
+          },
+          ccls: {
+            title: 'Clear Cell Likelihood Score (ccLS v2) — Renal MRI',
+            gateQ: 'Step 1: Is the lesion an enhancing solid renal mass (> 25% enhancing solid component), without macroscopic fat?',
+            gateFat: 'Contains macroscopic fat (signal loss with fat suppression, or fat-only Dixon hyperintensity similar to retroperitoneal fat)',
+            gateCystic: '< 25% enhancing solid component (predominantly cystic mass)',
+            gateProceed: 'Yes — indeterminate solid renal mass, > 25% enhancing, without macroscopic fat',
+            resultAmlTitle: 'Classic (fat-rich) AML',
+            resultAmlDesc: 'The presence of macroscopic fat is diagnostic of classic (fat-rich) angiomyolipoma; the ccLS is not applied to this lesion.',
+            resultBosniakTitle: 'Predominantly cystic mass',
+            resultBosniakDesc: 'The ccLS only applies to enhancing solid masses (> 25% solid component). For masses with < 25% solid component, use the Bosniak classification (see the "Bosniak" calculator in this app).',
+            t2Label: 'Step 2: T2-weighted signal of the lesion relative to normal renal cortex',
+            t2Options: [
+              { key: 'hyper', label: 'Hyperintense' },
+              { key: 'iso', label: 'Isointense' },
+              { key: 'hypo', label: 'Hypointense' },
+            ],
+            cmpLabel: 'Step 3: Corticomedullary phase (CMP) enhancement relative to normal renal cortex',
+            cmpOptions: [
+              { key: 'intense', label: 'Intense (> 75% of cortical enhancement)' },
+              { key: 'moderate', label: 'Moderate (40-75% of cortical enhancement)' },
+              { key: 'mild', label: 'Mild (< 40% of cortical enhancement)' },
+            ],
+            fatQ: 'Is microscopic fat present? (signal loss on opposed-phase vs. in-phase imaging; or fat-only Dixon hyperintensity less than that of adjacent retroperitoneal fat)',
+            seiQ: 'Is segmental enhancement inversion (SEI) present? (hyper/hypoenhancing segments on corticomedullary phase that invert — become hypo/hyperenhancing — on delayed phase, e.g. at 5 min)',
+            aderQ: 'Is the arterial-to-delayed enhancement ratio (ADER) ≥ 1.5? (ADER = [CMP − precontrast] / [delayed − precontrast])',
+            dwiQ: 'Is there marked diffusion restriction? (hyperintensity at b ≥ 800 sec/mm² with corresponding hypointensity on the ADC map)',
+            homogQ: 'Is the lesion homogeneous? (tiebreaking criterion)',
+            resultLabel: 'Clear Cell Likelihood Score (ccLS)',
+            likert: { 1: 'Very unlikely', 2: 'Unlikely', 3: 'Intermediate (indeterminate)', 4: 'Likely', 5: 'Very likely' },
+            diffOncocytoma: 'Consider oncocytoma as a differential diagnosis.',
+            diffChrrccOncocytoma: 'Consider chromophobe RCC (chrRCC) and oncocytoma as differential diagnoses.',
+            diffPrccFpaml: 'Consider papillary RCC (pRCC) and fat-poor angiomyolipoma (fpAML, uncommon in this combination) as differential diagnoses.',
+            diffFpaml: 'Consider fat-poor angiomyolipoma (fpAML) as an alternative differential diagnosis to ccRCC.',
+            mgmtLow: 'ccLS ≤ 2: high negative predictive value (88%) for ruling out clear cell histology.',
+            mgmtMid: 'ccLS 3: intermediate/indeterminate probability; consider percutaneous biopsy for histologic characterization before deciding management.',
+            mgmtHigh: 'ccLS ≥ 4: sensitivity 75-85% and specificity 78-82% for the diagnosis of ccRCC in validation studies.',
+            reportText: (path, score, likert, diff, mgmt) =>
+              `Clear Cell Likelihood Score (ccLS): ${score}/5 (${likert}).\nPath: ${path}${diff ? '\nDifferential: ' + diff : ''}\n${mgmt}`,
+            usage: [
+              'The ccLS v2 (Shetty et al., RadioGraphics 2023) is a multiparametric MRI algorithm that stratifies indeterminate solid renal masses (SRMs) by the likelihood that they represent clear cell renal cell carcinoma (ccRCC), on a scale from 1 (very unlikely) to 5 (very likely). It only applies to enhancing solid lesions (> 25%) without macroscopic fat; masses with macroscopic fat correspond to classic AML, and masses with < 25% solid component are characterized with Bosniak.',
+              'The algorithm first evaluates the major criteria in order: T2-weighted signal relative to the cortex (hyper/iso/hypointense), then the degree of corticomedullary phase enhancement relative to the cortex (intense/moderate/mild), and then the presence of microscopic fat. Ancillary criteria (SEI, ADER ≥ 1.5, marked diffusion restriction, homogeneity as a tiebreak) are only assessed when the decision tree directs it.',
+              'Homogeneity is used as a tiebreaking criterion for T2-hypointense masses with intense or moderate enhancement, since fpAML (fat-poor angiomyolipoma) is more commonly homogeneous than ccRCC.',
+              'Transparency note: the branches corresponding to mild enhancement (< 40%) in isointense masses, and the branches for T2-hypointense masses with intense or moderate enhancement, were reconstructed by combining the numeric values visible in Figure 6 of the original article with the textual explanations of ADER, diffusion restriction, and homogeneity as a tiebreak; for atypical findings or uncertainty in these specific combinations, verify directly against Figure 6 of the original article (Shetty et al., RadioGraphics 2023;43(7):e220209) or the online resource the authors mention having developed to work through the algorithm.',
+              'In multicenter validation studies, a ccLS ≥ 4 had sensitivity 75-85% and specificity 78-82% for ccRCC; a ccLS ≤ 2 had a negative predictive value of 88%. These figures do not replace correlation with biopsy when clinically indicated.',
+              'Requires a dedicated renal-protocol MRI (T2, Dixon/chemical-shift, diffusion at b ≥ 800, and dynamic postcontrast phases including corticomedullary and delayed phases) as recommended by the Society of Abdominal Radiology Disease-Focused Panel on Renal Cell Carcinoma.',
+            ],
+          },
+          leiomyoma: {
+            title: 'Leiomyosarcoma Risk in a Myometrial Lesion (MRI)',
+            stepBack: 'Previous step',
+            step1Q: 'Step 1: Is this a myometrial (uterine mesenchymal) tumor: leiomyoma, STUMP, or leiomyosarcoma?',
+            step1No: 'No — extra-myometrial pathology (adnexal, cervical, endometrial, etc.)',
+            step1Yes: 'Yes — myometrial tumor',
+            step2Q: 'Step 2: T2-weighted signal of the lesion',
+            step2Low: 'Homogeneous and low (similar to psoas muscle)',
+            step2HighInt: 'Intermediate or high',
+            step3Q: 'Step 3: Diffusion-weighted (high b) signal compared to urine/bladder',
+            step3Low: 'Low (less than urine)',
+            step3High: 'High (equal to or greater than urine)',
+            step4Q: 'Step 4: ADC value (× 10⁻³ mm²/s), ROI in the area of highest restriction avoiding tumor/air-interface or flow artifacts',
+            step4Ph: 'E.g.: 0.95',
+            step5Q: 'Step 5: Tumor margins',
+            step5Smooth: 'Smooth or lobulated',
+            step5Irregular: 'Irregular',
+            step6Q: 'Step 6: Menopausal status',
+            step6Pre: 'Premenopausal',
+            step6Post: 'Menopausal',
+            resultLabel: 'Risk category (5-category score)',
+            score1: { label: 'Score 1 — Not applicable', ppv: '', mgmt: 'Non-myometrial tumor: this tool does not apply. Characterize the lesion according to its organ/compartment of origin.' },
+            score2: { label: 'Score 2', ppv: 'PPV 0% (0/350)', mgmt: 'Very low probability of malignancy; findings characteristic of benign leiomyoma.' },
+            score3: { label: 'Score 3', ppv: 'PPV 3.6% (3/82)', mgmt: 'Low probability; since most tumors in this category are benign, short-term imaging follow-up may be considered instead of immediate biopsy or surgery.' },
+            score4: { label: 'Score 4 (premenopausal)', ppv: 'PPV 44.4% (4/9)', mgmt: 'Intermediate-high probability in a premenopausal patient; consider discussing percutaneous biopsy for molecular analysis before deciding the surgical approach, to avoid the dissemination risk associated with morcellation if the result suggests malignancy.' },
+            score5: { label: 'Score 5 (menopausal)', ppv: 'PPV 91.6% (11/12)', mgmt: 'High probability of malignancy in a menopausal patient with these findings; supports a radical surgical approach (hysterectomy without morcellation).' },
+            reportText: (path, score, ppv, mgmt) =>
+              `Myometrial lesion risk stratification (MRI):\n${path}\nCategory: ${score}${ppv ? ' (' + ppv + ')' : ''}\n${mgmt}`,
+            usage: [
+              'This 5-category model (Zlotykamien-Taïeb et al., Eur J Radiol 2025) is a modification, validated in a retrospective bicentric cohort of 455 women with uterine mesenchymal tumors (437 leiomyomas, 2 STUMPs, 16 malignant), of an earlier multidisciplinary consensus algorithm (Hindman et al., "BETTER check", Radiology 2023) for differentiating benign leiomyoma from malignant leiomyosarcoma/STUMP on MRI.',
+              'The 5 criteria are evaluated sequentially and hierarchically: T2 signal (homogeneous low vs. intermediate/high), DW signal compared to urine, ADC value (cutoff 1.23 × 10⁻³ mm²/s), tumor margins (smooth/lobulated vs. irregular), and menopausal status (only relevant if margins are irregular).',
+              'The modified 5-category model showed 98% accuracy (446/455), 83.3% sensitivity, and 98.6% specificity for distinguishing benign from STUMP/malignant tumors, higher than the original consensus algorithm evaluated in the same cohort (accuracy 92.5%, sensitivity 61.1%, specificity 93.8%).',
+              'STUMPs (smooth muscle tumors of uncertain malignant potential) are grouped together with leiomyosarcomas as "malignant or STUMP" in this model, since both require cautious management distinct from typical leiomyoma.',
+              'ADC value is dependent on the MRI equipment and protocol (1.5 T or 3 T in the original cohort); the authors themselves note that this model was developed and validated in a single bicentric study and requires further external validation in more diverse populations.',
             ],
           },
         },
@@ -2782,6 +3095,18 @@
         'Banks PA, Bollen TL, Dervenis C, et al. Classification of acute pancreatitis—2012: revision of the Atlanta classification and definitions by international consensus. Gut. 2013;62(1):102-111.',
         'Thoeni RF. The revised Atlanta classification of acute pancreatitis: its importance for the radiologist and its effect on treatment. Radiology. 2012;262(3):751-764.',
         'Foster BR, Jensen KK, Bakis G, Shaaban AM, Coakley FV. Revised Atlanta classification for acute pancreatitis: a pictorial essay. Radiographics. 2016;36(3):675-687.',
+        'Mortele KJ, Wiesner W, Intriere L, et al. A modified CT severity index for evaluating acute pancreatitis: improved correlation with patient outcome. AJR Am J Roentgenol. 2004;183(5):1261-1265.',
+      ],
+      renalScore: [
+        'Kutikov A, Uzzo RG. The R.E.N.A.L. nephrometry score: a comprehensive standardized system for quantitating renal tumor size, location and depth. J Urol. 2009;182(3):844-853.',
+        'Vilaseca RM, Westphalen AC, Reis HF, Zogbi OS, Silva GE, Reis RB, Muglia VF. Reproducibility and interobserver agreement of the R.E.N.A.L. nephrometry score: focus on imaging features. Radiol Bras. 2017;50(1):7-12.',
+      ],
+      ccls: [
+        'Shetty AS, Fraum TJ, Ballard DH, et al. Renal Mass Imaging with MRI Clear Cell Likelihood Score: A User\'s Guide. Radiographics. 2023;43(7):e220209.',
+      ],
+      leiomyoma: [
+        'Zlotykamien-Taïeb E, Gherman D, Al Rouhban R, Florin M, Darai E, Haddad B, Dabi Y, Arbel S, Jha P, Thomassin-Naggara I. Novel approach to MRI based risk stratification of uterine myometrial lesions. Eur J Radiol. 2025;187:112126.',
+        'Hindman NH, Kang F, Fournier L, et al. MRI Evaluation of Uterine Masses for Risk of Leiomyosarcoma: A Consensus Statement. Radiology. 2023;306(3):e211658.',
       ],
     };
 
@@ -2811,9 +3136,10 @@
           : c.reportTextVolOnly(vol.toFixed(1));
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setAp(''); setTr(''); setLong(''); setPsa(''); setFactor(0.52); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${showVolume ? 'pb-24' : ''}`}>
           <Card>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{c.dims}</label>
@@ -2832,29 +3158,28 @@
               </div>
             </div>
           </Card>
-          {showVolume && (
-            <Card>
-              <div className={`flex justify-between items-center ${showPsad ? 'pb-3 border-b border-slate-100 dark:border-slate-700' : ''}`}>
-                <span className="text-slate-500 dark:text-slate-400">{c.volume}</span>
-                <span className="text-xl font-bold">{vol.toFixed(1)} cc</span>
-              </div>
-              {showPsad ? (
-                <div className="flex justify-between items-center pt-3">
-                  <span className="text-slate-500 dark:text-slate-400">{c.psad}</span>
-                  <span className={`text-2xl font-bold flex items-center gap-2 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
-                    {isHighRisk ? <IconAlertTriangle size={20} /> : <IconCheckCircle size={20} />}
-                    {psad.toFixed(2)}
-                  </span>
-                </div>
-              ) : (
-                <p className="text-xs text-slate-400 dark:text-slate-500 pt-3">{c.psaPending}</p>
-              )}
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
-          )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.psad} />
           <ReportBugLink calcTitle={c.title} />
+          {showVolume && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.volume}: <span className="font-semibold text-slate-700 dark:text-slate-200">{vol.toFixed(1)} cc</span></span>
+                {showPsad ? (
+                  <span className={`text-lg font-black flex items-center gap-1.5 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
+                    {isHighRisk ? <IconAlertTriangle size={16} /> : <IconCheckCircle size={16} />}
+                    {c.psad}: {psad.toFixed(2)}
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-400 dark:text-slate-500">{c.psaPending}</span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -2895,9 +3220,10 @@
           : c.reportTextPct(fp.toFixed(1), inPhase, outPhase, spleenIn, spleenOut);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setMethod('ff'); setInPhase(''); setOutPhase(''); setSpleenIn(''); setSpleenOut(''); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${hasAnyInput ? 'pb-24' : ''}`}>
           <Card>
             <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2">{c.methodLabel}</label>
             <div className="space-y-2">
@@ -2931,19 +3257,22 @@
               </>
             )}
           </Card>
-          {hasAnyInput && (
-            <Card>
-              <div className="flex flex-col items-center justify-center p-4">
-                <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{method === 'ff' ? c.estimated : c.estimatedPct}</span>
-                <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{isValid ? value.toFixed(1) + '%' : '—'}</span>
-                {!isValid && <span className="text-xs text-slate-400 mt-2">{t.common.notEvaluated}</span>}
-              </div>
-              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
-            </Card>
-          )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.mriFf} />
           <ReportBugLink calcTitle={c.title} />
+          {hasAnyInput && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{method === 'ff' ? c.estimated : c.estimatedPct}</span>
+                <span className="text-xl font-black text-blue-600 dark:text-blue-400">{isValid ? value.toFixed(1) + '%' : '—'}</span>
+                {!isValid && <span className="text-xs text-slate-400 ml-2">{t.common.notEvaluated}</span>}
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} disabled={!isValid} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3002,9 +3331,10 @@
         }
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setProtocol('p15'); setNc(''); setVen(''); setDel(''); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-24' : ''}`}>
           <Card>
             <div>
               <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.protocol}</label>
@@ -3069,7 +3399,6 @@
                   {isAdenoma ? c.adenomaCompatible : c.adenomaNot}
                 </InfoBox>
               )}
-              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
             </Card>
           )}
 
@@ -3087,13 +3416,24 @@
                   {isAdenoma5min ? c.adenomaCompatible : c.adenomaNot}
                 </InfoBox>
               )}
-              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
             </Card>
           )}
 
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.adrenalCt} />
           <ReportBugLink calcTitle={c.title} />
+          {isValid && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{protocolLabel}</span>
+                <span className={`text-lg font-black ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenoma ? c.adenomaCompatible : c.adenomaNot}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3123,9 +3463,10 @@
         const text = c.reportText(lesionIn, lesionOut, refIn, refOut, csi.toFixed(1), isAdenoma ? c.conclAdenoma : c.conclNot);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setLesionIn(''); setLesionOut(''); setRefIn(''); setRefOut(''); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${hasAnyInput ? 'pb-24' : ''}`}>
           <Card className="space-y-5">
             <div>
               <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">{c.lesion}</h3>
@@ -3142,23 +3483,26 @@
               </div>
             </div>
           </Card>
-          {hasAnyInput && (
-            <Card>
-              <div className="flex flex-col items-center justify-center p-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{c.csiIndex}</span>
-                <span className={`text-4xl font-bold ${isValid ? (isAdenoma ? 'text-emerald-500' : 'text-amber-500') : 'text-slate-400'}`}>{isValid ? csi.toFixed(1) + '%' : '—'}</span>
-              </div>
-              {isValid && (
-                <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
-                  {isAdenoma ? c.csiAdenoma : c.csiNot}
-                </InfoBox>
-              )}
-              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
-            </Card>
+          {hasAnyInput && isValid && (
+            <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
+              {isAdenoma ? c.csiAdenoma : c.csiNot}
+            </InfoBox>
           )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.adrenalMri} />
           <ReportBugLink calcTitle={c.title} />
+          {hasAnyInput && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.csiIndex}</span>
+                <span className={`text-xl font-black ${isValid ? (isAdenoma ? 'text-emerald-500' : 'text-amber-500') : 'text-slate-400'}`}>{isValid ? csi.toFixed(1) + '%' : '—'}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} disabled={!isValid} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3191,9 +3535,10 @@
         const text = c.reportText(t2star.toFixed(2), r2star.toFixed(2), lic.toFixed(2), category);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setInputType('t2star'); setVal(''); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-24' : ''}`}>
           <InfoBox tone="amber">{c.fieldStrengthNote}</InfoBox>
           <Card>
             <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-1">
@@ -3236,12 +3581,23 @@
                   {category}
                 </span>
               </div>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.siderosis} />
           <ReportBugLink calcTitle={c.title} />
+          {isValid && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.licEstimated}: <span className={`font-black ${color}`}>{lic.toFixed(2)}</span></span>
+                <span className={`text-sm font-semibold ${color}`}>{category}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3269,9 +3625,10 @@
         const text = c.reportText(thymusIn, thymusOut, muscleIn, muscleOut, csr.toFixed(2), sii.toFixed(1), isFatty ? c.conclFatty : c.conclNotFatty);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setThymusIn(''); setThymusOut(''); setMuscleIn(''); setMuscleOut(''); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-24' : ''}`}>
           <Card className="space-y-5">
             <div>
               <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">{c.roiThymus}</h3>
@@ -3303,12 +3660,23 @@
               <InfoBox tone={isFatty ? 'emerald' : 'amber'}>
                 {isFatty ? c.fattyConcl : c.notFattyConcl}
               </InfoBox>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.thymic} />
           <ReportBugLink calcTitle={c.title} />
+          {isValid && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.ratioCsr}: <span className={`font-black ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{csr.toFixed(2)}</span></span>
+                <span className={`text-sm font-semibold ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{isFatty ? c.fattyConcl : c.notFattyConcl}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3374,6 +3742,9 @@
         );
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => {
+        setSelections({ composition: null, echogenicity: null, shape: null, margin: null, echogenicFoci: [] });
+      };
 
       return (
         <div className="space-y-4 pb-28">
@@ -3432,9 +3803,10 @@
                 </div>
                 <span className="block text-[10px] text-slate-500 mt-0.5 leading-tight">{catInfo.recs}</span>
               </div>
-              <button onClick={handleCopy} className="p-3 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors shrink-0">
-                <IconCopy size={20} />
-              </button>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
             </div>
           </div>
         </div>
@@ -3477,7 +3849,10 @@
             <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-semibold uppercase">{c.history}</span>
-                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                  <button onClick={handleReset} className="text-slate-500 dark:text-slate-400 font-medium">{t.common.reset}</button>
+                </div>
               </div>
               <ol className="list-decimal pl-4 space-y-1">
                 {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
@@ -3558,9 +3933,10 @@
         );
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setZone('pz'); setDwi(0); setT2(0); setDce(''); setEpe(''); };
 
       return (
-        <div className="space-y-4 animate-in fade-in pb-10">
+        <div className={`space-y-4 animate-in fade-in ${finalScore > 0 ? 'pb-24' : 'pb-10'}`}>
           <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex">
             <button
               onClick={() => { setZone('pz'); setDwi(0); setT2(0); setDce(''); }}
@@ -3636,17 +4012,6 @@
               </>
             )}
           </Card>
-          {finalScore > 0 && (
-            <Card className="text-center">
-              <div className="flex flex-col items-center justify-center">
-                <span className="text-sm text-slate-500 font-medium mb-1">{c.finalCategory}</span>
-                <span className={`text-4xl font-black ${finalScore >= 4 ? 'text-red-500' : finalScore === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>
-                  PI-RADS {finalScore}
-                </span>
-              </div>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
-          )}
           <Card>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.epeLabel}</label>
             <div className="space-y-2">
@@ -3662,6 +4027,20 @@
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.pirads} />
           <ReportBugLink calcTitle={c.title} />
+          {finalScore > 0 && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.finalCategory}</span>
+                <span className={`text-xl font-black ${finalScore >= 4 ? 'text-red-500' : finalScore === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                  PI-RADS {finalScore}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3703,26 +4082,32 @@
       if (final >= 4) interp = c.interpretation.high;
       else if (final === 3) interp = c.interpretation.equivocal;
       else if (final > 0) interp = c.interpretation.low;
+      const resetAll = () => { setT2(0); setDwi(0); setDce(0); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${final > 0 ? 'pb-24' : ''}`}>
           <Card className="space-y-6">
             <ScoreSelector5 label={c.step1} value={t2} onChange={setT2} defs={c.t2Defs} />
             <ScoreSelector5 label={c.step2} value={dwi} onChange={setDwi} defs={c.dwiDefs} />
             <ScoreSelector5 label={c.step3} value={dce} onChange={setDce} defs={c.dceDefs} />
             <p className="text-[11px] text-slate-400 dark:text-slate-500">{c.dominantNote}</p>
           </Card>
-          {final > 0 && (
-            <Card className="text-center">
-              <span className="text-sm text-slate-500 font-medium mb-1 block">{c.finalCategory}</span>
-              <span className={`text-4xl font-black ${final >= 4 ? 'text-red-500' : final === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>VI-RADS {final}</span>
-              <InfoBox tone={final >= 4 ? 'amber' : 'emerald'}>{interp}</InfoBox>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
-          )}
+          {final > 0 && <InfoBox tone={final >= 4 ? 'amber' : 'emerald'}>{interp}</InfoBox>}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.virads} />
           <ReportBugLink calcTitle={c.title} />
+          {final > 0 && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.finalCategory}</span>
+                <span className={`text-xl font-black ${final >= 4 ? 'text-red-500' : final === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>VI-RADS {final}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3819,9 +4204,13 @@
         const text = c.reportText(sizeLabel, aphe ? t.common.yes : t.common.no, featLabels.length ? featLabels.join(', ') : t.common.none, override, catLabel, afSummary);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => {
+        setSize(0); setAphe(null); setFeats({ washout: false, capsule: false, growth: false });
+        setLrM(null); setLrTiv(null); setLrTivCont(''); setAfMalignant({}); setAfBenignSel({});
+      };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${finalCat ? 'pb-24' : ''}`}>
           <Card>
             <InfoBox tone="amber">{c.lrTiv}</InfoBox>
             <div className="flex gap-2">
@@ -3925,22 +4314,27 @@
               <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.afRuleNote}</p>
             </Card>
           )}
-          {finalCat && (
-            <Card className="text-center">
-              <span className={`text-4xl font-black ${finalCat === 'LR-5' || finalCat === 'LR-M' || finalCat === 'LR-TIV' ? 'text-red-500' : finalCat === 'LR-4' ? 'text-orange-500' : finalCat === 'LR-3' ? 'text-amber-500' : 'text-emerald-500'}`}>{finalCat}</span>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{c.categories[finalCat]}</p>
-              {lrTiv && lrTivCont && (
-                <p className={`text-sm font-semibold mt-1 ${lrTivCont === 'unspecified' ? 'text-amber-500' : 'text-red-500'}`}>{c.lrTivContinuity[lrTivCont]}</p>
-              )}
-              {afNote && (
-                <p className="text-xs font-medium mt-2 text-blue-600 dark:text-blue-400 leading-snug">{afNote}</p>
-              )}
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
+          {finalCat && lrTiv && lrTivCont && (
+            <InfoBox tone={lrTivCont === 'unspecified' ? 'amber' : 'emerald'}>{c.lrTivContinuity[lrTivCont]}</InfoBox>
+          )}
+          {finalCat && afNote && (
+            <InfoBox tone="amber">{afNote}</InfoBox>
           )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.lirads} />
           <ReportBugLink calcTitle={c.title} />
+          {finalCat && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className={`text-xl font-black ${finalCat === 'LR-5' || finalCat === 'LR-M' || finalCat === 'LR-TIV' ? 'text-red-500' : finalCat === 'LR-4' ? 'text-orange-500' : finalCat === 'LR-3' ? 'text-amber-500' : 'text-emerald-500'}`}>{finalCat}</span>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-snug">{c.categories[finalCat]}</p>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -3991,9 +4385,10 @@
         const text = c.reportText(coreLabel, finalCatObj.label, afNote);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setCore(null); setCategory(null); setAfDiffusion(false); setAfT2(false); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${finalCatObj ? 'pb-24' : ''}`}>
           <InfoBox tone="amber">{c.applicability}</InfoBox>
           <Card>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.coreLabel}</label>
@@ -4042,20 +4437,27 @@
               <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.afMriOnlyNote}</p>
             </Card>
           )}
+          {finalCatObj && afApplied && (
+            <InfoBox tone="amber">{c.afUpgradedNote(selectedCatObj.label)}</InfoBox>
+          )}
           {finalCatObj && (
-            <Card className="text-center">
-              <span className={`text-3xl font-black ${liradsTrCatColor(finalCatObj.key)}`}>LR-TR {finalCatObj.label}</span>
-              {afApplied && (
-                <p className="text-xs font-medium mt-2 text-blue-600 dark:text-blue-400 leading-snug">{c.afUpgradedNote(selectedCatObj.label)}</p>
-              )}
-              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2"><strong>{c.managementLabel}</strong> {c.management[finalCatObj.key]}</p>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
+            <InfoBox tone="emerald"><strong>{c.managementLabel}</strong> {c.management[finalCatObj.key]}</InfoBox>
           )}
           {core && <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.tiebreakNote}</p>}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.liradsTr} />
           <ReportBugLink calcTitle={c.title} />
+          {finalCatObj && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className={`text-xl font-black ${liradsTrCatColor(finalCatObj.key)}`}>LR-TR {finalCatObj.label}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -4081,9 +4483,10 @@
       };
 
       const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-400' : 'text-red-500';
+      const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMod(''); };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${stenosis ? 'pb-24' : ''}`}>
           <Card>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.stenosisLabel}</label>
             <div className="space-y-2">
@@ -4120,16 +4523,21 @@
             </div>
             {pMod && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.pCaveat}</p>}
           </Card>
-          {stenosis && (
-            <Card className="text-center">
-              <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
-              <span className={`text-3xl font-black ${riskColor}`}>{resultString}</span>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
-          )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.cadrads} />
           <ReportBugLink calcTitle={c.title} />
+          {stenosis && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.resultLabel}</span>
+                <span className={`text-xl font-black ${riskColor}`}>{resultString}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -4157,9 +4565,10 @@
         const text = c.reportText(score, riskLabel, lobeDetail);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => setLobes(Object.fromEntries(BCD_LOBES.map(l => [l, { cavity: false, be: false }])));
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${hasAnyInput ? 'pb-24' : ''}`}>
           <Card>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{c.intro}</p>
             <div className="space-y-2">
@@ -4174,17 +4583,22 @@
               ))}
             </div>
           </Card>
-          {hasAnyInput && (
-            <Card className="text-center">
-              <span className="text-xs text-slate-500 block mb-1">{c.scoreLabel}</span>
-              <span className={`text-3xl font-black ${riskColor}`}>{score}/6 — {riskLabel}</span>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{riskDesc}</p>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
-          )}
+          {hasAnyInput && <InfoBox tone={riskKey === 'low' ? 'emerald' : 'amber'}>{riskDesc}</InfoBox>}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.ntmBcd} />
           <ReportBugLink calcTitle={c.title} />
+          {hasAnyInput && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.scoreLabel}</span>
+                <span className={`text-lg font-black ${riskColor}`}>{score}/6 — {riskLabel}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -4248,6 +4662,9 @@
         );
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => {
+        setQMode('manual'); setQScore(''); resetSegments(); setRvMethod('axial'); setRv(''); setLv('');
+      };
 
       const renderSegmentRow = (id) => {
         const grade = segGrades[id] ?? 0;
@@ -4271,7 +4688,7 @@
       };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${(hasQ || hasRv) ? 'pb-24' : ''}`}>
           <Card>
             <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.qanadliSectionTitle}</h3>
             <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg mb-3">
@@ -4340,14 +4757,31 @@
               <p className={`text-sm font-semibold mt-1 ${rvStrain ? 'text-red-500' : 'text-emerald-500'}`}>{rvStrain ? c.rvStrainPositive : c.rvStrainNegative}</p>
             </Card>
           )}
-          {(hasQ || hasRv) && (
-            <Card>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
-          )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.peQanadli} />
           <ReportBugLink calcTitle={c.title} />
+          {(hasQ || hasRv) && (
+            <StickyBar>
+              <div className="min-w-0 text-left flex items-center gap-3">
+                {hasQ && (
+                  <div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{c.qanadliPercent}</span>
+                    <span className={`text-lg font-black ${qColor}`}>{qPercent.toFixed(0)}%</span>
+                  </div>
+                )}
+                {hasRv && (
+                  <div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{c.rvRatio}</span>
+                    <span className={`text-lg font-black ${rvStrain ? 'text-red-500' : 'text-emerald-500'}`}>{rvRatio.toFixed(2)}</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -4359,6 +4793,7 @@
       const { t, lang } = useLang();
       const c = t.calc.pancreatitisAtlanta;
       const [necrosis, setNecrosis] = useState(null); // null | false | 'parenchymal'|'peripancreatic'|'combined'
+      const [necrosisExtent, setNecrosisExtent] = useState(null); // null | 'under30' | 'over30'
       const [collection, setCollection] = useState(null); // null | 'none' | 'early' | 'late'
       const [organFailure, setOrganFailure] = useState(null); // null | 'none'|'transient'|'persistent'
       const [localComplications, setLocalComplications] = useState(null); // null | true | false
@@ -4367,6 +4802,7 @@
       const morphResult = necrosis === false
         ? c.morphResultInterstitial
         : (isNecrotizing ? c.necrosisSubtypes[necrosis] : null);
+      const necrosisExtentLabel = isNecrotizing ? (necrosisExtent === 'under30' ? c.necrosisExtentUnder30 : necrosisExtent === 'over30' ? c.necrosisExtentOver30 : null) : null;
 
       let collectionResult = null;
       if (collection === 'early') collectionResult = isNecrotizing ? c.collectionResults.anc : c.collectionResults.apfc;
@@ -4382,14 +4818,19 @@
       const handleCopy = () => {
         const text = c.reportText(
           morphResult ? morphResult.label : t.common.notEvaluated,
+          necrosisExtentLabel,
           collectionResult ? collectionResult.label : c.collectionNone,
           severityResult ? severityResult.label : t.common.notEvaluated
         );
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => {
+        setNecrosis(null); setNecrosisExtent(null); setCollection(null); setOrganFailure(null); setLocalComplications(null);
+      };
+      const hasAnyResult = !!(morphResult || collectionResult || severityResult);
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${hasAnyResult ? 'pb-24' : ''}`}>
           <Card>
             <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.morphTitle}</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.morphQ}</p>
@@ -4407,6 +4848,15 @@
                       <span className="opacity-80">{opt.desc}</span>
                     </button>
                   ))}
+                </div>
+              </div>
+            )}
+            {isNecrotizing && (
+              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.necrosisExtentQ}</p>
+                <div className="flex gap-2">
+                  <button onClick={() => setNecrosisExtent('under30')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${necrosisExtent === 'under30' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.necrosisExtentUnder30}</button>
+                  <button onClick={() => setNecrosisExtent('over30')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${necrosisExtent === 'over30' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.necrosisExtentOver30}</button>
                 </div>
               </div>
             )}
@@ -4457,14 +4907,27 @@
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{severityResult.desc}</p>
             </Card>
           )}
-          {(morphResult || collectionResult || severityResult) && (
-            <Card>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
-            </Card>
-          )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.pancreatitisAtlanta} />
           <ReportBugLink calcTitle={c.title} />
+          {hasAnyResult && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                {severityResult ? (
+                  <span className="text-lg font-black text-blue-600 dark:text-blue-400 block truncate">{severityResult.label}</span>
+                ) : morphResult ? (
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">{morphResult.label}</span>
+                ) : (
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">{collectionResult.label}</span>
+                )}
+                <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{c.severityTitle}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -4505,7 +4968,10 @@
             <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-semibold uppercase">{c.history}</span>
-                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                  <button onClick={handleReset} className="text-slate-500 dark:text-slate-400 font-medium">{t.common.reset}</button>
+                </div>
               </div>
               <ol className="list-decimal pl-4 space-y-1">
                 {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
@@ -4591,7 +5057,10 @@
             <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-semibold uppercase">{c.history}</span>
-                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                  <button onClick={handleReset} className="text-slate-500 dark:text-slate-400 font-medium">{t.common.reset}</button>
+                </div>
               </div>
               <ol className="list-decimal pl-4 space-y-1">
                 {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
@@ -4709,7 +5178,10 @@
             <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-semibold uppercase">{c.history}</span>
-                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+                  <button onClick={handleReset} className="text-slate-500 dark:text-slate-400 font-medium">{t.common.reset}</button>
+                </div>
               </div>
               <ol className="list-decimal pl-4 space-y-1">
                 {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
@@ -4823,20 +5295,48 @@
       return size < 6 ? c.recs.multiSubsolidUnder6 : c.recs.multiSubsolidGeq6;
     }
 
+    // NCCN incidental-nodule table (v6.2026, DIAG-2/DIAG-3) as an interactive equivalent to fleischnerRec().
+    // Note: unlike Fleischner, the NCCN table does not distinguish single vs multiple for solid nodules.
+    function nccnRec(c, type, count, risk, size) {
+      if (type === 'solid') {
+        if (size < 6) return risk === 'high' ? c.nccnRecs.solidHighUnder6 : c.nccnRecs.none;
+        if (size <= 8) return risk === 'high' ? c.nccnRecs.solidHighMid : c.nccnRecs.solidLowMid;
+        return c.nccnRecs.solidOver8;
+      }
+      if (type === 'ggn') {
+        if (count === 'single') return size < 6 ? c.nccnRecs.none : c.nccnRecs.ggnSoloFollow;
+        return size < 6 ? c.nccnRecs.multiSubsolidUnder6 : c.nccnRecs.multiSubsolidGeq6;
+      }
+      // partSolid
+      if (count === 'single') return size < 6 ? c.nccnRecs.none : c.nccnRecs.partSolidSoloFollow;
+      return size < 6 ? c.nccnRecs.multiSubsolidUnder6 : c.nccnRecs.multiSubsolidGeq6;
+    }
+
     function LungNodule() {
       const { t, lang } = useLang();
       const c = t.calc.lungNodule;
       // Paso 1: cribado de nódulo perifisural (PFN / ganglio linfático intrapulmonar), Schreuder et al. 2020.
       // pfnStage: 'gate1' | 'gate2' | 'gate3' | 'result-pfn' | 'result-notpfn' | 'skipped'
-      const [pfnStage, setPfnStage] = useState('gate1');
+      const [pfnHistory, setPfnHistory] = useState(['gate1']);
+      const pfnStage = pfnHistory[pfnHistory.length - 1];
+      const goPfn = (stage) => setPfnHistory(h => [...h, stage]);
+      const pfnBack = () => setPfnHistory(h => h.length > 1 ? h.slice(0, -1) : h);
+      const pfnReset = () => setPfnHistory(['gate1']);
       const [type, setType] = useState('solid');
       const [count, setCount] = useState('single');
       const [risk, setRisk] = useState('low');
       const [size, setSize] = useState('');
+      const [framework, setFramework] = useState('fleischner'); // 'fleischner' | 'nccn'
+
+      const resetAll = () => {
+        pfnReset(); setType('solid'); setCount('single'); setRisk('low'); setSize(''); setFramework('fleischner');
+      };
 
       const sizeNum = parseFloat(size);
       const hasSize = size !== '' && !isNaN(sizeNum);
-      const rec = hasSize ? fleischnerRec(c, type, count, risk, sizeNum) : null;
+      const rec = hasSize ? (framework === 'nccn' ? nccnRec(c, type, count, risk, sizeNum) : fleischnerRec(c, type, count, risk, sizeNum)) : null;
+      const resultLabel = framework === 'nccn' ? c.nccnResult : c.fleischnerResult;
+      const frameworkLabel = framework === 'nccn' ? c.frameworkNccn : c.frameworkFleischner;
 
       const typeLabelText = type === 'solid' ? c.typeSolid : type === 'partSolid' ? c.typePartSolid : c.typeGgn;
       const countLabelText = count === 'single' ? c.countSingle : c.countMultiple;
@@ -4844,7 +5344,7 @@
 
       const handleCopy = () => {
         if (!rec) return;
-        const text = c.reportText(typeLabelText, countLabelText, size, type === 'solid' ? riskLabelText : '', rec);
+        const text = c.reportText(typeLabelText, countLabelText, size, type === 'solid' ? riskLabelText : '', rec, frameworkLabel);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
       const handleCopyPfn = () => {
@@ -4855,9 +5355,14 @@
       const showFleischnerForm = pfnStage === 'result-notpfn' || pfnStage === 'skipped';
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${rec ? 'pb-24' : ''}`}>
           <Card>
-            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1 text-sm">{c.pfnTitle}</h3>
+            <div className="flex justify-between items-start gap-2 mb-1">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{c.pfnTitle}</h3>
+              {pfnHistory.length > 1 && (pfnStage === 'gate2' || pfnStage === 'gate3') && (
+                <button onClick={pfnBack} className="text-xs text-blue-500 dark:text-blue-400 font-medium shrink-0 hover:underline">{c.stepBack}</button>
+              )}
+            </div>
             {pfnStage === 'gate1' && (
               <>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{c.pfnIntro}</p>
@@ -4866,10 +5371,10 @@
                 </ul>
                 <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pfnGate1Q}</label>
                 <div className="flex gap-2 mb-2">
-                  <button onClick={() => setPfnStage('gate2')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
-                  <button onClick={() => setPfnStage('result-notpfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
+                  <button onClick={() => goPfn('gate2')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
+                  <button onClick={() => goPfn('result-notpfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
                 </div>
-                <button onClick={() => setPfnStage('skipped')} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">{c.pfnSkip}</button>
+                <button onClick={() => goPfn('skipped')} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">{c.pfnSkip}</button>
               </>
             )}
             {pfnStage === 'gate2' && (
@@ -4879,8 +5384,8 @@
                 </ul>
                 <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pfnGate2Q}</label>
                 <div className="flex gap-2">
-                  <button onClick={() => setPfnStage('result-pfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
-                  <button onClick={() => setPfnStage('gate3')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
+                  <button onClick={() => goPfn('result-pfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
+                  <button onClick={() => goPfn('gate3')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
                 </div>
               </>
             )}
@@ -4891,8 +5396,8 @@
                 </ul>
                 <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pfnGate3Q}</label>
                 <div className="flex gap-2">
-                  <button onClick={() => setPfnStage('result-pfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
-                  <button onClick={() => setPfnStage('result-notpfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
+                  <button onClick={() => goPfn('result-pfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
+                  <button onClick={() => goPfn('result-notpfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
                 </div>
               </>
             )}
@@ -4901,7 +5406,7 @@
                 <span className="text-lg font-black text-emerald-500 block">{c.pfnResultTitle}</span>
                 <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-snug">{c.pfnResultDesc}</p>
                 <CopyButton onClick={handleCopyPfn}>{t.common.copyReport}</CopyButton>
-                <button onClick={() => setPfnStage('skipped')} className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-3">{c.pfnContinueAnyway}</button>
+                <button onClick={() => goPfn('skipped')} className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-3">{c.pfnContinueAnyway}</button>
               </div>
             )}
             {(pfnStage === 'result-notpfn' || pfnStage === 'skipped') && (
@@ -4912,12 +5417,19 @@
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.pfnNotResultDesc}</p>
                   </div>
                 )}
-                <button onClick={() => setPfnStage('gate1')} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">{c.pfnRestart}</button>
+                <button onClick={pfnReset} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">{c.pfnRestart}</button>
               </div>
             )}
           </Card>
           {showFleischnerForm && (
             <>
+              <Card>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.frameworkLabel}</label>
+                <div className="flex gap-2">
+                  <button onClick={() => setFramework('fleischner')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${framework === 'fleischner' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.frameworkFleischner}</button>
+                  <button onClick={() => setFramework('nccn')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${framework === 'nccn' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.frameworkNccn}</button>
+                </div>
+              </Card>
               <Card>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.typeLabel}</label>
                 <div className="space-y-2">
@@ -4947,9 +5459,8 @@
               </Card>
               {rec && (
                 <Card className="text-center">
-                  <span className="text-xs text-slate-500 block mb-1">{c.fleischnerResult}</span>
+                  <span className="text-xs text-slate-500 block mb-1">{resultLabel}</span>
                   <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 leading-snug">{rec}</p>
-                  <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
                 </Card>
               )}
               <Accordion icon={<IconInfo size={16} />} title={c.nccnTable}>
@@ -4968,6 +5479,18 @@
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.lungNodule} />
           <ReportBugLink calcTitle={c.title} />
+          {rec && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">{rec}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{resultLabel}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -5006,11 +5529,14 @@
         const text = c.reportText(age, packYears, smokingYears, result.label, result.desc);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => {
+        setExcluded(null); setAge(''); setPackYears(''); setSmokingYears('');
+      };
 
       const toneClass = !result ? '' : result.tone === 'red' ? 'text-red-500' : result.tone === 'emerald' ? 'text-emerald-500' : 'text-slate-400';
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${result ? 'pb-24' : ''}`}>
           <Card>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.exclusionQ}</label>
             <ul className="text-xs text-slate-500 dark:text-slate-400 list-disc list-inside space-y-1 mb-3">
@@ -5033,12 +5559,22 @@
               <span className={`text-xl font-black ${toneClass}`}>{result.label}</span>
               <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-snug">{result.desc}</p>
               {result.note && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{result.note}</p>}
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.lungScreening} />
           <ReportBugLink calcTitle={c.title} />
+          {result && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className={`text-lg font-black block truncate ${toneClass}`}>{result.label}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -5069,11 +5605,12 @@
         const text = c.reportText(arterialObj.label, venousObj.label, resultObj.label, resultObj.mgmt);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
+      const resetAll = () => { setArterial(null); setVenous(null); };
 
       const resultColor = resultKey === 'resectable' ? 'text-emerald-500' : resultKey === 'borderline' ? 'text-amber-500' : 'text-red-500';
 
       return (
-        <div className="space-y-4 animate-in fade-in">
+        <div className={`space-y-4 animate-in fade-in ${resultObj ? 'pb-24' : ''}`}>
           <Card>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.arterialLabel}</label>
             <div className="space-y-2">
@@ -5095,13 +5632,524 @@
               <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
               <span className={`text-2xl font-black ${resultColor}`}>{resultObj.label}</span>
               <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-snug">{resultObj.mgmt}</p>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
           <InfoBox tone="amber">{c.m0Note}</InfoBox>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.pancreasResect} />
           <ReportBugLink calcTitle={c.title} />
+          {resultObj && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className={`text-lg font-black block truncate ${resultColor}`}>{resultObj.label}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{c.resultLabel}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: SCORE DE NEFROMETRÍA R.E.N.A.L.
+    ============================================================ */
+    function RenalScore() {
+      const { t } = useLang();
+      const c = t.calc.renalScore;
+      const [radius, setRadius] = useState('');
+      const [exo, setExo] = useState(null);
+      const [near, setNear] = useState('');
+      const [loc, setLoc] = useState(null);
+      const [ant, setAnt] = useState(null);
+      const [hilar, setHilar] = useState(false);
+
+      const radiusNum = radius === '' ? null : parseFloat(radius);
+      const nearNum = near === '' ? null : parseFloat(near);
+      const rPts = radiusNum === null || isNaN(radiusNum) ? null : (radiusNum <= 4 ? 1 : radiusNum < 7 ? 2 : 3);
+      const ePts = exo ? c.exoOptions.find(o => o.key === exo).pts : null;
+      const nPts = nearNum === null || isNaN(nearNum) ? null : (nearNum >= 7 ? 1 : nearNum > 4 ? 2 : 3);
+      const lPts = loc ? c.locOptions.find(o => o.key === loc).pts : null;
+
+      const canCompute = rPts !== null && ePts !== null && nPts !== null && lPts !== null;
+      const total = canCompute ? rPts + ePts + nPts + lPts : null;
+      const risk = total === null ? null : (total <= 6 ? c.riskLow : total <= 9 ? c.riskIntermediate : c.riskHigh);
+      const riskColor = total === null ? '' : (total <= 6 ? 'text-emerald-500' : total <= 9 ? 'text-amber-500' : 'text-red-500');
+      const antLetter = ant || 'x';
+      const formula = canCompute ? `R${rPts}E${ePts}N${nPts}A${antLetter}L${lPts}` : null;
+      const suffix = hilar ? 'h' : '';
+
+      const handleCopy = () => {
+        if (!canCompute) return;
+        const text = c.reportText(formula + suffix, total, risk);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+      const resetAll = () => {
+        setRadius(''); setExo(null); setNear(''); setLoc(null); setAnt(null); setHilar(false);
+      };
+
+      return (
+        <div className={`space-y-4 animate-in fade-in ${canCompute ? 'pb-24' : ''}`}>
+          <Card>
+            <NumberField label={c.radiusLabel} value={radius} onChange={setRadius} placeholder={c.radiusPh} />
+          </Card>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.exoLabel}</label>
+            <div className="space-y-2">
+              {c.exoOptions.map(opt => (
+                <button key={opt.key} onClick={() => setExo(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${exo === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+              ))}
+            </div>
+          </Card>
+          <Card>
+            <NumberField label={c.nearLabel} value={near} onChange={setNear} placeholder={c.nearPh} />
+          </Card>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.locLabel}</label>
+            <div className="space-y-2">
+              {c.locOptions.map(opt => (
+                <button key={opt.key} onClick={() => setLoc(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${loc === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+              ))}
+            </div>
+          </Card>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.anteriorLabel}</label>
+            <div className="flex gap-2">
+              {c.anteriorOptions.map(opt => (
+                <button key={opt.key} onClick={() => setAnt(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${ant === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+              ))}
+            </div>
+          </Card>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.hilarLabel}</label>
+            <div className="flex gap-2">
+              <button onClick={() => setHilar(true)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${hilar === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+              <button onClick={() => setHilar(false)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${hilar === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+            </div>
+          </Card>
+          {canCompute ? (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{formula}{suffix} = {total}</span>
+              <p className={`text-sm font-semibold mt-1 ${riskColor}`}>{risk}</p>
+            </Card>
+          ) : (
+            <InfoBox tone="amber">{c.pending}</InfoBox>
+          )}
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.renalScore} />
+          <ReportBugLink calcTitle={c.title} />
+          {canCompute && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className="text-lg font-black text-slate-800 dark:text-slate-100 block truncate">{formula}{suffix} = {total}</span>
+                <span className={`text-xs font-semibold block truncate ${riskColor}`}>{risk}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: CLEAR CELL LIKELIHOOD SCORE (ccLS v2)
+    ============================================================ */
+    function cclsCompute(t2, cmp, ans) {
+      const { fat, sei, ader, dwi, homog } = ans;
+      if (t2 === 'hyper' || t2 === 'iso') {
+        if (cmp === 'intense') {
+          if (fat === 'y') return { score: 5, diff: null };
+          if (fat === 'n') {
+            if (sei === 'n') return { score: 4, diff: null };
+            if (sei === 'y') return { score: 3, diff: t2 === 'hyper' ? 'diffOncocytoma' : 'diffChrrccOncocytoma' };
+          }
+          return null;
+        }
+        if (cmp === 'moderate') {
+          if (fat === 'y') return { score: 3, diff: null };
+          if (fat === 'n') {
+            if (sei === 'n') return { score: 3, diff: 'diffChrrccOncocytoma' };
+            if (sei === 'y') return { score: 2, diff: 'diffOncocytoma' };
+          }
+          return null;
+        }
+        if (cmp === 'mild') {
+          if (t2 === 'hyper') return { score: 3, diff: null };
+          if (fat === 'y') return { score: 2, diff: null };
+          if (fat === 'n') {
+            if (dwi === 'n') return { score: 3, diff: null };
+            if (dwi === 'y') return { score: 1, diff: 'diffPrccFpaml' };
+          }
+          return null;
+        }
+      }
+      if (t2 === 'hypo') {
+        if (cmp === 'mild') {
+          if (fat === 'y') return { score: 3, diff: null };
+          if (fat === 'n') return { score: 1, diff: 'diffPrccFpaml' };
+          return null;
+        }
+        if (cmp === 'intense' || cmp === 'moderate') {
+          if (ader === 'y') return { score: 2, diff: 'diffFpaml' };
+          if (ader === 'n') {
+            if (dwi === 'y') return { score: 2, diff: 'diffFpaml' };
+            if (dwi === 'n') {
+              if (homog === 'y') return { score: 3, diff: 'diffFpaml' };
+              if (homog === 'n') return { score: 4, diff: 'diffFpaml' };
+            }
+          }
+          return null;
+        }
+      }
+      return null;
+    }
+
+    function CCLS() {
+      const { t } = useLang();
+      const c = t.calc.ccls;
+      const [gate, setGate] = useState(null);
+      const [t2, setT2] = useState(null);
+      const [cmp, setCmp] = useState(null);
+      const [fat, setFat] = useState(null);
+      const [sei, setSei] = useState(null);
+      const [ader, setAder] = useState(null);
+      const [dwi, setDwi] = useState(null);
+      const [homog, setHomog] = useState(null);
+
+      const resetAncillary = () => { setFat(null); setSei(null); setAder(null); setDwi(null); setHomog(null); };
+      const handleGate = (key) => { setGate(key); setT2(null); setCmp(null); resetAncillary(); };
+      const handleT2 = (key) => { setT2(key); setCmp(null); resetAncillary(); };
+      const handleCmp = (key) => { setCmp(key); resetAncillary(); };
+      const handleFat = (v) => { setFat(v); setSei(null); setDwi(null); };
+      const handleAder = (v) => { setAder(v); setDwi(null); setHomog(null); };
+      const handleDwi = (v) => { setDwi(v); setHomog(null); };
+
+      const showFatQ = gate === 'proceed' && t2 && cmp && !(t2 === 'hyper' && cmp === 'mild') && !(t2 === 'hypo' && cmp !== 'mild');
+      const showSeiQ = showFatQ && fat === 'n' && (t2 === 'hyper' || t2 === 'iso') && (cmp === 'intense' || cmp === 'moderate');
+      const showDwiMildIsoQ = showFatQ && fat === 'n' && t2 === 'iso' && cmp === 'mild';
+      const showAderQ = gate === 'proceed' && t2 === 'hypo' && (cmp === 'intense' || cmp === 'moderate');
+      const showDwiHypoQ = showAderQ && ader === 'n';
+      const showHomogQ = showDwiHypoQ && dwi === 'n';
+
+      const result = (t2 && cmp) ? cclsCompute(t2, cmp, { fat, sei, ader, dwi, homog }) : null;
+      const likertLabel = result ? c.likert[result.score] : null;
+      const diffText = result && result.diff ? c[result.diff] : null;
+      const mgmtText = result ? (result.score <= 2 ? c.mgmtLow : result.score === 3 ? c.mgmtMid : c.mgmtHigh) : null;
+      const scoreColor = !result ? '' : (result.score <= 2 ? 'text-emerald-500' : result.score === 3 ? 'text-amber-500' : 'text-red-500');
+
+      const t2Label = t2 ? c.t2Options.find(o => o.key === t2).label : null;
+      const cmpLabel = cmp ? c.cmpOptions.find(o => o.key === cmp).label : null;
+
+      const handleCopy = () => {
+        if (!result) return;
+        const parts = [t2Label, cmpLabel];
+        if (fat !== null) parts.push(`${c.fatQ.split('?')[0]}? ${fat === 'y' ? t.common.yes : t.common.no}`);
+        if (sei !== null) parts.push(`${c.seiQ.split('?')[0]}? ${sei === 'y' ? t.common.yes : t.common.no}`);
+        if (ader !== null) parts.push(`${c.aderQ.split('?')[0]}? ${ader === 'y' ? t.common.yes : t.common.no}`);
+        if (dwi !== null) parts.push(`${c.dwiQ.split('?')[0]}? ${dwi === 'y' ? t.common.yes : t.common.no}`);
+        if (homog !== null) parts.push(`${c.homogQ.split('?')[0]}? ${homog === 'y' ? t.common.yes : t.common.no}`);
+        const path = parts.filter(Boolean).join('; ');
+        const text = c.reportText(path, result.score, likertLabel, diffText, mgmtText);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      const handleReset = () => { setGate(null); setT2(null); setCmp(null); resetAncillary(); };
+
+      const YesNo = ({ value, onChange }) => (
+        <div className="flex gap-2">
+          <button onClick={() => onChange('y')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${value === 'y' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+          <button onClick={() => onChange('n')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${value === 'n' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+        </div>
+      );
+
+      return (
+        <div className={`space-y-4 animate-in fade-in ${result ? 'pb-24' : ''}`}>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.gateQ}</label>
+            <div className="space-y-2">
+              <button onClick={() => handleGate('fat')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'fat' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateFat}</button>
+              <button onClick={() => handleGate('cystic')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'cystic' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateCystic}</button>
+              <button onClick={() => handleGate('proceed')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'proceed' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateProceed}</button>
+            </div>
+          </Card>
+
+          {gate === 'fat' && (
+            <Card className="text-center border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-slate-800 dark:text-slate-100">{c.resultAmlTitle}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">{c.resultAmlDesc}</p>
+            </Card>
+          )}
+          {gate === 'cystic' && (
+            <Card className="text-center border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-slate-800 dark:text-slate-100">{c.resultBosniakTitle}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">{c.resultBosniakDesc}</p>
+            </Card>
+          )}
+
+          {gate === 'proceed' && (
+            <>
+              <Card>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.t2Label}</label>
+                <div className="flex gap-2">
+                  {c.t2Options.map(opt => (
+                    <button key={opt.key} onClick={() => handleT2(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${t2 === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                  ))}
+                </div>
+              </Card>
+
+              {t2 && (
+                <Card>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.cmpLabel}</label>
+                  <div className="flex gap-2">
+                    {c.cmpOptions.map(opt => (
+                      <button key={opt.key} onClick={() => handleCmp(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cmp === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {showFatQ && (
+                <Card>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.fatQ}</label>
+                  <YesNo value={fat} onChange={handleFat} />
+                </Card>
+              )}
+              {showSeiQ && (
+                <Card>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.seiQ}</label>
+                  <YesNo value={sei} onChange={setSei} />
+                </Card>
+              )}
+              {showDwiMildIsoQ && (
+                <Card>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.dwiQ}</label>
+                  <YesNo value={dwi} onChange={setDwi} />
+                </Card>
+              )}
+              {showAderQ && (
+                <Card>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.aderQ}</label>
+                  <YesNo value={ader} onChange={handleAder} />
+                </Card>
+              )}
+              {showDwiHypoQ && (
+                <Card>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.dwiQ}</label>
+                  <YesNo value={dwi} onChange={handleDwi} />
+                </Card>
+              )}
+              {showHomogQ && (
+                <Card>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.homogQ}</label>
+                  <YesNo value={homog} onChange={setHomog} />
+                </Card>
+              )}
+
+              {result && (
+                <Card className="text-center">
+                  <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
+                  <span className={`text-3xl font-black ${scoreColor}`}>{result.score}/5</span>
+                  <p className={`text-sm font-semibold mt-1 ${scoreColor}`}>{likertLabel}</p>
+                  {diffText && <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-snug">{diffText}</p>}
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{mgmtText}</p>
+                </Card>
+              )}
+              {!result && (
+                <button onClick={handleReset} className="w-full py-2.5 rounded-xl font-medium text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
+                  {t.common.reset}
+                </button>
+              )}
+            </>
+          )}
+          {(gate === 'fat' || gate === 'cystic') && (
+            <button onClick={handleReset} className="w-full py-2.5 rounded-xl font-medium text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
+              {t.common.reset}
+            </button>
+          )}
+
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.ccls} />
+          <ReportBugLink calcTitle={c.title} />
+          {result && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className={`text-lg font-black block truncate ${scoreColor}`}>ccLS {result.score}/5</span>
+                <span className={`text-xs font-semibold block truncate ${scoreColor}`}>{likertLabel}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={handleReset} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: RIESGO DE LEIOMIOSARCOMA EN LESIÓN MIOMETRIAL
+    ============================================================ */
+    function LeiomyomaRisk() {
+      const { t } = useLang();
+      const c = t.calc.leiomyoma;
+      const [step1, setStep1] = useState(null);
+      const [t2, setT2] = useState(null);
+      const [dw, setDw] = useState(null);
+      const [adc, setAdc] = useState('');
+      const [margins, setMargins] = useState(null);
+      const [menop, setMenop] = useState(null);
+
+      const handleStep1 = (v) => { setStep1(v); setT2(null); setDw(null); setAdc(''); setMargins(null); setMenop(null); };
+      const handleT2 = (v) => { setT2(v); setDw(null); setAdc(''); setMargins(null); setMenop(null); };
+      const handleDw = (v) => { setDw(v); setAdc(''); setMargins(null); setMenop(null); };
+      const handleMargins = (v) => { setMargins(v); setMenop(null); };
+      const resetAll = () => { setStep1(null); setT2(null); setDw(null); setAdc(''); setMargins(null); setMenop(null); };
+      const handleBack = () => {
+        if (menop !== null) { setMenop(null); return; }
+        if (margins !== null) { setMargins(null); return; }
+        if (adc !== '') { setAdc(''); return; }
+        if (dw !== null) { setDw(null); return; }
+        if (t2 !== null) { setT2(null); return; }
+        if (step1 !== null) { setStep1(null); return; }
+      };
+
+      const adcNum = adc === '' ? null : parseFloat(adc);
+      const adcValid = adcNum !== null && !isNaN(adcNum);
+
+      let resultKey = null;
+      if (step1 === 'no') resultKey = 'score1';
+      else if (step1 === 'yes') {
+        if (t2 === 'low') resultKey = 'score2';
+        else if (t2 === 'highInt') {
+          if (dw === 'low') resultKey = 'score2';
+          else if (dw === 'high') {
+            if (adcValid) {
+              if (adcNum > 1.23) resultKey = 'score2';
+              else if (margins === 'smooth') resultKey = 'score3';
+              else if (margins === 'irregular') {
+                if (menop === 'pre') resultKey = 'score4';
+                else if (menop === 'post') resultKey = 'score5';
+              }
+            }
+          }
+        }
+      }
+      const resultObj = resultKey ? c[resultKey] : null;
+      const scoreColor = !resultKey ? '' : (resultKey === 'score1' ? 'text-slate-500' : resultKey === 'score2' ? 'text-emerald-500' : resultKey === 'score3' ? 'text-amber-500' : 'text-red-500');
+
+      const showMarginsQ = step1 === 'yes' && t2 === 'highInt' && dw === 'high' && adcValid && adcNum <= 1.23;
+      const showMenopQ = showMarginsQ && margins === 'irregular';
+
+      const handleCopy = () => {
+        if (!resultObj) return;
+        const parts = [];
+        if (step1) parts.push(step1 === 'yes' ? c.step1Yes : c.step1No);
+        if (t2) parts.push(t2 === 'low' ? c.step2Low : c.step2HighInt);
+        if (dw) parts.push(dw === 'low' ? c.step3Low : c.step3High);
+        if (dw === 'high' && adcValid) parts.push(`ADC ${adc} × 10⁻³ mm²/s`);
+        if (margins) parts.push(margins === 'smooth' ? c.step5Smooth : c.step5Irregular);
+        if (menop) parts.push(menop === 'pre' ? c.step6Pre : c.step6Post);
+        const path = parts.join('; ');
+        const text = c.reportText(path, resultObj.label, resultObj.ppv, resultObj.mgmt);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className={`space-y-4 animate-in fade-in ${resultObj ? 'pb-24' : ''}`}>
+          {step1 !== null && (
+            <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400 flex justify-between items-center">
+              <span className="font-semibold uppercase">{c.resultLabel}</span>
+              <div className="flex items-center gap-3">
+                <button onClick={handleBack} className="text-blue-500 font-medium">{c.stepBack}</button>
+                <button onClick={resetAll} className="text-slate-500 dark:text-slate-400 font-medium">{t.common.reset}</button>
+              </div>
+            </div>
+          )}
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step1Q}</label>
+            <div className="space-y-2">
+              <button onClick={() => handleStep1('yes')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${step1 === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step1Yes}</button>
+              <button onClick={() => handleStep1('no')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${step1 === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step1No}</button>
+            </div>
+          </Card>
+
+          {step1 === 'yes' && (
+            <Card>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step2Q}</label>
+              <div className="space-y-2">
+                <button onClick={() => handleT2('low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t2 === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step2Low}</button>
+                <button onClick={() => handleT2('highInt')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t2 === 'highInt' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step2HighInt}</button>
+              </div>
+            </Card>
+          )}
+
+          {step1 === 'yes' && t2 === 'highInt' && (
+            <Card>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step3Q}</label>
+              <div className="space-y-2">
+                <button onClick={() => handleDw('low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${dw === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step3Low}</button>
+                <button onClick={() => handleDw('high')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${dw === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step3High}</button>
+              </div>
+            </Card>
+          )}
+
+          {step1 === 'yes' && t2 === 'highInt' && dw === 'high' && (
+            <Card>
+              <NumberField label={c.step4Q} value={adc} onChange={setAdc} placeholder={c.step4Ph} />
+            </Card>
+          )}
+
+          {showMarginsQ && (
+            <Card>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step5Q}</label>
+              <div className="space-y-2">
+                <button onClick={() => handleMargins('smooth')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${margins === 'smooth' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step5Smooth}</button>
+                <button onClick={() => handleMargins('irregular')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${margins === 'irregular' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step5Irregular}</button>
+              </div>
+            </Card>
+          )}
+
+          {showMenopQ && (
+            <Card>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step6Q}</label>
+              <div className="flex gap-2">
+                <button onClick={() => setMenop('pre')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${menop === 'pre' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step6Pre}</button>
+                <button onClick={() => setMenop('post')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${menop === 'post' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step6Post}</button>
+              </div>
+            </Card>
+          )}
+
+          {resultObj && (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
+              <span className={`text-2xl font-black ${scoreColor}`}>{resultObj.label}</span>
+              {resultObj.ppv && <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 mt-1">{resultObj.ppv}</p>}
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-snug">{resultObj.mgmt}</p>
+            </Card>
+          )}
+
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.leiomyoma} />
+          <ReportBugLink calcTitle={c.title} />
+          {resultObj && (
+            <StickyBar>
+              <div className="min-w-0 text-left">
+                <span className={`text-lg font-black block truncate ${scoreColor}`}>{resultObj.label}</span>
+                {resultObj.ppv && <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{resultObj.ppv}</span>}
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <ResetIconButton onClick={resetAll} label={t.common.reset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              </div>
+            </StickyBar>
+          )}
         </div>
       );
     }
@@ -5132,6 +6180,9 @@
       { id: 'lungScreening', catKey: 'torax', component: LungScreening },
       { id: 'lungCysts', catKey: 'torax', component: LungCysts },
       { id: 'bosniak', catKey: 'strat', component: Bosniak },
+      { id: 'renalScore', catKey: 'gu', component: RenalScore },
+      { id: 'ccls', catKey: 'gu', component: CCLS },
+      { id: 'leiomyoma', catKey: 'gyn', component: LeiomyomaRisk },
     ];
 
     /* ============================================================
