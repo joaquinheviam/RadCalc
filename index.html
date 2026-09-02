@@ -55,14 +55,41 @@
     const REPORT_EMAIL = 'drjoaquinhevia@gmail.com';
     const LINKEDIN_URL = 'https://www.linkedin.com/in/joaqu%C3%ADn-hevia-morel-07421675/';
 
-    const buildMailto = (calcTitle, lang) => {
-      const subject = lang === 'es'
-        ? `RadioCalc Clinical - Reporte de error${calcTitle ? ' (' + calcTitle + ')' : ''}`
-        : `RadioCalc Clinical - Bug report${calcTitle ? ' (' + calcTitle + ')' : ''}`;
-      const body = lang === 'es'
-        ? `Hola Dr. Hevia,\n\nEncontré un posible error en la calculadora: ${calcTitle || '(general del sitio)'}.\n\nDescripción del problema:\n- \n\nValores ingresados (si aplica):\n- \n\nResultado esperado vs. obtenido:\n- \n\nGracias.`
-        : `Hi Dr. Hevia,\n\nI found a possible error in the calculator: ${calcTitle || '(general site issue)'}.\n\nDescription of the issue:\n- \n\nInput values (if applicable):\n- \n\nExpected vs. obtained result:\n- \n\nThanks.`;
-      return `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // type: 'bug' (reportar error) | 'update' (sugerir actualización) | 'suggestion' (sugerencia general)
+    const buildMailto = (calcTitle, lang, type = 'bug') => {
+      const page = calcTitle || (lang === 'es' ? '(general del sitio)' : '(general site issue)');
+      const templates = {
+        es: {
+          bug: {
+            subject: `RadioCalc Clinical - Reporte de error${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+            body: `Hola Dr. Hevia,\n\nEncontré un posible error en la calculadora: ${page}.\n\nDescripción del problema:\n- \n\nValores ingresados (si aplica):\n- \n\nResultado esperado vs. obtenido:\n- \n\nGracias.`,
+          },
+          update: {
+            subject: `RadioCalc Clinical - Sugerencia de actualización${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+            body: `Hola Dr. Hevia,\n\nCreo que la calculadora "${page}" podría actualizarse (nueva guía, versión de consenso, referencia más reciente, etc.).\n\nDetalle de la actualización sugerida:\n- \n\nFuente/referencia (si aplica):\n- \n\nGracias.`,
+          },
+          suggestion: {
+            subject: `RadioCalc Clinical - Sugerencia${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+            body: `Hola Dr. Hevia,\n\nTengo una sugerencia sobre: ${page}.\n\nDetalle:\n- \n\nGracias.`,
+          },
+        },
+        en: {
+          bug: {
+            subject: `RadioCalc Clinical - Bug report${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+            body: `Hi Dr. Hevia,\n\nI found a possible error in the calculator: ${page}.\n\nDescription of the issue:\n- \n\nInput values (if applicable):\n- \n\nExpected vs. obtained result:\n- \n\nThanks.`,
+          },
+          update: {
+            subject: `RadioCalc Clinical - Update suggestion${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+            body: `Hi Dr. Hevia,\n\nI think the calculator "${page}" could be updated (new guideline, consensus version, newer reference, etc.).\n\nSuggested update details:\n- \n\nSource/reference (if applicable):\n- \n\nThanks.`,
+          },
+          suggestion: {
+            subject: `RadioCalc Clinical - Suggestion${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+            body: `Hi Dr. Hevia,\n\nI have a suggestion about: ${page}.\n\nDetails:\n- \n\nThanks.`,
+          },
+        },
+      };
+      const tpl = templates[lang][type] || templates[lang].bug;
+      return `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(tpl.subject)}&body=${encodeURIComponent(tpl.body)}`;
     };
 
     /* ============================================================
@@ -152,39 +179,292 @@
       );
     }
 
-    // Sección de referencias bibliográficas, colapsable, al pie de cada calculadora
-    function References({ items }) {
-      const { t } = useLang();
-      const [open, setOpen] = useState(false);
-      if (!items || items.length === 0) return null;
+    // Acordeón genérico colapsable (usado por Referencias y por "Cómo se usa")
+    function Accordion({ icon, title, children, defaultOpen = false }) {
+      const [open, setOpen] = useState(defaultOpen);
       return (
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
           <button
             onClick={() => setOpen(!open)}
             className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors"
           >
-            <span className="flex items-center gap-2"><IconBookOpen size={16} /> {t.common.references}</span>
-            <IconChevronDown className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+            <span className="flex items-center gap-2">{icon} {title}</span>
+            <IconChevronDown className={`transition-transform shrink-0 ${open ? 'rotate-180' : ''}`} />
           </button>
           {open && (
-            <ol className="refs-enter px-5 pb-4 space-y-2 text-xs text-slate-500 dark:text-slate-400 list-decimal list-inside border-t border-slate-100 dark:border-slate-700 pt-3">
-              {items.map((ref, i) => <li key={i} className="leading-relaxed">{ref}</li>)}
-            </ol>
+            <div className="refs-enter px-5 pb-4 border-t border-slate-100 dark:border-slate-700 pt-3">
+              {children}
+            </div>
           )}
         </div>
       );
     }
 
-    // Botón para reportar un error, disponible dentro de cada calculadora
+    // Sección de referencias bibliográficas, colapsable, al pie de cada calculadora
+    function References({ items }) {
+      const { t } = useLang();
+      if (!items || items.length === 0) return null;
+      return (
+        <Accordion icon={<IconBookOpen size={16} />} title={t.common.references}>
+          <ol className="space-y-2 text-xs text-slate-500 dark:text-slate-400 list-decimal list-inside">
+            {items.map((ref, i) => <li key={i} className="leading-relaxed">{ref}</li>)}
+          </ol>
+        </Accordion>
+      );
+    }
+
+    // Sección "Cómo se usa / puntos de corte", colapsable, al pie de cada calculadora
+    function UsageNotes({ paragraphs }) {
+      const { t } = useLang();
+      if (!paragraphs || paragraphs.length === 0) return null;
+      return (
+        <Accordion icon={<IconInfo size={16} />} title={t.common.howToUse}>
+          <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+        </Accordion>
+      );
+    }
+
+    // Contenedor de esquema/ilustración original (SVG dibujado a mano, sin fotos ni capturas de terceros)
+    function Schematic({ children, caption }) {
+      return (
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-4 flex flex-col items-center gap-2">
+          <div className="w-full max-w-xs text-slate-700 dark:text-slate-200">{children}</div>
+          {caption && <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center leading-snug">{caption}</p>}
+        </div>
+      );
+    }
+
+    /* ============================================================
+       ESQUEMAS ORIGINALES (SVG dibujados a mano, línea simple)
+       Todos son ilustraciones propias, no fotografías ni capturas
+       de terceros, para evitar cualquier problema de derechos de autor.
+    ============================================================ */
+    const SVG_STROKE = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
+
+    function DiagProstate() {
+      return (
+        <svg viewBox="0 0 200 140" width="100%">
+          <ellipse cx="100" cy="70" rx="55" ry="38" {...SVG_STROKE} />
+          <line x1="100" y1="32" x2="100" y2="108" strokeDasharray="3 3" {...SVG_STROKE} />
+          <line x1="45" y1="70" x2="155" y2="70" strokeDasharray="3 3" {...SVG_STROKE} />
+          <text x="100" y="22" textAnchor="middle" fontSize="11" fill="currentColor">LONG</text>
+          <text x="168" y="74" textAnchor="middle" fontSize="11" fill="currentColor">TR</text>
+          <text x="100" y="128" textAnchor="middle" fontSize="11" fill="currentColor">AP</text>
+          <line x1="100" y1="70" x2="100" y2="108" {...SVG_STROKE} strokeDasharray="0" />
+        </svg>
+      );
+    }
+    function DiagDixon() {
+      return (
+        <svg viewBox="0 0 200 120" width="100%">
+          <rect x="20" y="30" width="70" height="60" rx="6" {...SVG_STROKE} />
+          <text x="55" y="65" textAnchor="middle" fontSize="12" fill="currentColor">In-phase</text>
+          <rect x="110" y="30" width="70" height="60" rx="6" {...SVG_STROKE} />
+          <text x="145" y="60" textAnchor="middle" fontSize="12" fill="currentColor">Out-of-</text>
+          <text x="145" y="74" textAnchor="middle" fontSize="12" fill="currentColor">phase</text>
+          <line x1="90" y1="60" x2="108" y2="60" {...SVG_STROKE} markerEnd="url(#arrow)" />
+          <path d="M100 55 L108 60 L100 65 Z" fill="currentColor" />
+        </svg>
+      );
+    }
+    function DiagWashoutCurve() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <line x1="20" y1="110" x2="190" y2="110" {...SVG_STROKE} />
+          <line x1="20" y1="110" x2="20" y2="15" {...SVG_STROKE} />
+          <text x="4" y="18" fontSize="9" fill="currentColor">UH</text>
+          <text x="170" y="124" fontSize="9" fill="currentColor">t</text>
+          <path d="M20 95 L55 30 L100 55 L190 78" {...SVG_STROKE} stroke="#2563eb" />
+          <circle cx="20" cy="95" r="3" fill="#2563eb" />
+          <circle cx="55" cy="30" r="3" fill="#2563eb" />
+          <circle cx="100" cy="55" r="3" fill="#2563eb" />
+          <circle cx="190" cy="78" r="3" fill="#2563eb" />
+          <text x="12" y="106" fontSize="8" fill="currentColor">sin CT</text>
+          <text x="45" y="24" fontSize="8" fill="currentColor">portal</text>
+          <text x="100" y="48" fontSize="8" fill="currentColor">5-10-15min</text>
+        </svg>
+      );
+    }
+    function DiagAdrenalCSI() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <circle cx="60" cy="60" r="30" {...SVG_STROKE} />
+          <text x="60" y="105" textAnchor="middle" fontSize="10" fill="currentColor">Lesión</text>
+          <circle cx="150" cy="60" r="22" {...SVG_STROKE} strokeDasharray="4 3" />
+          <text x="150" y="105" textAnchor="middle" fontSize="10" fill="currentColor">Bazo/hígado</text>
+          <text x="60" y="35" textAnchor="middle" fontSize="9" fill="currentColor">↓ señal fuera de fase</text>
+        </svg>
+      );
+    }
+    function DiagLiverIron() {
+      return (
+        <svg viewBox="0 0 200 120" width="100%">
+          <path d="M30 90 Q20 50 55 35 Q80 15 120 30 Q160 25 175 60 Q180 90 150 95 Q90 105 30 90 Z" {...SVG_STROKE} />
+          {[0,1,2,3,4].map(i => <circle key={i} cx={60 + i*22} cy={60 + (i%2)*10} r="2.4" fill="currentColor" />)}
+          <text x="100" y="112" textAnchor="middle" fontSize="9" fill="currentColor">R2* ↑ con depósito de hierro</text>
+        </svg>
+      );
+    }
+    function DiagThymus() {
+      return (
+        <svg viewBox="0 0 200 120" width="100%">
+          <path d="M80 20 Q60 40 65 70 Q68 95 90 100 L90 40 Z" {...SVG_STROKE} />
+          <path d="M120 20 Q140 40 135 70 Q132 95 110 100 L110 40 Z" {...SVG_STROKE} />
+          <rect x="150" y="45" width="18" height="45" rx="3" {...SVG_STROKE} strokeDasharray="3 2" />
+          <text x="159" y="102" textAnchor="middle" fontSize="9" fill="currentColor">músculo ref.</text>
+          <text x="100" y="112" textAnchor="middle" fontSize="9" fill="currentColor">Timo (lóbulos)</text>
+        </svg>
+      );
+    }
+    function DiagThyroidNodule() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <path d="M60 30 Q30 40 30 70 Q30 100 65 110 L75 100 Q60 90 60 65 Q60 45 80 35 Z" {...SVG_STROKE} />
+          <path d="M140 30 Q170 40 170 70 Q170 100 135 110 L125 100 Q140 90 140 65 Q140 45 120 35 Z" {...SVG_STROKE} />
+          <ellipse cx="100" cy="68" rx="22" ry="16" {...SVG_STROKE} stroke="#2563eb" />
+          <text x="100" y="120" textAnchor="middle" fontSize="9" fill="currentColor">Nódulo tiroideo</text>
+        </svg>
+      );
+    }
+    function DiagOvaryMRI() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <ellipse cx="100" cy="65" rx="50" ry="40" {...SVG_STROKE} />
+          <circle cx="80" cy="55" r="14" {...SVG_STROKE} stroke="#2563eb" />
+          <path d="M92 62 Q100 75 112 60" {...SVG_STROKE} stroke="#2563eb" />
+          <text x="100" y="118" textAnchor="middle" fontSize="9" fill="currentColor">Componente sólido + curva DCE</text>
+        </svg>
+      );
+    }
+    function DiagProstateZones() {
+      return (
+        <svg viewBox="0 0 200 140" width="100%">
+          <circle cx="100" cy="75" r="55" {...SVG_STROKE} />
+          <circle cx="100" cy="75" r="28" {...SVG_STROKE} strokeDasharray="4 3" />
+          <text x="100" y="80" textAnchor="middle" fontSize="9" fill="currentColor">TZ</text>
+          <text x="100" y="30" textAnchor="middle" fontSize="9" fill="currentColor">PZ</text>
+        </svg>
+      );
+    }
+    function DiagBladderWall() {
+      return (
+        <svg viewBox="0 0 200 120" width="100%">
+          <path d="M20 100 Q100 20 180 100" {...SVG_STROKE} />
+          <path d="M30 96 Q100 30 170 96" {...SVG_STROKE} strokeDasharray="3 2" />
+          <ellipse cx="100" cy="65" rx="10" ry="14" {...SVG_STROKE} stroke="#dc2626" />
+          <text x="100" y="112" textAnchor="middle" fontSize="9" fill="currentColor">Pared vesical + lesión (T2/DWI/DCE)</text>
+        </svg>
+      );
+    }
+    function DiagLiverLesion() {
+      return (
+        <svg viewBox="0 0 200 120" width="100%">
+          <path d="M20 80 Q20 30 70 25 Q120 15 160 40 Q190 55 175 85 Q140 105 80 100 Q30 100 20 80 Z" {...SVG_STROKE} />
+          <circle cx="105" cy="60" r="16" {...SVG_STROKE} stroke="#dc2626" />
+          <text x="105" y="105" textAnchor="middle" fontSize="9" fill="currentColor">Lesión + realce arterial / lavado</text>
+        </svg>
+      );
+    }
+    function DiagCoronary() {
+      return (
+        <svg viewBox="0 0 200 120" width="100%">
+          <circle cx="100" cy="60" r="45" {...SVG_STROKE} />
+          <circle cx="100" cy="60" r="27" {...SVG_STROKE} />
+          <path d="M100 15 Q60 30 55 60 Q52 85 80 100" {...SVG_STROKE} stroke="#dc2626" strokeWidth="4" />
+          <text x="100" y="115" textAnchor="middle" fontSize="9" fill="currentColor">Corte transversal, placa/estenosis</text>
+        </svg>
+      );
+    }
+    function DiagLungNodule() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <path d="M60 20 Q30 40 30 75 Q30 110 70 115 L90 100 L90 30 Z" {...SVG_STROKE} />
+          <path d="M140 20 Q170 40 170 75 Q170 110 130 115 L110 100 L110 30 Z" {...SVG_STROKE} />
+          <circle cx="70" cy="60" r="9" {...SVG_STROKE} stroke="#dc2626" />
+          <text x="100" y="126" textAnchor="middle" fontSize="9" fill="currentColor">Nódulo pulmonar</text>
+        </svg>
+      );
+    }
+    function DiagLungCysts() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <path d="M60 20 Q30 40 30 75 Q30 110 70 115 L90 100 L90 30 Z" {...SVG_STROKE} />
+          <path d="M140 20 Q170 40 170 75 Q170 110 130 115 L110 100 L110 30 Z" {...SVG_STROKE} />
+          {[[55,55,8],[75,80,6],[125,60,7],[145,90,5]].map(([cx,cy,r],i) => <circle key={i} cx={cx} cy={cy} r={r} {...SVG_STROKE} stroke="#2563eb" />)}
+          <text x="100" y="126" textAnchor="middle" fontSize="9" fill="currentColor">Quistes: pared / distribución / n°</text>
+        </svg>
+      );
+    }
+    function DiagUterus() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <path d="M100 20 Q60 20 55 55 Q30 65 30 90 M100 20 Q140 20 145 55 Q170 65 170 90" {...SVG_STROKE} />
+          <path d="M70 55 Q100 40 130 55 Q140 90 100 105 Q60 90 70 55 Z" {...SVG_STROKE} />
+          <circle cx="88" cy="68" r="10" {...SVG_STROKE} stroke="#2563eb" />
+          <text x="100" y="120" textAnchor="middle" fontSize="9" fill="currentColor">Útero / cavidad / mioma</text>
+        </svg>
+      );
+    }
+    function DiagKidneyMass() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <path d="M70 20 Q40 20 35 50 Q25 65 35 80 Q40 110 70 110 Q100 110 100 75 Q100 40 70 20 Z" {...SVG_STROKE} />
+          <circle cx="65" cy="60" r="15" {...SVG_STROKE} stroke="#dc2626" />
+          <text x="67" y="122" textAnchor="middle" fontSize="9" fill="currentColor">Riñón + masa exofítica/endofítica</text>
+        </svg>
+      );
+    }
+    function DiagPancreas() {
+      return (
+        <svg viewBox="0 0 200 120" width="100%">
+          <path d="M20 70 Q40 40 80 45 Q120 35 160 50 Q180 55 175 70 Q160 80 120 75 Q80 85 40 80 Q20 78 20 70 Z" {...SVG_STROKE} />
+          <circle cx="130" cy="58" r="12" {...SVG_STROKE} stroke="#2563eb" />
+          <line x1="60" y1="60" x2="150" y2="58" strokeDasharray="2 2" {...SVG_STROKE} />
+          <text x="100" y="106" textAnchor="middle" fontSize="9" fill="currentColor">Páncreas + conducto + quiste</text>
+        </svg>
+      );
+    }
+    function DiagRectum() {
+      return (
+        <svg viewBox="0 0 200 130" width="100%">
+          <path d="M100 15 L100 90" {...SVG_STROKE} />
+          <ellipse cx="100" cy="100" rx="45" ry="22" {...SVG_STROKE} />
+          <circle cx="90" cy="95" r="14" {...SVG_STROKE} stroke="#dc2626" />
+          <path d="M55 100 Q100 130 145 100" strokeDasharray="3 2" {...SVG_STROKE} />
+          <text x="100" y="16" textAnchor="middle" fontSize="9" fill="currentColor">Recto</text>
+          <text x="100" y="124" textAnchor="middle" fontSize="8" fill="currentColor">fascia mesorrectal</text>
+        </svg>
+      );
+    }
+
+    // Botón/afordancia para reportar un error: intenta mailto y siempre ofrece copiar el correo
+    // (algunos navegadores de escritorio sin cliente de correo configurado no hacen nada con mailto:)
     function ReportBugLink({ calcTitle }) {
       const { t, lang } = useLang();
+      const handleCopyEmail = (e) => {
+        e.preventDefault();
+        copyToClipboard(REPORT_EMAIL, t.common.emailCopiedOk, t.common.copiedErr);
+      };
       return (
-        <a
-          href={buildMailto(calcTitle, lang)}
-          className="flex items-center justify-center gap-2 text-xs text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-2"
-        >
-          <IconMail size={14} /> {t.common.reportBug}
-        </a>
+        <div className="flex items-center justify-center gap-x-3 gap-y-1 text-xs text-slate-400 py-1 flex-wrap">
+          <a href={buildMailto(calcTitle, lang, 'bug')} className="flex items-center gap-1.5 hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-1">
+            <IconMail size={14} /> {t.common.reportBug}
+          </a>
+          <span className="text-slate-300 dark:text-slate-600">·</span>
+          <a href={buildMailto(calcTitle, lang, 'update')} className="flex items-center gap-1.5 hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-1">
+            <IconMail size={14} /> {t.common.suggestUpdate}
+          </a>
+          <span className="text-slate-300 dark:text-slate-600">·</span>
+          <a href={buildMailto(calcTitle, lang, 'suggestion')} className="flex items-center gap-1.5 hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-1">
+            <IconMail size={14} /> {t.common.suggestGeneral}
+          </a>
+          <span className="text-slate-300 dark:text-slate-600">·</span>
+          <button onClick={handleCopyEmail} className="flex items-center gap-1.5 hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-1">
+            <IconCopy size={14} /> {t.common.copyEmail}
+          </button>
+        </div>
       );
     }
 
@@ -203,6 +483,8 @@
           references: 'Referencias bibliográficas',
           reportBug: 'Reportar un error en esta calculadora',
           reportBugGeneral: 'Reportar un error',
+          suggestUpdate: 'Sugerir actualización',
+          suggestGeneral: 'Sugerencia',
           createdBy: 'Creado por',
           disclaimer: 'Esta herramienta es un apoyo de referencia rápida para el informe radiológico y no reemplaza el juicio clínico ni las guías vigentes de cada sociedad científica. Verifique siempre los criterios actualizados antes de tomar decisiones clínicas.',
           back: 'Volver',
@@ -211,11 +493,26 @@
           notEvaluated: 'No evaluado',
           none: 'Ninguno',
           cutoff: 'Corte',
+          howToUse: 'Cómo se usa y puntos de corte',
+          copyEmail: 'Copiar correo',
+          emailCopiedOk: 'Correo copiado al portapapeles: drjoaquinhevia@gmail.com',
+          yes: 'Sí',
+          no: 'No',
+          optional: 'opcional',
+          category: 'Categoría',
+          risk: 'Riesgo',
+          recommendation: 'Recomendación',
+          schematic: 'Esquema',
+          next: 'Siguiente',
         },
         categories: {
           abdomen: 'Abdomen y Pelvis',
           torax: 'Tórax',
-          strat: 'Estratificación de riesgo',
+          cardio: 'Cardiovascular',
+          strat: 'Estratificación de riesgo (RADS)',
+          gyn: 'Ginecología',
+          gu: 'Genitourinario',
+          oncrecto: 'Oncología - Recto',
         },
         calc: {
           psad: {
@@ -231,6 +528,11 @@
             normal: 'Normal',
             reportText: (vol, psa, psad, risk) =>
               `Volumen prostático: ${vol} cc.\nPSA Total: ${psa} ng/mL.\nDensidad de PSA (PSAD): ${psad} ng/mL/cc (${risk}).`,
+            usage: [
+              'El volumen prostático se calcula con la fórmula elipsoide: AP × TR × LONG × factor (0.52 clásico, o 0.523 = π/6). La PSAD es el PSA total dividido por el volumen prostático.',
+              'PSAD ≥ 0.15 ng/mL/cc se considera elevado y aumenta la probabilidad de cáncer de próstata clínicamente significativo, apoyando la indicación de biopsia (especialmente útil en zona gris de PSA 4-10 ng/mL).',
+              'PSAD < 0.15 ng/mL/cc, junto a otros factores (PI-RADS, tacto rectal, historia familiar), puede apoyar vigilancia activa en lugar de biopsia inmediata.',
+            ],
           },
           mriFf: {
             title: 'Fracción Grasa por RM (Dixon)',
@@ -240,20 +542,44 @@
             estimated: 'Fracción Grasa Estimada',
             reportText: (ff, sIn, sOut) =>
               `Fracción grasa por RM (Dixon/phase-inversion): ${ff}%. (In-phase: ${sIn}, Out-phase: ${sOut}).`,
+            usage: [
+              'Fracción grasa (%) = (Señal in-phase − Señal out-of-phase) / (2 × Señal in-phase) × 100. Se basa en la cancelación de señal grasa/agua en secuencias de desplazamiento químico (Dixon).',
+              'Útil para cuantificar esteatosis hepática (>5-6% sugiere esteatosis) y para caracterizar lesiones con contenido graso microscópico (ej. adenoma adrenal, adenoma hepatocelular).',
+              'Limitación: la técnica de doble eco simple sobreestima la grasa en hígados con alto contenido graso por efectos de T2* y no es tan precisa como PDFF (proton density fat fraction) multi-eco.',
+            ],
           },
           adrenalCt: {
             title: 'Adrenales: Lavado en TC',
             nonContrast: 'Sin contraste (UH)',
-            portal: 'Fase portal (UH)',
-            delayed: 'Fase tardía 15 min (UH)',
+            portal: 'Fase realzada / portal (UH)',
+            delayed: 'Fase tardía (UH)',
+            delayedAt: (min) => `Fase tardía a los ${min} min (UH)`,
             absolute: 'Absoluto (APW)',
             relative: 'Relativo (RPW)',
             adenomaCompatible: 'Los valores de lavado son compatibles con un adenoma suprarrenal.',
             adenomaNot: 'Los valores no alcanzan el punto de corte típico para adenoma. Considerar otros diagnósticos diferenciales.',
             compatible: 'Compatible con adenoma',
             notSuggestive: 'No sugestivo de adenoma',
-            reportText: (nc, ven, del, apw, apwR, rpw, rpwR) =>
-              `TC Adrenal:\nUH sin contraste: ${nc}\nUH fase portal: ${ven}\nUH tardía (15 min): ${del}\nLavado absoluto (APW): ${apw}% (${apwR}).\nLavado relativo (RPW): ${rpw}% (${rpwR}).`,
+            protocol: 'Protocolo de lavado',
+            protocol15: '15 min (clásico)',
+            protocol10: '10 min',
+            protocol5: '5 min',
+            fiveMinTitle: 'Criterios combinados (Kamiyama 2009) — se cumple con cualquiera de los 4:',
+            fiveMinNc: 'UH sin contraste ≤ 19',
+            fiveMinDelayed: 'UH a los 5 min ≤ 50',
+            fiveMinPew: 'Lavado (PEW) ≥ 45%',
+            fiveMinRpew: 'Lavado relativo a basal (RPEW) ≥ 31%',
+            reportText: (protocolLabel, nc, ven, del, apw, apwR, rpw, rpwR) =>
+              `TC Adrenal — protocolo de lavado a ${protocolLabel}:\nUH sin contraste: ${nc}\nUH fase realzada: ${ven}\nUH fase tardía: ${del}\nLavado absoluto (APW): ${apw}% (${apwR}).\nLavado relativo (RPW): ${rpw}% (${rpwR}).`,
+            reportText5min: (nc, ven, del, met, concl) =>
+              `TC Adrenal — protocolo de 5 min (Kamiyama 2009):\nUH sin contraste: ${nc}\nUH a los 35 s: ${ven}\nUH a los 5 min: ${del}\nCriterios cumplidos: ${met}.\nConclusión: ${concl}.`,
+            usage: [
+              'Un adenoma adrenal rico en lípidos muestra realce tras contraste seguido de un lavado (washout) rápido del contraste, a diferencia de la mayoría de las lesiones no adenomatosas (metástasis, feocromocitoma, carcinoma).',
+              'Protocolo clásico de 15 minutos (Caoili 2002): APW ≥ 60% o RPW ≥ 40% son compatibles con adenoma (sensibilidad y especificidad altas, > 90%).',
+              'Protocolo de 10 minutos (Blake 2006): permite acortar el estudio; los puntos de corte se ajustan a APW ≥ 52% y RPW ≥ 37.5%.',
+              'Protocolo de 5 minutos (Kamiyama 2009): protocolo abreviado que combina 4 criterios (UH sin contraste, UH a los 5 min, lavado porcentual y lavado relativo); si se cumple cualquiera de ellos, es compatible con adenoma. En su serie mostró 100% de especificidad.',
+              'No se incluye un protocolo de lavado a los 3 minutos porque, pese a la búsqueda dirigida, no se encontró un estudio publicado que valide un punto de corte específico a ese tiempo; si cuenta con esa referencia, puede enviarla para agregarla.',
+            ],
           },
           adrenalMri: {
             title: 'Adrenales: Índice CSI en RM',
@@ -267,6 +593,11 @@
               `RM Adrenal (Chemical Shift):\nLesión (Fase/Fuera): ${lIn} / ${lOut}\nReferencia (Fase/Fuera): ${rIn} / ${rOut}\nÍndice CSI: ${csi}% (${concl}).`,
             conclAdenoma: '<71% sugestivo de adenoma rico en lípidos',
             conclNot: '≥71% no concluyente para adenoma rico en lípidos',
+            usage: [
+              'El índice de desplazamiento químico (CSI) compara la caída de señal de la lesión adrenal entre secuencias en fase y fuera de fase, normalizada por un órgano de referencia (bazo o hígado) para corregir la caída de señal basal del campo.',
+              'CSI = [(señal fuera de fase / señal en fase)lesión] / [(señal fuera de fase / señal en fase)referencia] × 100.',
+              'Un índice < 71% (marcada caída de señal por lípidos intracelulares) es sugerente de adenoma adrenal rico en lípidos. Aproximadamente 30% de los adenomas son "pobres en lípidos" y no muestran esta caída, requiriendo TC con lavado como alternativa.',
+            ],
           },
           siderosis: {
             title: 'Siderosis Hepática por RM',
@@ -280,6 +611,11 @@
             catSevere: 'Sobrecarga Severa',
             reportText: (t2, r2, lic, cat) =>
               `Siderosis hepática por RM (método R2*):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nLIC estimado: ${lic} mg/g de tejido seco.\nCategoría: ${cat}.`,
+            usage: [
+              'R2* (=1000/T2*) se relaciona linealmente con la concentración de hierro hepático (LIC) según la calibración de St Pierre et al. 2005: LIC = 0.0254 × R2* + 0.202 (mg/g de tejido seco).',
+              'Puntos de corte aproximados de LIC (guía ESGAR/SAR 2023): normal < 1.8 mg/g (1.8-3.2 mg/g se considera "borderline"); sobrecarga leve 1.8-7.0 mg/g; moderada 7.0-15.0 mg/g; severa > 15.0 mg/g.',
+              'Nota de transparencia: se mantiene la fórmula de St Pierre 2005 (la más citada y validada) tal como se solicitó. No fue posible acceder a la página de Columbia University (columbia.edu/~sj2532/t2_star.html) por un problema de redirección del propio sitio; los valores de referencia aquí citados provienen de las referencias verificadas en Dropbox y de la guía ESGAR/SAR 2023.',
+            ],
           },
           thymic: {
             title: 'Grasa Tímica / Hiperplasia',
@@ -294,6 +630,11 @@
               `RM Timo (Chemical Shift):\nTimo (Fase/Fuera): ${tIn} / ${tOut}\nMúsculo (Fase/Fuera): ${mIn} / ${mOut}\nChemical Shift Ratio (CSR): ${csr}\nSignal Intensity Index (SII): ${sii}%\nConclusión: ${concl}`,
             conclFatty: 'Hallazgos compatibles con presencia de grasa microscópica (sugiere hiperplasia tímica o tejido normal).',
             conclNotFatty: 'Sin evidencia de caída de señal (sugiere lesión sólida / timoma).',
+            usage: [
+              'El timo normal y la hiperplasia tímica contienen grasa microscópica entremezclada que cae de señal en secuencias fuera de fase; los timomas y otras neoplasias sólidas no muestran esta caída.',
+              'CSR (chemical shift ratio) = (señal timo fuera-fase / señal timo en-fase) ÷ (señal músculo fuera-fase / señal músculo en-fase). SII (signal intensity index) = (señal en-fase − señal fuera-fase) / señal en-fase × 100, del timo.',
+              'CSR < 0.9 o SII > 9% son compatibles con contenido graso (hiperplasia/normal). Valores por encima de estos puntos de corte deben hacer sospechar una lesión sólida (timoma u otro tumor tímico) y considerar biopsia o seguimiento.',
+            ],
           },
           tirads: {
             title: 'ACR TI-RADS (Tiroides)',
@@ -303,6 +644,7 @@
             criteria: {
               composition: {
                 title: 'Composición',
+                hint: 'Proporción de tejido sólido vs. quístico dentro del nódulo. Elija solo el componente predominante si es mixto.',
                 options: [
                   'Quístico o casi completamente quístico',
                   'Espongiforme',
@@ -312,18 +654,22 @@
               },
               echogenicity: {
                 title: 'Ecogenicidad',
+                hint: 'Ecogenicidad del componente sólido comparada con el parénquima tiroideo adyacente (no aplica a nódulos puramente quísticos/espongiformes).',
                 options: ['Anecoico', 'Hiperecoico o isoecoico', 'Hipoecoico', 'Muy hipoecoico'],
               },
               shape: {
                 title: 'Forma',
+                hint: 'Evaluar en el plano transverso: si el diámetro AP es mayor que el transverso ("más alto que ancho"), es un signo sospechoso.',
                 options: ['Más ancho que alto', 'Más alto que ancho'],
               },
               margin: {
                 title: 'Margen',
+                hint: 'Los bordes del nódulo respecto a la glándula. La extensión extratiroidea franca es el hallazgo de mayor puntaje.',
                 options: ['Liso', 'Mal definido', 'Lobulado o irregular', 'Extensión extratiroidea'],
               },
               echogenicFoci: {
                 title: 'Focos ecogénicos (sume todos los que apliquen)',
+                hint: 'A diferencia de las otras categorías, aquí se pueden marcar varios focos a la vez y sus puntos se suman.',
                 options: [
                   'Ninguno o artefacto en cola de cometa grande',
                   'Macrocalcificaciones',
@@ -339,51 +685,64 @@
               TR4: { risk: 'Moderadamente sospechoso', recs: 'PAAF si ≥ 1.5 cm. Seguimiento si ≥ 1.0 cm' },
               TR5: { risk: 'Altamente sospechoso', recs: 'PAAF si ≥ 1.0 cm. Seguimiento si ≥ 0.5 cm' },
             },
+            managementTable: 'Tabla de manejo',
+            managementHeaders: ['Categoría', 'Puntaje', 'Riesgo de malignidad', 'PAAF', 'Seguimiento'],
+            managementRows: [
+              ['TR1', '0 pts', 'Benigno', 'No', 'No'],
+              ['TR2', '2 pts', 'No sospechoso', 'No', 'No'],
+              ['TR3', '3 pts', 'Levemente sospechoso (2-5%)', '≥ 2.5 cm', '≥ 1.5 cm'],
+              ['TR4', '4-6 pts', 'Moderadamente sospechoso (5-20%)', '≥ 1.5 cm', '≥ 1.0 cm'],
+              ['TR5', '≥7 pts', 'Altamente sospechoso (>20%)', '≥ 1.0 cm', '≥ 0.5 cm'],
+            ],
             reportText: (c, e, s, m, f, pts, cat, risk, recs) =>
               `Nódulo tiroideo (ACR TI-RADS):\n- Composición: ${c}\n- Ecogenicidad: ${e}\n- Forma: ${s}\n- Margen: ${m}\n- Focos ecogénicos: ${f}\nPuntaje total: ${pts} puntos.\nCategoría: ${cat} (${risk}).\nRecomendación: ${recs}.`,
+            usage: [
+              'El puntaje TI-RADS se calcula sumando los puntos de las 5 categorías (composición, ecogenicidad, forma, márgenes, focos ecogénicos); a mayor puntaje, mayor sospecha de malignidad.',
+              'La decisión de PAAF (punción con aguja fina) depende tanto de la categoría TI-RADS como del tamaño del nódulo (ver tabla de manejo). Nódulos TR1-TR2 no requieren PAAF independiente del tamaño.',
+              'Este sistema fue diseñado para nódulos tiroideos sólidos o predominantemente sólidos; su aplicación puede ser limitada en nódulos puramente quísticos o con calcificaciones extensas que oscurecen la evaluación.',
+            ],
           },
           orads: {
-            title: 'ACR O-RADS (Ovario)',
+            title: 'ACR O-RADS MRI (Ovario)',
             history: 'Historial',
             undo: 'Volver atrás',
             malignancyRisk: 'Riesgo de malignidad',
             recommendation: 'Recomendación',
-            start: { q: 'Seleccione el tipo de lesión:', options: [
-              { label: 'Ovario normal', next: 'orads1' },
-              { label: 'Lesión unilocular', next: 'unilocular' },
-              { label: 'Lesión multilocular', next: 'multilocular' },
-              { label: 'Lesión sólida o sólido-quística', next: 'solid' },
-              { label: 'Presencia de ascitis', next: 'orads5' },
+            start: { q: '¿Qué muestra la lesión anexial en la RM?', options: [
+              { label: 'Ovario normal o hallazgo fisiológico (folículo, cuerpo lúteo, quiste hemorrágico ≤ 3 cm en premenopáusica)', next: 'orMri1' },
+              { label: 'Ascitis y/o implantes/nodularidad peritoneal u omental', next: 'orMri5' },
+              { label: 'Lesión quística (uni o multilocular) sin tejido sólido que realce', next: 'cysticNoSolid' },
+              { label: 'Lesión con grasa macroscópica (ej. teratoma quístico)', next: 'fatContaining' },
+              { label: 'Lesión con tejido sólido, septos gruesos o nódulos murales', next: 'solidTissue' },
             ]},
             nodes: {
-              orads1: { cat: 'O-RADS 1', risk: 'Normal (0%)', recs: 'Seguimiento ginecológico habitual' },
-              unilocular: { q: 'Características del quiste unilocular:', options: [
-                { label: 'Quiste simple < 10 cm', next: 'orads2' },
-                { label: 'Quiste simple ≥ 10 cm', next: 'orads3' },
-                { label: 'Lesión benigna clásica < 10 cm (dermoide, endometrioma, etc.)', next: 'orads2' },
-                { label: 'Lesión benigna clásica ≥ 10 cm', next: 'orads3' },
-                { label: 'Pared irregular (< 3 mm)', next: 'orads3' },
+              orMri1: { cat: 'O-RADS 1', risk: 'Normal / fisiológico (N/A)', recs: 'No requiere caracterización adicional; seguimiento ginecológico habitual.' },
+              cysticNoSolid: { q: 'Características de la lesión quística (sin tejido sólido que realce):', options: [
+                { label: 'Unilocular, pared lisa y fina, sin nódulos', next: 'orMri2' },
+                { label: 'Multilocular, paredes/septos lisos y finos', next: 'orMri2' },
+                { label: 'Pared o septos gruesos/irregulares (sin realce tipo sólido)', next: 'orMri3' },
               ]},
-              multilocular: { q: 'Características del quiste multilocular (sin componente sólido):', options: [
-                { label: '< 10 cm', next: 'orads3' },
-                { label: '≥ 10 cm', next: 'orads4' },
-                { label: 'Pared o tabiques irregulares o gruesos', next: 'orads4' },
+              fatContaining: { q: 'Contenido graso macroscópico:', options: [
+                { label: 'Predominio graso, sin componente sólido que realce (patrón típico de teratoma quístico maduro)', next: 'orMri2' },
+                { label: 'Grasa asociada a un componente sólido que realza', next: 'solidTissue' },
               ]},
-              solid: { q: 'Características del componente sólido:', options: [
-                { label: 'Contorno liso, cualquier tamaño, score color 1', next: 'orads3' },
-                { label: 'Contorno liso, < 3 cm, score color 2-3', next: 'orads3' },
-                { label: 'Contorno liso, ≥ 3 cm, score color 2-3', next: 'orads4' },
-                { label: 'Cualquier tamaño, score color 4', next: 'orads5' },
-                { label: 'Contorno irregular, cualquier tamaño', next: 'orads5' },
-                { label: 'Componente sólido con papilas (≥ 1)', next: 'orads4' },
+              solidTissue: { q: 'Cinética de realce del tejido sólido (curva DCE, o comparación del realce a los 30-40 s con el miometrio si no hay estudio dinámico):', options: [
+                { label: 'Tejido sólido sin realce', next: 'orMri3' },
+                { label: 'Realce ≤ miometrio (curva tipo 1: progresiva/persistente)', next: 'orMri4' },
+                { label: 'Realce > miometrio (curva tipo 2 meseta o tipo 3 lavado)', next: 'orMri5' },
               ]},
-              orads2: { cat: 'O-RADS 2', risk: 'Casi ciertamente benigno (< 1%)', recs: 'Seguimiento por ginecología (ecografía anual)' },
-              orads3: { cat: 'O-RADS 3', risk: 'Bajo riesgo (1-10%)', recs: 'Referir a ginecólogo. Considerar RM.' },
-              orads4: { cat: 'O-RADS 4', risk: 'Riesgo intermedio (10-50%)', recs: 'Manejo por ginecólogo oncólogo. RM o interconsulta.' },
-              orads5: { cat: 'O-RADS 5', risk: 'Alto riesgo (> 50%)', recs: 'Manejo por ginecólogo oncólogo.' },
+              orMri2: { cat: 'O-RADS 2', risk: 'Casi con certeza benigno (< 0.5%)', recs: 'Seguimiento por ginecología (ecografía o RM de control según criterio clínico).' },
+              orMri3: { cat: 'O-RADS 3', risk: 'Riesgo bajo (~5%)', recs: 'Referir a ginecólogo; considerar seguimiento imagenológico o manejo quirúrgico según contexto clínico.' },
+              orMri4: { cat: 'O-RADS 4', risk: 'Riesgo intermedio (~50%)', recs: 'Manejo por ginecólogo oncólogo.' },
+              orMri5: { cat: 'O-RADS 5', risk: 'Riesgo alto (~90%)', recs: 'Manejo por ginecólogo oncólogo.' },
             },
             reportText: (path, cat, risk, recs) =>
-              `Caracterización anexial (ACR O-RADS ecografía):\nHallazgos: ${path}\nClasificación: ${cat}\nRiesgo de malignidad: ${risk}\nRecomendación: ${recs}`,
+              `Caracterización anexial (ACR O-RADS MRI):\nHallazgos: ${path}\nClasificación: ${cat}\nRiesgo de malignidad: ${risk}\nRecomendación: ${recs}`,
+            usage: [
+              'O-RADS MRI clasifica lesiones anexiales indeterminadas en categorías 1 a 5 según hallazgos morfológicos (contenido quístico/sólido/graso, grosor de pared y septos) y, cuando hay tejido sólido, la cinética de realce dinámico (curva tipo 1, 2 o 3) comparada con el miometrio.',
+              'La presencia de ascitis y/o implantes peritoneales/omentales asigna automáticamente O-RADS 5, independientemente de las características de la lesión anexial.',
+              'Este árbol es una simplificación con fines educativos y de apoyo al informe; el algoritmo completo del ACR (incluyendo subtipos y tamaños específicos) debe consultarse para casos límite. Requiere protocolo con secuencias dinámicas post-contraste (DCE) o, alternativamente, una fase única a los 30-40 segundos comparada con el miometrio.',
+            ],
           },
           pirads: {
             title: 'PI-RADS v2.1 (Próstata)',
@@ -401,6 +760,142 @@
             reportText: (zone, dwi, t2, dce, score) =>
               `PI-RADS v2.1:\nLocalización: ${zone}\nDWI/ADC score: ${dwi}\nT2W score: ${t2}\nDCE: ${dce}\nPuntuación final: PI-RADS ${score}`,
             naText: 'N/D',
+            dwiDefs: [
+              '1 = Sin anomalía en ADC y DWI',
+              '2 = Foco lineal/en cuña de baja señal en ADC, sin correlato claro en DWI alta b',
+              '3 = Hallazgo focal, sospecha equívoca (ni claramente 2 ni claramente 4)',
+              '4 = Foco marcadamente hipointenso en ADC y marcadamente hiperintenso en DWI alta b, < 1.5 cm',
+              '5 = Igual que 4 pero ≥ 1.5 cm, o con extensión extraprostática/invasión definitiva',
+            ],
+            t2Defs: [
+              '1 = Señal intermedia homogénea (normal)',
+              '2 = Nódulo encapsulado, circunscrito, hipointenso ("BPH típico")',
+              '3 = Señal heterogénea con márgenes oscurecidos; no encaja claramente en 2 ni 4',
+              '4 = Lesión no circunscrita, homogéneamente hipointensa, < 1.5 cm',
+              '5 = Igual que 4 pero ≥ 1.5 cm, o con extensión extraprostática/invasión definitiva',
+            ],
+            dceDef: 'DCE positivo = realce focal, precoz, que corresponde o precede al hallazgo sospechoso en T2W/DWI. DCE negativo = ausencia de realce focal temprano correspondiente.',
+            usage: [
+              'PI-RADS combina una secuencia "dominante" (DWI/ADC en zona periférica, T2W en zona de transición) con secuencias secundarias que solo se usan para resolver un puntaje 3 equívoco.',
+              'En la zona periférica: si DWI = 3, el DCE decide (positivo sube a PI-RADS 4). En la zona de transición: si T2W = 3, el score DWI decide (DWI = 5 sube a PI-RADS 4).',
+              'PI-RADS ≥ 3 habitualmente se considera el umbral para discutir biopsia dirigida (PI-RADS 3 según contexto clínico/PSAD, PI-RADS 4-5 con indicación más consistente de biopsia).',
+            ],
+          },
+          virads: {
+            title: 'VI-RADS (RM de Vejiga)',
+            step1: '1. Score T2W',
+            step2: '2. Score DWI/ADC (si disponible, es la secuencia dominante)',
+            step3: '3. Score DCE (dinámico con contraste; usar si DWI no es diagnóstica)',
+            finalCategory: 'Categoría final (VI-RADS)',
+            dominantNote: 'La categoría final usa la secuencia dominante: DWI si está disponible y es de calidad diagnóstica; si no, DCE; si tampoco, T2W.',
+            t2Defs: [
+              '1 = Línea hipointensa de la pared, delgada y continua (normal)',
+              '2 = Lesión exofítica con tallo, o engrosamiento mucoso, línea hipointensa preservada',
+              '3 = No se puede excluir con certeza invasión muscular (señal baja en la pared, indeterminada)',
+              '4 = Interrupción focal de la muscular propia, sin extensión extravesical',
+              '5 = Extensión extravesical o invasión de órganos adyacentes',
+            ],
+            dwiDefs: [
+              '1 = Sin lesión / sin distorsión de la línea hipointensa de la pared en DWI/ADC',
+              '2 = Hiperintensidad leve en DWI, capa de la pared preservada',
+              '3 = Señal intermedia, interrupción indeterminada de la línea de la pared',
+              '4 = Interrupción focal de la pared con lesión de alta señal, protruyendo pero confinada a la vejiga',
+              '5 = Masa de alta señal con extensión extravesical más allá de la pared',
+            ],
+            dceDefs: [
+              '1 = Sin realce precoz',
+              '2 = Realce similar al urotelio normal, línea interna de realce preservada',
+              '3 = Interrupción focal indeterminada del realce',
+              '4 = Realce precoz focal de la lesión con interrupción de la línea, sin extensión extravesical',
+              '5 = Realce que se extiende más allá de la pared vesical hacia la grasa perivesical o estructuras adyacentes',
+            ],
+            interpretation: {
+              low: 'VI-RADS 1-2: bajo riesgo de enfermedad músculo-invasiva.',
+              equivocal: 'VI-RADS 3: hallazgo equívoco/indeterminado para invasión muscular.',
+              high: 'VI-RADS 4-5: alta probabilidad de enfermedad músculo-invasiva (VI-RADS ≥ 4 es el punto de corte más usado en los metaanálisis).',
+            },
+            reportText: (t2, dwi, dce, final) =>
+              `RM de vejiga (VI-RADS):\nScore T2W: ${t2}\nScore DWI/ADC: ${dwi}\nScore DCE: ${dce}\nCategoría final: VI-RADS ${final}`,
+            usage: [
+              'VI-RADS estratifica el riesgo de invasión de la muscular propia (enfermedad músculo-invasiva) en el cáncer vesical mediante RM multiparamétrica (T2W + DWI/ADC + DCE), en una escala de 1 (muy bajo riesgo) a 5 (muy alto riesgo/invasión confirmada).',
+              'La secuencia dominante es DWI/ADC cuando tiene calidad diagnóstica; si no, se usa DCE; T2W por sí sola tiene menor rendimiento pero ayuda a definir las categorías 1-2.',
+              'Metaanálisis (Woo et al. 2020, Luo et al. 2020) muestran sensibilidad ~83-85% y especificidad ~88-90% para VI-RADS ≥ 4 en la detección de enfermedad músculo-invasiva; esto apoya la RM como herramienta previa a la resección transuretral (RTU) para planificar el manejo.',
+            ],
+          },
+          lirads: {
+            title: 'LI-RADS v2018 (TC/RM de Hígado)',
+            sizeLabel: 'Tamaño de la observación',
+            size1: '< 10 mm', size2: '10-19 mm', size3: '≥ 20 mm',
+            apheLabel: 'Realce arterial no periférico (APHE) tipo "nonrim"',
+            featuresLabel: 'Características adicionales (marque las que apliquen)',
+            featWashout: 'Lavado ("washout") no periférico',
+            featCapsule: 'Cápsula realzante',
+            featGrowth: 'Crecimiento umbral (≥ 50% en ≤ 6 meses)',
+            lrM: '¿Rasgos de malignidad no específica de CHC ("LR-M": realce en anillo, restricción difusa marcada en anillo, necrosis/isquemia marcada, morfología infiltrativa)?',
+            lrTiv: '¿Tumor evidente en vena (invasión macrovascular tumoral, "LR-TIV")?',
+            categories: {
+              'LR-1': 'Definitivamente benigno',
+              'LR-2': 'Probablemente benigno',
+              'LR-3': 'Probabilidad intermedia de CHC',
+              'LR-4': 'Probablemente CHC',
+              'LR-5': 'Definitivamente CHC',
+              'LR-M': 'Probablemente o definitivamente maligno, no específico de CHC',
+              'LR-TIV': 'Tumor en vena (invasión macrovascular tumoral)',
+            },
+            reportText: (size, aphe, feats, override, cat) =>
+              `LI-RADS v2018 (TC/RM):\nTamaño: ${size}\nAPHE no periférico: ${aphe}\nCaracterísticas adicionales: ${feats}\n${override ? override + '\n' : ''}Categoría: ${cat}`,
+            usage: [
+              'LI-RADS v2018 se aplica a observaciones hepáticas en pacientes con riesgo establecido de carcinoma hepatocelular (CHC): cirrosis, hepatitis B crónica, o CHC previo.',
+              'LR-TIV y LR-M tienen prioridad sobre la categoría numérica: si hay tumor en vena o rasgos no específicos de CHC, esa categoría reemplaza al LR-1 a 5 calculado por tamaño/APHE/características.',
+              'La categoría numérica combina el tamaño de la lesión, la presencia de realce arterial no periférico (APHE) y el número de características adicionales (lavado no periférico, cápsula realzante, crecimiento umbral), con una regla especial en la "celda diagonal": 10-19 mm + APHE + 1 característica = LR-4, pero + ≥2 características = LR-5; ≥20 mm + APHE + ≥1 característica = LR-5.',
+              'Esta calculadora implementa el "LI-RADS Core" (algoritmo diagnóstico principal); no reemplaza el manual completo del ACR LI-RADS para casos especiales (lesiones tratadas, hallazgos ancilares, etc.).',
+            ],
+          },
+          liradsTr: {
+            title: 'LI-RADS: Respuesta a Tratamiento (LR-TR)',
+            selectLabel: 'Seleccione la categoría según los hallazgos post-tratamiento:',
+            options: {
+              nonevaluable: { label: 'No evaluable', desc: 'Calidad de imagen o técnica inadecuada para evaluar la respuesta (ej. artefactos, protocolo incompleto).' },
+              nonviable: { label: 'No viable', desc: 'Sin realce nodular, en forma de mora o grosero de tipo tumoral en la zona tratada (puede haber realce periférico fino y uniforme "en anillo" esperado del tratamiento).' },
+              equivocal: { label: 'Equívoco', desc: 'Hallazgos indeterminados entre tejido tumoral viable y cambios postratamiento; realce atípico en cantidad, tamaño o desarrollo nuevo que no cumple criterios claros de "viable".' },
+              viable: { label: 'Viable', desc: 'Realce nodular, en forma de mora o grosero de tipo tumoral, dentro de la zona tratada o en su margen, con el mismo patrón que un CHC no tratado (APHE con lavado).' },
+            },
+            reportText: (cat, desc) =>
+              `LI-RADS Respuesta a Tratamiento (LR-TR):\nCategoría: LR-TR ${cat}\nHallazgo: ${desc}`,
+            usage: [
+              'LR-TR se aplica a lesiones hepáticas tratadas localorregionalmente (ej. quimioembolización, ablación, radioembolización) para clasificar la probabilidad de tumor viable residual o recurrente.',
+              'Las 4 categorías son: No evaluable, No viable, Equívoco y Viable. "Viable" se basa en reconocer un patrón de realce similar al de un CHC no tratado (realce arterial con lavado) dentro o en el margen de la zona tratada.',
+              'Nota de transparencia: este algoritmo representa el marco general de 4 categorías del ACR LI-RADS; matices específicos para radioterapia estereotáctica corporal (SBRT), donde el realce periférico esperado puede ser más prolongado y grueso, solo están parcialmente representados aquí.',
+            ],
+          },
+          cadrads: {
+            title: 'CAD-RADS 2.0 (Angio-TC Coronaria)',
+            stenosisLabel: 'Estenosis máxima por segmento coronario',
+            stenosisOptions: [
+              { key: '0', label: '0% (sin placa ni estenosis)' },
+              { key: '1', label: '1-24% (mínima)' },
+              { key: '2', label: '25-49% (leve)' },
+              { key: '3', label: '50-69% (moderada)' },
+              { key: '4A', label: '70-99% en 1-2 vasos (severa)' },
+              { key: '4B', label: 'Tronco coronario izq. ≥ 50%, o enfermedad de 3 vasos ≥ 70%' },
+              { key: '5', label: '100% (oclusión total)' },
+              { key: 'N', label: 'No evaluable / no diagnóstica' },
+            ],
+            modifiersLabel: 'Modificadores (marque los que apliquen)',
+            modN: 'N — Segmento no diagnóstico',
+            modS: 'S — Stent',
+            modG: 'G — Injerto (bypass)',
+            modI: 'I — Isquemia (estudio funcional positivo)',
+            modHrp: 'HRP — Placa de alto riesgo',
+            modE: 'E — Excepción (ej. trasplante, coronaria anómala)',
+            resultLabel: 'Resultado CAD-RADS',
+            reportText: (cadrads, mods) =>
+              `CAD-RADS 2.0:\nCategoría: ${cadrads}${mods ? '/' + mods : ''}`,
+            usage: [
+              'CAD-RADS clasifica la enfermedad coronaria por angio-TC según el grado de estenosis del segmento más afectado, de CAD-RADS 0 (ausencia de placa) a 5 (oclusión total), más la categoría N para estudios no diagnósticos.',
+              'Los modificadores se agregan tras la categoría principal (ej. "CAD-RADS 3/HRP" o "CAD-RADS 4B/I"): N (segmento no evaluable), S (stent), G (injerto), I (isquemia en estudio funcional), HRP (placa de alto riesgo) y E (excepción, ej. trasplante cardíaco o coronaria anómala).',
+              'CAD-RADS 0-2 generalmente no requiere tratamiento adicional; CAD-RADS 3 amerita evaluación clínica y posible tratamiento médico; CAD-RADS 4A-4B suele requerir evaluación de isquemia o angiografía invasiva; CAD-RADS 5 amerita revascularización urgente según contexto clínico.',
+            ],
           },
         },
       },
@@ -415,6 +910,8 @@
           references: 'References',
           reportBug: 'Report an error in this calculator',
           reportBugGeneral: 'Report an error',
+          suggestUpdate: 'Suggest an update',
+          suggestGeneral: 'Suggestion',
           createdBy: 'Created by',
           disclaimer: 'This tool is a quick reference aid for radiology reporting and does not replace clinical judgment or the current guidelines of each scientific society. Always verify up-to-date criteria before making clinical decisions.',
           back: 'Back',
@@ -423,11 +920,26 @@
           notEvaluated: 'Not evaluated',
           none: 'None',
           cutoff: 'Cutoff',
+          howToUse: 'How it works & cutoffs',
+          copyEmail: 'Copy email',
+          emailCopiedOk: 'Email copied to clipboard: drjoaquinhevia@gmail.com',
+          yes: 'Yes',
+          no: 'No',
+          optional: 'optional',
+          category: 'Category',
+          risk: 'Risk',
+          recommendation: 'Recommendation',
+          schematic: 'Diagram',
+          next: 'Next',
         },
         categories: {
           abdomen: 'Abdomen and Pelvis',
           torax: 'Chest',
-          strat: 'Risk stratification',
+          cardio: 'Cardiovascular',
+          strat: 'Risk stratification (RADS)',
+          gyn: 'Gynecology',
+          gu: 'Genitourinary',
+          oncrecto: 'Oncology - Rectum',
         },
         calc: {
           psad: {
@@ -443,6 +955,11 @@
             normal: 'Normal',
             reportText: (vol, psa, psad, risk) =>
               `Prostate volume: ${vol} cc.\nTotal PSA: ${psa} ng/mL.\nPSA density (PSAD): ${psad} ng/mL/cc (${risk}).`,
+            usage: [
+              'Prostate volume uses the ellipsoid formula: AP × TR × LONG × factor (0.52 classic, or 0.523 = π/6). PSAD is total PSA divided by prostate volume.',
+              'PSAD ≥ 0.15 ng/mL/cc is considered elevated and increases the likelihood of clinically significant prostate cancer, supporting biopsy (especially useful in the PSA 4-10 ng/mL gray zone).',
+              'PSAD < 0.15 ng/mL/cc, combined with other factors (PI-RADS, digital rectal exam, family history), can support active surveillance instead of immediate biopsy.',
+            ],
           },
           mriFf: {
             title: 'MRI Fat Fraction (Dixon)',
@@ -452,20 +969,44 @@
             estimated: 'Estimated Fat Fraction',
             reportText: (ff, sIn, sOut) =>
               `MRI fat fraction (Dixon/phase-inversion): ${ff}%. (In-phase: ${sIn}, Out-of-phase: ${sOut}).`,
+            usage: [
+              'Fat fraction (%) = (In-phase signal − Out-of-phase signal) / (2 × In-phase signal) × 100. Based on fat/water signal cancellation on chemical-shift (Dixon) sequences.',
+              'Useful for quantifying hepatic steatosis (>5-6% suggests steatosis) and for characterizing lesions with microscopic fat content (e.g., adrenal adenoma, hepatocellular adenoma).',
+              'Limitation: the simple dual-echo technique overestimates fat in livers with high fat content due to T2* effects and is less accurate than multi-echo proton density fat fraction (PDFF).',
+            ],
           },
           adrenalCt: {
             title: 'Adrenal: CT Washout',
             nonContrast: 'Non-contrast (HU)',
-            portal: 'Portal phase (HU)',
-            delayed: 'Delayed phase 15 min (HU)',
+            portal: 'Enhanced / portal phase (HU)',
+            delayed: 'Delayed phase (HU)',
+            delayedAt: (min) => `Delayed phase at ${min} min (HU)`,
             absolute: 'Absolute (APW)',
             relative: 'Relative (RPW)',
             adenomaCompatible: 'Washout values are compatible with an adrenal adenoma.',
             adenomaNot: 'Values do not reach the typical cutoff for adenoma. Consider other differential diagnoses.',
             compatible: 'Compatible with adenoma',
             notSuggestive: 'Not suggestive of adenoma',
-            reportText: (nc, ven, del, apw, apwR, rpw, rpwR) =>
-              `Adrenal CT:\nNon-contrast HU: ${nc}\nPortal phase HU: ${ven}\nDelayed HU (15 min): ${del}\nAbsolute washout (APW): ${apw}% (${apwR}).\nRelative washout (RPW): ${rpw}% (${rpwR}).`,
+            protocol: 'Washout protocol',
+            protocol15: '15 min (classic)',
+            protocol10: '10 min',
+            protocol5: '5 min',
+            fiveMinTitle: 'Combined criteria (Kamiyama 2009) — met if ANY of the 4 applies:',
+            fiveMinNc: 'Non-contrast HU ≤ 19',
+            fiveMinDelayed: '5-min HU ≤ 50',
+            fiveMinPew: 'Washout (PEW) ≥ 45%',
+            fiveMinRpew: 'Relative-to-baseline washout (RPEW) ≥ 31%',
+            reportText: (protocolLabel, nc, ven, del, apw, apwR, rpw, rpwR) =>
+              `Adrenal CT — ${protocolLabel} washout protocol:\nNon-contrast HU: ${nc}\nEnhanced phase HU: ${ven}\nDelayed phase HU: ${del}\nAbsolute washout (APW): ${apw}% (${apwR}).\nRelative washout (RPW): ${rpw}% (${rpwR}).`,
+            reportText5min: (nc, ven, del, met, concl) =>
+              `Adrenal CT — 5-min protocol (Kamiyama 2009):\nNon-contrast HU: ${nc}\n35-sec HU: ${ven}\n5-min HU: ${del}\nCriteria met: ${met}.\nConclusion: ${concl}.`,
+            usage: [
+              'A lipid-rich adrenal adenoma enhances after contrast and then washes out rapidly, unlike most non-adenomatous lesions (metastasis, pheochromocytoma, carcinoma).',
+              'Classic 15-minute protocol (Caoili 2002): APW ≥ 60% or RPW ≥ 40% are compatible with adenoma (high sensitivity and specificity, >90%).',
+              '10-minute protocol (Blake 2006): shortens the exam; cutoffs adjust to APW ≥ 52% and RPW ≥ 37.5%.',
+              '5-minute protocol (Kamiyama 2009): an abbreviated protocol combining 4 criteria (non-contrast HU, 5-min HU, percentage washout and relative washout); meeting any one is compatible with adenoma. Their series showed 100% specificity.',
+              'A 3-minute washout protocol is not included because, despite a targeted search, no published study validating a specific cutoff at that timepoint could be found; if you have that reference, please send it so it can be added.',
+            ],
           },
           adrenalMri: {
             title: 'Adrenal: MRI CSI Index',
@@ -479,6 +1020,11 @@
               `Adrenal MRI (Chemical Shift):\nLesion (In/Out): ${lIn} / ${lOut}\nReference (In/Out): ${rIn} / ${rOut}\nCSI index: ${csi}% (${concl}).`,
             conclAdenoma: '<71% suggestive of lipid-rich adenoma',
             conclNot: '≥71% not conclusive for lipid-rich adenoma',
+            usage: [
+              'The chemical shift index (CSI) compares the signal drop of the adrenal lesion between in-phase and opposed-phase sequences, normalized to a reference organ (spleen or liver) to correct for baseline field-related signal loss.',
+              'CSI = [(opposed-phase signal / in-phase signal)lesion] / [(opposed-phase signal / in-phase signal)reference] × 100.',
+              'An index < 71% (marked signal drop from intracellular lipid) suggests a lipid-rich adrenal adenoma. About 30% of adenomas are "lipid-poor" and do not show this drop, requiring washout CT as an alternative.',
+            ],
           },
           siderosis: {
             title: 'MRI Hepatic Siderosis',
@@ -492,6 +1038,11 @@
             catSevere: 'Severe overload',
             reportText: (t2, r2, lic, cat) =>
               `MRI hepatic siderosis (R2* method):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nEstimated LIC: ${lic} mg/g dry tissue.\nCategory: ${cat}.`,
+            usage: [
+              'R2* (=1000/T2*) correlates linearly with liver iron concentration (LIC) per the St Pierre et al. 2005 calibration: LIC = 0.0254 × R2* + 0.202 (mg/g dry tissue).',
+              'Approximate LIC cutoffs (ESGAR/SAR 2023 guideline): normal < 1.8 mg/g (1.8-3.2 mg/g is considered "borderline"); mild overload 1.8-7.0 mg/g; moderate 7.0-15.0 mg/g; severe > 15.0 mg/g.',
+              'Transparency note: the St Pierre 2005 formula (the most cited and validated) is kept as requested. The Columbia University page (columbia.edu/~sj2532/t2_star.html) could not be accessed due to a redirect issue on that site itself; the reference values cited here come from verified Dropbox references and the ESGAR/SAR 2023 guideline.',
+            ],
           },
           thymic: {
             title: 'Thymic Fat / Hyperplasia',
@@ -506,6 +1057,11 @@
               `Thymus MRI (Chemical Shift):\nThymus (In/Out): ${tIn} / ${tOut}\nMuscle (In/Out): ${mIn} / ${mOut}\nChemical Shift Ratio (CSR): ${csr}\nSignal Intensity Index (SII): ${sii}%\nConclusion: ${concl}`,
             conclFatty: 'Findings compatible with microscopic fat content (suggests thymic hyperplasia or normal tissue).',
             conclNotFatty: 'No evidence of signal drop (suggests solid lesion / thymoma).',
+            usage: [
+              'The normal thymus and thymic hyperplasia contain interspersed microscopic fat that drops signal on opposed-phase sequences; thymomas and other solid neoplasms do not show this drop.',
+              'CSR (chemical shift ratio) = (thymus opposed-phase signal / thymus in-phase signal) ÷ (muscle opposed-phase signal / muscle in-phase signal). SII (signal intensity index) = (in-phase − opposed-phase signal) / in-phase signal × 100, for the thymus.',
+              'CSR < 0.9 or SII > 9% are compatible with fat content (hyperplasia/normal). Values above these cutoffs should raise suspicion for a solid lesion (thymoma or other thymic tumor) and warrant biopsy or follow-up.',
+            ],
           },
           tirads: {
             title: 'ACR TI-RADS (Thyroid)',
@@ -515,6 +1071,7 @@
             criteria: {
               composition: {
                 title: 'Composition',
+                hint: 'Proportion of solid vs. cystic tissue in the nodule. Choose only the predominant component if mixed.',
                 options: [
                   'Cystic or almost completely cystic',
                   'Spongiform',
@@ -524,18 +1081,22 @@
               },
               echogenicity: {
                 title: 'Echogenicity',
+                hint: 'Echogenicity of the solid component compared to adjacent thyroid parenchyma (not applicable to purely cystic/spongiform nodules).',
                 options: ['Anechoic', 'Hyperechoic or isoechoic', 'Hypoechoic', 'Very hypoechoic'],
               },
               shape: {
                 title: 'Shape',
+                hint: 'Assess on the transverse plane: if the AP diameter is greater than the transverse diameter ("taller than wide"), this is a suspicious sign.',
                 options: ['Wider than tall', 'Taller than wide'],
               },
               margin: {
                 title: 'Margin',
+                hint: 'The nodule\'s borders relative to the gland. Frank extrathyroidal extension is the highest-scoring finding.',
                 options: ['Smooth', 'Ill-defined', 'Lobulated or irregular', 'Extrathyroidal extension'],
               },
               echogenicFoci: {
                 title: 'Echogenic foci (sum all that apply)',
+                hint: 'Unlike the other categories, multiple foci can be checked here and their points are added together.',
                 options: [
                   'None or large comet-tail artifact',
                   'Macrocalcifications',
@@ -551,51 +1112,64 @@
               TR4: { risk: 'Moderately suspicious', recs: 'FNA if ≥ 1.5 cm. Follow-up if ≥ 1.0 cm' },
               TR5: { risk: 'Highly suspicious', recs: 'FNA if ≥ 1.0 cm. Follow-up if ≥ 0.5 cm' },
             },
+            managementTable: 'Management table',
+            managementHeaders: ['Category', 'Points', 'Malignancy risk', 'FNA', 'Follow-up'],
+            managementRows: [
+              ['TR1', '0 pts', 'Benign', 'No', 'No'],
+              ['TR2', '2 pts', 'Not suspicious', 'No', 'No'],
+              ['TR3', '3 pts', 'Mildly suspicious (2-5%)', '≥ 2.5 cm', '≥ 1.5 cm'],
+              ['TR4', '4-6 pts', 'Moderately suspicious (5-20%)', '≥ 1.5 cm', '≥ 1.0 cm'],
+              ['TR5', '≥7 pts', 'Highly suspicious (>20%)', '≥ 1.0 cm', '≥ 0.5 cm'],
+            ],
             reportText: (c, e, s, m, f, pts, cat, risk, recs) =>
               `Thyroid nodule (ACR TI-RADS):\n- Composition: ${c}\n- Echogenicity: ${e}\n- Shape: ${s}\n- Margin: ${m}\n- Echogenic foci: ${f}\nTotal score: ${pts} points.\nCategory: ${cat} (${risk}).\nRecommendation: ${recs}.`,
+            usage: [
+              'The TI-RADS score is calculated by summing points across 5 categories (composition, echogenicity, shape, margin, echogenic foci); a higher score means greater suspicion for malignancy.',
+              'The decision to perform FNA (fine-needle aspiration) depends on both the TI-RADS category and nodule size (see management table). TR1-TR2 nodules do not require FNA regardless of size.',
+              'This system was designed for solid or predominantly solid thyroid nodules; its application may be limited in purely cystic nodules or those with extensive calcification obscuring assessment.',
+            ],
           },
           orads: {
-            title: 'ACR O-RADS (Ovary)',
+            title: 'ACR O-RADS MRI (Ovary)',
             history: 'History',
             undo: 'Go back',
             malignancyRisk: 'Malignancy risk',
             recommendation: 'Recommendation',
-            start: { q: 'Select the lesion type:', options: [
-              { label: 'Normal ovary', next: 'orads1' },
-              { label: 'Unilocular lesion', next: 'unilocular' },
-              { label: 'Multilocular lesion', next: 'multilocular' },
-              { label: 'Solid or solid-cystic lesion', next: 'solid' },
-              { label: 'Presence of ascites', next: 'orads5' },
+            start: { q: 'What does the adnexal lesion show on MRI?', options: [
+              { label: 'Normal ovary or physiologic finding (follicle, corpus luteum, hemorrhagic cyst ≤ 3 cm in premenopausal patient)', next: 'orMri1' },
+              { label: 'Ascites and/or peritoneal or omental implants/nodularity', next: 'orMri5' },
+              { label: 'Cystic lesion (uni- or multilocular) with no enhancing solid tissue', next: 'cysticNoSolid' },
+              { label: 'Lesion with macroscopic fat (e.g. cystic teratoma)', next: 'fatContaining' },
+              { label: 'Lesion with solid tissue, thick septa, or mural nodules', next: 'solidTissue' },
             ]},
             nodes: {
-              orads1: { cat: 'O-RADS 1', risk: 'Normal (0%)', recs: 'Routine gynecologic follow-up' },
-              unilocular: { q: 'Unilocular cyst features:', options: [
-                { label: 'Simple cyst < 10 cm', next: 'orads2' },
-                { label: 'Simple cyst ≥ 10 cm', next: 'orads3' },
-                { label: 'Classic benign lesion < 10 cm (dermoid, endometrioma, etc.)', next: 'orads2' },
-                { label: 'Classic benign lesion ≥ 10 cm', next: 'orads3' },
-                { label: 'Irregular wall (< 3 mm)', next: 'orads3' },
+              orMri1: { cat: 'O-RADS 1', risk: 'Normal / physiologic (N/A)', recs: 'No further characterization needed; routine gynecologic follow-up.' },
+              cysticNoSolid: { q: 'Cystic lesion features (no enhancing solid tissue):', options: [
+                { label: 'Unilocular, smooth thin wall, no nodules', next: 'orMri2' },
+                { label: 'Multilocular, smooth thin walls/septa', next: 'orMri2' },
+                { label: 'Thick or irregular wall/septa (no solid-type enhancement)', next: 'orMri3' },
               ]},
-              multilocular: { q: 'Multilocular cyst features (no solid component):', options: [
-                { label: '< 10 cm', next: 'orads3' },
-                { label: '≥ 10 cm', next: 'orads4' },
-                { label: 'Irregular or thick wall/septa', next: 'orads4' },
+              fatContaining: { q: 'Macroscopic fat content:', options: [
+                { label: 'Fat-predominant, no enhancing solid component (typical mature cystic teratoma pattern)', next: 'orMri2' },
+                { label: 'Fat associated with an enhancing solid component', next: 'solidTissue' },
               ]},
-              solid: { q: 'Solid component features:', options: [
-                { label: 'Smooth contour, any size, color score 1', next: 'orads3' },
-                { label: 'Smooth contour, < 3 cm, color score 2-3', next: 'orads3' },
-                { label: 'Smooth contour, ≥ 3 cm, color score 2-3', next: 'orads4' },
-                { label: 'Any size, color score 4', next: 'orads5' },
-                { label: 'Irregular contour, any size', next: 'orads5' },
-                { label: 'Solid component with papillary projections (≥ 1)', next: 'orads4' },
+              solidTissue: { q: 'Solid tissue enhancement kinetics (DCE curve, or enhancement at 30-40s compared to myometrium if no dynamic study):', options: [
+                { label: 'No enhancement of solid tissue', next: 'orMri3' },
+                { label: 'Enhancement ≤ myometrium (type 1 curve: progressive/persistent)', next: 'orMri4' },
+                { label: 'Enhancement > myometrium (type 2 plateau or type 3 washout curve)', next: 'orMri5' },
               ]},
-              orads2: { cat: 'O-RADS 2', risk: 'Almost certainly benign (< 1%)', recs: 'Gynecologic follow-up (annual ultrasound)' },
-              orads3: { cat: 'O-RADS 3', risk: 'Low risk (1-10%)', recs: 'Refer to gynecologist. Consider MRI.' },
-              orads4: { cat: 'O-RADS 4', risk: 'Intermediate risk (10-50%)', recs: 'Management by gynecologic oncologist. MRI or referral.' },
-              orads5: { cat: 'O-RADS 5', risk: 'High risk (> 50%)', recs: 'Management by gynecologic oncologist.' },
+              orMri2: { cat: 'O-RADS 2', risk: 'Almost certainly benign (< 0.5%)', recs: 'Gynecologic follow-up (ultrasound or repeat MRI per clinical judgment).' },
+              orMri3: { cat: 'O-RADS 3', risk: 'Low risk (~5%)', recs: 'Refer to gynecologist; consider imaging follow-up or surgical management depending on clinical context.' },
+              orMri4: { cat: 'O-RADS 4', risk: 'Intermediate risk (~50%)', recs: 'Management by gynecologic oncologist.' },
+              orMri5: { cat: 'O-RADS 5', risk: 'High risk (~90%)', recs: 'Management by gynecologic oncologist.' },
             },
             reportText: (path, cat, risk, recs) =>
-              `Adnexal characterization (ACR O-RADS ultrasound):\nFindings: ${path}\nClassification: ${cat}\nMalignancy risk: ${risk}\nRecommendation: ${recs}`,
+              `Adnexal characterization (ACR O-RADS MRI):\nFindings: ${path}\nClassification: ${cat}\nMalignancy risk: ${risk}\nRecommendation: ${recs}`,
+            usage: [
+              'O-RADS MRI classifies indeterminate adnexal lesions into categories 1 to 5 based on morphologic findings (cystic/solid/fat content, wall and septal thickness) and, when solid tissue is present, dynamic contrast-enhancement kinetics (type 1, 2, or 3 curve) compared to the myometrium.',
+              'Ascites and/or peritoneal/omental implants automatically assign O-RADS 5, regardless of the adnexal lesion\'s own features.',
+              'This tree is a simplification for educational/reporting-support purposes; the full ACR algorithm (including specific subtypes and size thresholds) should be consulted for borderline cases. It requires a protocol with dynamic post-contrast (DCE) sequences or, alternatively, a single phase at 30-40 seconds compared to the myometrium.',
+            ],
           },
           pirads: {
             title: 'PI-RADS v2.1 (Prostate)',
@@ -613,6 +1187,142 @@
             reportText: (zone, dwi, t2, dce, score) =>
               `PI-RADS v2.1:\nLocation: ${zone}\nDWI/ADC score: ${dwi}\nT2W score: ${t2}\nDCE: ${dce}\nFinal score: PI-RADS ${score}`,
             naText: 'N/A',
+            dwiDefs: [
+              '1 = No abnormality on ADC and DWI',
+              '2 = Linear/wedge-shaped low signal on ADC, no clear correlate on high-b DWI',
+              '3 = Focal finding, equivocal for suspicion (neither clearly 2 nor clearly 4)',
+              '4 = Focal markedly hypointense on ADC and markedly hyperintense on high-b DWI, < 1.5 cm',
+              '5 = Same as 4 but ≥ 1.5 cm, or with definite extraprostatic extension/invasion',
+            ],
+            t2Defs: [
+              '1 = Homogeneous intermediate signal (normal)',
+              '2 = Encapsulated, circumscribed hypointense nodule ("typical BPH")',
+              '3 = Heterogeneous signal with obscured margins; does not fit clearly into 2 or 4',
+              '4 = Non-circumscribed, homogeneously hypointense lesion, < 1.5 cm',
+              '5 = Same as 4 but ≥ 1.5 cm, or with definite extraprostatic extension/invasion',
+            ],
+            dceDef: 'Positive DCE = focal, early enhancement corresponding to or preceding the suspicious T2W/DWI finding. Negative DCE = absence of corresponding focal early enhancement.',
+            usage: [
+              'PI-RADS combines a "dominant" sequence (DWI/ADC in the peripheral zone, T2W in the transition zone) with secondary sequences used only to resolve an equivocal score of 3.',
+              'In the peripheral zone: if DWI = 3, DCE decides (positive raises it to PI-RADS 4). In the transition zone: if T2W = 3, the DWI score decides (DWI = 5 raises it to PI-RADS 4).',
+              'PI-RADS ≥ 3 is generally the threshold for discussing targeted biopsy (PI-RADS 3 depending on clinical context/PSAD, PI-RADS 4-5 with a more consistent biopsy indication).',
+            ],
+          },
+          virads: {
+            title: 'VI-RADS (Bladder MRI)',
+            step1: '1. T2W score',
+            step2: '2. DWI/ADC score (if available, this is the dominant sequence)',
+            step3: '3. DCE score (dynamic contrast-enhanced; use if DWI is not diagnostic)',
+            finalCategory: 'Final category (VI-RADS)',
+            dominantNote: 'The final category uses the dominant sequence: DWI if available and of diagnostic quality; otherwise DCE; otherwise T2W.',
+            t2Defs: [
+              '1 = Thin, continuous hypointense wall line (normal)',
+              '2 = Exophytic lesion with a stalk, or mucosal thickening, hypointense line preserved',
+              '3 = Muscle invasion cannot be reliably excluded (low signal in the wall, indeterminate)',
+              '4 = Focal interruption of the muscularis propria, no extravesical extension',
+              '5 = Extravesical extension or invasion of adjacent organs',
+            ],
+            dwiDefs: [
+              '1 = No lesion / no distortion of the hypointense wall line on DWI/ADC',
+              '2 = Mild hyperintensity on DWI, wall layer preserved',
+              '3 = Intermediate signal, indeterminate interruption of the wall line',
+              '4 = Focal wall interruption with a high-signal lesion, protruding but confined to the bladder',
+              '5 = High-signal mass with extravesical extension beyond the wall',
+            ],
+            dceDefs: [
+              '1 = No early enhancement',
+              '2 = Enhancement similar to normal urothelium, inner enhancing line preserved',
+              '3 = Indeterminate focal interruption of enhancement',
+              '4 = Focal early lesion enhancement with disruption of the line, no extravesical extension',
+              '5 = Enhancement extending beyond the bladder wall into perivesical fat or adjacent structures',
+            ],
+            interpretation: {
+              low: 'VI-RADS 1-2: low risk of muscle-invasive disease.',
+              equivocal: 'VI-RADS 3: equivocal/indeterminate finding for muscle invasion.',
+              high: 'VI-RADS 4-5: high probability of muscle-invasive disease (VI-RADS ≥ 4 is the cutoff most used in meta-analyses).',
+            },
+            reportText: (t2, dwi, dce, final) =>
+              `Bladder MRI (VI-RADS):\nT2W score: ${t2}\nDWI/ADC score: ${dwi}\nDCE score: ${dce}\nFinal category: VI-RADS ${final}`,
+            usage: [
+              'VI-RADS stratifies the risk of muscularis propria invasion (muscle-invasive disease) in bladder cancer using multiparametric MRI (T2W + DWI/ADC + DCE), on a scale from 1 (very low risk) to 5 (very high risk/confirmed invasion).',
+              'The dominant sequence is DWI/ADC when of diagnostic quality; otherwise DCE is used; T2W alone has lower performance but helps define categories 1-2.',
+              'Meta-analyses (Woo et al. 2020, Luo et al. 2020) show sensitivity ~83-85% and specificity ~88-90% for VI-RADS ≥ 4 in detecting muscle-invasive disease, supporting MRI as a tool prior to transurethral resection (TURBT) to plan management.',
+            ],
+          },
+          lirads: {
+            title: 'LI-RADS v2018 (CT/MRI Liver)',
+            sizeLabel: 'Observation size',
+            size1: '< 10 mm', size2: '10-19 mm', size3: '≥ 20 mm',
+            apheLabel: 'Nonrim arterial phase hyperenhancement (APHE)',
+            featuresLabel: 'Additional features (check all that apply)',
+            featWashout: 'Nonperipheral "washout"',
+            featCapsule: 'Enhancing capsule',
+            featGrowth: 'Threshold growth (≥ 50% in ≤ 6 months)',
+            lrM: 'Features of malignancy not specific to HCC ("LR-M": rim APHE, marked diffusion restriction in a rim, marked necrosis/ischemia, infiltrative morphology)?',
+            lrTiv: 'Definite tumor in vein (macrovascular tumor invasion, "LR-TIV")?',
+            categories: {
+              'LR-1': 'Definitely benign',
+              'LR-2': 'Probably benign',
+              'LR-3': 'Intermediate probability of HCC',
+              'LR-4': 'Probably HCC',
+              'LR-5': 'Definitely HCC',
+              'LR-M': 'Probably or definitely malignant, not HCC-specific',
+              'LR-TIV': 'Tumor in vein (macrovascular tumor invasion)',
+            },
+            reportText: (size, aphe, feats, override, cat) =>
+              `LI-RADS v2018 (CT/MRI):\nSize: ${size}\nNonrim APHE: ${aphe}\nAdditional features: ${feats}\n${override ? override + '\n' : ''}Category: ${cat}`,
+            usage: [
+              'LI-RADS v2018 applies to hepatic observations in patients at established risk for hepatocellular carcinoma (HCC): cirrhosis, chronic hepatitis B, or prior HCC.',
+              'LR-TIV and LR-M take priority over the numeric category: if there is tumor in vein or non-HCC-specific malignant features, that category replaces the LR-1 to 5 category computed from size/APHE/features.',
+              'The numeric category combines lesion size, presence of nonrim arterial phase hyperenhancement (APHE), and the number of additional features (nonperipheral washout, enhancing capsule, threshold growth), with a special "diagonal cell" rule: 10-19 mm + APHE + 1 feature = LR-4, but + ≥2 features = LR-5; ≥20 mm + APHE + ≥1 feature = LR-5.',
+              'This calculator implements the "LI-RADS Core" (main diagnostic algorithm); it does not replace the full ACR LI-RADS manual for special cases (treated lesions, ancillary features, etc.).',
+            ],
+          },
+          liradsTr: {
+            title: 'LI-RADS: Treatment Response (LR-TR)',
+            selectLabel: 'Select the category based on post-treatment findings:',
+            options: {
+              nonevaluable: { label: 'Nonevaluable', desc: 'Image quality or technique inadequate to assess response (e.g., artifacts, incomplete protocol).' },
+              nonviable: { label: 'Nonviable', desc: 'No nodular, mass-like, or thick tumor-like enhancement in the treated area (a thin, uniform "rim" of peripheral enhancement expected from treatment may be present).' },
+              equivocal: { label: 'Equivocal', desc: 'Indeterminate findings between viable tumor tissue and post-treatment change; atypical enhancement in amount, size, or new development that does not clearly meet "viable" criteria.' },
+              viable: { label: 'Viable', desc: 'Nodular, mass-like, or thick tumor-like enhancement within the treated area or along its margin, with the same pattern as an untreated HCC (APHE with washout).' },
+            },
+            reportText: (cat, desc) =>
+              `LI-RADS Treatment Response (LR-TR):\nCategory: LR-TR ${cat}\nFinding: ${desc}`,
+            usage: [
+              'LR-TR applies to hepatic lesions treated with locoregional therapy (e.g., chemoembolization, ablation, radioembolization) to classify the likelihood of residual or recurrent viable tumor.',
+              'The 4 categories are: Nonevaluable, Nonviable, Equivocal, and Viable. "Viable" is based on recognizing an enhancement pattern similar to an untreated HCC (arterial enhancement with washout) within or along the margin of the treated area.',
+              'Transparency note: this algorithm represents the ACR LI-RADS general 4-category framework; specific nuances for stereotactic body radiotherapy (SBRT), where expected peripheral enhancement can be more prolonged and thick, are only partially represented here.',
+            ],
+          },
+          cadrads: {
+            title: 'CAD-RADS 2.0 (Coronary CTA)',
+            stenosisLabel: 'Maximum stenosis by coronary segment',
+            stenosisOptions: [
+              { key: '0', label: '0% (no plaque or stenosis)' },
+              { key: '1', label: '1-24% (minimal)' },
+              { key: '2', label: '25-49% (mild)' },
+              { key: '3', label: '50-69% (moderate)' },
+              { key: '4A', label: '70-99% in 1-2 vessels (severe)' },
+              { key: '4B', label: 'Left main ≥ 50%, or 3-vessel disease ≥ 70%' },
+              { key: '5', label: '100% (total occlusion)' },
+              { key: 'N', label: 'Non-evaluable / non-diagnostic' },
+            ],
+            modifiersLabel: 'Modifiers (check all that apply)',
+            modN: 'N — Nondiagnostic segment',
+            modS: 'S — Stent',
+            modG: 'G — Graft (bypass)',
+            modI: 'I — Ischemia (positive functional test)',
+            modHrp: 'HRP — High-risk plaque',
+            modE: 'E — Exception (e.g., transplant, anomalous coronary)',
+            resultLabel: 'CAD-RADS result',
+            reportText: (cadrads, mods) =>
+              `CAD-RADS 2.0:\nCategory: ${cadrads}${mods ? '/' + mods : ''}`,
+            usage: [
+              'CAD-RADS classifies coronary artery disease on CTA by the stenosis grade of the most severely affected segment, from CAD-RADS 0 (no plaque) to 5 (total occlusion), plus category N for non-diagnostic studies.',
+              'Modifiers are appended after the main category (e.g., "CAD-RADS 3/HRP" or "CAD-RADS 4B/I"): N (nondiagnostic segment), S (stent), G (graft), I (ischemia on functional testing), HRP (high-risk plaque), and E (exception, e.g., heart transplant or anomalous coronary).',
+              'CAD-RADS 0-2 generally requires no further treatment; CAD-RADS 3 warrants clinical evaluation and possible medical therapy; CAD-RADS 4A-4B usually requires ischemia testing or invasive angiography; CAD-RADS 5 warrants urgent revascularization depending on clinical context.',
+            ],
           },
         },
       },
@@ -631,6 +1341,8 @@
       ],
       adrenalCt: [
         'Caoili EM, Korobkin M, Francis IR, Cohan RH, Platt JF, Dunnick NR, Raghupathi KI. Adrenal masses: characterization with combined unenhanced and delayed enhanced CT. Radiology. 2002;222(3):629-633.',
+        'Blake MA, Kalra MK, Sweeney AT, Lucey BC, Maher MM, Sahani DV, Halpern EF, Mueller PR, Hahn PF, Boland GW. Distinguishing benign from malignant adrenal masses: multi-detector row CT protocol with 10-minute delay. Radiology. 2006;238(2):578-585.',
+        'Kamiyama T, Fukukura Y, Yoneyama T, Takumi K, Nakajo M. Distinguishing adrenal adenomas from nonadenomas: combined use of diagnostic parameters of unenhanced and short 5-minute dynamic enhanced CT protocol. Radiology. 2009;250(2):474-481.',
       ],
       adrenalMri: [
         'Mitchell DG, Crovello M, Matteucci T, Petersen RO, Miettinen MM. Benign adrenocortical masses: diagnosis with chemical shift MR imaging. Radiology. 1992;185(2):345-351.',
@@ -638,6 +1350,9 @@
       ],
       siderosis: [
         'St Pierre TG, Clark PR, Chua-Anusorn W, et al. Noninvasive measurement and imaging of liver iron concentrations using proton magnetic resonance. Blood. 2005;105(2):855-861.',
+        'Wood JC, Enriquez C, Ghugre N, et al. MRI R2 and R2* mapping accurately estimates hepatic iron concentration in transfusion-dependent thalassemia and sickle cell disease patients. Blood. 2005;106(4):1460-1465.',
+        'Hankins JS, McCarville MB, Loeffler RB, et al. R2* magnetic resonance imaging of the liver in patients with iron overload. Blood. 2009;113(20):4853-4855.',
+        'Henninger B, Alustiza J, Garbowski M, Gandon Y. Quantification of liver iron overload with MRI: review and guidelines from the ESGAR and SAR. Radiology. 2023;306(1):e221856.',
       ],
       thymic: [
         'Inaoka T, Takahashi K, Mineta M, Yamada T, Shuke N, Okizaki A, Nagasawa K, Sugimori H, Aburano T. Thymic hyperplasia and thymus gland tumors: differentiation with chemical shift MR imaging. Radiology. 2007;243(3):869-876.',
@@ -647,10 +1362,27 @@
         'Tessler FN, Middleton WD, Grant EG, et al. ACR Thyroid Imaging, Reporting and Data System (TI-RADS): white paper of the ACR TI-RADS Committee. J Am Coll Radiol. 2017;14(5):587-595.',
       ],
       orads: [
-        'Andreotti RF, Timmerman D, Strachowski LM, et al. O-RADS US risk stratification and management system: a consensus guideline from the ACR Ovarian-Adnexal Reporting and Data System Committee. Radiology. 2020;294(1):168-185.',
+        'Thomassin-Naggara I, Poncelet E, Jalaguier-Coudray A, et al. Ovarian-Adnexal Reporting Data System Magnetic Resonance Imaging (O-RADS MRI) score for risk stratification of sonographically indeterminate adnexal masses. JAMA Netw Open. 2020;3(1):e1919896.',
+        'Sadowski EA, Thomassin-Naggara I, Rockall A, et al. O-RADS MRI risk stratification system: guide for assessing adnexal lesions from the ACR O-RADS committee. Radiology. 2022;303(1):35-47.',
       ],
       pirads: [
         'Turkbey B, Rosenkrantz AB, Haider MA, et al. Prostate Imaging Reporting and Data System Version 2.1: 2019 update of Prostate Imaging Reporting and Data System Version 2. Eur Urol. 2019;76(3):340-351.',
+      ],
+      virads: [
+        'Panebianco V, Narumi Y, Altun E, et al. Multiparametric magnetic resonance imaging for bladder cancer: development of VI-RADS (Vesical Imaging-Reporting And Data System). Eur Urol. 2018;74(3):294-306.',
+        'Woo S, Panebianco V, Narumi Y, et al. Diagnostic performance of vesical imaging reporting and data system for the prediction of muscle-invasive bladder cancer: a systematic review and meta-analysis. Eur Urol Oncol. 2020;3(3):306-315.',
+        'Luo C, Huang B, Wu Y, Chen J, Chen L. Use of vesical imaging-reporting and data system (VI-RADS) for detecting the muscle invasion of bladder cancer: a diagnostic meta-analysis. Eur Radiol. 2020;30(8):4606-4614.',
+        'Del Giudice F, Pecoraro M, Vargas HA, et al. Systematic review and meta-analysis of vesical imaging-reporting and data system (VI-RADS) inter-observer reliability: an added value for muscle invasive bladder cancer detection. Cancers (Basel). 2020;12(10):2994.',
+      ],
+      lirads: [
+        'Chernyak V, Fowler KJ, Kamaya A, et al. Liver Imaging Reporting and Data System (LI-RADS) Version 2018: imaging of hepatocellular carcinoma in at-risk patients. Radiology. 2018;289(3):816-830.',
+      ],
+      liradsTr: [
+        'American College of Radiology. CT/MRI LI-RADS Treatment Response Algorithm, LI-RADS v2018. ACR, 2018 (acr.org/LI-RADS).',
+        'Chaudhry M, McGinty KA, Mervak B, et al. The LI-RADS version 2018 MRI treatment response algorithm: evaluation of ablated hepatocellular carcinoma. Radiology. 2020;294(2):320-326.',
+      ],
+      cadrads: [
+        'Cury RC, Leipsic J, Abbara S, et al. CAD-RADS™ 2.0 - 2022 Coronary Artery Disease - Reporting and Data System: an expert consensus document of SCCT, ACC, ACR, and NASCI. JACC Cardiovasc Imaging. 2022;15(11):1974-2001.',
       ],
     };
 
@@ -711,6 +1443,8 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
+          <Schematic caption={lang === 'es' ? 'Ejes de medición prostática (AP, TR, LONG)' : 'Prostate measurement axes (AP, TR, LONG)'}><DiagProstate /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.psad} />
           <ReportBugLink calcTitle={c.title} />
         </div>
@@ -721,7 +1455,7 @@
        CALCULADORA: FRACCIÓN GRASA POR RM (DIXON)
     ============================================================ */
     function MRIFatFraction() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.mriFf;
       const [inPhase, setInPhase] = useState('');
       const [outPhase, setOutPhase] = useState('');
@@ -729,6 +1463,7 @@
       const sOut = parseFloat(outPhase);
       const isValid = !isNaN(sIn) && !isNaN(sOut) && sIn !== 0;
       const ff = isValid ? ((sIn - sOut) / (2 * sIn)) * 100 : 0;
+      const hasAnyInput = inPhase !== '' || outPhase !== '';
 
       const handleCopy = () => {
         const text = c.reportText(ff.toFixed(1), inPhase, outPhase);
@@ -741,15 +1476,18 @@
             <NumberField label={c.inPhase} placeholder={c.inPh} value={inPhase} onChange={setInPhase} />
             <NumberField label={c.outPhase} placeholder={c.outPh} value={outPhase} onChange={setOutPhase} />
           </Card>
-          {isValid && (
+          {hasAnyInput && (
             <Card>
               <div className="flex flex-col items-center justify-center p-4">
                 <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{c.estimated}</span>
-                <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{ff.toFixed(1)}%</span>
+                <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{isValid ? ff.toFixed(1) + '%' : '—'}</span>
+                {!isValid && <span className="text-xs text-slate-400 mt-2">{t.common.notEvaluated}</span>}
               </div>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
             </Card>
           )}
+          <Schematic caption={lang === 'es' ? 'Caída de señal en fase opuesta por contenido graso' : 'Signal drop on opposed-phase from fat content'}><DiagDixon /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.mriFf} />
           <ReportBugLink calcTitle={c.title} />
         </div>
@@ -759,62 +1497,123 @@
     /* ============================================================
        CALCULADORA: ADRENALES - LAVADO EN TC
     ============================================================ */
+    const ADRENAL_PROTOCOLS = {
+      p15: { minutes: 15, apwCut: 60, rpwCut: 40 },
+      p10: { minutes: 10, apwCut: 52, rpwCut: 37.5 },
+      p5: { minutes: 5 },
+    };
+
     function AdrenalWashout() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.adrenalCt;
+      const [protocol, setProtocol] = useState('p15');
       const [nc, setNc] = useState('');
       const [ven, setVen] = useState('');
       const [del, setDel] = useState('');
       const hNc = parseFloat(nc);
       const hVen = parseFloat(ven);
       const hDel = parseFloat(del);
+      const hasAnyInput = nc !== '' || ven !== '' || del !== '';
       const isValid = !isNaN(hNc) && !isNaN(hVen) && !isNaN(hDel);
+      const cfg = ADRENAL_PROTOCOLS[protocol];
+
+      // Protocolos 15 y 10 min: APW/RPW clásicos con distinto punto de corte
       const apw = isValid ? ((hVen - hDel) / (hVen - hNc)) * 100 : 0;
       const rpw = isValid ? ((hVen - hDel) / hVen) * 100 : 0;
-      const isAdenomaAPW = apw >= 60;
-      const isAdenomaRPW = rpw >= 40;
-      const isAdenoma = isAdenomaAPW || isAdenomaRPW;
+      const isAdenomaAPW = protocol !== 'p5' && isValid && apw >= cfg.apwCut;
+      const isAdenomaRPW = protocol !== 'p5' && isValid && rpw >= cfg.rpwCut;
+      const isAdenomaClassic = isAdenomaAPW || isAdenomaRPW;
+
+      // Protocolo 5 min (Kamiyama 2009): 4 criterios combinados, cualquiera basta
+      const pew = isValid ? ((hVen - hDel) / hVen) * 100 : 0;
+      const rpew = isValid ? ((hVen - hDel) / (hVen - hNc)) * 100 : 0;
+      const crit5 = {
+        nc: isValid && hNc <= 19,
+        delayed: isValid && hDel <= 50,
+        pew: isValid && pew >= 45,
+        rpew: isValid && rpew >= 31,
+      };
+      const isAdenoma5min = isValid && (crit5.nc || crit5.delayed || crit5.pew || crit5.rpew);
+      const isAdenoma = protocol === 'p5' ? isAdenoma5min : isAdenomaClassic;
+
+      const protocolLabel = protocol === 'p15' ? c.protocol15 : protocol === 'p10' ? c.protocol10 : c.protocol5;
 
       const handleCopy = () => {
-        const text = c.reportText(
-          nc, ven, del,
-          apw.toFixed(1), isAdenomaAPW ? c.compatible : c.notSuggestive,
-          rpw.toFixed(1), isAdenomaRPW ? c.compatible : c.notSuggestive
-        );
+        let text;
+        if (protocol === 'p5') {
+          const met = Object.entries(crit5).filter(([,v]) => v).length;
+          text = c.reportText5min(nc, ven, del, met, isAdenoma5min ? c.compatible : c.notSuggestive);
+        } else {
+          text = c.reportText(protocolLabel, nc, ven, del, apw.toFixed(1), isAdenomaAPW ? c.compatible : c.notSuggestive, rpw.toFixed(1), isAdenomaRPW ? c.compatible : c.notSuggestive);
+        }
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
 
       return (
         <div className="space-y-4 animate-in fade-in">
           <Card>
+            <div>
+              <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.protocol}</label>
+              <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
+                {['p15','p10','p5'].map(p => (
+                  <button key={p} onClick={() => setProtocol(p)} className={`flex-1 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all ${protocol === p ? 'bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
+                    {p === 'p15' ? c.protocol15 : p === 'p10' ? c.protocol10 : c.protocol5}
+                  </button>
+                ))}
+              </div>
+            </div>
             <NumberField label={c.nonContrast} value={nc} onChange={setNc} />
             <NumberField label={c.portal} value={ven} onChange={setVen} />
-            <NumberField label={c.delayed} value={del} onChange={setDel} />
+            <NumberField label={c.delayedAt(cfg.minutes)} value={del} onChange={setDel} />
           </Card>
-          {isValid && (
+
+          {hasAnyInput && protocol !== 'p5' && (
             <Card>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
                   <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.absolute}</span>
                   <span className={`text-xl font-bold ${isAdenomaAPW ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}`}>
-                    {apw.toFixed(1)}%
+                    {isValid ? apw.toFixed(1) + '%' : '—'}
                   </span>
-                  <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; 60%</span>
+                  <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; {cfg.apwCut}%</span>
                 </div>
                 <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
                   <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.relative}</span>
                   <span className={`text-xl font-bold ${isAdenomaRPW ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}`}>
-                    {rpw.toFixed(1)}%
+                    {isValid ? rpw.toFixed(1) + '%' : '—'}
                   </span>
-                  <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; 40%</span>
+                  <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; {cfg.rpwCut}%</span>
                 </div>
               </div>
-              <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
-                {isAdenoma ? c.adenomaCompatible : c.adenomaNot}
-              </InfoBox>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+              {isValid && (
+                <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
+                  {isAdenoma ? c.adenomaCompatible : c.adenomaNot}
+                </InfoBox>
+              )}
+              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
             </Card>
           )}
+
+          {hasAnyInput && protocol === 'p5' && (
+            <Card>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{c.fiveMinTitle}</p>
+              <ul className="space-y-1.5 text-sm">
+                <li className={`flex items-center gap-2 ${crit5.nc ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>{crit5.nc ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.fiveMinNc}</li>
+                <li className={`flex items-center gap-2 ${crit5.delayed ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>{crit5.delayed ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.fiveMinDelayed}</li>
+                <li className={`flex items-center gap-2 ${crit5.pew ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>{crit5.pew ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.fiveMinPew} {isValid && `(${pew.toFixed(1)}%)`}</li>
+                <li className={`flex items-center gap-2 ${crit5.rpew ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>{crit5.rpew ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.fiveMinRpew} {isValid && `(${rpew.toFixed(1)}%)`}</li>
+              </ul>
+              {isValid && (
+                <InfoBox tone={isAdenoma5min ? 'emerald' : 'amber'}>
+                  {isAdenoma5min ? c.adenomaCompatible : c.adenomaNot}
+                </InfoBox>
+              )}
+              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
+            </Card>
+          )}
+
+          <Schematic caption={lang === 'es' ? 'Curva de lavado del contraste en el tiempo' : 'Contrast washout curve over time'}><DiagWashoutCurve /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.adrenalCt} />
           <ReportBugLink calcTitle={c.title} />
         </div>
@@ -825,7 +1624,7 @@
        CALCULADORA: ADRENALES - ÍNDICE CSI EN RM
     ============================================================ */
     function AdrenalCSI() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.adrenalMri;
       const [lesionIn, setLesionIn] = useState('');
       const [lesionOut, setLesionOut] = useState('');
@@ -835,6 +1634,7 @@
       const lOut = parseFloat(lesionOut);
       const rIn = parseFloat(refIn);
       const rOut = parseFloat(refOut);
+      const hasAnyInput = lesionIn !== '' || lesionOut !== '' || refIn !== '' || refOut !== '';
       const isValid = !isNaN(lIn) && !isNaN(lOut) && !isNaN(rIn) && !isNaN(rOut) && lIn !== 0 && rOut !== 0 && rIn !== 0;
       const ratioIn = isValid ? (lIn / rIn) : 0;
       const ratioOut = isValid ? (lOut / rOut) : 0;
@@ -864,18 +1664,22 @@
               </div>
             </div>
           </Card>
-          {isValid && (
+          {hasAnyInput && (
             <Card>
               <div className="flex flex-col items-center justify-center p-2">
                 <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{c.csiIndex}</span>
-                <span className={`text-4xl font-bold ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>{csi.toFixed(1)}%</span>
+                <span className={`text-4xl font-bold ${isValid ? (isAdenoma ? 'text-emerald-500' : 'text-amber-500') : 'text-slate-400'}`}>{isValid ? csi.toFixed(1) + '%' : '—'}</span>
               </div>
-              <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
-                {isAdenoma ? c.csiAdenoma : c.csiNot}
-              </InfoBox>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+              {isValid && (
+                <InfoBox tone={isAdenoma ? 'emerald' : 'amber'}>
+                  {isAdenoma ? c.csiAdenoma : c.csiNot}
+                </InfoBox>
+              )}
+              {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
             </Card>
           )}
+          <Schematic caption={lang === 'es' ? 'Lesión vs. órgano de referencia (bazo/hígado)' : 'Lesion vs. reference organ (spleen/liver)'}><DiagAdrenalCSI /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.adrenalMri} />
           <ReportBugLink calcTitle={c.title} />
         </div>
@@ -886,7 +1690,7 @@
        CALCULADORA: SIDEROSIS HEPÁTICA POR RM
     ============================================================ */
     function HepaticSiderosis() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.siderosis;
       const [inputType, setInputType] = useState('t2star');
       const [val, setVal] = useState('');
@@ -957,6 +1761,8 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
+          <Schematic caption={lang === 'es' ? 'Depósito de hierro hepático y caída de señal en R2*' : 'Hepatic iron deposition and R2* signal decay'}><DiagLiverIron /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.siderosis} />
           <ReportBugLink calcTitle={c.title} />
         </div>
@@ -967,7 +1773,7 @@
        CALCULADORA: GRASA TÍMICA / HIPERPLASIA
     ============================================================ */
     function ThymicFat() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.thymic;
       const [thymusIn, setThymusIn] = useState('');
       const [thymusOut, setThymusOut] = useState('');
@@ -1023,6 +1829,8 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
+          <Schematic caption={lang === 'es' ? 'Lóbulos tímicos vs. músculo de referencia' : 'Thymic lobes vs. reference muscle'}><DiagThymus /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.thymic} />
           <ReportBugLink calcTitle={c.title} />
         </div>
@@ -1041,7 +1849,7 @@
     };
 
     function TIRADS() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.tirads;
       const [selections, setSelections] = useState({
         composition: null, echogenicity: null, shape: null, margin: null, echogenicFoci: [],
@@ -1095,7 +1903,8 @@
         <div className="space-y-4 pb-28">
           {Object.entries(c.criteria).map(([key, data]) => (
             <div key={key} className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-3 text-sm">{data.title}</h3>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1 text-sm">{data.title}</h3>
+              {data.hint && <p className="text-xs text-slate-400 dark:text-slate-500 mb-3 leading-snug">{data.hint}</p>}
               <div className="space-y-2">
                 {data.options.map((label, i) => {
                   const multi = key === 'echogenicFoci';
@@ -1116,6 +1925,26 @@
               </div>
             </div>
           ))}
+          <Accordion icon={<IconInfo size={16} />} title={c.managementTable}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left border-collapse">
+                <thead>
+                  <tr className="text-slate-400 border-b border-slate-100 dark:border-slate-700">
+                    {c.managementHeaders.map((h, i) => <th key={i} className="pb-2 pr-2 font-medium">{h}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {c.managementRows.map((row, i) => (
+                    <tr key={i} className="border-b border-slate-50 dark:border-slate-700/50">
+                      {row.map((cell, j) => <td key={j} className="py-1.5 pr-2 text-slate-600 dark:text-slate-300">{cell}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Accordion>
+          <Schematic caption={lang === 'es' ? 'Nódulo tiroideo y lóbulos adyacentes' : 'Thyroid nodule and adjacent lobes'}><DiagThyroidNodule /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.tirads} />
           <ReportBugLink calcTitle={c.title} />
           <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-4 shadow-lg z-40">
@@ -1141,7 +1970,7 @@
        CALCULADORA: ACR O-RADS (OVARIO)
     ============================================================ */
     function ORADS() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.orads;
       const [history, setHistory] = useState(['start']);
       const [selectedLabels, setSelectedLabels] = useState([]);
@@ -1216,6 +2045,8 @@
               </div>
             </div>
           )}
+          <Schematic caption={lang === 'es' ? 'Lesión anexial: componente sólido y curva de realce' : 'Adnexal lesion: solid component and enhancement curve'}><DiagOvaryMRI /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.orads} />
           <ReportBugLink calcTitle={c.title} />
         </div>
@@ -1226,7 +2057,7 @@
        CALCULADORA: PI-RADS v2.1 (PRÓSTATA)
     ============================================================ */
     function PIRADS() {
-      const { t } = useLang();
+      const { t, lang } = useLang();
       const c = t.calc.pirads;
       const [zone, setZone] = useState('pz');
       const [dwi, setDwi] = useState(0);
@@ -1281,6 +2112,7 @@
                       </button>
                     ))}
                   </div>
+                  {dwi > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.dwiDefs[dwi - 1]}</p>}
                 </div>
                 {dwi === 3 && (
                   <div className="animate-in fade-in slide-in-from-top-2">
@@ -1294,6 +2126,7 @@
                       </button>
                     </div>
                     <p className="text-xs text-slate-500 mt-2">{c.dceNote}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-snug">{c.dceDef}</p>
                   </div>
                 )}
               </>
@@ -1309,6 +2142,7 @@
                       </button>
                     ))}
                   </div>
+                  {t2 > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.t2Defs[t2 - 1]}</p>}
                 </div>
                 {t2 === 3 && (
                   <div className="animate-in fade-in slide-in-from-top-2">
@@ -1321,6 +2155,7 @@
                       ))}
                     </div>
                     <p className="text-xs text-slate-500 mt-2">{c.dwiNote}</p>
+                    {dwi > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-snug">{c.dwiDefs[dwi - 1]}</p>}
                   </div>
                 )}
               </>
@@ -1337,7 +2172,282 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
+          <Schematic caption={lang === 'es' ? 'Zona periférica (PZ) y zona de transición (TZ)' : 'Peripheral zone (PZ) and transition zone (TZ)'}><DiagProstateZones /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.pirads} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: VI-RADS (RM DE VEJIGA)
+    ============================================================ */
+    function ScoreSelector5({ label, value, onChange, defs }) {
+      return (
+        <div>
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{label}</h3>
+          <div className="flex gap-2">
+            {[1,2,3,4,5].map(s => (
+              <button key={s} onClick={() => onChange(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${value === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                {s}
+              </button>
+            ))}
+          </div>
+          {value > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{defs[value - 1]}</p>}
+        </div>
+      );
+    }
+
+    function VIRADS() {
+      const { t, lang } = useLang();
+      const c = t.calc.virads;
+      const [t2, setT2] = useState(0);
+      const [dwi, setDwi] = useState(0);
+      const [dce, setDce] = useState(0);
+      const final = dwi > 0 ? dwi : (dce > 0 ? dce : t2);
+
+      const handleCopy = () => {
+        if (!final) return;
+        const text = c.reportText(t2 || t.common.notEvaluated, dwi || t.common.notEvaluated, dce || t.common.notEvaluated, final);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      let interp = '';
+      if (final >= 4) interp = c.interpretation.high;
+      else if (final === 3) interp = c.interpretation.equivocal;
+      else if (final > 0) interp = c.interpretation.low;
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card className="space-y-6">
+            <ScoreSelector5 label={c.step1} value={t2} onChange={setT2} defs={c.t2Defs} />
+            <ScoreSelector5 label={c.step2} value={dwi} onChange={setDwi} defs={c.dwiDefs} />
+            <ScoreSelector5 label={c.step3} value={dce} onChange={setDce} defs={c.dceDefs} />
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">{c.dominantNote}</p>
+          </Card>
+          {final > 0 && (
+            <Card className="text-center">
+              <span className="text-sm text-slate-500 font-medium mb-1 block">{c.finalCategory}</span>
+              <span className={`text-4xl font-black ${final >= 4 ? 'text-red-500' : final === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>VI-RADS {final}</span>
+              <InfoBox tone={final >= 4 ? 'amber' : 'emerald'}>{interp}</InfoBox>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <Schematic caption={lang === 'es' ? 'Capas de la pared vesical y lesión' : 'Bladder wall layers and lesion'}><DiagBladderWall /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.virads} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: LI-RADS v2018 (TC/RM DE HÍGADO)
+    ============================================================ */
+    function computeLiRads(size, aphe, featCount) {
+      // size: 1 (<10mm) | 2 (10-19mm) | 3 (>=20mm)
+      if (!aphe) {
+        if (size === 3) return featCount >= 1 ? 'LR-4' : 'LR-3';
+        return featCount >= 2 ? 'LR-4' : 'LR-3';
+      }
+      // APHE presente
+      if (size === 1) return featCount >= 1 ? 'LR-4' : 'LR-3';
+      if (size === 2) return featCount >= 2 ? 'LR-5' : 'LR-4';
+      return featCount >= 1 ? 'LR-5' : 'LR-4';
+    }
+
+    function LIRADS() {
+      const { t, lang } = useLang();
+      const c = t.calc.lirads;
+      const [size, setSize] = useState(0);
+      const [aphe, setAphe] = useState(null);
+      const [feats, setFeats] = useState({ washout: false, capsule: false, growth: false });
+      const [lrM, setLrM] = useState(null);
+      const [lrTiv, setLrTiv] = useState(null);
+
+      const featCount = Object.values(feats).filter(Boolean).length;
+      const hasBasics = size > 0 && aphe !== null;
+      const baseCat = hasBasics ? computeLiRads(size, aphe, featCount) : null;
+      const finalCat = lrTiv ? 'LR-TIV' : (lrM ? 'LR-M' : baseCat);
+
+      const toggleFeat = (key) => setFeats(prev => ({ ...prev, [key]: !prev[key] }));
+
+      const handleCopy = () => {
+        if (!finalCat) return;
+        const sizeLabel = size === 1 ? c.size1 : size === 2 ? c.size2 : c.size3;
+        const featLabels = Object.entries(feats).filter(([,v]) => v).map(([k]) => k === 'washout' ? c.featWashout : k === 'capsule' ? c.featCapsule : c.featGrowth);
+        const override = lrTiv ? c.lrTiv : (lrM ? c.lrM : '');
+        const text = c.reportText(sizeLabel, aphe ? t.common.yes : t.common.no, featLabels.length ? featLabels.join(', ') : t.common.none, override, `${finalCat} — ${c.categories[finalCat]}`);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <InfoBox tone="amber">{c.lrTiv}</InfoBox>
+            <div className="flex gap-2">
+              <button onClick={() => setLrTiv(true)} className={`flex-1 py-2 rounded-lg font-medium border ${lrTiv === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+              <button onClick={() => setLrTiv(false)} className={`flex-1 py-2 rounded-lg font-medium border ${lrTiv === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+            </div>
+          </Card>
+          {lrTiv === false && (
+            <Card>
+              <InfoBox tone="amber">{c.lrM}</InfoBox>
+              <div className="flex gap-2">
+                <button onClick={() => setLrM(true)} className={`flex-1 py-2 rounded-lg font-medium border ${lrM === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setLrM(false)} className={`flex-1 py-2 rounded-lg font-medium border ${lrM === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+              </div>
+            </Card>
+          )}
+          {lrTiv === false && lrM === false && (
+            <Card className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.sizeLabel}</label>
+                <div className="flex gap-2">
+                  {[[1,c.size1],[2,c.size2],[3,c.size3]].map(([val,label]) => (
+                    <button key={val} onClick={() => setSize(val)} className={`flex-1 py-2 text-sm rounded-lg font-medium border ${size === val ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.apheLabel}</label>
+                <div className="flex gap-2">
+                  <button onClick={() => setAphe(true)} className={`flex-1 py-2 rounded-lg font-medium border ${aphe === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                  <button onClick={() => setAphe(false)} className={`flex-1 py-2 rounded-lg font-medium border ${aphe === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.featuresLabel}</label>
+                <div className="space-y-2">
+                  {[['washout', c.featWashout],['capsule', c.featCapsule],['growth', c.featGrowth]].map(([key, label]) => (
+                    <button key={key} onClick={() => toggleFeat(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${feats[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                      {feats[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          )}
+          {finalCat && (
+            <Card className="text-center">
+              <span className={`text-4xl font-black ${finalCat === 'LR-5' || finalCat === 'LR-M' || finalCat === 'LR-TIV' ? 'text-red-500' : finalCat === 'LR-4' ? 'text-orange-500' : finalCat === 'LR-3' ? 'text-amber-500' : 'text-emerald-500'}`}>{finalCat}</span>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{c.categories[finalCat]}</p>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <Schematic caption={lang === 'es' ? 'Lesión hepática: realce arterial y lavado' : 'Liver lesion: arterial enhancement and washout'}><DiagLiverLesion /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.lirads} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: LI-RADS RESPUESTA A TRATAMIENTO (LR-TR)
+    ============================================================ */
+    function LIRADSTreatmentResponse() {
+      const { t, lang } = useLang();
+      const c = t.calc.liradsTr;
+      const [selected, setSelected] = useState(null);
+
+      const handleCopy = () => {
+        if (!selected) return;
+        const opt = c.options[selected];
+        const text = c.reportText(opt.label, opt.desc);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1 text-sm">{c.selectLabel}</h3>
+            <div className="space-y-2">
+              {Object.entries(c.options).map(([key, opt]) => (
+                <button
+                  key={key}
+                  onClick={() => setSelected(key)}
+                  className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${selected === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+                >
+                  <span className="font-semibold block mb-0.5">LR-TR {opt.label}</span>
+                  <span className="text-xs opacity-80">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+          {selected && (
+            <Card className="text-center">
+              <span className="text-3xl font-black text-blue-600 dark:text-blue-400">LR-TR {c.options[selected].label}</span>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <Schematic caption={lang === 'es' ? 'Zona tratada: realce residual vs. cambios esperados' : 'Treated zone: residual enhancement vs. expected change'}><DiagLiverLesion /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.liradsTr} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: CAD-RADS 2.0 (ANGIO-TC CORONARIA)
+    ============================================================ */
+    function CADRADS() {
+      const { t, lang } = useLang();
+      const c = t.calc.cadrads;
+      const [stenosis, setStenosis] = useState(null);
+      const [mods, setMods] = useState({ N: false, S: false, G: false, I: false, HRP: false, E: false });
+
+      const toggleMod = (key) => setMods(prev => ({ ...prev, [key]: !prev[key] }));
+      const modString = Object.entries(mods).filter(([,v]) => v).map(([k]) => k).join('/');
+      const resultString = stenosis ? `CAD-RADS ${stenosis}${modString ? '/' + modString : ''}` : '';
+
+      const handleCopy = () => {
+        if (!stenosis) return;
+        const text = c.reportText(stenosis, modString);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-400' : 'text-red-500';
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.stenosisLabel}</label>
+            <div className="space-y-2">
+              {c.stenosisOptions.map(opt => (
+                <button
+                  key={opt.key}
+                  onClick={() => setStenosis(opt.key)}
+                  className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-center ${stenosis === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+                >
+                  <span>{opt.label}</span>
+                  <span className="text-xs font-bold shrink-0 ml-2">{opt.key}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.modifiersLabel}</label>
+            <div className="grid grid-cols-2 gap-2">
+              {[['N', c.modN],['S', c.modS],['G', c.modG],['I', c.modI],['HRP', c.modHrp],['E', c.modE]].map(([key, label]) => (
+                <button key={key} onClick={() => toggleMod(key)} className={`text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${mods[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  {mods[key] ? <IconCheckCircle size={14} /> : <span className="w-3.5" />} {label}
+                </button>
+              ))}
+            </div>
+          </Card>
+          {stenosis && (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
+              <span className={`text-3xl font-black ${riskColor}`}>{resultString}</span>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <Schematic caption={lang === 'es' ? 'Corte transversal de arteria coronaria con placa' : 'Coronary artery cross-section with plaque'}><DiagCoronary /></Schematic>
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.cadrads} />
           <ReportBugLink calcTitle={c.title} />
         </div>
       );
@@ -1356,6 +2466,10 @@
       { id: 'tirads', catKey: 'strat', component: TIRADS },
       { id: 'orads', catKey: 'strat', component: ORADS },
       { id: 'pirads', catKey: 'strat', component: PIRADS },
+      { id: 'virads', catKey: 'strat', component: VIRADS },
+      { id: 'lirads', catKey: 'strat', component: LIRADS },
+      { id: 'liradsTr', catKey: 'strat', component: LIRADSTreatmentResponse },
+      { id: 'cadrads', catKey: 'cardio', component: CADRADS },
     ];
 
     /* ============================================================
@@ -1379,14 +2493,35 @@
               {t.common.createdBy} Dr. Joaquín Hevia M.
             </a>
             <a
-              href={buildMailto(null, lang)}
+              href={buildMailto(null, lang, 'bug')}
               className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               <IconMail size={16} />
               {t.common.reportBugGeneral}
             </a>
+            <a
+              href={buildMailto(null, lang, 'update')}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <IconMail size={16} />
+              {t.common.suggestUpdate}
+            </a>
+            <a
+              href={buildMailto(null, lang, 'suggestion')}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <IconMail size={16} />
+              {t.common.suggestGeneral}
+            </a>
+            <button
+              onClick={() => copyToClipboard(REPORT_EMAIL, t.common.emailCopiedOk, t.common.copiedErr)}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <IconCopy size={16} />
+              {t.common.copyEmail}
+            </button>
           </div>
-          <p className="text-[11px] text-slate-300 dark:text-slate-600">RadioCalc Clinical</p>
+          <p className="text-[11px] text-slate-300 dark:text-slate-600">{REPORT_EMAIL} · RadioCalc Clinical</p>
         </footer>
       );
     }
@@ -1413,7 +2548,7 @@
       const activeEntry = activeCalc ? calculators.find(cc => cc.id === activeCalc) : null;
       const activeTitle = activeEntry ? t.calc[activeEntry.id].title : null;
 
-      const categoryOrder = ['abdomen', 'torax', 'strat'];
+      const categoryOrder = ['abdomen', 'torax', 'cardio', 'strat', 'gyn', 'gu', 'oncrecto'];
 
       return (
         <LangContext.Provider value={{ lang, t, toggleLang }}>
@@ -1456,7 +2591,7 @@
                       <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xs">{t.tagline}</p>
                     </div>
                   </div>
-                  {categoryOrder.map(catKey => (
+                  {categoryOrder.filter(catKey => calculators.some(cc => cc.catKey === catKey)).map(catKey => (
                     <div key={catKey}>
                       <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1">
                         {t.categories[catKey]}
