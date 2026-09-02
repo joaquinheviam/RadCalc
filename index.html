@@ -142,16 +142,25 @@
       );
     }
 
+    // Acepta tanto punto como coma decimal (en TC número, Chrome ignora la coma
+    // y el navegador rechaza el valor, dejando el campo vacío). Usamos type="text"
+    // con teclado numérico (inputMode) y normalizamos coma -> punto internamente.
     function NumberField({ label, value, onChange, placeholder, small }) {
+      const handleChange = (raw) => {
+        const normalized = raw.replace(',', '.');
+        if (normalized === '' || /^-?\d*\.?\d*$/.test(normalized)) {
+          onChange(normalized);
+        }
+      };
       return (
         <div>
           {label && <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{label}</label>}
           <input
-            type="number"
+            type="text"
             inputMode="decimal"
             placeholder={placeholder}
             value={value}
-            onChange={e => onChange(e.target.value)}
+            onChange={e => handleChange(e.target.value)}
             className={`w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg ${small ? 'p-2.5 text-center' : 'p-3 text-lg'} focus:ring-2 focus:ring-blue-500 outline-none`}
           />
         </div>
@@ -526,6 +535,8 @@
             psad: 'PSAD',
             highRisk: 'Elevado',
             normal: 'Normal',
+            psaPending: 'Agregue el PSA para calcular la PSAD',
+            reportTextVolOnly: (vol) => `Volumen prostático: ${vol} cc.`,
             reportText: (vol, psa, psad, risk) =>
               `Volumen prostático: ${vol} cc.\nPSA Total: ${psa} ng/mL.\nDensidad de PSA (PSAD): ${psad} ng/mL/cc (${risk}).`,
             usage: [
@@ -573,12 +584,20 @@
               `TC Adrenal — protocolo de lavado a ${protocolLabel}:\nUH sin contraste: ${nc}\nUH fase realzada: ${ven}\nUH fase tardía: ${del}\nLavado absoluto (APW): ${apw}% (${apwR}).\nLavado relativo (RPW): ${rpw}% (${rpwR}).`,
             reportText5min: (nc, ven, del, met, concl) =>
               `TC Adrenal — protocolo de 5 min (Kamiyama 2009):\nUH sin contraste: ${nc}\nUH a los 35 s: ${ven}\nUH a los 5 min: ${del}\nCriterios cumplidos: ${met}.\nConclusión: ${concl}.`,
+            roiTip: 'Consejo de medición: use un ROI que abarque más del 50% del área de la lesión, evitando el borde/periferia y artefactos de volumen parcial.',
+            ncOnlyTitle: 'Interpretación preliminar (solo con el valor sin contraste)',
+            ncHighSpec: 'UH sin contraste ≤ 10: muy alta especificidad para adenoma rico en lípidos.',
+            ncSuggestive: 'UH sin contraste entre 10 y 18: sugestivo de adenoma, pero con menor especificidad; se recomienda completar el estudio de lavado con contraste para confirmar.',
+            ncNonDiagnostic: 'UH sin contraste ≥ 18: no es diagnóstico de adenoma por sí solo; se requiere el estudio de lavado con contraste.',
+            myelolipoma: 'UH sin contraste ≤ -30 (si el ROI abarca más del 50% de la lesión): sugiere mielolipoma (contenido macroscópico de grasa) más que un adenoma típico.',
+            pheoCaution: 'UH en fase realzada/portal > 100-110: considere feocromocitoma en el diagnóstico diferencial, salvo que exista grasa microscópica (UH sin contraste < 10), donde es más compatible con un adenoma de realce rápido.',
             usage: [
               'Un adenoma adrenal rico en lípidos muestra realce tras contraste seguido de un lavado (washout) rápido del contraste, a diferencia de la mayoría de las lesiones no adenomatosas (metástasis, feocromocitoma, carcinoma).',
               'Protocolo clásico de 15 minutos (Caoili 2002): APW ≥ 60% o RPW ≥ 40% son compatibles con adenoma (sensibilidad y especificidad altas, > 90%).',
               'Protocolo de 10 minutos (Blake 2006): permite acortar el estudio; los puntos de corte se ajustan a APW ≥ 52% y RPW ≥ 37.5%.',
               'Protocolo de 5 minutos (Kamiyama 2009): protocolo abreviado que combina 4 criterios (UH sin contraste, UH a los 5 min, lavado porcentual y lavado relativo); si se cumple cualquiera de ellos, es compatible con adenoma. En su serie mostró 100% de especificidad.',
               'No se incluye un protocolo de lavado a los 3 minutos porque, pese a la búsqueda dirigida, no se encontró un estudio publicado que valide un punto de corte específico a ese tiempo; si cuenta con esa referencia, puede enviarla para agregarla.',
+              'Puntos adicionales de interpretación (según la experiencia clínica del autor): el valor sin contraste por sí solo ya orienta el diagnóstico (≤10 UH muy específico de adenoma; 10-18 UH sugestivo pero menos específico); un valor muy negativo (≤ -30 UH en la mayor parte de la lesión) sugiere mielolipoma; y un realce portal marcado (> 100-110 UH) sin grasa microscópica en la fase sin contraste debe hacer considerar feocromocitoma.',
             ],
           },
           adrenalMri: {
@@ -614,7 +633,6 @@
             usage: [
               'R2* (=1000/T2*) se relaciona linealmente con la concentración de hierro hepático (LIC) según la calibración de St Pierre et al. 2005: LIC = 0.0254 × R2* + 0.202 (mg/g de tejido seco).',
               'Puntos de corte aproximados de LIC (guía ESGAR/SAR 2023): normal < 1.8 mg/g (1.8-3.2 mg/g se considera "borderline"); sobrecarga leve 1.8-7.0 mg/g; moderada 7.0-15.0 mg/g; severa > 15.0 mg/g.',
-              'Nota de transparencia: se mantiene la fórmula de St Pierre 2005 (la más citada y validada) tal como se solicitó. No fue posible acceder a la página de Columbia University (columbia.edu/~sj2532/t2_star.html) por un problema de redirección del propio sitio; los valores de referencia aquí citados provienen de las referencias verificadas en Dropbox y de la guía ESGAR/SAR 2023.',
             ],
           },
           thymic: {
@@ -726,13 +744,18 @@
                 { label: 'Predominio graso, sin componente sólido que realce (patrón típico de teratoma quístico maduro)', next: 'orMri2' },
                 { label: 'Grasa asociada a un componente sólido que realza', next: 'solidTissue' },
               ]},
-              solidTissue: { q: 'Cinética de realce del tejido sólido (curva DCE, o comparación del realce a los 30-40 s con el miometrio si no hay estudio dinámico):', options: [
+              solidTissue: { q: 'Señal del tejido sólido en T2 y en DWI de alta b:', options: [
+                { label: 'Marcadamente hipointenso en T2 Y en DWI (patrón típico de fibroma/tecoma)', next: 'orMri3fibroma' },
+                { label: 'Otro patrón de señal (no cumple el patrón típico de bajo T2/bajo DWI)', next: 'solidDce' },
+              ]},
+              solidDce: { q: 'Cinética de realce del tejido sólido (curva DCE, o comparación del realce a los 30-40 s con el miometrio si no hay estudio dinámico):', options: [
                 { label: 'Tejido sólido sin realce', next: 'orMri3' },
                 { label: 'Realce ≤ miometrio (curva tipo 1: progresiva/persistente)', next: 'orMri4' },
                 { label: 'Realce > miometrio (curva tipo 2 meseta o tipo 3 lavado)', next: 'orMri5' },
               ]},
               orMri2: { cat: 'O-RADS 2', risk: 'Casi con certeza benigno (< 0.5%)', recs: 'Seguimiento por ginecología (ecografía o RM de control según criterio clínico).' },
               orMri3: { cat: 'O-RADS 3', risk: 'Riesgo bajo (~5%)', recs: 'Referir a ginecólogo; considerar seguimiento imagenológico o manejo quirúrgico según contexto clínico.' },
+              orMri3fibroma: { cat: 'O-RADS 3', risk: 'Riesgo bajo (~5%) — patrón sugerente de fibroma/tecoma', recs: 'El patrón de bajo T2 y bajo DWI en el tejido sólido es típico de lesiones fibrosas (fibroma, tecoma, leiomioma subseroso degenerado); referir a ginecólogo para correlación clínica y decidir seguimiento vs. manejo quirúrgico.' },
               orMri4: { cat: 'O-RADS 4', risk: 'Riesgo intermedio (~50%)', recs: 'Manejo por ginecólogo oncólogo.' },
               orMri5: { cat: 'O-RADS 5', risk: 'Riesgo alto (~90%)', recs: 'Manejo por ginecólogo oncólogo.' },
             },
@@ -740,6 +763,7 @@
               `Caracterización anexial (ACR O-RADS MRI):\nHallazgos: ${path}\nClasificación: ${cat}\nRiesgo de malignidad: ${risk}\nRecomendación: ${recs}`,
             usage: [
               'O-RADS MRI clasifica lesiones anexiales indeterminadas en categorías 1 a 5 según hallazgos morfológicos (contenido quístico/sólido/graso, grosor de pared y septos) y, cuando hay tejido sólido, la cinética de realce dinámico (curva tipo 1, 2 o 3) comparada con el miometrio.',
+              'Un patrón de tejido sólido marcadamente hipointenso tanto en T2 como en DWI de alta b ("bajo T2/bajo DWI") sugiere una lesión fibrosa (fibroma, tecoma, leiomioma subseroso degenerado) y orienta hacia una categoría de menor riesgo aun cuando exista algo de realce.',
               'La presencia de ascitis y/o implantes peritoneales/omentales asigna automáticamente O-RADS 5, independientemente de las características de la lesión anexial.',
               'Este árbol es una simplificación con fines educativos y de apoyo al informe; el algoritmo completo del ACR (incluyendo subtipos y tamaños específicos) debe consultarse para casos límite. Requiere protocolo con secuencias dinámicas post-contraste (DCE) o, alternativamente, una fase única a los 30-40 segundos comparada con el miometrio.',
             ],
@@ -775,10 +799,18 @@
               '5 = Igual que 4 pero ≥ 1.5 cm, o con extensión extraprostática/invasión definitiva',
             ],
             dceDef: 'DCE positivo = realce focal, precoz, que corresponde o precede al hallazgo sospechoso en T2W/DWI. DCE negativo = ausencia de realce focal temprano correspondiente.',
+            epeLabel: 'Extensión extraprostática (EPE) — opcional, grado 0-2',
+            epeOptions: [
+              { key: '0', label: 'Grado 0', desc: 'Sin contacto capsular, o contacto capsular < 10 mm sin abombamiento ni irregularidad.' },
+              { key: '1', label: 'Grado 1', desc: 'Un solo hallazgo presente: contacto capsular ≥ 10 mm, o abombamiento/irregularidad capsular, o pérdida focal del margen capsular, sin extensión medible fuera de la glándula.' },
+              { key: '2', label: 'Grado 2', desc: 'Extensión extraprostática medible/franca (tumor visible fuera de la glándula), u obliteración del ángulo rectoprostático, o ≥ 2 hallazgos del grado 1 combinados.' },
+            ],
+            epeCaveat: 'Nota de transparencia: esta es una simplificación de un sistema de gradación de EPE (Mehralivand et al.) reconstruida de memoria y no re-verificada palabra por palabra en esta sesión; confirme la definición exacta de cada grado contra la publicación original antes de un uso clínico estricto.',
             usage: [
               'PI-RADS combina una secuencia "dominante" (DWI/ADC en zona periférica, T2W en zona de transición) con secuencias secundarias que solo se usan para resolver un puntaje 3 equívoco.',
               'En la zona periférica: si DWI = 3, el DCE decide (positivo sube a PI-RADS 4). En la zona de transición: si T2W = 3, el score DWI decide (DWI = 5 sube a PI-RADS 4).',
               'PI-RADS ≥ 3 habitualmente se considera el umbral para discutir biopsia dirigida (PI-RADS 3 según contexto clínico/PSAD, PI-RADS 4-5 con indicación más consistente de biopsia).',
+              'La extensión extraprostática (EPE) es un hallazgo adicional al puntaje PI-RADS (no lo modifica) que aporta información de estadificación local; un grado más alto se asocia a mayor probabilidad de enfermedad extraprostática y puede influir en la decisión terapéutica (ej. preservación nerviosa).',
             ],
           },
           virads: {
@@ -833,6 +865,12 @@
             featGrowth: 'Crecimiento umbral (≥ 50% en ≤ 6 meses)',
             lrM: '¿Rasgos de malignidad no específica de CHC ("LR-M": realce en anillo, restricción difusa marcada en anillo, necrosis/isquemia marcada, morfología infiltrativa)?',
             lrTiv: '¿Tumor evidente en vena (invasión macrovascular tumoral, "LR-TIV")?',
+            lrTivContinuityLabel: 'Continuidad del tumor en vena con la lesión hepática:',
+            lrTivContinuity: {
+              lr5: 'En continuidad con una lesión LR-5',
+              lrM: 'En continuidad con una lesión LR-M',
+              unspecified: 'No se puede especificar la continuidad',
+            },
             categories: {
               'LR-1': 'Definitivamente benigno',
               'LR-2': 'Probablemente benigno',
@@ -853,6 +891,9 @@
           },
           liradsTr: {
             title: 'LI-RADS: Respuesta a Tratamiento (LR-TR)',
+            treatmentTypeLabel: 'Tipo de tratamiento locorregional recibido',
+            treatmentLocoregional: 'Ablación / TACE / radioembolización (Y90)',
+            treatmentSbrt: 'Radioterapia estereotáctica corporal (SBRT)',
             selectLabel: 'Seleccione la categoría según los hallazgos post-tratamiento:',
             options: {
               nonevaluable: { label: 'No evaluable', desc: 'Calidad de imagen o técnica inadecuada para evaluar la respuesta (ej. artefactos, protocolo incompleto).' },
@@ -860,12 +901,19 @@
               equivocal: { label: 'Equívoco', desc: 'Hallazgos indeterminados entre tejido tumoral viable y cambios postratamiento; realce atípico en cantidad, tamaño o desarrollo nuevo que no cumple criterios claros de "viable".' },
               viable: { label: 'Viable', desc: 'Realce nodular, en forma de mora o grosero de tipo tumoral, dentro de la zona tratada o en su margen, con el mismo patrón que un CHC no tratado (APHE con lavado).' },
             },
+            sbrtOptions: {
+              nonevaluable: { label: 'No evaluable', desc: 'Calidad de imagen o técnica inadecuada para evaluar la respuesta.' },
+              nonprogressive: { label: 'No progresivo', desc: 'El realce/tamaño de la zona tratada es estable o decreciente respecto a controles previos. Tras SBRT, el realce periférico esperado puede persistir de forma más prolongada y gruesa que tras ablación/TACE, por lo que se prefiere comparar la evolución en el tiempo antes que aplicar directamente los criterios de "viable" usados para otras terapias, especialmente en los primeros meses.' },
+              equivocal: { label: 'Equívoco', desc: 'Cambio indeterminado que no puede clasificarse con confianza como progresivo o no progresivo con la información disponible.' },
+              progressive: { label: 'Progresivo', desc: 'Nuevo realce de tipo tumoral, o crecimiento/aumento del realce nodular en la zona tratada o su margen, respecto a controles previos.' },
+            },
+            sbrtCaveat: 'Nota de transparencia: el marco "no progresivo / progresivo" para lesiones tratadas con SBRT refleja una actualización reciente de las guías LI-RADS que reconoce que el realce esperado post-radioterapia difiere del observado tras ablación/TACE. La redacción exacta de las categorías no pudo re-verificarse palabra por palabra contra el documento ACR más reciente en esta sesión; confírmela antes de un uso clínico estricto.',
             reportText: (cat, desc) =>
               `LI-RADS Respuesta a Tratamiento (LR-TR):\nCategoría: LR-TR ${cat}\nHallazgo: ${desc}`,
             usage: [
               'LR-TR se aplica a lesiones hepáticas tratadas localorregionalmente (ej. quimioembolización, ablación, radioembolización) para clasificar la probabilidad de tumor viable residual o recurrente.',
-              'Las 4 categorías son: No evaluable, No viable, Equívoco y Viable. "Viable" se basa en reconocer un patrón de realce similar al de un CHC no tratado (realce arterial con lavado) dentro o en el margen de la zona tratada.',
-              'Nota de transparencia: este algoritmo representa el marco general de 4 categorías del ACR LI-RADS; matices específicos para radioterapia estereotáctica corporal (SBRT), donde el realce periférico esperado puede ser más prolongado y grueso, solo están parcialmente representados aquí.',
+              'Para ablación/TACE/Y90, las 4 categorías son: No evaluable, No viable, Equívoco y Viable. "Viable" se basa en reconocer un patrón de realce similar al de un CHC no tratado (realce arterial con lavado) dentro o en el margen de la zona tratada.',
+              'Para SBRT, se recomienda un marco distinto (No evaluable / No progresivo / Equívoco / Progresivo) porque el realce periférico inflamatorio esperado tras radioterapia puede ser más prolongado y grueso, y no debe interpretarse automáticamente como enfermedad viable con los mismos criterios usados para ablación/TACE.',
             ],
           },
           cadrads: {
@@ -887,14 +935,135 @@
             modG: 'G — Injerto (bypass)',
             modI: 'I — Isquemia (estudio funcional positivo)',
             modHrp: 'HRP — Placa de alto riesgo',
+            modHrpHint: 'Se considera placa de alto riesgo (HRP) cuando cumple ≥ 2 de: atenuación baja (< 30 UH), remodelación positiva (índice de remodelación ≥ 1.10), signo del "anillo de servilleta" (napkin-ring), o calcificación "punteada" (spotty calcification). Verifique esta definición contra el documento CAD-RADS 2.0 vigente antes de usarla como criterio único.',
             modE: 'E — Excepción (ej. trasplante, coronaria anómala)',
+            pModifierLabel: 'Carga de placa (P) — según score de calcio de Agatston (opcional)',
+            pNone: 'No aplicar / sin score de Agatston',
+            pOptions: [
+              { key: 'P1', label: 'P1: Agatston 1-100 (leve)' },
+              { key: 'P2', label: 'P2: Agatston 101-300 (moderada)' },
+              { key: 'P3', label: 'P3: Agatston 301-999 (severa)' },
+              { key: 'P4', label: 'P4: Agatston ≥ 1000 (extensa)' },
+            ],
+            pCaveat: 'Nota de transparencia: los rangos exactos de Agatston por banda P se reconstruyeron a partir de fuentes secundarias y no se pudieron re-verificar palabra por palabra contra el texto primario (con acceso restringido). Confírmelos contra el documento CAD-RADS 2.0 oficial antes de un uso clínico estricto.',
             resultLabel: 'Resultado CAD-RADS',
             reportText: (cadrads, mods) =>
               `CAD-RADS 2.0:\nCategoría: ${cadrads}${mods ? '/' + mods : ''}`,
             usage: [
               'CAD-RADS clasifica la enfermedad coronaria por angio-TC según el grado de estenosis del segmento más afectado, de CAD-RADS 0 (ausencia de placa) a 5 (oclusión total), más la categoría N para estudios no diagnósticos.',
-              'Los modificadores se agregan tras la categoría principal (ej. "CAD-RADS 3/HRP" o "CAD-RADS 4B/I"): N (segmento no evaluable), S (stent), G (injerto), I (isquemia en estudio funcional), HRP (placa de alto riesgo) y E (excepción, ej. trasplante cardíaco o coronaria anómala).',
+              'Los modificadores se agregan tras la categoría principal (ej. "CAD-RADS 3/HRP" o "CAD-RADS 4B/I"): N (segmento no evaluable), S (stent), G (injerto), I (isquemia en estudio funcional), HRP (placa de alto riesgo), E (excepción, ej. trasplante cardíaco o coronaria anómala) y P1-P4 (carga de placa por score de Agatston).',
               'CAD-RADS 0-2 generalmente no requiere tratamiento adicional; CAD-RADS 3 amerita evaluación clínica y posible tratamiento médico; CAD-RADS 4A-4B suele requerir evaluación de isquemia o angiografía invasiva; CAD-RADS 5 amerita revascularización urgente según contexto clínico.',
+            ],
+          },
+          lungNodule: {
+            title: 'Nódulo Pulmonar Incidental (Fleischner / NCCN)',
+            typeLabel: 'Tipo de nódulo',
+            typeSolid: 'Sólido', typePartSolid: 'Subsólido - parcialmente sólido', typeGgn: 'Subsólido - vidrio esmerilado puro',
+            countLabel: 'Número de nódulos',
+            countSingle: 'Único', countMultiple: 'Múltiples',
+            riskLabel: 'Riesgo del paciente (Fleischner)',
+            riskLow: 'Bajo riesgo', riskHigh: 'Alto riesgo (tabaquismo, otros factores)',
+            sizeLabel: 'Tamaño (mm, promedio de diámetros)',
+            fleischnerResult: 'Recomendación Fleischner 2017',
+            nccnTable: 'Tabla comparativa NCCN (referencia)',
+            recs: {
+              none: 'No requiere seguimiento de rutina.',
+              noneHighOptional: 'No requiere seguimiento de rutina; opcional TC a los 12 meses si hay morfología sospechosa o localización en lóbulo superior.',
+              ct6to12then18to24: 'TC a los 6-12 meses, luego considerar TC a los 18-24 meses.',
+              ct3moOrPetOrBiopsy: 'Considerar TC a los 3 meses, PET-TC, o biopsia según probabilidad clínica.',
+              multipleLowNone: 'No requiere seguimiento de rutina.',
+              multipleHighOptional12: 'Opcional TC a los 12 meses.',
+              ct3to6then18to24: 'TC a los 3-6 meses, luego considerar TC a los 18-24 meses (usar el nódulo más sospechoso/dominante para guiar el manejo).',
+              ggnNone: 'No requiere seguimiento de rutina.',
+              ggnFollow: 'TC a los 6-12 meses para confirmar persistencia; si persiste, TC cada 2 años hasta completar 5 años.',
+              partSolidNone: 'No requiere seguimiento de rutina.',
+              partSolidFollow: 'TC a los 3-6 meses para confirmar persistencia; si no cambia y el componente sólido permanece < 6 mm, TC anual por un mínimo de 5 años; si el componente sólido crece o es sospechoso, considerar PET-TC, biopsia o resección.',
+              multiSubsolidLowNote: 'Considerar infección primero; si persiste a los 3-6 meses, TC de seguimiento a los 2 y 4 años.',
+              multiSubsolidHighNote: 'TC a los 3-6 meses; manejo posterior guiado por el/los nódulo(s) más sospechoso(s); considerar infección y adenocarcinoma multifocal.',
+            },
+            nccnCaveat: 'Nota de transparencia: la tabla de NCCN aquí mostrada es de referencia comparativa, basada en versiones de NCCN que pudieron verificarse en fuentes accesibles (no siempre la versión vigente más reciente, que suele requerir acceso registrado a NCCN.org). Verifique el algoritmo NCCN actual antes de tomar decisiones clínicas basadas únicamente en esta tabla.',
+            nccnRows: [
+              ['Sólido', '≤ 5 mm', 'TC de tamizaje anual'],
+              ['Sólido', '6-7 mm', 'TC a los 6 meses'],
+              ['Sólido', '8-14 mm', 'TC a los 3 meses, o considerar PET-TC'],
+              ['Sólido', '≥ 15 mm', 'TC con contraste y/o PET-TC; biopsia o resección si alta sospecha'],
+              ['Subsólido parcialmente sólido', 'componente sólido ≤ 5 mm', 'TC de tamizaje anual'],
+              ['Subsólido parcialmente sólido', 'componente sólido 6-7 mm', 'TC a los 6 meses'],
+              ['Subsólido parcialmente sólido', 'componente sólido ≥ 8 mm', 'TC con contraste y/o PET-TC; biopsia o resección si alta sospecha'],
+              ['Vidrio esmerilado puro', '< 20 mm', 'TC de tamizaje anual'],
+              ['Vidrio esmerilado puro', '≥ 20 mm', 'TC a los 6 meses; biopsia/resección si crece'],
+            ],
+            reportText: (type, count, size, risk, rec) =>
+              `Nódulo pulmonar incidental:\nTipo: ${type}\nNúmero: ${count}\nTamaño: ${size} mm${risk ? '\nRiesgo: ' + risk : ''}\nRecomendación (Fleischner 2017): ${rec}`,
+            usage: [
+              'Las guías Fleischner 2017 aplican a nódulos pulmonares incidentales (hallados fuera de un programa de tamizaje) en adultos ≥ 35 años, excluyendo pacientes inmunosuprimidos o con cáncer conocido.',
+              'El tamaño se mide como el promedio de los diámetros mayor y menor en TC de cortes finos (≤ 1.5 mm). "Alto riesgo" incluye antecedente de tabaquismo importante u otros factores de riesgo de cáncer pulmonar.',
+              'Los nódulos subsólidos (en vidrio esmerilado o parcialmente sólidos) requieren seguimiento más prolongado que los sólidos porque el adenocarcinoma in situ/mínimamente invasivo puede crecer lentamente.',
+            ],
+          },
+          lungRads: {
+            title: 'Lung-RADS v2022 (Tamizaje)',
+            categoryLabel: 'Seleccione la categoría según los hallazgos',
+            categories: [
+              { key: '0', label: 'Categoría 0 — Incompleto', desc: 'Parte o toda la evaluación pulmonar no es evaluable; TC previa no disponible para comparar; sospecha de infección/inflamación.', mgmt: 'Comparar con TC previa y/o imagen adicional; TC de baja dosis a 1-3 meses si se sospecha infección/inflamación.', risk: 'N/A' },
+              { key: '1', label: 'Categoría 1 — Negativo', desc: 'Sin nódulos; o calcificación benigna (completa/central/en palomita de maíz/en anillo); lesión con grasa.', mgmt: 'TC de tamizaje anual (12 meses).', risk: '< 1%' },
+              { key: '2', label: 'Categoría 2 — Benigno', desc: 'Nódulo sólido < 6 mm (nuevo < 4 mm); subsólido total < 6 mm; nódulo yuxtapleural ≤ 10 mm de morfología típica; nódulo endobronquial subsegmentario.', mgmt: 'TC de tamizaje anual (12 meses).', risk: '< 1%' },
+              { key: '3', label: 'Categoría 3 — Probablemente benigno', desc: 'Sólido 6 a < 8 mm (nuevo 4 a < 6 mm); subsólido total ≥ 6 mm con sólido < 6 mm; quiste atípico o en crecimiento.', mgmt: 'TC de baja dosis a los 6 meses.', risk: '1-2%' },
+              { key: '4A', label: 'Categoría 4A — Sospechoso', desc: 'Sólido 8 a < 15 mm o en crecimiento; componente sólido 6 a < 8 mm; nódulo endobronquial segmentario (basal).', mgmt: 'TC de baja dosis a los 3 meses; considerar PET-TC si el componente sólido ≥ 8 mm.', risk: '5-15%' },
+              { key: '4B', label: 'Categoría 4B — Muy sospechoso', desc: 'Sólido ≥ 15 mm, o nuevo/en crecimiento ≥ 8 mm; componente sólido ≥ 8 mm; nódulo endobronquial segmentario o más proximal (estable o en crecimiento).', mgmt: 'TC diagnóstica ± contraste, PET-TC y/o muestra de tejido; correlación clínica.', risk: '> 15%' },
+              { key: '4X', label: 'Categoría 4X — 3 o 4 + características adicionales', desc: 'Nódulo categoría 3 o 4 con espiculación, adenopatía asociada, o sospecha de enfermedad metastásica; vidrio esmerilado que dobla su tamaño en 1 año.', mgmt: 'Manejo como categoría 4B (estudio diagnóstico, muestra de tejido, discusión multidisciplinaria).', risk: '> 15%' },
+            ],
+            sLabel: 'Modificador "S" (hallazgo incidental significativo, ej. calcio coronario, aneurisma aórtico)',
+            reportText: (cat, label) => `Lung-RADS v2022:\nCategoría: ${cat}\n${label}`,
+            usage: [
+              'Lung-RADS se aplica exclusivamente a nódulos detectados en un programa de tamizaje con TC de baja dosis (no a nódulos incidentales fuera de tamizaje, donde se usa Fleischner).',
+              'El manejo depende de la categoría más alta encontrada entre todos los nódulos del estudio. El modificador "S" se agrega cuando hay un hallazgo incidental clínicamente significativo no pulmonar.',
+              'Nota de transparencia: la tabla de criterios se reconstruyó a partir de fuentes secundarias consistentes entre sí (no se pudo acceder al PDF/tabla oficial del ACR por bloqueo de acceso); se recomienda verificar la redacción exacta contra el documento oficial ACR Lung-RADS v2022 antes de usarla como única fuente en decisiones clínicas.',
+            ],
+          },
+          lungCysts: {
+            title: 'Enfermedad Quística Pulmonar (Algoritmo)',
+            start: { q: '¿Cuál es la distribución predominante de los quistes en la TC?', options: [
+              { label: 'Subpleurales (paraseptales), predominio en bases', next: 'subpleural' },
+              { label: 'Difusos, en todo el pulmón, forma redondeada/ovalada, pared fina', next: 'diffuse' },
+              { label: 'Aislados/escasos, sin otros hallazgos asociados', next: 'isolated' },
+              { label: 'Múltiples, con nódulos asociados', next: 'withNodules' },
+              { label: 'Múltiples, con vidrio esmerilado asociado', next: 'withGgo' },
+            ]},
+            nodes: {
+              subpleural: { q: 'Características adicionales:', options: [
+                { label: 'Quistes de pared fina, predominio en vértices/bases según patrón', next: 'r_emphysemaHoneycomb' },
+                { label: 'Quistes elípticos/lentiformes paramediastínicos, predominio en bases, ± antecedente familiar', next: 'r_bhd' },
+              ]},
+              diffuse: { q: '¿Sexo y contexto clínico?', options: [
+                { label: 'Mujer, ± esclerosis tuberosa, ± quilotórax/angiomiolipomas', next: 'r_lam' },
+                { label: 'Otro contexto (menos típico para LAM)', next: 'r_indeterminateDiffuse' },
+              ]},
+              isolated: { cat: 'r_isolated' },
+              withNodules: { q: 'Tipo de nódulos asociados:', options: [
+                { label: 'Nódulos centrolobulillares/peribroncovasculares, contexto autoinmune (Sjögren, etc.)', next: 'r_lip' },
+                { label: 'Nódulos irregulares/cavitados, predominio en lóbulos superiores, respeta ángulos costofrénicos, tabaquismo activo', next: 'r_plch' },
+              ]},
+              withGgo: { q: 'Contexto clínico:', options: [
+                { label: 'Inmunosupresión (VIH, trasplante, etc.), vidrio esmerilado en "empedrado"', next: 'r_pjp' },
+                { label: 'Tabaquismo activo, vidrio esmerilado basal/subpleural', next: 'r_dip' },
+              ]},
+            },
+            results: {
+              r_emphysemaHoneycomb: { cat: 'Diagnóstico diferencial', risk: 'Enfisema centrolobulillar/paraseptal, bulla, o panalización (fibrosis pulmonar)', recs: 'Correlacionar con antecedente de tabaquismo (enfisema) o patrón de fibrosis (panalización: quistes agrupados, de pared gruesa, con distorsión arquitectural).' },
+              r_bhd: { cat: 'Diagnóstico diferencial', risk: 'Síndrome de Birt-Hogg-Dubé', recs: 'Considerar estudio genético (FLCN) y evaluación por lesiones renales/cutáneas asociadas si hay sospecha clínica o antecedente familiar.' },
+              r_lam: { cat: 'Diagnóstico diferencial', risk: 'Linfangioleiomiomatosis (LAM) / esclerosis tuberosa', recs: 'Correlacionar con VEGF-D sérico, angiomiolipomas renales, quilotórax; considerar biopsia si el cuadro no es característico.' },
+              r_indeterminateDiffuse: { cat: 'Diagnóstico diferencial', risk: 'Indeterminado (considerar LAM, BHD, causas más raras)', recs: 'Requiere correlación clínica adicional; considerar descartar LAM y BHD antes de concluir.' },
+              r_isolated: { cat: 'Diagnóstico diferencial', risk: 'Hallazgo incidental relacionado con la edad, pneumatocele antiguo, o quiste broncogénico', recs: 'Generalmente sin significado patológico si es estable; correlacionar con estudios previos si están disponibles.' },
+              r_lip: { cat: 'Diagnóstico diferencial', risk: 'Neumonía intersticial linfoide (LIP), amiloidosis, o enfermedad por depósito de cadenas ligeras', recs: 'Correlacionar con enfermedad autoinmune (síndrome de Sjögren es la asociación más frecuente) o gammapatía monoclonal.' },
+              r_plch: { cat: 'Diagnóstico diferencial', risk: 'Histiocitosis de células de Langerhans pulmonar (PLCH)', recs: 'Fuertemente asociada al tabaquismo activo; el cese del tabaquismo es la intervención principal.' },
+              r_pjp: { cat: 'Diagnóstico diferencial', risk: 'Neumonía por Pneumocystis jirovecii (PJP)', recs: 'Correlacionar con estado inmunológico y estudio microbiológico dirigido.' },
+              r_dip: { cat: 'Diagnóstico diferencial', risk: 'Neumonía intersticial descamativa (DIP)', recs: 'Fuertemente asociada al tabaquismo activo; considerar biopsia si el diagnóstico no es claro clínicamente.' },
+            },
+            reportText: (path, risk, recs) => `Enfermedad quística pulmonar (algoritmo):\nHallazgos: ${path}\nDiagnóstico diferencial sugerido: ${risk}\n${recs}`,
+            usage: [
+              'Este árbol resume el enfoque algorítmico publicado para el diagnóstico diferencial de las enfermedades quísticas pulmonares difusas, combinando distribución, morfología del quiste, hallazgos asociados (nódulos, vidrio esmerilado) y contexto clínico (sexo, tabaquismo, inmunosupresión).',
+              'Es una herramienta de apoyo diagnóstico, no reemplaza la correlación clínica, serológica ni la eventual biopsia. Varias entidades (LAM, BHD, LIP) requieren confirmación con estudios adicionales específicos.',
             ],
           },
         },
@@ -953,6 +1122,8 @@
             psad: 'PSAD',
             highRisk: 'Elevated',
             normal: 'Normal',
+            psaPending: 'Add PSA to calculate PSAD',
+            reportTextVolOnly: (vol) => `Prostate volume: ${vol} cc.`,
             reportText: (vol, psa, psad, risk) =>
               `Prostate volume: ${vol} cc.\nTotal PSA: ${psa} ng/mL.\nPSA density (PSAD): ${psad} ng/mL/cc (${risk}).`,
             usage: [
@@ -1000,12 +1171,20 @@
               `Adrenal CT — ${protocolLabel} washout protocol:\nNon-contrast HU: ${nc}\nEnhanced phase HU: ${ven}\nDelayed phase HU: ${del}\nAbsolute washout (APW): ${apw}% (${apwR}).\nRelative washout (RPW): ${rpw}% (${rpwR}).`,
             reportText5min: (nc, ven, del, met, concl) =>
               `Adrenal CT — 5-min protocol (Kamiyama 2009):\nNon-contrast HU: ${nc}\n35-sec HU: ${ven}\n5-min HU: ${del}\nCriteria met: ${met}.\nConclusion: ${concl}.`,
+            roiTip: 'Measurement tip: use an ROI covering more than 50% of the lesion area, avoiding the edge/periphery and partial-volume artifact.',
+            ncOnlyTitle: 'Preliminary interpretation (based on the non-contrast value alone)',
+            ncHighSpec: 'Non-contrast HU ≤ 10: very high specificity for a lipid-rich adenoma.',
+            ncSuggestive: 'Non-contrast HU between 10 and 18: suggestive of adenoma, but with lower specificity; completing the contrast washout study is recommended to confirm.',
+            ncNonDiagnostic: 'Non-contrast HU ≥ 18: not diagnostic of adenoma on its own; the contrast washout study is required.',
+            myelolipoma: 'Non-contrast HU ≤ -30 (if the ROI covers more than 50% of the lesion): suggests myelolipoma (macroscopic fat content) rather than a typical adenoma.',
+            pheoCaution: 'Enhanced/portal-phase HU > 100-110: consider pheochromocytoma in the differential diagnosis, unless microscopic fat is present (non-contrast HU < 10), in which case it is more compatible with a rapidly-enhancing adenoma.',
             usage: [
               'A lipid-rich adrenal adenoma enhances after contrast and then washes out rapidly, unlike most non-adenomatous lesions (metastasis, pheochromocytoma, carcinoma).',
               'Classic 15-minute protocol (Caoili 2002): APW ≥ 60% or RPW ≥ 40% are compatible with adenoma (high sensitivity and specificity, >90%).',
               '10-minute protocol (Blake 2006): shortens the exam; cutoffs adjust to APW ≥ 52% and RPW ≥ 37.5%.',
               '5-minute protocol (Kamiyama 2009): an abbreviated protocol combining 4 criteria (non-contrast HU, 5-min HU, percentage washout and relative washout); meeting any one is compatible with adenoma. Their series showed 100% specificity.',
               'A 3-minute washout protocol is not included because, despite a targeted search, no published study validating a specific cutoff at that timepoint could be found; if you have that reference, please send it so it can be added.',
+              'Additional interpretation pearls (per the author\'s clinical experience): the non-contrast value alone already orients the diagnosis (≤10 HU very specific for adenoma; 10-18 HU suggestive but less specific); a very negative value (≤ -30 HU over most of the lesion) suggests myelolipoma; and marked portal-phase enhancement (> 100-110 HU) without microscopic fat on the non-contrast phase should raise suspicion for pheochromocytoma.',
             ],
           },
           adrenalMri: {
@@ -1041,7 +1220,6 @@
             usage: [
               'R2* (=1000/T2*) correlates linearly with liver iron concentration (LIC) per the St Pierre et al. 2005 calibration: LIC = 0.0254 × R2* + 0.202 (mg/g dry tissue).',
               'Approximate LIC cutoffs (ESGAR/SAR 2023 guideline): normal < 1.8 mg/g (1.8-3.2 mg/g is considered "borderline"); mild overload 1.8-7.0 mg/g; moderate 7.0-15.0 mg/g; severe > 15.0 mg/g.',
-              'Transparency note: the St Pierre 2005 formula (the most cited and validated) is kept as requested. The Columbia University page (columbia.edu/~sj2532/t2_star.html) could not be accessed due to a redirect issue on that site itself; the reference values cited here come from verified Dropbox references and the ESGAR/SAR 2023 guideline.',
             ],
           },
           thymic: {
@@ -1153,13 +1331,18 @@
                 { label: 'Fat-predominant, no enhancing solid component (typical mature cystic teratoma pattern)', next: 'orMri2' },
                 { label: 'Fat associated with an enhancing solid component', next: 'solidTissue' },
               ]},
-              solidTissue: { q: 'Solid tissue enhancement kinetics (DCE curve, or enhancement at 30-40s compared to myometrium if no dynamic study):', options: [
+              solidTissue: { q: 'Solid tissue signal on T2 and high-b DWI:', options: [
+                { label: 'Markedly hypointense on T2 AND on DWI (typical fibroma/thecoma pattern)', next: 'orMri3fibroma' },
+                { label: 'Other signal pattern (does not fit the typical low-T2/low-DWI pattern)', next: 'solidDce' },
+              ]},
+              solidDce: { q: 'Solid tissue enhancement kinetics (DCE curve, or enhancement at 30-40s compared to myometrium if no dynamic study):', options: [
                 { label: 'No enhancement of solid tissue', next: 'orMri3' },
                 { label: 'Enhancement ≤ myometrium (type 1 curve: progressive/persistent)', next: 'orMri4' },
                 { label: 'Enhancement > myometrium (type 2 plateau or type 3 washout curve)', next: 'orMri5' },
               ]},
               orMri2: { cat: 'O-RADS 2', risk: 'Almost certainly benign (< 0.5%)', recs: 'Gynecologic follow-up (ultrasound or repeat MRI per clinical judgment).' },
               orMri3: { cat: 'O-RADS 3', risk: 'Low risk (~5%)', recs: 'Refer to gynecologist; consider imaging follow-up or surgical management depending on clinical context.' },
+              orMri3fibroma: { cat: 'O-RADS 3', risk: 'Low risk (~5%) — pattern suggestive of fibroma/thecoma', recs: 'A low-T2/low-DWI pattern in the solid tissue is typical of fibrous lesions (fibroma, thecoma, degenerated subserosal leiomyoma); refer to gynecologist for clinical correlation and to decide follow-up vs. surgical management.' },
               orMri4: { cat: 'O-RADS 4', risk: 'Intermediate risk (~50%)', recs: 'Management by gynecologic oncologist.' },
               orMri5: { cat: 'O-RADS 5', risk: 'High risk (~90%)', recs: 'Management by gynecologic oncologist.' },
             },
@@ -1167,6 +1350,7 @@
               `Adnexal characterization (ACR O-RADS MRI):\nFindings: ${path}\nClassification: ${cat}\nMalignancy risk: ${risk}\nRecommendation: ${recs}`,
             usage: [
               'O-RADS MRI classifies indeterminate adnexal lesions into categories 1 to 5 based on morphologic findings (cystic/solid/fat content, wall and septal thickness) and, when solid tissue is present, dynamic contrast-enhancement kinetics (type 1, 2, or 3 curve) compared to the myometrium.',
+              'A solid tissue pattern markedly hypointense on both T2 and high-b DWI ("low T2/low DWI") suggests a fibrous lesion (fibroma, thecoma, degenerated subserosal leiomyoma) and points toward a lower-risk category even when some enhancement is present.',
               'Ascites and/or peritoneal/omental implants automatically assign O-RADS 5, regardless of the adnexal lesion\'s own features.',
               'This tree is a simplification for educational/reporting-support purposes; the full ACR algorithm (including specific subtypes and size thresholds) should be consulted for borderline cases. It requires a protocol with dynamic post-contrast (DCE) sequences or, alternatively, a single phase at 30-40 seconds compared to the myometrium.',
             ],
@@ -1202,10 +1386,18 @@
               '5 = Same as 4 but ≥ 1.5 cm, or with definite extraprostatic extension/invasion',
             ],
             dceDef: 'Positive DCE = focal, early enhancement corresponding to or preceding the suspicious T2W/DWI finding. Negative DCE = absence of corresponding focal early enhancement.',
+            epeLabel: 'Extraprostatic extension (EPE) — optional, grade 0-2',
+            epeOptions: [
+              { key: '0', label: 'Grade 0', desc: 'No capsular contact, or capsular contact < 10 mm with no bulge or irregularity.' },
+              { key: '1', label: 'Grade 1', desc: 'A single feature present: capsular contact ≥ 10 mm, or capsular bulge/irregularity, or focal capsular margin loss, without measurable extension outside the gland.' },
+              { key: '2', label: 'Grade 2', desc: 'Measurable/frank extraprostatic extension (tumor visible outside the gland), or obliteration of the rectoprostatic angle, or ≥ 2 grade-1 features combined.' },
+            ],
+            epeCaveat: 'Transparency note: this is a simplification of an EPE grading system (Mehralivand et al.) reconstructed from memory and not re-verified word-for-word this session; confirm the exact definition of each grade against the original publication before strict clinical use.',
             usage: [
               'PI-RADS combines a "dominant" sequence (DWI/ADC in the peripheral zone, T2W in the transition zone) with secondary sequences used only to resolve an equivocal score of 3.',
               'In the peripheral zone: if DWI = 3, DCE decides (positive raises it to PI-RADS 4). In the transition zone: if T2W = 3, the DWI score decides (DWI = 5 raises it to PI-RADS 4).',
               'PI-RADS ≥ 3 is generally the threshold for discussing targeted biopsy (PI-RADS 3 depending on clinical context/PSAD, PI-RADS 4-5 with a more consistent biopsy indication).',
+              'Extraprostatic extension (EPE) is an additional finding alongside the PI-RADS score (it does not modify it) that adds local staging information; a higher grade is associated with greater probability of extraprostatic disease and can influence treatment decisions (e.g., nerve-sparing surgery).',
             ],
           },
           virads: {
@@ -1260,6 +1452,12 @@
             featGrowth: 'Threshold growth (≥ 50% in ≤ 6 months)',
             lrM: 'Features of malignancy not specific to HCC ("LR-M": rim APHE, marked diffusion restriction in a rim, marked necrosis/ischemia, infiltrative morphology)?',
             lrTiv: 'Definite tumor in vein (macrovascular tumor invasion, "LR-TIV")?',
+            lrTivContinuityLabel: 'Continuity of the tumor in vein with the hepatic lesion:',
+            lrTivContinuity: {
+              lr5: 'Continuous with an LR-5 lesion',
+              lrM: 'Continuous with an LR-M lesion',
+              unspecified: 'Continuity cannot be specified',
+            },
             categories: {
               'LR-1': 'Definitely benign',
               'LR-2': 'Probably benign',
@@ -1280,6 +1478,9 @@
           },
           liradsTr: {
             title: 'LI-RADS: Treatment Response (LR-TR)',
+            treatmentTypeLabel: 'Type of locoregional treatment received',
+            treatmentLocoregional: 'Ablation / TACE / radioembolization (Y90)',
+            treatmentSbrt: 'Stereotactic body radiotherapy (SBRT)',
             selectLabel: 'Select the category based on post-treatment findings:',
             options: {
               nonevaluable: { label: 'Nonevaluable', desc: 'Image quality or technique inadequate to assess response (e.g., artifacts, incomplete protocol).' },
@@ -1287,12 +1488,19 @@
               equivocal: { label: 'Equivocal', desc: 'Indeterminate findings between viable tumor tissue and post-treatment change; atypical enhancement in amount, size, or new development that does not clearly meet "viable" criteria.' },
               viable: { label: 'Viable', desc: 'Nodular, mass-like, or thick tumor-like enhancement within the treated area or along its margin, with the same pattern as an untreated HCC (APHE with washout).' },
             },
+            sbrtOptions: {
+              nonevaluable: { label: 'Nonevaluable', desc: 'Image quality or technique inadequate to assess response.' },
+              nonprogressive: { label: 'Nonprogressive', desc: 'Enhancement/size of the treated area is stable or decreasing compared to prior studies. After SBRT, expected peripheral enhancement can persist longer and appear thicker than after ablation/TACE, so comparing evolution over time is preferred over directly applying the "viable" criteria used for other therapies, especially in the first months.' },
+              equivocal: { label: 'Equivocal', desc: 'Indeterminate change that cannot be confidently classified as progressive or nonprogressive with the available information.' },
+              progressive: { label: 'Progressive', desc: 'New tumor-like enhancement, or growth/increase of nodular enhancement in the treated area or its margin, compared to prior studies.' },
+            },
+            sbrtCaveat: 'Transparency note: the "nonprogressive / progressive" framework for SBRT-treated lesions reflects a recent LI-RADS guidance update recognizing that expected post-radiotherapy enhancement differs from that seen after ablation/TACE. The exact category wording could not be re-verified word-for-word against the most recent ACR document this session; confirm it before strict clinical use.',
             reportText: (cat, desc) =>
               `LI-RADS Treatment Response (LR-TR):\nCategory: LR-TR ${cat}\nFinding: ${desc}`,
             usage: [
               'LR-TR applies to hepatic lesions treated with locoregional therapy (e.g., chemoembolization, ablation, radioembolization) to classify the likelihood of residual or recurrent viable tumor.',
-              'The 4 categories are: Nonevaluable, Nonviable, Equivocal, and Viable. "Viable" is based on recognizing an enhancement pattern similar to an untreated HCC (arterial enhancement with washout) within or along the margin of the treated area.',
-              'Transparency note: this algorithm represents the ACR LI-RADS general 4-category framework; specific nuances for stereotactic body radiotherapy (SBRT), where expected peripheral enhancement can be more prolonged and thick, are only partially represented here.',
+              'For ablation/TACE/Y90, the 4 categories are: Nonevaluable, Nonviable, Equivocal, and Viable. "Viable" is based on recognizing an enhancement pattern similar to an untreated HCC (arterial enhancement with washout) within or along the margin of the treated area.',
+              'For SBRT, a different framework is recommended (Nonevaluable / Nonprogressive / Equivocal / Progressive) because the expected inflammatory peripheral enhancement after radiotherapy can be more prolonged and thick, and should not automatically be interpreted as viable disease using the same criteria applied to ablation/TACE.',
             ],
           },
           cadrads: {
@@ -1314,14 +1522,124 @@
             modG: 'G — Graft (bypass)',
             modI: 'I — Ischemia (positive functional test)',
             modHrp: 'HRP — High-risk plaque',
+            modHrpHint: 'Plaque is generally considered high-risk (HRP) when it meets ≥ 2 of: low attenuation (< 30 HU), positive remodeling (remodeling index ≥ 1.10), "napkin-ring" sign, or spotty calcification. Verify this definition against the current CAD-RADS 2.0 document before using it as a sole criterion.',
             modE: 'E — Exception (e.g., transplant, anomalous coronary)',
+            pModifierLabel: 'Plaque burden (P) — by Agatston calcium score (optional)',
+            pNone: 'Not applicable / no Agatston score',
+            pOptions: [
+              { key: 'P1', label: 'P1: Agatston 1-100 (mild)' },
+              { key: 'P2', label: 'P2: Agatston 101-300 (moderate)' },
+              { key: 'P3', label: 'P3: Agatston 301-999 (severe)' },
+              { key: 'P4', label: 'P4: Agatston ≥ 1000 (extensive)' },
+            ],
+            pCaveat: 'Transparency note: the exact Agatston ranges per P band were reconstructed from secondary sources and could not be re-verified word-for-word against the primary text (access-restricted). Confirm them against the official CAD-RADS 2.0 document before strict clinical use.',
             resultLabel: 'CAD-RADS result',
             reportText: (cadrads, mods) =>
               `CAD-RADS 2.0:\nCategory: ${cadrads}${mods ? '/' + mods : ''}`,
             usage: [
               'CAD-RADS classifies coronary artery disease on CTA by the stenosis grade of the most severely affected segment, from CAD-RADS 0 (no plaque) to 5 (total occlusion), plus category N for non-diagnostic studies.',
-              'Modifiers are appended after the main category (e.g., "CAD-RADS 3/HRP" or "CAD-RADS 4B/I"): N (nondiagnostic segment), S (stent), G (graft), I (ischemia on functional testing), HRP (high-risk plaque), and E (exception, e.g., heart transplant or anomalous coronary).',
+              'Modifiers are appended after the main category (e.g., "CAD-RADS 3/HRP" or "CAD-RADS 4B/I"): N (nondiagnostic segment), S (stent), G (graft), I (ischemia on functional testing), HRP (high-risk plaque), E (exception, e.g., heart transplant or anomalous coronary), and P1-P4 (plaque burden by Agatston score).',
               'CAD-RADS 0-2 generally requires no further treatment; CAD-RADS 3 warrants clinical evaluation and possible medical therapy; CAD-RADS 4A-4B usually requires ischemia testing or invasive angiography; CAD-RADS 5 warrants urgent revascularization depending on clinical context.',
+            ],
+          },
+          lungNodule: {
+            title: 'Incidental Pulmonary Nodule (Fleischner / NCCN)',
+            typeLabel: 'Nodule type',
+            typeSolid: 'Solid', typePartSolid: 'Subsolid - part-solid', typeGgn: 'Subsolid - pure ground-glass',
+            countLabel: 'Number of nodules',
+            countSingle: 'Single', countMultiple: 'Multiple',
+            riskLabel: 'Patient risk (Fleischner)',
+            riskLow: 'Low risk', riskHigh: 'High risk (smoking history, other factors)',
+            sizeLabel: 'Size (mm, average of diameters)',
+            fleischnerResult: 'Fleischner 2017 recommendation',
+            nccnTable: 'NCCN comparison table (reference)',
+            recs: {
+              none: 'No routine follow-up needed.',
+              noneHighOptional: 'No routine follow-up needed; optional CT at 12 months if suspicious morphology or upper-lobe location.',
+              ct6to12then18to24: 'CT at 6-12 months, then consider CT at 18-24 months.',
+              ct3moOrPetOrBiopsy: 'Consider CT at 3 months, PET/CT, or biopsy depending on clinical probability.',
+              multipleLowNone: 'No routine follow-up needed.',
+              multipleHighOptional12: 'Optional CT at 12 months.',
+              ct3to6then18to24: 'CT at 3-6 months, then consider CT at 18-24 months (use the most suspicious/dominant nodule to guide management).',
+              ggnNone: 'No routine follow-up needed.',
+              ggnFollow: 'CT at 6-12 months to confirm persistence; if persistent, CT every 2 years until 5 years.',
+              partSolidNone: 'No routine follow-up needed.',
+              partSolidFollow: 'CT at 3-6 months to confirm persistence; if unchanged and the solid component remains < 6 mm, annual CT for a minimum of 5 years; if the solid component grows or is suspicious, consider PET/CT, biopsy, or resection.',
+              multiSubsolidLowNote: 'Consider infection first; if persistent at 3-6 months, follow-up CT at 2 and 4 years.',
+              multiSubsolidHighNote: 'CT at 3-6 months; subsequent management guided by the most suspicious nodule(s); consider infection and multifocal adenocarcinoma.',
+            },
+            nccnCaveat: 'Transparency note: the NCCN table shown here is for comparison, based on NCCN versions that could be verified from accessible sources (not always the current version, which usually requires registered NCCN.org access). Verify the current NCCN algorithm before basing clinical decisions solely on this table.',
+            reportText: (type, count, size, risk, rec) =>
+              `Incidental pulmonary nodule:\nType: ${type}\nNumber: ${count}\nSize: ${size} mm${risk ? '\nRisk: ' + risk : ''}\nRecommendation (Fleischner 2017): ${rec}`,
+            usage: [
+              'The Fleischner 2017 guidelines apply to incidental pulmonary nodules (found outside a screening program) in adults ≥ 35 years, excluding immunosuppressed patients or those with known cancer.',
+              'Size is measured as the average of the long- and short-axis diameters on thin-section CT (≤ 1.5 mm). "High risk" includes significant smoking history or other lung cancer risk factors.',
+              'Subsolid nodules (ground-glass or part-solid) require longer follow-up than solid nodules because in situ/minimally invasive adenocarcinoma can grow slowly.',
+            ],
+          },
+          lungRads: {
+            title: 'Lung-RADS v2022 (Screening)',
+            categoryLabel: 'Select the category based on findings',
+            categories: [
+              { key: '0', label: 'Category 0 — Incomplete', desc: 'Part or all of the lungs not evaluable; prior CT unavailable for comparison; suspected infection/inflammation.', mgmt: 'Compare to prior CT and/or additional imaging; 1-3 month low-dose CT if infection/inflammation suspected.', risk: 'N/A' },
+              { key: '1', label: 'Category 1 — Negative', desc: 'No nodules; or benign calcification (complete/central/popcorn/ring); fat-containing lesion.', mgmt: 'Annual (12-month) screening CT.', risk: '< 1%' },
+              { key: '2', label: 'Category 2 — Benign appearance', desc: 'Solid nodule < 6 mm (new < 4 mm); total subsolid < 6 mm; juxtapleural nodule ≤ 10 mm with typical morphology; subsegmental endobronchial nodule.', mgmt: 'Annual (12-month) screening CT.', risk: '< 1%' },
+              { key: '3', label: 'Category 3 — Probably benign', desc: 'Solid 6 to < 8 mm (new 4 to < 6 mm); total subsolid ≥ 6 mm with solid component < 6 mm; atypical or growing cyst.', mgmt: '6-month low-dose CT.', risk: '1-2%' },
+              { key: '4A', label: 'Category 4A — Suspicious', desc: 'Solid 8 to < 15 mm or growing; solid component 6 to < 8 mm; segmental (baseline) endobronchial nodule.', mgmt: '3-month low-dose CT; consider PET/CT if solid component ≥ 8 mm.', risk: '5-15%' },
+              { key: '4B', label: 'Category 4B — Very suspicious', desc: 'Solid ≥ 15 mm, or new/growing ≥ 8 mm; solid component ≥ 8 mm; segmental-or-more-proximal endobronchial nodule (stable or growing).', mgmt: 'Diagnostic chest CT ± contrast, PET/CT, and/or tissue sampling; clinical correlation.', risk: '> 15%' },
+              { key: '4X', label: 'Category 4X — Category 3 or 4 plus additional features', desc: 'Category 3 or 4 nodule with spiculation, associated lymphadenopathy, or suspected metastatic disease; ground-glass nodule doubling in size within 1 year.', mgmt: 'Managed as category 4B (diagnostic workup, tissue sampling, multidisciplinary discussion).', risk: '> 15%' },
+            ],
+            sLabel: '"S" modifier (significant incidental finding, e.g., coronary calcium, aortic aneurysm)',
+            reportText: (cat, label) => `Lung-RADS v2022:\nCategory: ${cat}\n${label}`,
+            usage: [
+              'Lung-RADS applies exclusively to nodules detected within a low-dose CT screening program (not to incidental nodules outside screening, where Fleischner is used).',
+              'Management is based on the highest category found among all nodules in the study. The "S" modifier is added when there is a clinically significant non-pulmonary incidental finding.',
+              'Transparency note: this criteria table was reconstructed from mutually consistent secondary sources (the official ACR PDF/table could not be accessed due to access restrictions); verify the exact wording against the official ACR Lung-RADS v2022 document before using it as the sole source for clinical decisions.',
+            ],
+          },
+          lungCysts: {
+            title: 'Cystic Lung Disease (Algorithm)',
+            start: { q: 'What is the predominant distribution of the cysts on CT?', options: [
+              { label: 'Subpleural (paraseptal), lower-lung predominant', next: 'subpleural' },
+              { label: 'Diffuse, throughout the lungs, round/oval shape, thin wall', next: 'diffuse' },
+              { label: 'Isolated/few, no other associated findings', next: 'isolated' },
+              { label: 'Multiple, with associated nodules', next: 'withNodules' },
+              { label: 'Multiple, with associated ground-glass opacity', next: 'withGgo' },
+            ]},
+            nodes: {
+              subpleural: { q: 'Additional features:', options: [
+                { label: 'Thin-walled cysts, apex/base predominance per pattern', next: 'r_emphysemaHoneycomb' },
+                { label: 'Elliptical/lentiform paramediastinal cysts, lower-lung predominant, ± family history', next: 'r_bhd' },
+              ]},
+              diffuse: { q: 'Sex and clinical context?', options: [
+                { label: 'Female, ± tuberous sclerosis, ± chylothorax/angiomyolipomas', next: 'r_lam' },
+                { label: 'Other context (less typical for LAM)', next: 'r_indeterminateDiffuse' },
+              ]},
+              isolated: { cat: 'r_isolated' },
+              withNodules: { q: 'Type of associated nodules:', options: [
+                { label: 'Centrilobular/peribronchovascular nodules, autoimmune context (Sjögren, etc.)', next: 'r_lip' },
+                { label: 'Irregular/cavitated nodules, upper-lobe predominant, spares costophrenic angles, active smoker', next: 'r_plch' },
+              ]},
+              withGgo: { q: 'Clinical context:', options: [
+                { label: 'Immunosuppression (HIV, transplant, etc.), "crazy-paving" ground-glass', next: 'r_pjp' },
+                { label: 'Active smoker, basal/subpleural ground-glass', next: 'r_dip' },
+              ]},
+            },
+            results: {
+              r_emphysemaHoneycomb: { cat: 'Differential diagnosis', risk: 'Centrilobular/paraseptal emphysema, bulla, or honeycombing (pulmonary fibrosis)', recs: 'Correlate with smoking history (emphysema) or fibrosis pattern (honeycombing: clustered, thick-walled cysts with architectural distortion).' },
+              r_bhd: { cat: 'Differential diagnosis', risk: 'Birt-Hogg-Dubé syndrome', recs: 'Consider genetic testing (FLCN) and evaluation for associated renal/skin lesions if clinically suspected or family history present.' },
+              r_lam: { cat: 'Differential diagnosis', risk: 'Lymphangioleiomyomatosis (LAM) / tuberous sclerosis', recs: 'Correlate with serum VEGF-D, renal angiomyolipomas, chylothorax; consider biopsy if the picture is not characteristic.' },
+              r_indeterminateDiffuse: { cat: 'Differential diagnosis', risk: 'Indeterminate (consider LAM, BHD, rarer causes)', recs: 'Requires further clinical correlation; consider excluding LAM and BHD before concluding.' },
+              r_isolated: { cat: 'Differential diagnosis', risk: 'Age-related incidental finding, old pneumatocele, or bronchogenic cyst', recs: 'Generally without pathologic significance if stable; correlate with prior studies if available.' },
+              r_lip: { cat: 'Differential diagnosis', risk: 'Lymphocytic interstitial pneumonia (LIP), amyloidosis, or light-chain deposition disease', recs: 'Correlate with autoimmune disease (Sjögren syndrome is the most frequent association) or monoclonal gammopathy.' },
+              r_plch: { cat: 'Differential diagnosis', risk: 'Pulmonary Langerhans cell histiocytosis (PLCH)', recs: 'Strongly associated with active smoking; smoking cessation is the main intervention.' },
+              r_pjp: { cat: 'Differential diagnosis', risk: 'Pneumocystis jirovecii pneumonia (PJP)', recs: 'Correlate with immune status and targeted microbiologic workup.' },
+              r_dip: { cat: 'Differential diagnosis', risk: 'Desquamative interstitial pneumonia (DIP)', recs: 'Strongly associated with active smoking; consider biopsy if the diagnosis is not clinically clear.' },
+            },
+            reportText: (path, risk, recs) => `Cystic lung disease (algorithm):\nFindings: ${path}\nSuggested differential diagnosis: ${risk}\n${recs}`,
+            usage: [
+              'This tree summarizes the published algorithmic approach to the differential diagnosis of diffuse cystic lung diseases, combining distribution, cyst morphology, associated findings (nodules, ground-glass), and clinical context (sex, smoking, immunosuppression).',
+              'This is a diagnostic support tool; it does not replace clinical/serologic correlation or eventual biopsy. Several entities (LAM, BHD, LIP) require confirmation with specific additional testing.',
             ],
           },
         },
@@ -1384,6 +1702,18 @@
       cadrads: [
         'Cury RC, Leipsic J, Abbara S, et al. CAD-RADS™ 2.0 - 2022 Coronary Artery Disease - Reporting and Data System: an expert consensus document of SCCT, ACC, ACR, and NASCI. JACC Cardiovasc Imaging. 2022;15(11):1974-2001.',
       ],
+      lungNodule: [
+        'MacMahon H, Naidich DP, Goo JM, et al. Guidelines for management of incidental pulmonary nodules detected on CT images: from the Fleischner Society 2017. Radiology. 2017;284(1):228-243.',
+        'NCCN Guidelines Insights: Lung Cancer Screening, Version 1.2025. J Natl Compr Canc Netw. 2025;23(1):e250002.',
+      ],
+      lungRads: [
+        'Christensen J, Prosper AE, Wu CC, et al. ACR Lung-RADS v2022: assessment categories and management recommendations. J Am Coll Radiol. 2024;21(3):473-488.',
+      ],
+      lungCysts: [
+        'Raoof S, Bondalapati P, Vydyula R, et al. Cystic lung diseases: algorithmic approach. Chest. 2016;150(4):945-965.',
+        'Escalon JG, Richards JC, Kolesch T, Downey GP, Lynch DA. Isolated cystic lung disease: an algorithmic approach to distinguishing Birt-Hogg-Dubé syndrome, lymphangioleiomyomatosis, and lymphocytic interstitial pneumonia. AJR Am J Roentgenol. 2019;212:1-5.',
+        'Beddy P, Babar J, Devaraj A. A practical approach to cystic lung disease on HRCT. Insights Imaging. 2011;2:1-7.',
+      ],
     };
 
     /* ============================================================
@@ -1398,12 +1728,18 @@
       const [psa, setPsa] = useState('');
       const [factor, setFactor] = useState(0.52);
       const vol = (parseFloat(ap) || 0) * (parseFloat(tr) || 0) * (parseFloat(long) || 0) * factor;
-      const psad = (parseFloat(psa) || 0) / (vol || 1);
-      const showResults = ap && tr && long && psa;
+      const hasVolume = ap && tr && long && vol > 0;
+      const psaVal = parseFloat(psa);
+      const hasPsa = psa !== '' && !isNaN(psaVal);
+      const psad = hasVolume && hasPsa ? psaVal / vol : 0;
+      const showVolume = hasVolume;
+      const showPsad = hasVolume && hasPsa;
       const isHighRisk = psad >= 0.15;
 
       const handleCopy = () => {
-        const text = c.reportText(vol.toFixed(1), psa, psad.toFixed(2), isHighRisk ? c.highRisk : c.normal);
+        const text = showPsad
+          ? c.reportText(vol.toFixed(1), psa, psad.toFixed(2), isHighRisk ? c.highRisk : c.normal)
+          : c.reportTextVolOnly(vol.toFixed(1));
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
 
@@ -1427,23 +1763,26 @@
               </div>
             </div>
           </Card>
-          {showResults && (
+          {showVolume && (
             <Card>
-              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-700">
+              <div className={`flex justify-between items-center ${showPsad ? 'pb-3 border-b border-slate-100 dark:border-slate-700' : ''}`}>
                 <span className="text-slate-500 dark:text-slate-400">{c.volume}</span>
                 <span className="text-xl font-bold">{vol.toFixed(1)} cc</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-500 dark:text-slate-400">{c.psad}</span>
-                <span className={`text-2xl font-bold flex items-center gap-2 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
-                  {isHighRisk ? <IconAlertTriangle size={20} /> : <IconCheckCircle size={20} />}
-                  {psad.toFixed(2)}
-                </span>
-              </div>
+              {showPsad ? (
+                <div className="flex justify-between items-center pt-3">
+                  <span className="text-slate-500 dark:text-slate-400">{c.psad}</span>
+                  <span className={`text-2xl font-bold flex items-center gap-2 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
+                    {isHighRisk ? <IconAlertTriangle size={20} /> : <IconCheckCircle size={20} />}
+                    {psad.toFixed(2)}
+                  </span>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400 dark:text-slate-500 pt-3">{c.psaPending}</p>
+              )}
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Ejes de medición prostática (AP, TR, LONG)' : 'Prostate measurement axes (AP, TR, LONG)'}><DiagProstate /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.psad} />
           <ReportBugLink calcTitle={c.title} />
@@ -1486,7 +1825,6 @@
               {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Caída de señal en fase opuesta por contenido graso' : 'Signal drop on opposed-phase from fat content'}><DiagDixon /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.mriFf} />
           <ReportBugLink calcTitle={c.title} />
@@ -1565,7 +1903,32 @@
             <NumberField label={c.nonContrast} value={nc} onChange={setNc} />
             <NumberField label={c.portal} value={ven} onChange={setVen} />
             <NumberField label={c.delayedAt(cfg.minutes)} value={del} onChange={setDel} />
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.roiTip}</p>
           </Card>
+
+          {!isNaN(hNc) && (
+            <Card>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{c.ncOnlyTitle}</p>
+              <div className="space-y-2 text-sm">
+                {hNc <= 10 && (
+                  <InfoBox tone="emerald">{c.ncHighSpec}</InfoBox>
+                )}
+                {hNc > 10 && hNc < 18 && (
+                  <InfoBox tone="amber">{c.ncSuggestive}</InfoBox>
+                )}
+                {hNc >= 18 && (
+                  <InfoBox tone="amber">{c.ncNonDiagnostic}</InfoBox>
+                )}
+                {hNc <= -30 && (
+                  <InfoBox tone="amber">{c.myelolipoma}</InfoBox>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {!isNaN(hVen) && hVen > 100 && (isNaN(hNc) || hNc >= 10) && (
+            <InfoBox tone="amber">{c.pheoCaution}</InfoBox>
+          )}
 
           {hasAnyInput && protocol !== 'p5' && (
             <Card>
@@ -1612,7 +1975,6 @@
             </Card>
           )}
 
-          <Schematic caption={lang === 'es' ? 'Curva de lavado del contraste en el tiempo' : 'Contrast washout curve over time'}><DiagWashoutCurve /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.adrenalCt} />
           <ReportBugLink calcTitle={c.title} />
@@ -1678,7 +2040,6 @@
               {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Lesión vs. órgano de referencia (bazo/hígado)' : 'Lesion vs. reference organ (spleen/liver)'}><DiagAdrenalCSI /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.adrenalMri} />
           <ReportBugLink calcTitle={c.title} />
@@ -1761,7 +2122,6 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Depósito de hierro hepático y caída de señal en R2*' : 'Hepatic iron deposition and R2* signal decay'}><DiagLiverIron /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.siderosis} />
           <ReportBugLink calcTitle={c.title} />
@@ -1829,7 +2189,6 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Lóbulos tímicos vs. músculo de referencia' : 'Thymic lobes vs. reference muscle'}><DiagThymus /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.thymic} />
           <ReportBugLink calcTitle={c.title} />
@@ -1943,7 +2302,6 @@
               </table>
             </div>
           </Accordion>
-          <Schematic caption={lang === 'es' ? 'Nódulo tiroideo y lóbulos adyacentes' : 'Thyroid nodule and adjacent lobes'}><DiagThyroidNodule /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.tirads} />
           <ReportBugLink calcTitle={c.title} />
@@ -2045,7 +2403,6 @@
               </div>
             </div>
           )}
-          <Schematic caption={lang === 'es' ? 'Lesión anexial: componente sólido y curva de realce' : 'Adnexal lesion: solid component and enhancement curve'}><DiagOvaryMRI /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.orads} />
           <ReportBugLink calcTitle={c.title} />
@@ -2063,6 +2420,7 @@
       const [dwi, setDwi] = useState(0);
       const [t2, setT2] = useState(0);
       const [dce, setDce] = useState('');
+      const [epe, setEpe] = useState('');
 
       let finalScore = 0;
       if (zone === 'pz') {
@@ -2172,7 +2530,18 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Zona periférica (PZ) y zona de transición (TZ)' : 'Peripheral zone (PZ) and transition zone (TZ)'}><DiagProstateZones /></Schematic>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.epeLabel}</label>
+            <div className="space-y-2">
+              {c.epeOptions.map(opt => (
+                <button key={opt.key} onClick={() => setEpe(epe === opt.key ? '' : opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${epe === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  <span className="font-semibold block mb-0.5">{opt.label}</span>
+                  <span className="text-xs opacity-80">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+            {epe && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.epeCaveat}</p>}
+          </Card>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.pirads} />
           <ReportBugLink calcTitle={c.title} />
@@ -2234,7 +2603,6 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Capas de la pared vesical y lesión' : 'Bladder wall layers and lesion'}><DiagBladderWall /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.virads} />
           <ReportBugLink calcTitle={c.title} />
@@ -2265,6 +2633,7 @@
       const [feats, setFeats] = useState({ washout: false, capsule: false, growth: false });
       const [lrM, setLrM] = useState(null);
       const [lrTiv, setLrTiv] = useState(null);
+      const [lrTivCont, setLrTivCont] = useState('');
 
       const featCount = Object.values(feats).filter(Boolean).length;
       const hasBasics = size > 0 && aphe !== null;
@@ -2277,7 +2646,8 @@
         if (!finalCat) return;
         const sizeLabel = size === 1 ? c.size1 : size === 2 ? c.size2 : c.size3;
         const featLabels = Object.entries(feats).filter(([,v]) => v).map(([k]) => k === 'washout' ? c.featWashout : k === 'capsule' ? c.featCapsule : c.featGrowth);
-        const override = lrTiv ? c.lrTiv : (lrM ? c.lrM : '');
+        let override = lrTiv ? c.lrTiv : (lrM ? c.lrM : '');
+        if (lrTiv && lrTivCont) override += ' — ' + c.lrTivContinuity[lrTivCont];
         const text = c.reportText(sizeLabel, aphe ? t.common.yes : t.common.no, featLabels.length ? featLabels.join(', ') : t.common.none, override, `${finalCat} — ${c.categories[finalCat]}`);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
@@ -2291,6 +2661,16 @@
               <button onClick={() => setLrTiv(false)} className={`flex-1 py-2 rounded-lg font-medium border ${lrTiv === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
             </div>
           </Card>
+          {lrTiv === true && (
+            <Card>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.lrTivContinuityLabel}</label>
+              <div className="space-y-2">
+                {Object.entries(c.lrTivContinuity).map(([key, label]) => (
+                  <button key={key} onClick={() => setLrTivCont(key)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${lrTivCont === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
+                ))}
+              </div>
+            </Card>
+          )}
           {lrTiv === false && (
             <Card>
               <InfoBox tone="amber">{c.lrM}</InfoBox>
@@ -2336,7 +2716,6 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Lesión hepática: realce arterial y lavado' : 'Liver lesion: arterial enhancement and washout'}><DiagLiverLesion /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.lirads} />
           <ReportBugLink calcTitle={c.title} />
@@ -2350,11 +2729,16 @@
     function LIRADSTreatmentResponse() {
       const { t, lang } = useLang();
       const c = t.calc.liradsTr;
+      const [treatmentType, setTreatmentType] = useState('locoregional');
       const [selected, setSelected] = useState(null);
+      const isSbrt = treatmentType === 'sbrt';
+      const activeOptions = isSbrt ? c.sbrtOptions : c.options;
+
+      const handleTypeChange = (val) => { setTreatmentType(val); setSelected(null); };
 
       const handleCopy = () => {
         if (!selected) return;
-        const opt = c.options[selected];
+        const opt = activeOptions[selected];
         const text = c.reportText(opt.label, opt.desc);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
@@ -2362,9 +2746,26 @@
       return (
         <div className="space-y-4 animate-in fade-in">
           <Card>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.treatmentTypeLabel}</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button
+                onClick={() => handleTypeChange('locoregional')}
+                className={`p-3 rounded-xl border text-sm text-left transition-all ${treatmentType === 'locoregional' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              >
+                {c.treatmentLocoregional}
+              </button>
+              <button
+                onClick={() => handleTypeChange('sbrt')}
+                className={`p-3 rounded-xl border text-sm text-left transition-all ${treatmentType === 'sbrt' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              >
+                {c.treatmentSbrt}
+              </button>
+            </div>
+          </Card>
+          <Card>
             <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1 text-sm">{c.selectLabel}</h3>
             <div className="space-y-2">
-              {Object.entries(c.options).map(([key, opt]) => (
+              {Object.entries(activeOptions).map(([key, opt]) => (
                 <button
                   key={key}
                   onClick={() => setSelected(key)}
@@ -2378,11 +2779,11 @@
           </Card>
           {selected && (
             <Card className="text-center">
-              <span className="text-3xl font-black text-blue-600 dark:text-blue-400">LR-TR {c.options[selected].label}</span>
+              <span className="text-3xl font-black text-blue-600 dark:text-blue-400">LR-TR {activeOptions[selected].label}</span>
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Zona tratada: realce residual vs. cambios esperados' : 'Treated zone: residual enhancement vs. expected change'}><DiagLiverLesion /></Schematic>
+          {isSbrt && <InfoBox tone="amber">{c.sbrtCaveat}</InfoBox>}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.liradsTr} />
           <ReportBugLink calcTitle={c.title} />
@@ -2398,9 +2799,10 @@
       const c = t.calc.cadrads;
       const [stenosis, setStenosis] = useState(null);
       const [mods, setMods] = useState({ N: false, S: false, G: false, I: false, HRP: false, E: false });
+      const [pMod, setPMod] = useState('');
 
       const toggleMod = (key) => setMods(prev => ({ ...prev, [key]: !prev[key] }));
-      const modString = Object.entries(mods).filter(([,v]) => v).map(([k]) => k).join('/');
+      const modString = [...Object.entries(mods).filter(([,v]) => v).map(([k]) => k), ...(pMod ? [pMod] : [])].join('/');
       const resultString = stenosis ? `CAD-RADS ${stenosis}${modString ? '/' + modString : ''}` : '';
 
       const handleCopy = () => {
@@ -2437,6 +2839,17 @@
                 </button>
               ))}
             </div>
+            {mods.HRP && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.modHrpHint}</p>}
+          </Card>
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.pModifierLabel}</label>
+            <div className="space-y-2">
+              <button onClick={() => setPMod('')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === '' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pNone}</button>
+              {c.pOptions.map(opt => (
+                <button key={opt.key} onClick={() => setPMod(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+              ))}
+            </div>
+            {pMod && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.pCaveat}</p>}
           </Card>
           {stenosis && (
             <Card className="text-center">
@@ -2445,7 +2858,6 @@
               <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
             </Card>
           )}
-          <Schematic caption={lang === 'es' ? 'Corte transversal de arteria coronaria con placa' : 'Coronary artery cross-section with plaque'}><DiagCoronary /></Schematic>
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.cadrads} />
           <ReportBugLink calcTitle={c.title} />
