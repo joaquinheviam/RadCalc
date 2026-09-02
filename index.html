@@ -586,8 +586,8 @@
               `TC Adrenal — protocolo de 5 min (Kamiyama 2009):\nUH sin contraste: ${nc}\nUH a los 35 s: ${ven}\nUH a los 5 min: ${del}\nCriterios cumplidos: ${met}.\nConclusión: ${concl}.`,
             roiTip: 'Consejo de medición: use un ROI que abarque más del 50% del área de la lesión, evitando el borde/periferia y artefactos de volumen parcial.',
             ncOnlyTitle: 'Interpretación preliminar (solo con el valor sin contraste)',
-            ncHighSpec: 'UH sin contraste ≤ 10: muy alta especificidad para adenoma rico en lípidos.',
-            ncSuggestive: 'UH sin contraste entre 10 y 18: sugestivo de adenoma, pero con menor especificidad; se recomienda completar el estudio de lavado con contraste para confirmar.',
+            ncHighSpec: 'UH sin contraste ≤ 10: muy alta especificidad para adenoma rico en lípidos (umbral de 10 UH: especificidad 98%, sensibilidad 71%, en el análisis conjunto de Boland et al., AJR 1998; un umbral de 0 UH sube la especificidad a 100% pero baja la sensibilidad a 47%, Lee et al., Radiology 1991).',
+            ncSuggestive: 'UH sin contraste entre 10 y 18: valores por sobre 10 UH se consideran indeterminados en la literatura clásica (Boland et al.), con especificidad decreciente a medida que aumenta la atenuación; se recomienda completar el estudio de lavado con contraste para confirmar.',
             ncNonDiagnostic: 'UH sin contraste ≥ 18: no es diagnóstico de adenoma por sí solo; se requiere el estudio de lavado con contraste.',
             myelolipoma: 'UH sin contraste ≤ -30 (si el ROI abarca más del 50% de la lesión): sugiere mielolipoma (contenido macroscópico de grasa) más que un adenoma típico.',
             pheoCaution: 'UH en fase realzada/portal > 100-110: considere feocromocitoma en el diagnóstico diferencial, salvo que exista grasa microscópica (UH sin contraste < 10), donde es más compatible con un adenoma de realce rápido.',
@@ -596,8 +596,10 @@
               'Protocolo clásico de 15 minutos (Caoili 2002): APW ≥ 60% o RPW ≥ 40% son compatibles con adenoma (sensibilidad y especificidad altas, > 90%).',
               'Protocolo de 10 minutos (Blake 2006): permite acortar el estudio; los puntos de corte se ajustan a APW ≥ 52% y RPW ≥ 37.5%.',
               'Protocolo de 5 minutos (Kamiyama 2009): protocolo abreviado que combina 4 criterios (UH sin contraste, UH a los 5 min, lavado porcentual y lavado relativo); si se cumple cualquiera de ellos, es compatible con adenoma. En su serie mostró 100% de especificidad.',
-              'No se incluye un protocolo de lavado a los 3 minutos porque, pese a la búsqueda dirigida, no se encontró un estudio publicado que valide un punto de corte específico a ese tiempo; si cuenta con esa referencia, puede enviarla para agregarla.',
-              'Puntos adicionales de interpretación (según la experiencia clínica del autor): el valor sin contraste por sí solo ya orienta el diagnóstico (≤10 UH muy específico de adenoma; 10-18 UH sugestivo pero menos específico); un valor muy negativo (≤ -30 UH en la mayor parte de la lesión) sugiere mielolipoma; y un realce portal marcado (> 100-110 UH) sin grasa microscópica en la fase sin contraste debe hacer considerar feocromocitoma.',
+              'Sobre el retraso de 3 minutos: se revisó su biblioteca y el artículo que lo menciona es Nandra et al. (RadioGraphics 2020, "Technical and Interpretive Pitfalls in Adrenal Imaging"), pero allí los 3 minutos se describen como un ejemplo de pitfall (una fase tardía "no dedicada", ej. obtenida de forma incidental en una colonografía por TC en decúbito prono) y no como un protocolo validado con su propio punto de corte: en ese caso, el lavado relativo a los 3 min fue de solo 19% (indeterminado), mientras que el mismo nódulo alcanzó 62.8% de lavado relativo recién a los 15 min, confirmando el adenoma. Es decir, no se encontró una tercera regla validada a los 3 minutos; lo que existe es una advertencia de no aplicar los puntos de corte de 5/10/15 minutos a una fase de retraso no estandarizada como 3 minutos, porque puede subestimar el lavado y generar un resultado falsamente indeterminado.',
+              'El valor sin contraste por sí solo ya orienta el diagnóstico y esto está bien respaldado en la literatura: con un umbral de 0 UH, la especificidad para adenoma es 100% pero la sensibilidad solo 47% (Lee et al., Radiology 1991); al subir el umbral a 10 UH (el estándar más usado), la especificidad se mantiene alta (98%) y la sensibilidad sube a 71% (Boland et al., análisis conjunto de la literatura de TC, AJR 1998). Por sobre 10 UH, los valores se consideran indeterminados y requieren completar el estudio de lavado.',
+              'Dato relacionado sobre el valor de 18 UH: Korobkin et al. (AJR 1996) describieron que un umbral de 18 UH en una fase única POST-contraste (sin protocolo de lavado completo) tiene alta especificidad (100%) pero muy baja sensibilidad (10%) para adenoma (citado en Nandra et al., RadioGraphics 2020). Es un concepto distinto al de la UH sin contraste (10-18 UH descrito arriba) porque se mide en la fase con contraste, no en la fase basal; se incluye aquí porque es la referencia más cercana encontrada al número "18" que usted recordaba — si tenía en mente un estudio distinto para el rango de 10-18 UH sin contraste específicamente, coménteme para buscarlo y corregir la cita.',
+              'Puntos adicionales de interpretación (según la experiencia clínica del autor, no de una cita puntual): un valor muy negativo (≤ -30 UH en la mayor parte de la lesión) sugiere mielolipoma; y un realce portal marcado (> 100-110 UH) sin grasa microscópica en la fase sin contraste debe hacer considerar feocromocitoma.',
             ],
           },
           adrenalMri: {
@@ -1066,6 +1068,100 @@
               'Es una herramienta de apoyo diagnóstico, no reemplaza la correlación clínica, serológica ni la eventual biopsia. Varias entidades (LAM, BHD, LIP) requieren confirmación con estudios adicionales específicos.',
             ],
           },
+          ntmBcd: {
+            title: 'Score BCD (Micobacterias No Tuberculosas)',
+            intro: 'Evalúe 6 lóbulos (LSD, LM, LID, LSI, língula, LII; la língula se cuenta como lóbulo independiente del LSI) marcando, para cada uno, si presenta cavidad > 2 cm de diámetro y/o bronquiectasias varicosas o quísticas.',
+            lobeLabels: { rul: 'LSD', rml: 'LM', rll: 'LID', lul: 'LSI', lingula: 'Língula', lll: 'LII' },
+            cavityLabel: 'Cavidad > 2 cm',
+            beLabel: 'Bronquiectasias varicosas/quísticas',
+            scoreLabel: 'Score BCD',
+            lowRisk: 'Riesgo bajo',
+            intermediateRisk: 'Riesgo intermedio',
+            highRisk: 'Riesgo alto',
+            riskDesc: {
+              low: '0-1 puntos: tasa de fracaso de tratamiento a 1 año ≈ 8.0% en la cohorte de derivación. Podría apoyar observación con seguimiento estrecho.',
+              intermediate: '2-3 puntos: tasa de fracaso ≈ 35.6%. OR 6.4 respecto al grupo de bajo riesgo; considerar inicio de tratamiento según contexto individual.',
+              high: '4-6 puntos: tasa de fracaso ≈ 69.2%. OR 25.9 respecto al grupo de bajo riesgo; puede requerir esquemas más intensivos (ej. aminoglucósidos).',
+            },
+            reportText: (score, risk, lobeDetail) => `Score BCD (Bronchiectasis and Cavity Distribution): ${score}/6 puntos (${risk}).\nDetalle por lóbulo: ${lobeDetail}`,
+            usage: [
+              'El score BCD suma el número de lóbulos (de un máximo de 6: LSD, LM, LID, LSI, língula y LII, contando la língula por separado del LSI) que presentan cavidad > 2 cm de diámetro y/o bronquiectasias de grado varicoso o quístico (escala de Reiff modificada) en la TC previa al tratamiento.',
+              'Fue desarrollado y validado para predecir el fracaso de tratamiento (falta de conversión de cultivo) a 1 año en enfermedad pulmonar por complejo Mycobacterium avium (MAC-PD) tratada con esquemas basados en macrólido + etambutol, en una cohorte retrospectiva de 135 pacientes en 2 centros japoneses (AUC promedio 0.798, superior al score BACES en comparación directa).',
+              'Puntos de corte de utilidad clínica: score ≥ 2 tiene sensibilidad 0.907 y VPN 0.920 para fracaso de tratamiento (útil para descartar); score ≥ 4 tiene especificidad 0.913 y VPP 0.692 (útil para confirmar alto riesgo).',
+              'Nota de transparencia: validado específicamente para MAC-PD (no para otras micobacterias no tuberculosas ni para tuberculosis); requiere validación externa en cohortes independientes antes de un uso clínico generalizado. No reemplaza la evaluación clínica, bacteriológica (baciloscopía, cultivo) ni el contexto de comorbilidades.',
+            ],
+          },
+          peQanadli: {
+            title: 'TEP: Índice de Obstrucción (Qanadli) y Sobrecarga de VD',
+            qanadliSectionTitle: 'Índice de obstrucción arterial (Qanadli)',
+            qanadliScoreLabel: 'Puntaje Qanadli obtenido (0-40)',
+            qanadliHowTitle: 'Cómo se calcula el puntaje',
+            qanadliHow: 'Cada pulmón tiene 10 arterias segmentarias (3 al lóbulo superior, 2 al lóbulo medio/língula, 5 al lóbulo inferior) = 20 en total. Para cada nivel arterial se asigna un valor igual a 1 (si es la propia arteria segmentaria) o al número de arterias segmentarias que nacen distalmente (si la obstrucción es más proximal), multiplicado por un factor de 0 (sin trombo), 1 (oclusión parcial) o 2 (oclusión total). La suma máxima posible es 40.',
+            qanadliPercent: 'Porcentaje de obstrucción',
+            qanadliMild: 'Carga trombótica baja',
+            qanadliModerate: 'Carga trombótica moderada',
+            qanadliSevere: 'Carga trombótica alta',
+            rvSectionTitle: 'Relación VD/VI (sobrecarga de cavidades derechas)',
+            rvMethodLabel: 'Método de medición',
+            rvMethodAxial: 'Diámetro transverso axial',
+            rvMethodFourChamber: 'Reconstrucción de 4 cámaras',
+            rvLabel: 'Diámetro VD (mm)',
+            lvLabel: 'Diámetro VI (mm)',
+            rvRatio: 'Relación VD/VI',
+            rvStrainPositive: 'Sobrecarga/disfunción de VD',
+            rvStrainNegative: 'Sin signos de sobrecarga de VD por este criterio',
+            reportText: (qScore, qPercent, qCat, rvRatio, rvCat) => `TEP - Evaluación por AngioTC:\nÍndice de obstrucción de Qanadli: ${qScore}/40 (${qPercent}%) - ${qCat}.\nRelación VD/VI: ${rvRatio} - ${rvCat}.`,
+            usage: [
+              'El índice de Qanadli cuantifica la carga trombótica dividiendo cada pulmón en 10 arterias segmentarias (20 en total); cada nivel se pondera según el grado de oclusión (0/1/2) y el número de arterias segmentarias distales comprometidas cuando la obstrucción es más proximal, hasta un máximo de 40 puntos. El porcentaje de obstrucción = (puntaje/40) × 100.',
+              'La relación entre el diámetro transverso del ventrículo derecho (VD) y el ventrículo izquierdo (VI) es, según la evidencia disponible, el parámetro por TC con mayor valor predictivo de eventos adversos y mortalidad precoz en TEP agudo: una relación > 1 en cortes axiales, o > 0.9 en reconstrucciones de 4 cámaras, se considera indicativa de sobrecarga/disfunción de VD.',
+              'Nota de nomenclatura: no se encontró en la literatura un score con la sigla "CTSI" específico para TEP (a diferencia del "CTSI" de Balthazar, que corresponde a pancreatitis aguda). Los scores de carga trombótica por TC validados para TEP son el índice de Qanadli y el score de Mastora; esta calculadora implementa el de Qanadli por ser el más referenciado.',
+              'Estos parámetros por imagen deben interpretarse junto con scores clínicos de severidad (ej. PESI/sPESI) y biomarcadores (troponina, BNP/NT-proBNP) para la estratificación de riesgo completa; no reemplazan la evaluación clínica.',
+            ],
+          },
+          pancreatitisAtlanta: {
+            title: 'Pancreatitis Aguda: Clasificación de Atlanta Revisada',
+            morphTitle: 'Paso 1: Tipo morfológico',
+            morphQ: '¿Hay necrosis (falta de realce del parénquima y/o contenido no líquido heterogéneo peripancreático)?',
+            morphNo: 'No — parénquima con realce homogéneo',
+            morphYes: 'Sí — hay necrosis',
+            morphResultInterstitial: { label: 'Pancreatitis intersticial edematosa', desc: 'Aumento de tamaño difuso o focal de la glándula con realce relativamente homogéneo tras contraste; puede asociarse a trabeculación/inflamación de la grasa peripancreática.' },
+            necrosisSubtypeQ: 'Distribución de la necrosis:',
+            necrosisSubtypes: {
+              parenchymal: { label: 'Necrosis solo parenquimatosa', desc: 'Falta de realce del parénquima pancreático sin necrosis peripancreática asociada (la menos frecuente, ~5%).' },
+              peripancreatic: { label: 'Necrosis solo peripancreática', desc: 'Parénquima pancreático viable (realza normalmente) con necrosis confinada a la grasa/tejidos peripancreáticos.' },
+              combined: { label: 'Necrosis combinada (parenquimatosa + peripancreática)', desc: 'La forma más frecuente (~75-80%): ausencia de realce parenquimatoso y necrosis peripancreática asociada.' },
+            },
+            collectionTitle: 'Paso 2: Colección local (si presente)',
+            collectionQ: '¿Hay colección peripancreática? Seleccione el tiempo de evolución:',
+            collectionEarly: '< 4 semanas desde el inicio de los síntomas',
+            collectionLate: '≥ 4 semanas (colección madura, con pared definida)',
+            collectionNone: 'Sin colección local',
+            collectionResults: {
+              apfc: { label: 'Colección aguda peripancreática líquida (APFC)', desc: 'En pancreatitis intersticial edematosa, < 4 semanas: densidad homogénea, líquida, confinada por los planos fasciales normales, sin pared definida ni componente sólido/no líquido.' },
+              pseudocyst: { label: 'Pseudoquiste pancreático', desc: 'APFC madurada (≥ 4 semanas): colección encapsulada con pared bien definida, contenido homogéneamente líquido, sin componente sólido/no líquido. Poco frecuente en pancreatitis aguda (la mayoría de las colecciones tardías tras necrosis son WON, no pseudoquistes verdaderos).' },
+              anc: { label: 'Colección necrótica aguda (ANC)', desc: 'En pancreatitis necrotizante, < 4 semanas: contenido heterogéneo, no líquido en grado variable (puede parecer homogéneo en fases muy tempranas), sin pared definida; puede ser intra y/o extrapancreática.' },
+              won: { label: 'Necrosis encapsulada (WON, "walled-off necrosis")', desc: 'ANC madurada (≥ 4 semanas): colección heterogénea con densidades líquidas y no líquidas en proporción variable, con pared bien definida; puede ser intra y/o extrapancreática.' },
+            },
+            severityTitle: 'Paso 3: Gravedad clínica (requiere correlación clínica)',
+            severityIntro: 'La gravedad de la pancreatitis aguda según Atlanta revisada depende de la presencia y duración de la falla orgánica, no solo de los hallazgos por imagen.',
+            organFailureQ: 'Falla orgánica (respiratoria, renal o cardiovascular; ej. Marshall modificado ≥ 2 en algún sistema):',
+            organFailureNone: 'Ausente',
+            organFailureTransient: 'Presente, se resuelve en < 48 horas (transitoria)',
+            organFailurePersistent: 'Presente, > 48 horas (persistente)',
+            localComplicationsQ: '¿Hay complicaciones locales (colección, necrosis) o exacerbación de comorbilidad?',
+            severityResults: {
+              mild: { label: 'Leve', desc: 'Sin falla orgánica y sin complicaciones locales ni sistémicas. Habitualmente se resuelve en la primera semana; rara vez requiere estudios de imagen.' },
+              moderate: { label: 'Moderadamente severa', desc: 'Falla orgánica transitoria (< 48 h) y/o complicaciones locales o exacerbación de comorbilidad preexistente, sin falla orgánica persistente.' },
+              severe: { label: 'Severa', desc: 'Falla orgánica persistente (> 48 h), de uno o más órganos. Se asocia a mayor mortalidad, especialmente si hay necrosis infectada asociada.' },
+            },
+            reportText: (morph, collection, severity) => `Pancreatitis aguda (Clasificación de Atlanta revisada):\nTipo morfológico: ${morph}\nColección local: ${collection}\nGravedad clínica: ${severity}`,
+            usage: [
+              'La clasificación de Atlanta revisada (2012) distingue dos tipos morfológicos: pancreatitis intersticial edematosa (parénquima viable, realce homogéneo) y pancreatitis necrotizante (necrosis parenquimatosa, peripancreática, o combinada, esta última la más frecuente).',
+              'Las colecciones locales se nombran según el tipo morfológico subyacente y el tiempo de evolución (corte a las 4 semanas): APFC → pseudoquiste (intersticial edematosa) y ANC → WON (necrotizante). El componente sólido/no líquido y la presencia de pared definida son las claves para diferenciarlas en la imagen.',
+              'La gravedad clínica (leve/moderadamente severa/severa) se basa en la presencia y duración de la falla orgánica (criterio central) y la presencia de complicaciones locales o sistémicas; requiere correlación con el equipo tratante y no puede determinarse solo con la imagen.',
+              'Esta calculadora resume el algoritmo diagnóstico y de clasificación descrito en los artículos pictóricos de Thoeni sobre la clasificación de Atlanta revisada en RadioGraphics/Radiology; no reemplaza el documento de consenso original (Banks et al., Gut 2013) ni el juicio clínico.',
+            ],
+          },
         },
       },
       en: {
@@ -1173,8 +1269,8 @@
               `Adrenal CT — 5-min protocol (Kamiyama 2009):\nNon-contrast HU: ${nc}\n35-sec HU: ${ven}\n5-min HU: ${del}\nCriteria met: ${met}.\nConclusion: ${concl}.`,
             roiTip: 'Measurement tip: use an ROI covering more than 50% of the lesion area, avoiding the edge/periphery and partial-volume artifact.',
             ncOnlyTitle: 'Preliminary interpretation (based on the non-contrast value alone)',
-            ncHighSpec: 'Non-contrast HU ≤ 10: very high specificity for a lipid-rich adenoma.',
-            ncSuggestive: 'Non-contrast HU between 10 and 18: suggestive of adenoma, but with lower specificity; completing the contrast washout study is recommended to confirm.',
+            ncHighSpec: 'Non-contrast HU ≤ 10: very high specificity for a lipid-rich adenoma (10-HU threshold: 98% specificity, 71% sensitivity in the pooled analysis by Boland et al., AJR 1998; a 0-HU threshold raises specificity to 100% but lowers sensitivity to 47%, Lee et al., Radiology 1991).',
+            ncSuggestive: 'Non-contrast HU between 10 and 18: values above 10 HU are considered indeterminate in the classic literature (Boland et al.), with decreasing specificity as attenuation increases; completing the contrast washout study is recommended to confirm.',
             ncNonDiagnostic: 'Non-contrast HU ≥ 18: not diagnostic of adenoma on its own; the contrast washout study is required.',
             myelolipoma: 'Non-contrast HU ≤ -30 (if the ROI covers more than 50% of the lesion): suggests myelolipoma (macroscopic fat content) rather than a typical adenoma.',
             pheoCaution: 'Enhanced/portal-phase HU > 100-110: consider pheochromocytoma in the differential diagnosis, unless microscopic fat is present (non-contrast HU < 10), in which case it is more compatible with a rapidly-enhancing adenoma.',
@@ -1183,8 +1279,10 @@
               'Classic 15-minute protocol (Caoili 2002): APW ≥ 60% or RPW ≥ 40% are compatible with adenoma (high sensitivity and specificity, >90%).',
               '10-minute protocol (Blake 2006): shortens the exam; cutoffs adjust to APW ≥ 52% and RPW ≥ 37.5%.',
               '5-minute protocol (Kamiyama 2009): an abbreviated protocol combining 4 criteria (non-contrast HU, 5-min HU, percentage washout and relative washout); meeting any one is compatible with adenoma. Their series showed 100% specificity.',
-              'A 3-minute washout protocol is not included because, despite a targeted search, no published study validating a specific cutoff at that timepoint could be found; if you have that reference, please send it so it can be added.',
-              'Additional interpretation pearls (per the author\'s clinical experience): the non-contrast value alone already orients the diagnosis (≤10 HU very specific for adenoma; 10-18 HU suggestive but less specific); a very negative value (≤ -30 HU over most of the lesion) suggests myelolipoma; and marked portal-phase enhancement (> 100-110 HU) without microscopic fat on the non-contrast phase should raise suspicion for pheochromocytoma.',
+              'On the 3-minute delay: your library was reviewed and the article that mentions it is Nandra et al. (RadioGraphics 2020, "Technical and Interpretive Pitfalls in Adrenal Imaging"), but there the 3-minute timepoint is described as an example of a pitfall (a "nondedicated" delayed phase, e.g. incidentally obtained during a prone CT colonography) rather than a validated protocol with its own cutoff: in that example, the 3-minute relative washout was only 19% (indeterminate), while the same nodule reached 62.8% relative washout only at 15 minutes, confirming the adenoma. In other words, no validated third rule at 3 minutes was found; what exists is a caution against applying the 5/10/15-minute cutoffs to a nonstandardized delay such as 3 minutes, because it can underestimate washout and produce a falsely indeterminate result.',
+              'The non-contrast value alone already orients the diagnosis, and this is well supported in the literature: with a 0-HU threshold, specificity for adenoma is 100% but sensitivity is only 47% (Lee et al., Radiology 1991); raising the threshold to 10 HU (the most widely used standard) keeps specificity high (98%) while sensitivity rises to 71% (Boland et al., pooled analysis of the CT literature, AJR 1998). Above 10 HU, values are considered indeterminate and require completing the washout study.',
+              'Related data point on the number 18 HU: Korobkin et al. (AJR 1996) described that an 18-HU threshold on a single POST-contrast phase (without a full washout protocol) has high specificity (100%) but very low sensitivity (10%) for adenoma (cited in Nandra et al., RadioGraphics 2020). This is a distinct concept from the non-contrast HU range (10-18 HU described above), since it is measured on the contrast-enhanced phase, not the baseline phase; it is included here because it is the closest match found to the number "18" you recalled — if you had a different study in mind specifically for the 10-18 HU non-contrast range, let me know so it can be located and the citation corrected.',
+              'Additional interpretation pearls (per the author\'s clinical experience, not a specific citation): a very negative value (≤ -30 HU over most of the lesion) suggests myelolipoma; and marked portal-phase enhancement (> 100-110 HU) without microscopic fat on the non-contrast phase should raise suspicion for pheochromocytoma.',
             ],
           },
           adrenalMri: {
@@ -1642,6 +1740,100 @@
               'This is a diagnostic support tool; it does not replace clinical/serologic correlation or eventual biopsy. Several entities (LAM, BHD, LIP) require confirmation with specific additional testing.',
             ],
           },
+          ntmBcd: {
+            title: 'BCD Score (Nontuberculous Mycobacteria)',
+            intro: 'Assess 6 lobes (RUL, RML, RLL, LUL, lingula, LLL; the lingula is counted separately from the LUL) marking, for each one, whether it shows a cavity > 2 cm in diameter and/or varicose or cystic bronchiectasis.',
+            lobeLabels: { rul: 'RUL', rml: 'RML', rll: 'RLL', lul: 'LUL', lingula: 'Lingula', lll: 'LLL' },
+            cavityLabel: 'Cavity > 2 cm',
+            beLabel: 'Varicose/cystic bronchiectasis',
+            scoreLabel: 'BCD score',
+            lowRisk: 'Low risk',
+            intermediateRisk: 'Intermediate risk',
+            highRisk: 'High risk',
+            riskDesc: {
+              low: '0-1 points: 1-year treatment failure rate ≈ 8.0% in the derivation cohort. May support watchful waiting with close follow-up.',
+              intermediate: '2-3 points: failure rate ≈ 35.6%. OR 6.4 vs. the low-risk group; consider treatment initiation based on individual context.',
+              high: '4-6 points: failure rate ≈ 69.2%. OR 25.9 vs. the low-risk group; may require more intensive regimens (e.g., aminoglycosides).',
+            },
+            reportText: (score, risk, lobeDetail) => `BCD Score (Bronchiectasis and Cavity Distribution): ${score}/6 points (${risk}).\nPer-lobe detail: ${lobeDetail}`,
+            usage: [
+              'The BCD score sums the number of lobes (out of a maximum of 6: RUL, RML, RLL, LUL, lingula, and LLL, counting the lingula separately from the LUL) showing a cavity > 2 cm in diameter and/or varicose or cystic bronchiectasis (modified Reiff scale) on pretreatment CT.',
+              'It was developed and validated to predict treatment failure (lack of culture conversion) at 1 year in Mycobacterium avium complex pulmonary disease (MAC-PD) treated with macrolide + ethambutol-based regimens, in a retrospective cohort of 135 patients at 2 Japanese centers (average AUC 0.798, outperforming the BACES score in direct comparison).',
+              'Clinically useful cutoffs: score ≥ 2 has sensitivity 0.907 and NPV 0.920 for treatment failure (useful to rule out); score ≥ 4 has specificity 0.913 and PPV 0.692 (useful to rule in high risk).',
+              'Transparency note: validated specifically for MAC-PD (not for other nontuberculous mycobacteria or for tuberculosis); requires external validation in independent cohorts before broad clinical use. It does not replace clinical, bacteriologic (smear, culture) evaluation, or comorbidity context.',
+            ],
+          },
+          peQanadli: {
+            title: 'PE: Obstruction Index (Qanadli) and RV Strain',
+            qanadliSectionTitle: 'Arterial obstruction index (Qanadli)',
+            qanadliScoreLabel: 'Qanadli score obtained (0-40)',
+            qanadliHowTitle: 'How the score is calculated',
+            qanadliHow: 'Each lung has 10 segmental arteries (3 to the upper lobe, 2 to the middle lobe/lingula, 5 to the lower lobe) = 20 total. For each arterial level, a value of 1 (if it is the segmental artery itself) or the number of segmental arteries arising distally (if the occlusion is more proximal) is assigned, multiplied by a factor of 0 (no thrombus), 1 (partial occlusion), or 2 (total occlusion). The maximum possible sum is 40.',
+            qanadliPercent: 'Percent obstruction',
+            qanadliMild: 'Low thrombotic burden',
+            qanadliModerate: 'Moderate thrombotic burden',
+            qanadliSevere: 'High thrombotic burden',
+            rvSectionTitle: 'RV/LV ratio (right heart strain)',
+            rvMethodLabel: 'Measurement method',
+            rvMethodAxial: 'Axial transverse diameter',
+            rvMethodFourChamber: 'Four-chamber reconstruction',
+            rvLabel: 'RV diameter (mm)',
+            lvLabel: 'LV diameter (mm)',
+            rvRatio: 'RV/LV ratio',
+            rvStrainPositive: 'RV strain/dysfunction',
+            rvStrainNegative: 'No RV strain by this criterion',
+            reportText: (qScore, qPercent, qCat, rvRatio, rvCat) => `PE - CTA assessment:\nQanadli obstruction index: ${qScore}/40 (${qPercent}%) - ${qCat}.\nRV/LV ratio: ${rvRatio} - ${rvCat}.`,
+            usage: [
+              'The Qanadli index quantifies thrombotic burden by dividing each lung into 10 segmental arteries (20 total); each level is weighted by degree of occlusion (0/1/2) and by the number of distal segmental arteries involved when the occlusion is more proximal, up to a maximum of 40 points. Percent obstruction = (score/40) × 100.',
+              'The ratio between the right ventricular (RV) and left ventricular (LV) transverse diameters is, per available evidence, the CT parameter with the strongest predictive value for adverse events and early mortality in acute PE: a ratio > 1 on axial images, or > 0.9 on four-chamber reconstructions, is considered indicative of RV strain/dysfunction.',
+              'Nomenclature note: no score literally abbreviated "CTSI" specific to PE was found in the literature (unlike the Balthazar "CTSI," which refers to acute pancreatitis). The validated CT clot-burden scores for PE are the Qanadli index and the Mastora score; this calculator implements Qanadli as the more widely referenced one.',
+              'These imaging parameters should be interpreted together with clinical severity scores (e.g., PESI/sPESI) and biomarkers (troponin, BNP/NT-proBNP) for complete risk stratification; they do not replace clinical judgment.',
+            ],
+          },
+          pancreatitisAtlanta: {
+            title: 'Acute Pancreatitis: Revised Atlanta Classification',
+            morphTitle: 'Step 1: Morphologic type',
+            morphQ: 'Is there necrosis (lack of parenchymal enhancement and/or heterogeneous non-liquid peripancreatic content)?',
+            morphNo: 'No — parenchyma with homogeneous enhancement',
+            morphYes: 'Yes — necrosis is present',
+            morphResultInterstitial: { label: 'Interstitial edematous pancreatitis', desc: 'Diffuse or focal enlargement of the gland with relatively homogeneous enhancement after contrast; may be associated with peripancreatic fat stranding/inflammation.' },
+            necrosisSubtypeQ: 'Distribution of necrosis:',
+            necrosisSubtypes: {
+              parenchymal: { label: 'Parenchymal necrosis only', desc: 'Lack of pancreatic parenchymal enhancement without associated peripancreatic necrosis (least common, ~5%).' },
+              peripancreatic: { label: 'Peripancreatic necrosis only', desc: 'Viable pancreatic parenchyma (normal enhancement) with necrosis confined to peripancreatic fat/tissues.' },
+              combined: { label: 'Combined necrosis (parenchymal + peripancreatic)', desc: 'The most common form (~75-80%): absent parenchymal enhancement with associated peripancreatic necrosis.' },
+            },
+            collectionTitle: 'Step 2: Local collection (if present)',
+            collectionQ: 'Is there a peripancreatic collection? Select time course:',
+            collectionEarly: '< 4 weeks from symptom onset',
+            collectionLate: '≥ 4 weeks (mature collection, with a defined wall)',
+            collectionNone: 'No local collection',
+            collectionResults: {
+              apfc: { label: 'Acute peripancreatic fluid collection (APFC)', desc: 'In interstitial edematous pancreatitis, < 4 weeks: homogeneous, fluid density, confined by normal fascial planes, without a definable wall or solid/non-liquid component.' },
+              pseudocyst: { label: 'Pancreatic pseudocyst', desc: 'Matured APFC (≥ 4 weeks): encapsulated collection with a well-defined wall, homogeneously fluid content, no solid/non-liquid component. Uncommon in acute pancreatitis (most late collections after necrosis are WON, not true pseudocysts).' },
+              anc: { label: 'Acute necrotic collection (ANC)', desc: 'In necrotizing pancreatitis, < 4 weeks: heterogeneous, non-liquid content in variable amounts (may appear homogeneous very early on), without a definable wall; may be intra- and/or extrapancreatic.' },
+              won: { label: 'Walled-off necrosis (WON)', desc: 'Matured ANC (≥ 4 weeks): heterogeneous collection with liquid and non-liquid densities in variable proportion, with a well-defined wall; may be intra- and/or extrapancreatic.' },
+            },
+            severityTitle: 'Step 3: Clinical severity (requires clinical correlation)',
+            severityIntro: 'The severity of acute pancreatitis per the revised Atlanta classification depends on the presence and duration of organ failure, not only on imaging findings.',
+            organFailureQ: 'Organ failure (respiratory, renal, or cardiovascular; e.g., modified Marshall ≥ 2 in any system):',
+            organFailureNone: 'Absent',
+            organFailureTransient: 'Present, resolves in < 48 hours (transient)',
+            organFailurePersistent: 'Present, > 48 hours (persistent)',
+            localComplicationsQ: 'Are local complications (collection, necrosis) or exacerbation of comorbidity present?',
+            severityResults: {
+              mild: { label: 'Mild', desc: 'No organ failure and no local or systemic complications. Usually resolves in the first week; rarely requires imaging.' },
+              moderate: { label: 'Moderately severe', desc: 'Transient organ failure (< 48 h) and/or local complications or exacerbation of pre-existing comorbidity, without persistent organ failure.' },
+              severe: { label: 'Severe', desc: 'Persistent organ failure (> 48 h), affecting one or more organs. Associated with higher mortality, especially with infected necrosis.' },
+            },
+            reportText: (morph, collection, severity) => `Acute pancreatitis (Revised Atlanta Classification):\nMorphologic type: ${morph}\nLocal collection: ${collection}\nClinical severity: ${severity}`,
+            usage: [
+              'The revised Atlanta classification (2012) distinguishes two morphologic types: interstitial edematous pancreatitis (viable parenchyma, homogeneous enhancement) and necrotizing pancreatitis (parenchymal, peripancreatic, or combined necrosis, the latter being most common).',
+              'Local collections are named according to the underlying morphologic type and time course (4-week cutoff): APFC → pseudocyst (interstitial edematous) and ANC → WON (necrotizing). The presence of a solid/non-liquid component and a well-defined wall are the key imaging features that distinguish them.',
+              'Clinical severity (mild/moderately severe/severe) is based on the presence and duration of organ failure (the central criterion) and the presence of local or systemic complications; it requires correlation with the treating team and cannot be determined from imaging alone.',
+              'This calculator summarizes the diagnostic and classification algorithm described in Thoeni\'s pictorial essays on the revised Atlanta classification in RadioGraphics/Radiology; it does not replace the original consensus document (Banks et al., Gut 2013) or clinical judgment.',
+            ],
+          },
         },
       },
     };
@@ -1658,9 +1850,14 @@
         'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.',
       ],
       adrenalCt: [
+        'Lee MJ, Hahn PF, Papanicolaou N, Egglin TK, Saini S, Mueller PR, Simeone JF. Benign and malignant adrenal masses: CT distinction with attenuation coefficients, size, and observer analysis. Radiology. 1991;179(2):415-418.',
+        'Boland GW, Lee MJ, Gazelle GS, Halpern EF, McNicholas MM, Mueller PR. Characterization of adrenal masses using unenhanced CT: an analysis of the CT literature. AJR Am J Roentgenol. 1998;171(1):201-204.',
+        'Korobkin M, Brodeur FJ, Yutzy GG, Francis IR, Quint LE, Dunnick NR, Kazerooni EA. Differentiation of adrenal adenomas from nonadenomas using CT attenuation values. AJR Am J Roentgenol. 1996;166(3):531-536.',
         'Caoili EM, Korobkin M, Francis IR, Cohan RH, Platt JF, Dunnick NR, Raghupathi KI. Adrenal masses: characterization with combined unenhanced and delayed enhanced CT. Radiology. 2002;222(3):629-633.',
         'Blake MA, Kalra MK, Sweeney AT, Lucey BC, Maher MM, Sahani DV, Halpern EF, Mueller PR, Hahn PF, Boland GW. Distinguishing benign from malignant adrenal masses: multi-detector row CT protocol with 10-minute delay. Radiology. 2006;238(2):578-585.',
         'Kamiyama T, Fukukura Y, Yoneyama T, Takumi K, Nakajo M. Distinguishing adrenal adenomas from nonadenomas: combined use of diagnostic parameters of unenhanced and short 5-minute dynamic enhanced CT protocol. Radiology. 2009;250(2):474-481.',
+        'Nandra G, Duxbury O, Patel P, Patel JH, Patel N, Vlahos I. Technical and interpretive pitfalls in adrenal imaging. Radiographics. 2020;40(4):1041-1060.',
+        'O\'Brien A, Oyanedel R, Huete A, Cruz F, Menias C. Masas suprarrenales: evaluación por tomografía computada y resonancia magnética. Rev Chil Radiol. 2009;15(1):31-38.',
       ],
       adrenalMri: [
         'Mitchell DG, Crovello M, Matteucci T, Petersen RO, Miettinen MM. Benign adrenocortical masses: diagnosis with chemical shift MR imaging. Radiology. 1992;185(2):345-351.',
@@ -1713,6 +1910,20 @@
         'Raoof S, Bondalapati P, Vydyula R, et al. Cystic lung diseases: algorithmic approach. Chest. 2016;150(4):945-965.',
         'Escalon JG, Richards JC, Kolesch T, Downey GP, Lynch DA. Isolated cystic lung disease: an algorithmic approach to distinguishing Birt-Hogg-Dubé syndrome, lymphangioleiomyomatosis, and lymphocytic interstitial pneumonia. AJR Am J Roentgenol. 2019;212:1-5.',
         'Beddy P, Babar J, Devaraj A. A practical approach to cystic lung disease on HRCT. Insights Imaging. 2011;2:1-7.',
+      ],
+      ntmBcd: [
+        'Hayashi M, Takishima H, Cho H, Yamaguchi F, Yokoe T, Matsukura S. Developing a simple scoring system on CT findings for predicting treatment failure in Mycobacterium avium complex pulmonary disease: the BCD (Bronchiectasis and Cavity Distribution) score. Open Forum Infect Dis. 2025;12(9):ofaf565.',
+        'Kim HJ, Kwak N, Hong H, et al. BACES score for predicting mortality in nontuberculous mycobacterial pulmonary disease. Am J Respir Crit Care Med. 2021;203(2):230-236.',
+      ],
+      peQanadli: [
+        'Qanadli SD, El Hajjam M, Vieillard-Baron A, et al. New CT index to quantify arterial obstruction in pulmonary embolism: comparison with angiographic index and echocardiography. AJR Am J Roentgenol. 2001;176(6):1415-1420.',
+        'Mastora I, Remy-Jardin M, Masson P, et al. Severity of acute pulmonary embolism: evaluation of a new spiral CT angiographic score in correlation with echocardiographic data. Eur Radiol. 2003;13(1):29-35.',
+        'Albrecht MH, Bickford MW, Nance JW Jr, et al. State-of-the-art pulmonary CT angiography for acute pulmonary embolism. AJR Am J Roentgenol. 2017;208(3):495-504.',
+      ],
+      pancreatitisAtlanta: [
+        'Banks PA, Bollen TL, Dervenis C, et al. Classification of acute pancreatitis—2012: revision of the Atlanta classification and definitions by international consensus. Gut. 2013;62(1):102-111.',
+        'Thoeni RF. The revised Atlanta classification of acute pancreatitis: its importance for the radiologist and its effect on treatment. Radiology. 2012;262(3):751-764.',
+        'Foster BR, Jensen KK, Bakis G, Shaaban AM, Coakley FV. Revised Atlanta classification for acute pancreatitis: a pictorial essay. Radiographics. 2016;36(3):675-687.',
       ],
     };
 
@@ -2866,6 +3077,263 @@
     }
 
     /* ============================================================
+       CALCULADORA: SCORE BCD (MICOBACTERIAS NO TUBERCULOSAS)
+    ============================================================ */
+    const BCD_LOBES = ['rul', 'rml', 'rll', 'lul', 'lingula', 'lll'];
+
+    function NTMBcdScore() {
+      const { t, lang } = useLang();
+      const c = t.calc.ntmBcd;
+      const [lobes, setLobes] = useState(() => Object.fromEntries(BCD_LOBES.map(l => [l, { cavity: false, be: false }])));
+      const hasAnyInput = Object.values(lobes).some(l => l.cavity || l.be);
+
+      const toggle = (lobe, field) => setLobes(prev => ({ ...prev, [lobe]: { ...prev[lobe], [field]: !prev[lobe][field] } }));
+
+      const score = Object.values(lobes).filter(l => l.cavity || l.be).length;
+      let riskKey = 'low', riskLabel = c.lowRisk, riskColor = 'text-emerald-500', riskDesc = c.riskDesc.low;
+      if (score >= 4) { riskKey = 'high'; riskLabel = c.highRisk; riskColor = 'text-red-500'; riskDesc = c.riskDesc.high; }
+      else if (score >= 2) { riskKey = 'intermediate'; riskLabel = c.intermediateRisk; riskColor = 'text-amber-500'; riskDesc = c.riskDesc.intermediate; }
+
+      const handleCopy = () => {
+        const lobeDetail = BCD_LOBES.map(l => `${c.lobeLabels[l]}: ${[lobes[l].cavity ? c.cavityLabel : null, lobes[l].be ? c.beLabel : null].filter(Boolean).join(' + ') || '-'}`).join('; ');
+        const text = c.reportText(score, riskLabel, lobeDetail);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{c.intro}</p>
+            <div className="space-y-2">
+              {BCD_LOBES.map(l => (
+                <div key={l} className="flex items-center justify-between gap-2 p-2 rounded-lg bg-slate-50 dark:bg-slate-900">
+                  <span className="text-sm font-medium w-16 shrink-0">{c.lobeLabels[l]}</span>
+                  <div className="flex gap-2 flex-1">
+                    <button onClick={() => toggle(l, 'cavity')} className={`flex-1 text-[11px] p-2 rounded-lg border transition-all ${lobes[l].cavity ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>{c.cavityLabel}</button>
+                    <button onClick={() => toggle(l, 'be')} className={`flex-1 text-[11px] p-2 rounded-lg border transition-all ${lobes[l].be ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>{c.beLabel}</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+          {hasAnyInput && (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{c.scoreLabel}</span>
+              <span className={`text-3xl font-black ${riskColor}`}>{score}/6 — {riskLabel}</span>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{riskDesc}</p>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.ntmBcd} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: TEP - ÍNDICE DE QANADLI Y RELACIÓN VD/VI
+    ============================================================ */
+    function PEQanadli() {
+      const { t, lang } = useLang();
+      const c = t.calc.peQanadli;
+      const [qScore, setQScore] = useState('');
+      const [rvMethod, setRvMethod] = useState('axial');
+      const [rv, setRv] = useState('');
+      const [lv, setLv] = useState('');
+
+      const qVal = parseFloat(qScore);
+      const hasQ = qScore !== '' && !isNaN(qVal);
+      const qPercent = hasQ ? Math.min(100, Math.max(0, (qVal / 40) * 100)) : 0;
+      let qCat = '', qColor = '';
+      if (hasQ) {
+        if (qPercent < 25) { qCat = c.qanadliMild; qColor = 'text-emerald-500'; }
+        else if (qPercent <= 50) { qCat = c.qanadliModerate; qColor = 'text-amber-500'; }
+        else { qCat = c.qanadliSevere; qColor = 'text-red-500'; }
+      }
+
+      const rvVal = parseFloat(rv);
+      const lvVal = parseFloat(lv);
+      const hasRv = rv !== '' && lv !== '' && !isNaN(rvVal) && !isNaN(lvVal) && lvVal !== 0;
+      const rvRatio = hasRv ? rvVal / lvVal : 0;
+      const rvThreshold = rvMethod === 'axial' ? 1.0 : 0.9;
+      const rvStrain = hasRv && rvRatio > rvThreshold;
+
+      const handleCopy = () => {
+        const text = c.reportText(
+          hasQ ? qScore : '—', hasQ ? qPercent.toFixed(0) : '—', hasQ ? qCat : t.common.notEvaluated,
+          hasRv ? rvRatio.toFixed(2) : '—', hasRv ? (rvStrain ? c.rvStrainPositive : c.rvStrainNegative) : t.common.notEvaluated
+        );
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.qanadliSectionTitle}</h3>
+            <NumberField label={c.qanadliScoreLabel} placeholder="Ej: 18" value={qScore} onChange={setQScore} />
+            <Accordion title={c.qanadliHowTitle}>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{c.qanadliHow}</p>
+            </Accordion>
+          </Card>
+          {hasQ && (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{c.qanadliPercent}</span>
+              <span className={`text-3xl font-black ${qColor}`}>{qPercent.toFixed(0)}% <span className="text-base font-semibold">({qScore}/40)</span></span>
+              <p className={`text-sm font-semibold mt-1 ${qColor}`}>{qCat}</p>
+            </Card>
+          )}
+          <Card>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.rvSectionTitle}</h3>
+            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg mb-3">
+              <button onClick={() => setRvMethod('axial')} className={`flex-1 px-3 py-1.5 rounded-md text-xs ${rvMethod === 'axial' ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : 'text-slate-500'}`}>{c.rvMethodAxial}</button>
+              <button onClick={() => setRvMethod('fourChamber')} className={`flex-1 px-3 py-1.5 rounded-md text-xs ${rvMethod === 'fourChamber' ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : 'text-slate-500'}`}>{c.rvMethodFourChamber}</button>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <NumberField small label={c.rvLabel} value={rv} onChange={setRv} />
+              <NumberField small label={c.lvLabel} value={lv} onChange={setLv} />
+            </div>
+          </Card>
+          {hasRv && (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{c.rvRatio}</span>
+              <span className={`text-3xl font-black flex items-center justify-center gap-2 ${rvStrain ? 'text-red-500' : 'text-emerald-500'}`}>
+                {rvStrain ? <IconAlertTriangle size={22} /> : <IconCheckCircle size={22} />}
+                {rvRatio.toFixed(2)}
+              </span>
+              <p className={`text-sm font-semibold mt-1 ${rvStrain ? 'text-red-500' : 'text-emerald-500'}`}>{rvStrain ? c.rvStrainPositive : c.rvStrainNegative}</p>
+            </Card>
+          )}
+          {(hasQ || hasRv) && (
+            <Card>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.peQanadli} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: PANCREATITIS AGUDA - ATLANTA REVISADA
+    ============================================================ */
+    function PancreatitisAtlanta() {
+      const { t, lang } = useLang();
+      const c = t.calc.pancreatitisAtlanta;
+      const [necrosis, setNecrosis] = useState(null); // null | false | 'parenchymal'|'peripancreatic'|'combined'
+      const [collection, setCollection] = useState(null); // null | 'none' | 'early' | 'late'
+      const [organFailure, setOrganFailure] = useState(null); // null | 'none'|'transient'|'persistent'
+      const [localComplications, setLocalComplications] = useState(null); // null | true | false
+
+      const isNecrotizing = necrosis && necrosis !== 'none-selected' && necrosis !== false;
+      const morphResult = necrosis === false
+        ? c.morphResultInterstitial
+        : (isNecrotizing ? c.necrosisSubtypes[necrosis] : null);
+
+      let collectionResult = null;
+      if (collection === 'early') collectionResult = isNecrotizing ? c.collectionResults.anc : c.collectionResults.apfc;
+      else if (collection === 'late') collectionResult = isNecrotizing ? c.collectionResults.won : c.collectionResults.pseudocyst;
+
+      let severityResult = null;
+      if (organFailure) {
+        if (organFailure === 'persistent') severityResult = c.severityResults.severe;
+        else if (organFailure === 'transient' || localComplications) severityResult = c.severityResults.moderate;
+        else if (organFailure === 'none' && localComplications === false) severityResult = c.severityResults.mild;
+      }
+
+      const handleCopy = () => {
+        const text = c.reportText(
+          morphResult ? morphResult.label : t.common.notEvaluated,
+          collectionResult ? collectionResult.label : c.collectionNone,
+          severityResult ? severityResult.label : t.common.notEvaluated
+        );
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 animate-in fade-in">
+          <Card>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.morphTitle}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.morphQ}</p>
+            <div className="space-y-2">
+              <button onClick={() => setNecrosis(false)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${necrosis === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.morphNo}</button>
+              <button onClick={() => setNecrosis('combined')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${isNecrotizing ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.morphYes}</button>
+            </div>
+            {isNecrotizing && (
+              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.necrosisSubtypeQ}</p>
+                <div className="space-y-2">
+                  {Object.entries(c.necrosisSubtypes).map(([key, opt]) => (
+                    <button key={key} onClick={() => setNecrosis(key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${necrosis === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                      <span className="font-semibold block">{opt.label}</span>
+                      <span className="opacity-80">{opt.desc}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+          {morphResult && (
+            <InfoBox tone="amber">{morphResult.desc}</InfoBox>
+          )}
+          {necrosis !== null && (
+            <Card>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.collectionTitle}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.collectionQ}</p>
+              <div className="space-y-2">
+                <button onClick={() => setCollection('none')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'none' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionNone}</button>
+                <button onClick={() => setCollection('early')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'early' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionEarly}</button>
+                <button onClick={() => setCollection('late')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'late' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionLate}</button>
+              </div>
+            </Card>
+          )}
+          {collectionResult && (
+            <Card className="text-center">
+              <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{collectionResult.label}</span>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{collectionResult.desc}</p>
+            </Card>
+          )}
+          <Card>
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1 text-sm">{c.severityTitle}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{c.severityIntro}</p>
+            <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.organFailureQ}</label>
+            <div className="space-y-2 mb-3">
+              <button onClick={() => setOrganFailure('none')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'none' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailureNone}</button>
+              <button onClick={() => setOrganFailure('transient')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'transient' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailureTransient}</button>
+              <button onClick={() => setOrganFailure('persistent')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'persistent' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailurePersistent}</button>
+            </div>
+            {organFailure === 'none' && (
+              <>
+                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.localComplicationsQ}</label>
+                <div className="flex gap-2">
+                  <button onClick={() => setLocalComplications(true)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${localComplications === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes || 'Sí'}</button>
+                  <button onClick={() => setLocalComplications(false)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${localComplications === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no || 'No'}</button>
+                </div>
+              </>
+            )}
+          </Card>
+          {severityResult && (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{c.severityTitle}</span>
+              <span className="text-2xl font-black text-blue-600 dark:text-blue-400">{severityResult.label}</span>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{severityResult.desc}</p>
+            </Card>
+          )}
+          {(morphResult || collectionResult || severityResult) && (
+            <Card>
+              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+            </Card>
+          )}
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.pancreatitisAtlanta} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
        LISTADO DE CALCULADORAS
     ============================================================ */
     const calculators = [
@@ -2882,6 +3350,9 @@
       { id: 'lirads', catKey: 'strat', component: LIRADS },
       { id: 'liradsTr', catKey: 'strat', component: LIRADSTreatmentResponse },
       { id: 'cadrads', catKey: 'cardio', component: CADRADS },
+      { id: 'ntmBcd', catKey: 'torax', component: NTMBcdScore },
+      { id: 'peQanadli', catKey: 'torax', component: PEQanadli },
+      { id: 'pancreatitisAtlanta', catKey: 'abdomen', component: PancreatitisAtlanta },
     ];
 
     /* ============================================================
