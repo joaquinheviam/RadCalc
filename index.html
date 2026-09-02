@@ -547,16 +547,27 @@
           },
           mriFf: {
             title: 'Fracción Grasa por RM (Dixon)',
-            inPhase: 'Señal Fase (In-Phase)',
-            outPhase: 'Señal Fuera de Fase (Out-Phase)',
+            methodLabel: 'Método',
+            methodFf: 'Fracción grasa (doble eco único, misma excitación)',
+            methodPct: 'Porcentaje graso (ecos adquiridos por separado — normalizado por bazo)',
+            inPhase: 'Señal Hígado Fase (In-Phase)',
+            outPhase: 'Señal Hígado Fuera de Fase (Out-Phase)',
             inPh: 'Ej: 450', outPh: 'Ej: 380',
+            spleenInPhase: 'Señal Bazo Fase (In-Phase)',
+            spleenOutPhase: 'Señal Bazo Fuera de Fase (Out-Phase)',
+            spleenInPh: 'Ej: 500', spleenOutPh: 'Ej: 490',
             estimated: 'Fracción Grasa Estimada',
+            estimatedPct: 'Porcentaje Graso Estimado',
             reportText: (ff, sIn, sOut) =>
               `Fracción grasa por RM (Dixon/phase-inversion): ${ff}%. (In-phase: ${sIn}, Out-phase: ${sOut}).`,
+            reportTextPct: (fp, sIn, sOut, spIn, spOut) =>
+              `Porcentaje graso hepático por RM, normalizado por bazo (Ma et al. 2009): ${fp}%. (Hígado in-phase: ${sIn}, out-phase: ${sOut}; Bazo in-phase: ${spIn}, out-phase: ${spOut}).`,
             usage: [
-              'Fracción grasa (%) = (Señal in-phase − Señal out-of-phase) / (2 × Señal in-phase) × 100. Se basa en la cancelación de señal grasa/agua en secuencias de desplazamiento químico (Dixon).',
-              'Útil para cuantificar esteatosis hepática (>5-6% sugiere esteatosis) y para caracterizar lesiones con contenido graso microscópico (ej. adenoma adrenal, adenoma hepatocelular).',
-              'Limitación: la técnica de doble eco simple sobreestima la grasa en hígados con alto contenido graso por efectos de T2* y no es tan precisa como PDFF (proton density fat fraction) multi-eco.',
+              'Fracción grasa (%) = (Señal in-phase − Señal out-of-phase) / (2 × Señal in-phase) × 100. Se basa en la cancelación de señal grasa/agua en secuencias de desplazamiento químico (Dixon). Útil cuando ambos ecos se adquieren en una misma excitación (doble eco simple).',
+              'Método alternativo — porcentaje graso normalizado por bazo (Ma et al., RadioGraphics 2009): Porcentaje (%) = 100 × [(SI-hígado-IP/SI-bazo-IP) − (SI-hígado-OP/SI-bazo-OP)] / (2 × SI-hígado-IP/SI-bazo-IP). Al normalizar la señal hepática con la esplénica en cada fase se compensan las diferencias de T2* entre adquisiciones cuando las fases in-phase y out-of-phase se obtienen en secuencias o excitaciones separadas (no en una única adquisición de doble eco); el bazo se usa como tejido de referencia sin grasa.',
+              'Ambas fórmulas son útiles para cuantificar esteatosis hepática (>5-6% sugiere esteatosis) y para caracterizar lesiones con contenido graso microscópico (ej. adenoma adrenal, adenoma hepatocelular).',
+              'Limitación: la técnica de doble eco simple (ambos métodos) sobreestima la grasa en hígados con alto contenido graso por efectos de T2* y no es tan precisa como PDFF (proton density fat fraction) multi-eco.',
+              'Nota de transparencia: se investigó, a solicitud del usuario, si existe una corrección equivalente y respaldada por evidencia que use la señal del MÚSCULO esquelético (en vez del bazo) para esta fórmula de RM. No se encontró en la literatura revisada (incluyendo la calculadora de referencia de Phillip Cheng, MD, en pcheng.org/calc/hepatic_fat_mri.html, y la revisión de Ma et al. 2009) una fórmula publicada de corrección muscular equivalente para RM; la razón hígado/músculo (o hígado/bazo) en unidades Hounsfield es un método establecido para esteatosis por TC, pero no se identificó su equivalente validado en RM. Por eso esta calculadora solo incorpora la corrección por bazo.',
             ],
           },
           adrenalCt: {
@@ -1016,9 +1027,9 @@
               { key: 'P1', label: 'P1: Agatston 1-100 (leve)' },
               { key: 'P2', label: 'P2: Agatston 101-300 (moderada)' },
               { key: 'P3', label: 'P3: Agatston 301-999 (severa)' },
-              { key: 'P4', label: 'P4: Agatston ≥ 1000 (extensa)' },
+              { key: 'P4', label: 'P4: Agatston > 1000 (extensa)' },
             ],
-            pCaveat: 'Nota de transparencia: los rangos exactos de Agatston por banda P se reconstruyeron a partir de fuentes secundarias y no se pudieron re-verificar palabra por palabra contra el texto primario (con acceso restringido). Confírmelos contra el documento CAD-RADS 2.0 oficial antes de un uso clínico estricto.',
+            pCaveat: 'Rangos de Agatston (CAC) verificados contra la Tabla 2 del documento de consenso CAD-RADS 2.0. El mismo documento admite como alternativas el score de involucramiento segmentario (SIS: P1 ≤ 2, P2 3-4, P3 5-7, P4 ≥ 8) o la evaluación visual (P1: 1-2 vasos con placa leve; P2: 1-2 vasos con placa moderada o 3 vasos con placa leve; P3: 3 vasos con placa moderada o 1 vaso con placa severa; P4: 2-3 vasos con placa severa) — no hay un método único recomendado, use el que sea más apropiado en su institución. Si las categorías difieren entre métodos, priorice el CAC (Agatston) o la cuantificación de carga total de placa, si está disponible. Nota: CAD-RADS 0 implica ausencia de placa, por lo que la categoría P0 no existe.',
             resultLabel: 'Resultado CAD-RADS',
             reportText: (cadrads, mods) =>
               `CAD-RADS 2.0:\nCategoría: ${cadrads}${mods ? '/' + mods : ''}`,
@@ -1112,20 +1123,121 @@
             resultLabel: 'Categoría Lung-RADS',
             managementLabel: 'Manejo recomendado',
             prevalenceLabel: 'Prevalencia poblacional estimada',
+            history: 'Historial',
+            undo: 'Volver atrás',
+            pathLabel: 'Vía del algoritmo',
+            changeType: 'Cambiar tipo de hallazgo / reiniciar',
+            sizePh: 'ej. 7',
+            mmLabel: 'mm',
+            notClassifiedTitle: 'Quiste de pared fina típico — no clasificado en Lung-RADS',
+            notClassifiedDesc: 'Un quiste unilocular de pared uniforme < 2 mm se considera benigno y, por definición, no se clasifica ni maneja dentro de Lung-RADS v2022.',
+            upgrade4XLabel: '¿Hay características adicionales que aumentan la sospecha de cáncer pulmonar? (ej. espiculación, adenopatía, enfermedad metastásica franca, o un nódulo en vidrio esmerilado que duplica su tamaño en 1 año)',
             categories: [
               { key: '0', label: 'Categoría 0 — Incompleto', desc: 'TC previa en localización para comparación; parte o todo el pulmón no evaluable; hallazgos sugestivos de proceso infeccioso/inflamatorio.', mgmt: 'Comparación con TC previa; TC adicional de tamizaje si es necesario; TC de baja dosis a 1-3 meses si se sospecha infección/inflamación.', prevalence: '≈ 1%' },
               { key: '1', label: 'Categoría 1 — Negativo', desc: 'Sin nódulos pulmonares; o nódulo con calcificación benigna (completa, central, en palomita de maíz, o en anillo concéntrico); o nódulo con contenido graso.', mgmt: 'TC de tamizaje a los 12 meses.', prevalence: '39%' },
-              { key: '2', label: 'Categoría 2 — Benigno', desc: 'Nódulo yuxtapleural < 10 mm de morfología típica (sólido, márgenes lisos, forma oval/lentiforme/triangular); sólido < 6 mm (nuevo < 4 mm); parcialmente sólido < 6 mm de diámetro medio total; en vidrio esmerilado puro < 30 mm (o ≥ 30 mm si estable/de crecimiento lento); nódulo endobronquial subsegmentario.', mgmt: 'TC de tamizaje a los 12 meses.', prevalence: '45%' },
-              { key: '3', label: 'Categoría 3 — Probablemente benigno', desc: 'Sólido 6 a < 8 mm (nuevo 4 a < 6 mm); parcialmente sólido ≥ 6 mm total con sólido < 6 mm (basal), o nuevo < 6 mm total; en vidrio esmerilado puro ≥ 30 mm (basal o nuevo); quiste atípico de pared gruesa con componente quístico en crecimiento.', mgmt: 'TC de baja dosis a los 6 meses.', prevalence: '9%' },
+              { key: '2', label: 'Categoría 2 — Benigno', desc: 'Nódulo yuxtapleural < 10 mm de morfología típica (sólido, márgenes lisos, forma oval/lentiforme/triangular); sólido < 6 mm (nuevo < 4 mm); parcialmente sólido < 6 mm de diámetro medio total; en vidrio esmerilado puro < 30 mm (o ≥ 30 mm si estable/de crecimiento lento); nódulo endobronquial subsegmentario; categoría 3 estable/en regresión a los 6 meses; o categoría 4B confirmada benigna tras estudio diagnóstico.', mgmt: 'TC de tamizaje a los 12 meses.', prevalence: '45%' },
+              { key: '3', label: 'Categoría 3 — Probablemente benigno', desc: 'Sólido 6 a < 8 mm (nuevo 4 a < 6 mm); parcialmente sólido ≥ 6 mm total con sólido < 6 mm (basal), o nuevo < 6 mm total; en vidrio esmerilado puro ≥ 30 mm (basal o nuevo); quiste atípico de pared gruesa con componente quístico en crecimiento; o categoría 4A estable/en regresión a los 3 meses (excluye nódulos de vía aérea).', mgmt: 'TC de baja dosis a los 6 meses.', prevalence: '9%' },
               { key: '4A', label: 'Categoría 4A — Sospechoso', desc: 'Sólido 8 a < 15 mm (basal), en crecimiento < 8 mm, o nuevo 6 a < 8 mm; parcialmente sólido ≥ 6 mm total con componente sólido 6 a < 8 mm (basal), o componente sólido nuevo/en crecimiento < 4 mm; nódulo endobronquial segmentario o más proximal (basal); quiste atípico de pared gruesa, multilocular (basal), o de pared fina/gruesa que se vuelve multilocular.', mgmt: 'TC de baja dosis a los 3 meses; considerar PET-TC si hay componente/nódulo sólido ≥ 8 mm.', prevalence: '4%' },
               { key: '4B', label: 'Categoría 4B — Muy sospechoso', desc: 'Nódulo endobronquial segmentario o más proximal, estable o en crecimiento; sólido ≥ 15 mm (basal), o nuevo/en crecimiento ≥ 8 mm; parcialmente sólido con componente sólido ≥ 8 mm (basal), o nuevo/en crecimiento ≥ 4 mm; quiste atípico con engrosamiento/nodularidad parietal en crecimiento, multilocular en crecimiento, o con aumento de loculación/opacidad nueva; nódulo sólido o parcialmente sólido de crecimiento lento demostrado en múltiples exámenes de tamizaje.', mgmt: 'Derivación para evaluación clínica adicional; TC diagnóstica con o sin contraste; considerar PET-TC si hay componente/nódulo sólido ≥ 8 mm; toma de muestra de tejido según corresponda. El manejo depende de la evaluación clínica, preferencia del paciente y probabilidad de malignidad.', prevalence: '2%' },
               { key: '4X', label: 'Categoría 4X — 3 o 4 con características adicionales', desc: 'Nódulo categoría 3 o 4 con características o hallazgos adicionales que aumentan la sospecha de cáncer pulmonar (ej. espiculación, adenopatía, enfermedad metastásica franca, o vidrio esmerilado que dobla su tamaño en 1 año). Es una categoría distinta; "X" no debe usarse como modificador.', mgmt: 'Manejo equivalente a categoría 4B (evaluación clínica adicional, estudio diagnóstico, toma de muestra de tejido según corresponda).', prevalence: '< 1%' },
             ],
             sLabel: 'Modificador "S" — hallazgo clínicamente significativo o potencialmente significativo no relacionado con cáncer pulmonar (ej. calcio coronario, aneurisma aórtico) — prevalencia poblacional ≈ 10%',
-            reportText: (cat, label, mgmt, sMod) => `Lung-RADS v2022:\nCategoría: ${cat}${sMod ? 'S' : ''}\n${label}\nManejo: ${mgmt}`,
+            reportText: (cat, label, mgmt, sMod, path) => `Lung-RADS v2022:\nCategoría: ${cat}${sMod ? 'S' : ''}\n${label}\nManejo: ${mgmt}${path ? '\nVía: ' + path : ''}`,
+            wizard: {
+              start: { q: '¿Qué hallazgo predomina en este examen? (evalúe el de mayor sospecha si hay varios nódulos)', options: [
+                { label: 'Sin nódulos pulmonares', next: 'leaf_none' },
+                { label: 'Estudio incompleto, pendiente de comparación con TC previa, o hallazgo sugestivo de proceso infeccioso/inflamatorio', next: 'leaf_incomplete' },
+                { label: 'Nódulo con calcificación benigna (completa, central, en palomita de maíz, o en anillo concéntrico) o con contenido graso', next: 'leaf_benignCalc' },
+                { label: 'Nódulo sólido', next: 'solidContext' },
+                { label: 'Nódulo parcialmente sólido', next: 'partSolidIsNew' },
+                { label: 'Nódulo no sólido (vidrio esmerilado puro)', next: 'ggnSize' },
+                { label: 'Nódulo yuxtapleural', next: 'juxtaCriteria' },
+                { label: 'Nódulo endobronquial (de la vía aérea)', next: 'airwayLevel' },
+                { label: 'Quiste pulmonar atípico', next: 'cystWall' },
+                { label: 'Nódulo categoría 3 que permanece estable o disminuye de tamaño en el control a los 6 meses', next: 'leaf_reclass2' },
+                { label: 'Nódulo categoría 4A que permanece estable o disminuye de tamaño en el control a los 3 meses (excluye nódulos de vía aérea)', next: 'leaf_reclass3' },
+                { label: 'Nódulo categoría 4B confirmado benigno tras estudio diagnóstico apropiado', next: 'leaf_reclass2b' },
+              ]},
+              nodes: {
+                solidContext: { q: 'Contexto del nódulo sólido:', options: [
+                  { label: 'Basal (primera detección), o estable/sin cambios significativos en el seguimiento', next: 'solidBaselineSize' },
+                  { label: 'Nuevo (no visto en un estudio previo)', next: 'solidNewSize' },
+                  { label: 'En seguimiento: ha crecido ≥ 1.5 mm de diámetro medio en un intervalo de 12 meses', next: 'solidGrowingSize' },
+                  { label: 'Ha mostrado crecimiento lento en múltiples exámenes de tamizaje, sin alcanzar el umbral de ≥ 1.5 mm en un único intervalo de 12 meses', next: 'leaf_solidSlow_4B' },
+                ]},
+                solidBaselineSize: { q: 'Diámetro medio del nódulo sólido (basal/estable):', numeric: true, branches: [{ lt: 6, next: 'leaf_solidBase_2' }, { lt: 8, next: 'leaf_solidBase_3' }, { lt: 15, next: 'leaf_solidBase_4A' }, { next: 'leaf_solidBase_4B' }] },
+                solidNewSize: { q: 'Diámetro medio del nódulo sólido nuevo:', numeric: true, branches: [{ lt: 4, next: 'leaf_solidNew_2' }, { lt: 6, next: 'leaf_solidNew_3' }, { lt: 8, next: 'leaf_solidNew_4A' }, { next: 'leaf_solidNew_4B' }] },
+                solidGrowingSize: { q: 'Diámetro medio ACTUAL del nódulo sólido en crecimiento:', numeric: true, branches: [{ lt: 8, next: 'leaf_solidGrow_4A' }, { next: 'leaf_solidGrow_4B' }] },
+                partSolidIsNew: { q: '¿El nódulo parcialmente sólido es nuevo (no visto en un estudio previo)?', options: [
+                  { label: 'Sí, es nuevo', next: 'partSolidNewTotalSize' },
+                  { label: 'No, es un hallazgo ya conocido (basal o en seguimiento)', next: 'partSolidComponentChange' },
+                ]},
+                partSolidNewTotalSize: { q: 'Diámetro medio TOTAL del nódulo nuevo:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidNew_3' }, { next: 'partSolidNewSolidSize' }] },
+                partSolidNewSolidSize: { q: 'Diámetro medio del COMPONENTE SÓLIDO:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidNew_3b' }, { lt: 8, next: 'leaf_partSolidNew_4A' }, { next: 'leaf_partSolidNew_4B' }] },
+                partSolidComponentChange: { q: '¿El componente sólido es nuevo o ha crecido ≥ 1.5 mm en un intervalo de 12 meses respecto a un estudio previo?', options: [
+                  { label: 'Sí, el componente sólido es nuevo o ha crecido ≥ 1.5 mm en 12 meses', next: 'partSolidNewGrowingCompSize' },
+                  { label: 'No, el componente sólido está estable', next: 'partSolidTotalSize' },
+                  { label: 'Ha mostrado crecimiento lento en múltiples exámenes, sin alcanzar el umbral de 12 meses', next: 'leaf_partSolidSlow_4B' },
+                ]},
+                partSolidNewGrowingCompSize: { q: 'Diámetro medio del componente sólido nuevo/en crecimiento:', numeric: true, branches: [{ lt: 4, next: 'leaf_partSolidChg_4A' }, { next: 'leaf_partSolidChg_4B' }] },
+                partSolidTotalSize: { q: 'Diámetro medio TOTAL del nódulo:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidStable_2' }, { next: 'partSolidCompSize' }] },
+                partSolidCompSize: { q: 'Diámetro medio del componente sólido:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidStable_3' }, { lt: 8, next: 'leaf_partSolidStable_4A' }, { next: 'leaf_partSolidStable_4B' }] },
+                ggnSize: { q: 'Diámetro medio del nódulo en vidrio esmerilado puro:', numeric: true, branches: [{ lt: 30, next: 'leaf_ggn_2' }, { next: 'ggnGrowth' }] },
+                ggnGrowth: { q: '¿Es hallazgo nuevo, basal a este tamaño, o creció ≥ 1.5 mm en un intervalo de 12 meses?', options: [
+                  { label: 'Sí (nuevo, basal a este tamaño, o creció ≥ 1.5 mm en 12 meses)', next: 'leaf_ggn_3' },
+                  { label: 'No — es de crecimiento lento y no cumple ese umbral en ningún intervalo de 12 meses', next: 'leaf_ggn_2b' },
+                ]},
+                juxtaCriteria: { q: '¿Cumple TODOS estos criterios: < 10 mm de diámetro medio, sólido, márgenes lisos, y forma oval/lentiforme/triangular?', options: [
+                  { label: 'Sí, cumple todos', next: 'leaf_juxta_2' },
+                  { label: 'No — evaluarlo como nódulo sólido convencional', next: 'solidContext' },
+                ]},
+                airwayLevel: { q: 'Nivel del nódulo endobronquial:', options: [
+                  { label: 'Subsegmentario', next: 'leaf_airway_2' },
+                  { label: 'Segmentario o más proximal', next: 'airwayBehavior' },
+                ]},
+                airwayBehavior: { q: '¿Es hallazgo basal (primera detección) o persiste/crece en un control a los 3 meses?', options: [
+                  { label: 'Basal (primera detección)', next: 'leaf_airway_4A' },
+                  { label: 'Persiste o crece en el control a los 3 meses', next: 'leaf_airway_4B' },
+                ]},
+                cystWall: { q: 'Grosor y características de la pared del quiste:', options: [
+                  { label: 'Delgada, uniforme, < 2 mm (quiste típico)', next: 'leaf_cyst_notClassified' },
+                  { label: 'Gruesa (≥ 2 mm): uniforme, asimétrica, o con nodularidad parietal', next: 'cystLocularity' },
+                ]},
+                cystLocularity: { q: '¿Es unilocular o multilocular?', options: [
+                  { label: 'Unilocular', next: 'cystUniBehavior' },
+                  { label: 'Multilocular (septos internos)', next: 'cystMultiBehavior' },
+                ]},
+                cystUniBehavior: { q: 'Comportamiento del quiste unilocular de pared gruesa:', options: [
+                  { label: 'Hallazgo basal, o estable/sin cambios', next: 'leaf_cystUni_4A' },
+                  { label: 'El componente quístico ha crecido (diámetro medio) respecto a un estudio previo', next: 'leaf_cystUni_3' },
+                  { label: 'La pared ha aumentado su grosor o nodularidad', next: 'leaf_cystUni_4B' },
+                ]},
+                cystMultiBehavior: { q: 'Comportamiento del quiste multilocular:', options: [
+                  { label: 'Hallazgo basal (multilocular desde el inicio, o un quiste de pared fina/gruesa que se vuelve multilocular)', next: 'leaf_cystMulti_4A' },
+                  { label: 'El quiste multilocular ha crecido (diámetro medio)', next: 'leaf_cystMulti_4B' },
+                  { label: 'Aumentó el número de loculaciones, o apareció opacidad interna nueva/mayor (nodular, vidrio esmerilado, o consolidación)', next: 'leaf_cystMulti_4B_2' },
+                ]},
+                leaf_none: { cat: '1' }, leaf_incomplete: { cat: '0' }, leaf_benignCalc: { cat: '1' },
+                leaf_solidBase_2: { cat: '2' }, leaf_solidBase_3: { cat: '3' }, leaf_solidBase_4A: { cat: '4A' }, leaf_solidBase_4B: { cat: '4B' },
+                leaf_solidNew_2: { cat: '2' }, leaf_solidNew_3: { cat: '3' }, leaf_solidNew_4A: { cat: '4A' }, leaf_solidNew_4B: { cat: '4B' },
+                leaf_solidGrow_4A: { cat: '4A' }, leaf_solidGrow_4B: { cat: '4B' }, leaf_solidSlow_4B: { cat: '4B' },
+                leaf_partSolidNew_3: { cat: '3' }, leaf_partSolidNew_3b: { cat: '3' }, leaf_partSolidNew_4A: { cat: '4A' }, leaf_partSolidNew_4B: { cat: '4B' },
+                leaf_partSolidChg_4A: { cat: '4A' }, leaf_partSolidChg_4B: { cat: '4B' }, leaf_partSolidSlow_4B: { cat: '4B' },
+                leaf_partSolidStable_2: { cat: '2' }, leaf_partSolidStable_3: { cat: '3' }, leaf_partSolidStable_4A: { cat: '4A' }, leaf_partSolidStable_4B: { cat: '4B' },
+                leaf_ggn_2: { cat: '2' }, leaf_ggn_2b: { cat: '2' }, leaf_ggn_3: { cat: '3' },
+                leaf_juxta_2: { cat: '2' },
+                leaf_airway_2: { cat: '2' }, leaf_airway_4A: { cat: '4A' }, leaf_airway_4B: { cat: '4B' },
+                leaf_cyst_notClassified: { cat: 'notClassified' },
+                leaf_cystUni_4A: { cat: '4A' }, leaf_cystUni_3: { cat: '3' }, leaf_cystUni_4B: { cat: '4B' },
+                leaf_cystMulti_4A: { cat: '4A' }, leaf_cystMulti_4B: { cat: '4B' }, leaf_cystMulti_4B_2: { cat: '4B' },
+                leaf_reclass2: { cat: '2' }, leaf_reclass3: { cat: '3' }, leaf_reclass2b: { cat: '2' },
+              },
+            },
             usage: [
               'Lung-RADS se aplica exclusivamente a nódulos detectados en un programa de tamizaje con TC de baja dosis (no a nódulos incidentales fuera de tamizaje, donde se usa Fleischner).',
-              'El manejo depende de la categoría más alta encontrada entre todos los nódulos del estudio. El modificador "S" se agrega cuando hay un hallazgo incidental clínicamente significativo no pulmonar.',
+              'El algoritmo paso a paso reproduce textualmente los criterios por tipo de nódulo (sólido, parcialmente sólido, no sólido/vidrio esmerilado, yuxtapleural, endobronquial, y quiste atípico) del documento oficial ACR Lung-RADS® v2022, incluyendo la definición de crecimiento (> 1.5 mm de diámetro medio en un intervalo de 12 meses) y la regla especial para nódulos de crecimiento lento a través de múltiples exámenes (categoría 4B aunque no se cumpla el umbral de 12 meses).',
+              'El manejo depende de la categoría más alta encontrada entre todos los nódulos del estudio. El modificador "S" se agrega cuando hay un hallazgo incidental clínicamente significativo no pulmonar. La categoría 4X (nódulo 3 o 4 con características adicionales como espiculación, adenopatía, enfermedad metastásica franca, o un vidrio esmerilado que duplica su tamaño en 1 año) se ofrece como una casilla adicional al final del algoritmo, ya que requiere criterio radiológico y no un umbral numérico único.',
+              'Un quiste unilocular de pared fina uniforme (< 2 mm) se considera benigno y no se clasifica dentro de Lung-RADS.',
               'Las cifras de prevalencia corresponden a la prevalencia poblacional estimada de cada categoría reportada en el documento oficial ACR Lung-RADS v2022 (no al riesgo de malignidad de un nódulo individual).',
               'Criterios verbatim-verificados contra el documento oficial ACR Lung-RADS® v2022 (release date: noviembre 2022) proporcionado por el usuario.',
             ],
@@ -1190,47 +1302,160 @@
           },
           lungCysts: {
             title: 'Enfermedad Quística Pulmonar (Algoritmo)',
-            start: { q: '¿Cuál es la distribución predominante de los quistes en la TC?', options: [
-              { label: 'Subpleurales (paraseptales), predominio en bases', next: 'subpleural' },
-              { label: 'Difusos, en todo el pulmón, forma redondeada/ovalada, pared fina', next: 'diffuse' },
-              { label: 'Aislados/escasos, sin otros hallazgos asociados', next: 'isolated' },
-              { label: 'Múltiples, con nódulos asociados', next: 'withNodules' },
-              { label: 'Múltiples, con vidrio esmerilado asociado', next: 'withGgo' },
+            history: 'Historial',
+            undo: 'Volver atrás',
+            recommendation: 'Recomendación',
+            start: { q: 'Paso 1: ¿Se trata de verdaderos quistes (pared fina < 2 mm, bien definida) o de un mimetizador de quiste?', options: [
+              { label: 'Son quistes verdaderos: pared fina (< 2 mm), interfase bien definida con el pulmón normal', next: 'distribution' },
+              { label: 'Podría ser un mimetizador: pared gruesa, sin pared definida, o estructuras tubulares', next: 'mimicType' },
             ]},
             nodes: {
-              subpleural: { q: 'Características adicionales:', options: [
-                { label: 'Quistes de pared fina, predominio en vértices/bases según patrón', next: 'r_emphysemaHoneycomb' },
-                { label: 'Quistes elípticos/lentiformes paramediastínicos, predominio en bases, ± antecedente familiar', next: 'r_bhd' },
+              mimicType: { q: '¿Cuál describe mejor el hallazgo?', options: [
+                { label: 'Espacio aéreo con pared > 4 mm, dentro de una consolidación, masa o nódulo', next: 'r_cavity' },
+                { label: 'Lucencias centrolobulillares sin pared definida, ≤ 1 cm, predominio en lóbulos superiores, ± "punto central" (rama arterial)', next: 'r_centrilobularEmphysema' },
+                { label: 'Estructuras tubulares sin afilamiento ("no tapering"), paralelas al haz broncovascular, bronquio dilatado ≥ 1.5× el diámetro de la arteria pulmonar adyacente', next: 'r_cysticBronchiectasis' },
               ]},
-              diffuse: { q: '¿Sexo y contexto clínico?', options: [
-                { label: 'Mujer, ± esclerosis tuberosa, ± quilotórax/angiomiolipomas', next: 'r_lam' },
-                { label: 'Otro contexto (menos típico para LAM)', next: 'r_indeterminateDiffuse' },
+              distribution: { q: 'Paso 2: ¿Distribución predominante de los quistes verdaderos?', options: [
+                { label: 'Subpleurales', next: 'subpleuralType' },
+                { label: 'Intraparenquimatosos (no predominantemente subpleurales)', next: 'assocFindings' },
               ]},
-              isolated: { cat: 'r_isolated' },
-              withNodules: { q: 'Tipo de nódulos asociados:', options: [
-                { label: 'Nódulos centrolobulillares/peribroncovasculares, contexto autoinmune (Sjögren, etc.)', next: 'r_lip' },
-                { label: 'Nódulos irregulares/cavitados, predominio en lóbulos superiores, respeta ángulos costofrénicos, tabaquismo activo', next: 'r_plch' },
+              subpleuralType: { q: 'Características:', options: [
+                { label: 'Foco único redondeado ≥ 1 cm, pared casi imperceptible, paciente asintomático', next: 'r_bulla' },
+                { label: 'Múltiples, discretos, predominio en superficies dorsales, delimitados por pleura/septos, enfisema centrolobulillar acompañante', next: 'r_paraseptal' },
+                { label: 'Diámetro uniforme (3-10 mm), agrupados, pared más gruesa (1-3 mm o más), distorsión arquitectural y reticulación', next: 'r_honeycombing' },
               ]},
-              withGgo: { q: 'Contexto clínico:', options: [
-                { label: 'Inmunosupresión (VIH, trasplante, etc.), vidrio esmerilado en "empedrado"', next: 'r_pjp' },
-                { label: 'Tabaquismo activo, vidrio esmerilado basal/subpleural', next: 'r_dip' },
+              assocFindings: { q: 'Paso 3: ¿Hay otros hallazgos asociados en la TCAR?', options: [
+                { label: 'Ninguno (quistes sin otros hallazgos)', next: 'soloOrMulti' },
+                { label: 'Nódulos asociados', next: 'nodulesType' },
+                { label: 'Vidrio esmerilado asociado', next: 'ggoType' },
+              ]},
+              soloOrMulti: { q: '¿Solitario/incidental o multifocal/difuso?', options: [
+                { label: 'Solitario o incidental', next: 'solitaryType' },
+                { label: 'Multifocal o difuso', next: 'multifocalType' },
+              ]},
+              solitaryType: { q: 'Características:', options: [
+                { label: 'Tamaño promedio ~10 mm, sin síntomas, sin antecedente relevante', next: 'r_incidentalCyst' },
+                { label: 'Pared fina, transitorio, antecedente de neumonía aguda/trauma/aspiración de hidrocarburos', next: 'r_pneumatocele' },
+                { label: 'Bordes bien definidos, atenuación de agua o partes blandas si tiene contenido líquido, localización mediastínica o en lóbulos inferiores', next: 'r_bronchogenicCyst' },
+              ]},
+              multifocalType: { q: 'Paso 3 (multifocal/difuso): patrón más específico:', options: [
+                { label: 'Pared fina en > 80% casos, predominio en bases y paramediastinal, forma elongada que abraza venas pulmonares, ± fibrofoliculomas cutáneos/antecedente familiar/cáncer renal', next: 'r_bhd' },
+                { label: 'Numerosos, redondeados, pared fina, distribución difusa y pareja (incluye recesos pleurales), mujer en edad fértil, ± neumotórax/quilotórax/angiomiolipomas renales', next: 'r_lam' },
+                { label: 'Nódulos que progresan a quistes de pared fina/gruesa, antecedente de papilomas laríngeos y traqueostomía', next: 'r_papillomatosis' },
+                { label: 'Nódulos irregulares que cavitan a quistes de forma bizarra, predominio en lóbulos superiores/medios, respeta ángulos costofrénicos, fumador activo 20-40 años', next: 'r_plchMultifocal' },
+                { label: 'Pared fina, distribución aleatoria, pocos en número, < 30 mm, < 10% del parénquima, contexto autoinmune (Sjögren)', next: 'r_lipMultifocal' },
+                { label: 'Distribución periférica/basal, forma lentiforme, antecedente de sarcoma o carcinoma escamoso (cabeza/cuello)', next: 'r_metastatic' },
+                { label: 'Contexto infeccioso (VIH/inmunosupresión, micobacterias, hongos, parásitos)', next: 'r_infection' },
+              ]},
+              nodulesType: { q: 'Paso 4 (quistes + nódulos): características de los nódulos:', options: [
+                { label: 'Centrolobulillares mal definidos en vidrio esmerilado, más profusos en subpleural, contexto autoinmune (Sjögren)', next: 'r_lipNodules' },
+                { label: 'Irregulares, múltiples, uni o bilaterales, gammapatía monoclonal/mieloma', next: 'r_lcdd' },
+                { label: 'Lisos y lobulados, 0.5-15 cm, ± cavitación o calcificación central, predominio en lóbulos inferiores/subpleural', next: 'r_amyloid' },
+                { label: 'Irregulares, a veces cavitados (nódulo con centro cavitado, "signo cheerio"), predominio superior/medio, respeta ángulos costofrénicos, fumador activo', next: 'r_plchNodules' },
+              ]},
+              ggoType: { q: 'Paso 5 (quistes + vidrio esmerilado): contexto clínico:', options: [
+                { label: 'Inmunosupresión (VIH CD4 < 200, trasplante), vidrio esmerilado difuso, fiebre/disnea subaguda', next: 'r_pjp' },
+                { label: 'Tabaquismo activo, quistes escasos y pequeños dentro del vidrio esmerilado, predominio basal/subpleural', next: 'r_dip' },
               ]},
             },
             results: {
-              r_emphysemaHoneycomb: { cat: 'Diagnóstico diferencial', risk: 'Enfisema centrolobulillar/paraseptal, bulla, o panalización (fibrosis pulmonar)', recs: 'Correlacionar con antecedente de tabaquismo (enfisema) o patrón de fibrosis (panalización: quistes agrupados, de pared gruesa, con distorsión arquitectural).' },
-              r_bhd: { cat: 'Diagnóstico diferencial', risk: 'Síndrome de Birt-Hogg-Dubé', recs: 'Considerar estudio genético (FLCN) y evaluación por lesiones renales/cutáneas asociadas si hay sospecha clínica o antecedente familiar.' },
-              r_lam: { cat: 'Diagnóstico diferencial', risk: 'Linfangioleiomiomatosis (LAM) / esclerosis tuberosa', recs: 'Correlacionar con VEGF-D sérico, angiomiolipomas renales, quilotórax; considerar biopsia si el cuadro no es característico.' },
-              r_indeterminateDiffuse: { cat: 'Diagnóstico diferencial', risk: 'Indeterminado (considerar LAM, BHD, causas más raras)', recs: 'Requiere correlación clínica adicional; considerar descartar LAM y BHD antes de concluir.' },
-              r_isolated: { cat: 'Diagnóstico diferencial', risk: 'Hallazgo incidental relacionado con la edad, pneumatocele antiguo, o quiste broncogénico', recs: 'Generalmente sin significado patológico si es estable; correlacionar con estudios previos si están disponibles.' },
-              r_lip: { cat: 'Diagnóstico diferencial', risk: 'Neumonía intersticial linfoide (LIP), amiloidosis, o enfermedad por depósito de cadenas ligeras', recs: 'Correlacionar con enfermedad autoinmune (síndrome de Sjögren es la asociación más frecuente) o gammapatía monoclonal.' },
-              r_plch: { cat: 'Diagnóstico diferencial', risk: 'Histiocitosis de células de Langerhans pulmonar (PLCH)', recs: 'Fuertemente asociada al tabaquismo activo; el cese del tabaquismo es la intervención principal.' },
-              r_pjp: { cat: 'Diagnóstico diferencial', risk: 'Neumonía por Pneumocystis jirovecii (PJP)', recs: 'Correlacionar con estado inmunológico y estudio microbiológico dirigido.' },
-              r_dip: { cat: 'Diagnóstico diferencial', risk: 'Neumonía intersticial descamativa (DIP)', recs: 'Fuertemente asociada al tabaquismo activo; considerar biopsia si el diagnóstico no es claro clínicamente.' },
+              r_cavity: { cat: 'Cavidad (mimetizador de quiste)', risk: 'Espacio aéreo dentro de una consolidación, masa o nódulo, con pared > 4 mm de grosor. No es un verdadero quiste.', recs: 'Correlacionar con infección necrotizante, tuberculosis, carcinoma cavitado (más frecuente en lóbulos superiores) o émbolos sépticos. La pared de una cavidad puede adelgazarse por un mecanismo de válvula, dando la falsa impresión de un quiste verdadero.' },
+              r_centrilobularEmphysema: { cat: 'Enfisema centrolobulillar (mimetizador de quiste)', risk: 'Lucencias centrolobulillares sin pared definida, ≤ 1 cm, con predilección por lóbulos superiores; muchas muestran un "punto central" (rama de la arteria pulmonar). No es un verdadero quiste.', recs: 'Correlacionar con tabaquismo y patrón obstructivo en pruebas de función pulmonar.' },
+              r_cysticBronchiectasis: { cat: 'Bronquiectasias quísticas (mimetizador de quiste)', risk: 'Estructuras tubulares sin afilamiento que se dirigen a la periferia hasta 1 cm de la pleura, con bronquio dilatado habitualmente ≥ 1.5× el diámetro de la arteria pulmonar adyacente. No es un verdadero quiste.', recs: 'Las reconstrucciones coronales o cortes axiales secuenciales muestran su continuidad tubular, diferenciándolas de quistes verdaderos. Correlacionar con infecciones respiratorias recurrentes y patrón obstructivo/mixto en pruebas de función pulmonar.' },
+              r_bulla: { cat: 'Bulla', risk: 'Lucencia focal redondeada ≥ 1 cm, delimitada por una pared fina casi imperceptible; puede formarse por coalescencia de quistes de enfisema paraseptal.', recs: 'Habitualmente asintomática. Puede complicarse con neumotórax espontáneo, hemoptisis o infección si crece y comprime el parénquima adyacente.' },
+              r_paraseptal: { cat: 'Enfisema paraseptal', risk: 'Quistes subpleurales/peribroncovasculares discretos, delimitados por la pleura y los septos interlobulillares (sin pared propia), predominio en superficies dorsales; arquitectura pulmonar subyacente preservada.', recs: 'Frecuentemente coexiste con enfisema centrolobulillar. La coalescencia de estos quistes puede formar bullas.' },
+              r_honeycombing: { cat: 'Panalización (fibrosis pulmonar avanzada)', risk: 'Quistes agrupados de diámetro uniforme (3-10 mm), predominio subpleural, con paredes más gruesas (1-3 mm o más) que se tocan entre sí, distorsión arquitectural y reticulación.', recs: 'Representa enfermedad fibrótica avanzada e irreversible. Correlacionar con pruebas de función pulmonar (patrón restrictivo, DLCO baja) y el patrón radiológico global (ej. UIP) para orientar la etiología.' },
+              r_incidentalCyst: { cat: 'Quiste incidental', risk: 'Distribución uniforme en todos los lóbulos, tamaño promedio ~10 mm. En un estudio de individuos asintomáticos, se detectaron en ~25% de pacientes > 75 años y en ninguno < 55 años.', recs: 'Probablemente representa parte del proceso normal de envejecimiento o secuela de infección/trauma previo. Generalmente sin significado patológico si es estable; correlacionar con estudios previos si están disponibles.' },
+              r_pneumatocele: { cat: 'Pneumatocele', risk: 'Espacio aéreo de pared fina, transitorio, causado con mayor frecuencia por neumonía aguda, trauma, o aspiración de fluidos derivados del petróleo.', recs: 'Habitualmente se resuelve espontáneamente; ocasionalmente puede persistir. Correlacionar con el antecedente clínico y con seguimiento imagenológico para confirmar su resolución.' },
+              r_bronchogenicCyst: { cat: 'Quiste broncogénico', risk: 'Surge de una gemación anómala del árbol traqueobronquial. Con mayor frecuencia es una masa mediastínica, pero en ~1/3 de los casos se presenta como masa intraparenquimatosa en lóbulos inferiores; habitualmente contiene líquido (atenuación de agua o partes blandas). Los quistes llenos de aire son infrecuentes.', recs: 'Habitualmente asintomático; puede mostrar nivel hidroaéreo si se sobreinfecta. Considerar en el diagnóstico diferencial de una masa quística solitaria bien delimitada, especialmente paramediastínica.' },
+              r_bhd: { cat: 'Síndrome de Birt-Hogg-Dubé (BHD)', risk: 'Quistes de pared fina en > 80% de los pacientes, predominio en zonas periféricas, bases, y a lo largo del mediastino; suelen ser elongados y abrazar/englobar la porción proximal de las venas pulmonares. Neumotórax espontáneo en ~24% (alta probabilidad de recurrencia). Síndrome autosómico dominante con fibrofoliculomas cutáneos y riesgo de cáncer renal ~25%.', recs: 'Confirmar con biopsia de piel (fibrofoliculomas) y estudio genético (gen FLCN). Evaluar lesiones renales asociadas si hay sospecha clínica o antecedente familiar.' },
+              r_lam: { cat: 'Linfangioleiomiomatosis (LAM)', risk: 'Numerosos quistes de pared fina (desde imperceptible hasta < 4 mm), redondeados, distribuidos de forma difusa y pareja por todo el pulmón (sin respetar los ángulos costofrénicos, a diferencia de la PLCH), con parénquima intersticial normal. Puede asociarse a esclerosis tuberosa (LAM-TS) o ser esporádica (casi exclusiva de mujeres en edad fértil). Neumotórax espontáneo en ~69% y quilotórax en ~23%; pueden verse angiomiolipomas renales.', recs: 'Correlacionar con VEGF-D sérico, angiomiolipomas renales y quilotórax/derrames quilosos. La biopsia (HMB-45 positivo) puede confirmar el diagnóstico si el cuadro no es característico.' },
+              r_papillomatosis: { cat: 'Papilomatosis traqueobronquial', risk: 'Los nódulos homogéneos pequeños progresan a lesiones quísticas de pared fina o gruesa, de distribución aleatoria en localización central, periférica y ocasionalmente subpleural. La afectación pulmonar ocurre típicamente 10-12 años después del diagnóstico de papilomas laríngeos.', recs: 'Correlacionar con antecedente de papilomas laríngeos recurrentes, endoscopias/resecciones previas y traqueostomía. Las complicaciones descritas incluyen infección respiratoria, sepsis y muerte.' },
+              r_plchMultifocal: { cat: 'Histiocitosis de células de Langerhans pulmonar (PLCH)', risk: 'Nódulos irregulares, inicialmente pequeños, que con la progresión cavitan dando quistes de pared gruesa o fina, de formas a veces bizarras (nódulo con cavitación central: "signo cheerio"). Predominio en lóbulos superiores/medios, con relativa preservación de bases y ángulos costofrénicos. Típico de fumadores jóvenes (20-40 años).', recs: 'Fuertemente asociada al tabaquismo activo; el cese del tabaquismo es la intervención principal. El diagnóstico puede establecerse por hallazgos típicos en TCAR; en casos atípicos se requiere confirmación tisular (± estudio de mutación BRAF).' },
+              r_lipMultifocal: { cat: 'Neumonía intersticial linfoide (LIP)', risk: 'Quistes de pared fina, distribución aleatoria (± predominio basal/perivascular), habitualmente pocos en número, hasta 30 mm, que comprometen típicamente < 10% del parénquima (~68% de los casos).', recs: 'Fuertemente asociada a enfermedades autoinmunes (el síndrome de Sjögren es la asociación más frecuente), VIH, inmunodeficiencia común variable, y trasplante alogénico de células hematopoyéticas. Correlacionar con serología autoinmune y estado inmunológico.' },
+              r_metastatic: { cat: 'Enfermedad metastásica con quistes/cavidades', risk: 'Distribución aleatoria, predominio periférico/basal y subpleural, forma a menudo lentiforme. Descrita en metástasis de sarcoma, tumores de cabeza y cuello, y otros carcinomas escamosos; las metástasis de adenocarcinoma raramente cavitan.', recs: 'Considerar ante antecedente de neoplasia conocida, especialmente sarcoma o carcinoma escamoso de cabeza y cuello. La toma de muestra tisular puede ser necesaria si el cuadro no es característico.' },
+              r_infection: { cat: 'Infección', risk: 'Los quistes/cavidades pueden verse en infecciones bacterianas (incluyendo micobacterias atípicas y S. aureus), fúngicas (ej. coccidioidomicosis) y parasitarias (ej. paragonimiasis).', recs: 'Correlacionar con contexto epidemiológico, estado inmunológico, y estudio microbiológico dirigido (cultivos, serologías, PCR según sospecha). Si predomina el vidrio esmerilado asociado, considerar específicamente PJP.' },
+              r_lipNodules: { cat: 'Neumonía intersticial linfoide (LIP)', risk: 'Nódulos centrolobulillares mal definidos en vidrio esmerilado, más profusos en regiones subpleurales, junto con quistes de pared fina de distribución aleatoria; puede acompañarse de engrosamiento de haces broncovasculares/septal y adenopatías.', recs: 'Fuertemente asociada al síndrome de Sjögren (la asociación más frecuente) y otras enfermedades autoinmunes. Correlacionar con serología autoinmune.' },
+              r_lcdd: { cat: 'Enfermedad por depósito de cadenas ligeras (LCDD)', risk: 'Nódulos irregulares, múltiples, uni o bilaterales, asociados a quistes de pared fina, redondeados, de hasta 2 cm. Ocurre en pacientes de edad media (promedio 67 años); ~75% se asocia a mieloma múltiple o macroglobulinemia.', recs: 'Correlacionar con estudio de gammapatía monoclonal (electroforesis de proteínas, cadenas ligeras libres) y descartar mieloma múltiple. Puede requerir trasplante pulmonar en casos con insuficiencia respiratoria.' },
+              r_amyloid: { cat: 'Amiloidosis pulmonar (forma nodular)', risk: 'Nódulos de contornos lisos y lobulados, 0.5-15 cm, de crecimiento lento, con calcificación o cavitación central frecuente; predominio en lóbulos inferiores y regiones subpleurales, con quistes de pared fina y septos internos que llegan hasta los nódulos.', recs: 'Frecuentemente asociada a síndrome de Sjögren (con o sin LIP concomitante), enfermedad linfoproliferativa, o linfoma MALT. Considerar biopsia para confirmación tisular.' },
+              r_plchNodules: { cat: 'Histiocitosis de células de Langerhans pulmonar (PLCH)', risk: 'Nódulos irregulares, a veces con cavitación central ("signo cheerio"), predominio en lóbulos superiores/medios, con relativa preservación de bases y ángulos costofrénicos. Típica de fumadores activos jóvenes (20-40 años).', recs: 'Fuertemente asociada al tabaquismo activo; el cese del tabaquismo es la intervención principal. En casos atípicos, considerar confirmación tisular.' },
+              r_pjp: { cat: 'Neumonía por Pneumocystis jirovecii (PJP)', risk: 'Vidrio esmerilado extenso o consolidación de espacio aéreo de distribución central/perihiliar, con engrosamiento septal; los quistes ocurren en hasta 34% de los casos, múltiples, predominio en lóbulos superiores, variables en tamaño/forma/grosor de pared. Pueden romperse y causar neumotórax.', recs: 'Correlacionar con estado inmunológico (típicamente VIH con CD4 < 200), fiebre y disnea subaguda, PaO2 baja, gradiente D(A-a)O2 aumentado y LDH elevada. El diagnóstico definitivo requiere estudio microbiológico dirigido.' },
+              r_dip: { cat: 'Neumonía intersticial descamativa (DIP)', risk: 'Vidrio esmerilado de predominio en bases y regiones subpleurales, con quistes pequeños, escasos, de pared imperceptible, ubicados dentro del vidrio esmerilado (hallazgo característico, ~1/3 de los casos); panalización rara, arquitectura preservada.', recs: 'Fuertemente asociada al tabaquismo activo (90% de los casos, más frecuente en hombres 2:1); también descrita con exposición a partículas inorgánicas, enfermedad del tejido conectivo, sirolimus y uso intenso de marihuana. El cese del tabaquismo es la intervención principal; considerar biopsia si el diagnóstico no es clínicamente claro.' },
             },
-            reportText: (path, risk, recs) => `Enfermedad quística pulmonar (algoritmo):\nHallazgos: ${path}\nDiagnóstico diferencial sugerido: ${risk}\n${recs}`,
+            reportText: (path, cat, risk, recs) => `Enfermedad quística pulmonar (algoritmo):\nHallazgos: ${path}\nDiagnóstico: ${cat}\n${risk}\n${recs}`,
             usage: [
-              'Este árbol resume el enfoque algorítmico publicado para el diagnóstico diferencial de las enfermedades quísticas pulmonares difusas, combinando distribución, morfología del quiste, hallazgos asociados (nódulos, vidrio esmerilado) y contexto clínico (sexo, tabaquismo, inmunosupresión).',
-              'Es una herramienta de apoyo diagnóstico, no reemplaza la correlación clínica, serológica ni la eventual biopsia. Varias entidades (LAM, BHD, LIP) requieren confirmación con estudios adicionales específicos.',
+              'Este árbol reproduce el algoritmo de 5 pasos publicado por Raoof et al. (CHEST 2016) para el diagnóstico diferencial de la enfermedad quística pulmonar: Paso 1 (excluir mimetizadores: cavidad, enfisema centrolobulillar, bronquiectasias quísticas), Paso 2 (subpleural vs. intraparenquimatoso), Paso 3 (con o sin otros hallazgos asociados; solitario vs. multifocal/difuso), Paso 4 (quistes con nódulos asociados) y Paso 5 (quistes con vidrio esmerilado asociado).',
+              'Regla práctica complementaria ("regla del 4 y 40", Radiology Assistant): hasta 4 quistes en un paciente mayor de 40 años suelen considerarse un hallazgo incidental; por debajo de los 40 años, cualquier quiste amerita estudio adicional.',
+              'Nota de transparencia: las dos fuentes citadas difieren en cómo clasifican la neumonía intersticial linfoide (LIP) — el algoritmo de Raoof et al. la incluye tanto en la rama de quistes multifocales sin otros hallazgos como en la rama de quistes con nódulos asociados (Fig. 18/27), mientras que Radiology Assistant la agrupa bajo la rama de quistes con vidrio esmerilado. Esta calculadora sigue la estructura de Raoof et al. (fuente primaria) y no resuelve esta discrepancia entre esquemas.',
+              'Es una herramienta de apoyo diagnóstico basada en el patrón de imagen; no reemplaza la correlación clínica, serológica, genética, ni la eventual biopsia. Varias entidades (LAM, BHD, LIP, amiloidosis, LCDD) requieren confirmación con estudios adicionales específicos, y varias enfermedades (ej. PLCH, LIP) pueden presentarse en más de una categoría según el estadio evolutivo.',
+            ],
+          },
+          bosniak: {
+            title: 'Clasificación de Bosniak v2019 (Masas Quísticas Renales)',
+            history: 'Historial',
+            undo: 'Volver atrás',
+            recommendation: 'Manejo',
+            start: { q: 'Paso 1: ¿El componente de tejido blando que realza representa ≥ 25% del volumen de la masa?', options: [
+              { label: 'Sí, ≥ 25% de la masa es tejido sólido que realza', next: 'r_notApplicable' },
+              { label: 'No — es una masa predominantemente quística (< 25% de tejido sólido)', next: 'nodule' },
+            ]},
+            nodes: {
+              nodule: { q: 'Paso 2: ¿Hay un nódulo — una protrusión focal convexa que realza — en la pared o en un septo?', options: [
+                { label: 'Sí, con márgenes agudos respecto a la pared/septo (de cualquier tamaño)', next: 'r_IV_acute' },
+                { label: 'Sí, con márgenes obtusos y ≥ 4 mm', next: 'r_IV_obtuse' },
+                { label: 'No hay un nódulo verdadero', next: 'wallThickIrregular' },
+              ]},
+              wallThickIrregular: { q: 'Paso 3: ¿La pared o los septos están engrosados de forma gruesa o irregular, con realce?', options: [
+                { label: 'Grueso: pared o septo ≥ 4 mm de grosor, de contorno liso, con realce', next: 'r_III_thick' },
+                { label: 'Irregular: protrusión(es) focal(es) o difusa(s) ≤ 3 mm, de márgenes obtusos, con realce', next: 'r_III_irregular' },
+                { label: 'No — la pared y los septos son lisos y ≤ 3 mm de grosor', next: 'smoothFeatures' },
+              ]},
+              smoothFeatures: { q: 'Paso 4: Características de la pared/septos lisos (≤ 3 mm):', options: [
+                { label: 'Engrosamiento mínimo y liso (3 mm) de la pared, o de uno o más septos, con realce', next: 'r_IIF_minimalThick' },
+                { label: 'Muchos (≥ 4) septos finos (≤ 2 mm) que realzan, con pared lisa', next: 'r_IIF_manySepta' },
+                { label: '(RM) Heterogéneamente hiperintensa en T1 sin contraste con saturación grasa, sin cumplir criterios de categoría III o IV', next: 'r_IIF_mriHeterogeneous' },
+                { label: 'Pocos (1-3) septos finos (≤ 2 mm), con o sin realce, ± calcificación de cualquier tipo', next: 'r_II_fewSepta' },
+                { label: 'Pared fina (≤ 2 mm) y lisa, sin septos', next: 'hyperdenseCheck' },
+              ]},
+              hyperdenseCheck: { q: 'Paso 5: Atenuación/señal de la masa sin septos (pared fina, sin realce significativo del contenido):', options: [
+                { label: 'TC sin contraste: homogénea ≥ 70 UH', next: 'r_II_hyperdense70' },
+                { label: 'TC con protocolo de masa renal (sin fase sin contraste disponible): homogénea > 20 UH, sin realce', next: 'r_II_hyperdenseNonenhancing' },
+                { label: 'TC sin contraste: homogénea de -9 a 20 UH', next: 'r_II_lowAtten' },
+                { label: 'TC en fase venosa portal: homogénea de 21 a 30 UH', next: 'r_II_portal2130' },
+                { label: 'Demasiado pequeña para caracterizar por completo (TC o RM)', next: 'r_II_tooSmall' },
+                { label: 'RM, T1 sin contraste: homogéneamente muy hiperintensa (~2.5× la señal renal normal)', next: 'r_II_mriT1Hyper' },
+                { label: 'RM, T2: homogénea, señal similar al líquido cefalorraquídeo', next: 'r_II_mriT2csf' },
+                { label: 'Contenido homogéneo de líquido simple (agua), sin ninguna de las características anteriores', next: 'r_I' },
+              ]},
+            },
+            results: {
+              r_notApplicable: { cat: 'No aplica — masa sólida (no quística)', risk: 'El componente de tejido blando que realza representa ≥ 25% del volumen de la masa, por lo que se trata de una masa renal sólida (necrótica), no de una masa quística.', recs: 'La clasificación de Bosniak no aplica. Debe evaluarse y estadificarse como una masa renal sólida.' },
+              r_IV_acute: { cat: 'Bosniak IV', risk: 'Nódulo con márgenes agudos respecto a la pared o septo (protrusión convexa focal que realza, de cualquier tamaño). Riesgo de malignidad ≈ 90%.', recs: 'Se recomienda tratamiento (habitualmente quirúrgico); confirmar con evaluación multidisciplinaria según comorbilidades y preferencia del paciente.' },
+              r_IV_obtuse: { cat: 'Bosniak IV', risk: 'Nódulo con márgenes obtusos y ≥ 4 mm (protrusión convexa focal que realza). Riesgo de malignidad ≈ 90%.', recs: 'Se recomienda tratamiento (habitualmente quirúrgico); confirmar con evaluación multidisciplinaria según comorbilidades y preferencia del paciente.' },
+              r_III_thick: { cat: 'Bosniak III', risk: 'Pared o septo grueso (≥ 4 mm), de contorno liso, con realce. Categoría indeterminada; riesgo de malignidad ≈ 50%.', recs: 'El manejo varía entre instituciones (cirugía, vigilancia activa, ablación, o biopsia) según tamaño, comorbilidades, edad y preferencia del paciente; se recomienda discusión multidisciplinaria.' },
+              r_III_irregular: { cat: 'Bosniak III', risk: 'Pared o septo irregular: protrusión(es) focal(es) o difusa(s) ≤ 3 mm con márgenes obtusos, que realza(n). Categoría indeterminada; riesgo de malignidad ≈ 50%.', recs: 'El manejo varía entre instituciones (cirugía, vigilancia activa, ablación, o biopsia) según tamaño, comorbilidades, edad y preferencia del paciente; se recomienda discusión multidisciplinaria.' },
+              r_IIF_minimalThick: { cat: 'Bosniak IIF', risk: 'Engrosamiento mínimo y liso (3 mm) de la pared, o de uno o más septos, con realce. Probablemente benigno; riesgo de malignidad variable (0-38% según las series).', recs: 'Requiere vigilancia por imagen; el intervalo y protocolo específicos varían según la institución y el contexto clínico. La progresión durante el seguimiento hacia características de categoría III/IV es un fuerte predictor de malignidad (≈85%).' },
+              r_IIF_manySepta: { cat: 'Bosniak IIF', risk: 'Muchos (≥ 4) septos finos (≤ 2 mm) que realzan, con pared lisa. Probablemente benigno; riesgo de malignidad variable (0-38%).', recs: 'Requiere vigilancia por imagen; el intervalo y protocolo específicos varían según la institución y el contexto clínico. La progresión durante el seguimiento hacia características de categoría III/IV es un fuerte predictor de malignidad (≈85%).' },
+              r_IIF_mriHeterogeneous: { cat: 'Bosniak IIF (criterio específico de RM)', risk: 'Masa quística heterogéneamente hiperintensa en secuencias T1 sin contraste con saturación grasa, sin cumplir criterios de categoría III o IV. Este hallazgo se asocia en particular al carcinoma papilar de células renales.', recs: 'Requiere vigilancia por imagen; el intervalo y protocolo específicos varían según la institución y el contexto clínico.' },
+              r_II_fewSepta: { cat: 'Bosniak II', risk: 'Pared fina (≤ 2 mm) y lisa, con pocos (1-3) septos finos (≤ 2 mm), con o sin realce percibido; puede tener calcificación de cualquier morfología (en la versión 2019, la calcificación por sí sola, sin importar su tipo, ya no eleva la categoría). Riesgo de malignidad < 1%.', recs: 'No requiere seguimiento por imagen.' },
+              r_II_hyperdense70: { cat: 'Bosniak II (quiste hiperatenuante)', risk: 'Masa homogénea con atenuación ≥ 70 UH en TC sin contraste. Riesgo de malignidad < 1%.', recs: 'No requiere seguimiento por imagen ni fase con contraste adicional si cumple estos criterios.' },
+              r_II_hyperdenseNonenhancing: { cat: 'Bosniak II (quiste hiperatenuante)', risk: 'Masa homogénea > 20 UH sin realce en TC con protocolo de masa renal (sin fase sin contraste disponible para comparar). Riesgo de malignidad < 1%.', recs: 'No requiere seguimiento adicional.' },
+              r_II_lowAtten: { cat: 'Bosniak II', risk: 'Masa homogénea de -9 a 20 UH en TC sin contraste (atenuación de líquido simple). Riesgo de malignidad < 1%.', recs: 'No requiere seguimiento adicional.' },
+              r_II_portal2130: { cat: 'Bosniak II (posible pseudorrealce)', risk: 'Masa homogénea de 21 a 30 UH en fase venosa portal; este rango se considera benigno para evitar la sobrecalificación por pseudorrealce. Riesgo de malignidad < 1%.', recs: 'No requiere seguimiento adicional.' },
+              r_II_tooSmall: { cat: 'Bosniak II (demasiado pequeña para caracterizar)', risk: 'Masa de baja atenuación homogénea, demasiado pequeña para caracterizar por completo por TC o RM. Se asume benigna.', recs: 'No requiere seguimiento adicional específico por esta categoría; correlacionar con el contexto clínico si hay dudas.' },
+              r_II_mriT1Hyper: { cat: 'Bosniak II (quiste hiperatenuante, criterio de RM)', risk: 'Masa homogénea marcadamente hiperintensa en T1 sin contraste (~2.5 veces la señal del parénquima renal normal). Riesgo de malignidad < 1%.', recs: 'No requiere seguimiento adicional.' },
+              r_II_mriT2csf: { cat: 'Bosniak II (criterio de RM)', risk: 'Masa homogénea con señal en T2 similar a la del líquido cefalorraquídeo. Riesgo de malignidad < 1%.', recs: 'No requiere seguimiento adicional.' },
+              r_I: { cat: 'Bosniak I', risk: 'Quiste simple: pared fina (≤ 2 mm), lisa, bien definida; contenido homogéneo de atenuación/señal de líquido simple; sin septos ni calcificaciones. Riesgo de malignidad esencialmente 0%. Nota: en la versión 2019, la pared puede mostrar realce sin que esto excluya la categoría I.', recs: 'No requiere seguimiento por imagen.' },
+            },
+            reportText: (path, cat, risk, recs) => `Clasificación de Bosniak v2019:\nHallazgos: ${path}\nCategoría: ${cat}\n${risk}\n${recs}`,
+            usage: [
+              'Esta calculadora reproduce la actualización propuesta por Silverman et al. (Radiology 2019) de la clasificación de Bosniak para masas quísticas renales, que reemplaza los términos subjetivos de "realce percibido vs. medible" de la clasificación original por umbrales objetivos de grosor (mm), número de septos, y atenuación/señal.',
+              'Definiciones clave: una masa se considera "quística" cuando < 25% de su volumen corresponde a tejido que realza. "Realce" se define como un aumento inequívocamente perceptible al comparar las fases sin y con contraste con la misma técnica, o un aumento ≥ 20 UH en TC, o ≥ 15% de la intensidad de señal en RM.',
+              'Umbrales de grosor: pared/septo fino ≤ 2 mm; engrosamiento mínimo 3 mm (categoría IIF); grueso ≥ 4 mm (categoría III). Un "nódulo" es una protrusión convexa focal con márgenes agudos (de cualquier tamaño) o con márgenes obtusos ≥ 4 mm (categoría IV); una protrusión irregular ≤ 3 mm con márgenes obtusos corresponde a categoría III.',
+              'Nota de transparencia: en la versión 2019, la calcificación de cualquier morfología (incluida la gruesa o nodular) ya no eleva por sí sola la categoría, a diferencia de versiones previas de Bosniak. Además, la pared de un quiste categoría I puede mostrar realce sin que esto excluya dicha categoría, lo cual difiere de la enseñanza clásica de "quiste simple = sin realce".',
+              'Riesgos de malignidad aproximados por categoría (según la literatura acumulada citada por las fuentes verificadas): I ≈ 0%; II < 1%; IIF 0-38% (con progresión a categoría III/IV asociada a ≈85% de malignidad); III ≈ 50%; IV ≈ 90%. El manejo de las categorías III y IIF varía según la institución, el tamaño, las comorbilidades, la edad y la preferencia del paciente; se recomienda discusión multidisciplinaria en casos indeterminados. Esta calculadora no especifica un intervalo de seguimiento fijo para la categoría IIF porque las fuentes verificadas no establecen un esquema único.',
+              'Esta clasificación no aplica a lesiones de aspecto quístico de causa infecciosa, inflamatoria o vascular, ni a masas con ≥ 25% de componente sólido (que se consideran masas renales sólidas). En pacientes con síndromes hereditarios de cáncer renal (ej. von Hippel-Lindau), el manejo puede diferir del esquema estándar.',
+              'Fuente primaria: Silverman SG, Pedrosa I, Ellis JH, et al. Bosniak Classification of Cystic Renal Masses, Version 2019: An Update Proposal and Needs Assessment. Radiology. 2019;292(2):475-488. Contrastado también contra The Radiology Assistant (radiologyassistant.nl), que reproduce la misma tabla de criterios; ambas fuentes fueron consultadas para esta calculadora.',
             ],
           },
           ntmBcd: {
@@ -1420,16 +1645,27 @@
           },
           mriFf: {
             title: 'MRI Fat Fraction (Dixon)',
-            inPhase: 'In-Phase Signal',
-            outPhase: 'Out-of-Phase Signal',
+            methodLabel: 'Method',
+            methodFf: 'Fat fraction (single dual-echo, same excitation)',
+            methodPct: 'Fat percentage (echoes acquired separately — spleen-normalized)',
+            inPhase: 'Liver In-Phase Signal',
+            outPhase: 'Liver Out-of-Phase Signal',
             inPh: 'E.g.: 450', outPh: 'E.g.: 380',
+            spleenInPhase: 'Spleen In-Phase Signal',
+            spleenOutPhase: 'Spleen Out-of-Phase Signal',
+            spleenInPh: 'E.g.: 500', spleenOutPh: 'E.g.: 490',
             estimated: 'Estimated Fat Fraction',
+            estimatedPct: 'Estimated Fat Percentage',
             reportText: (ff, sIn, sOut) =>
               `MRI fat fraction (Dixon/phase-inversion): ${ff}%. (In-phase: ${sIn}, Out-of-phase: ${sOut}).`,
+            reportTextPct: (fp, sIn, sOut, spIn, spOut) =>
+              `MRI hepatic fat percentage, spleen-normalized (Ma et al. 2009): ${fp}%. (Liver in-phase: ${sIn}, out-of-phase: ${sOut}; Spleen in-phase: ${spIn}, out-of-phase: ${spOut}).`,
             usage: [
-              'Fat fraction (%) = (In-phase signal − Out-of-phase signal) / (2 × In-phase signal) × 100. Based on fat/water signal cancellation on chemical-shift (Dixon) sequences.',
-              'Useful for quantifying hepatic steatosis (>5-6% suggests steatosis) and for characterizing lesions with microscopic fat content (e.g., adrenal adenoma, hepatocellular adenoma).',
-              'Limitation: the simple dual-echo technique overestimates fat in livers with high fat content due to T2* effects and is less accurate than multi-echo proton density fat fraction (PDFF).',
+              'Fat fraction (%) = (In-phase signal − Out-of-phase signal) / (2 × In-phase signal) × 100. Based on fat/water signal cancellation on chemical-shift (Dixon) sequences. Useful when both echoes are acquired within a single excitation (simple dual-echo).',
+              'Alternative method — spleen-normalized fat percentage (Ma et al., RadioGraphics 2009): Percentage (%) = 100 × [(Liver SI-IP/Spleen SI-IP) − (Liver SI-OP/Spleen SI-OP)] / (2 × Liver SI-IP/Spleen SI-IP). Normalizing hepatic signal against splenic signal at each phase compensates for T2* differences between acquisitions when the in-phase and out-of-phase images are obtained on separate sequences/excitations (not a single dual-echo acquisition); the spleen is used as a fat-free reference tissue.',
+              'Both formulas are useful for quantifying hepatic steatosis (>5-6% suggests steatosis) and for characterizing lesions with microscopic fat content (e.g., adrenal adenoma, hepatocellular adenoma).',
+              'Limitation: the simple dual-echo technique (either method) overestimates fat in livers with high fat content due to T2* effects and is less accurate than multi-echo proton density fat fraction (PDFF).',
+              'Transparency note: at the user\'s request, we investigated whether an equivalent, evidence-based correction using SKELETAL MUSCLE signal (instead of spleen) exists for this MRI formula. No published equivalent muscle-based correction formula for MRI was found in the literature reviewed (including the reference calculator by Phillip Cheng, MD, at pcheng.org/calc/hepatic_fat_mri.html, and the Ma et al. 2009 review); the liver-to-muscle (or liver-to-spleen) Hounsfield-unit ratio is an established method for steatosis on CT, but no validated MRI equivalent was identified. For that reason, this calculator only incorporates the spleen-based correction.',
             ],
           },
           adrenalCt: {
@@ -1889,9 +2125,9 @@
               { key: 'P1', label: 'P1: Agatston 1-100 (mild)' },
               { key: 'P2', label: 'P2: Agatston 101-300 (moderate)' },
               { key: 'P3', label: 'P3: Agatston 301-999 (severe)' },
-              { key: 'P4', label: 'P4: Agatston ≥ 1000 (extensive)' },
+              { key: 'P4', label: 'P4: Agatston > 1000 (extensive)' },
             ],
-            pCaveat: 'Transparency note: the exact Agatston ranges per P band were reconstructed from secondary sources and could not be re-verified word-for-word against the primary text (access-restricted). Confirm them against the official CAD-RADS 2.0 document before strict clinical use.',
+            pCaveat: 'Agatston (CAC) ranges verified against Table 2 of the CAD-RADS 2.0 consensus document. The same document accepts the Segment Involvement Score (SIS: P1 ≤ 2, P2 3-4, P3 5-7, P4 ≥ 8) or visual assessment (P1: 1-2 vessels with mild plaque; P2: 1-2 vessels with moderate plaque or 3 vessels with mild plaque; P3: 3 vessels with moderate plaque or 1 vessel with severe plaque; P4: 2-3 vessels with severe plaque) as alternative methods — there is no single recommended method; use whichever is most appropriate at your institution. If categories differ between methods, prioritize CAC (Agatston) or total plaque burden quantification, if available. Note: CAD-RADS 0 implies absence of plaque, so a P0 category does not exist.',
             resultLabel: 'CAD-RADS result',
             reportText: (cadrads, mods) =>
               `CAD-RADS 2.0:\nCategory: ${cadrads}${mods ? '/' + mods : ''}`,
@@ -1985,20 +2221,121 @@
             resultLabel: 'Lung-RADS category',
             managementLabel: 'Recommended management',
             prevalenceLabel: 'Estimated population prevalence',
+            history: 'History',
+            undo: 'Go back',
+            pathLabel: 'Algorithm path',
+            changeType: 'Change finding type / reset',
+            sizePh: 'e.g. 7',
+            mmLabel: 'mm',
+            notClassifiedTitle: 'Typical thin-walled cyst — not classified in Lung-RADS',
+            notClassifiedDesc: 'A unilocular cyst with a uniform wall < 2 mm is considered benign and, by definition, is not classified or managed within Lung-RADS v2022.',
+            upgrade4XLabel: 'Are there additional features that increase suspicion for lung cancer? (e.g., spiculation, lymphadenopathy, frank metastatic disease, or a ground-glass nodule that doubles in size within 1 year)',
             categories: [
               { key: '0', label: 'Category 0 — Incomplete', desc: 'Prior chest CT being located for comparison; part or all of the lungs not evaluable; findings suggestive of an inflammatory or infectious process.', mgmt: 'Comparison to prior CT; additional lung cancer screening CT if needed; 1-3 month low-dose CT if infection/inflammation is suspected.', prevalence: '≈ 1%' },
               { key: '1', label: 'Category 1 — Negative', desc: 'No lung nodules; or nodule with benign calcification (complete, central, popcorn, or concentric ring); or fat-containing nodule.', mgmt: '12-month screening CT.', prevalence: '39%' },
-              { key: '2', label: 'Category 2 — Benign', desc: 'Juxtapleural nodule < 10 mm with typical morphology (solid, smooth margins, oval/lentiform/triangular shape); solid < 6 mm (new < 4 mm); part-solid < 6 mm total mean diameter; pure ground-glass < 30 mm (or ≥ 30 mm if stable/slowly growing); subsegmental endobronchial nodule.', mgmt: '12-month screening CT.', prevalence: '45%' },
-              { key: '3', label: 'Category 3 — Probably benign', desc: 'Solid 6 to < 8 mm (new 4 to < 6 mm); part-solid ≥ 6 mm total with solid component < 6 mm (baseline), or new < 6 mm total; pure ground-glass ≥ 30 mm (baseline or new); atypical thick-walled cyst with a growing cystic component.', mgmt: '6-month low-dose CT.', prevalence: '9%' },
+              { key: '2', label: 'Category 2 — Benign', desc: 'Juxtapleural nodule < 10 mm with typical morphology (solid, smooth margins, oval/lentiform/triangular shape); solid < 6 mm (new < 4 mm); part-solid < 6 mm total mean diameter; pure ground-glass < 30 mm (or ≥ 30 mm if stable/slowly growing); subsegmental endobronchial nodule; category 3 stable/decreasing at 6 months; or category 4B proven benign after diagnostic work-up.', mgmt: '12-month screening CT.', prevalence: '45%' },
+              { key: '3', label: 'Category 3 — Probably benign', desc: 'Solid 6 to < 8 mm (new 4 to < 6 mm); part-solid ≥ 6 mm total with solid component < 6 mm (baseline), or new < 6 mm total; pure ground-glass ≥ 30 mm (baseline or new); atypical thick-walled cyst with a growing cystic component; or category 4A stable/decreasing at 3 months (excludes airway nodules).', mgmt: '6-month low-dose CT.', prevalence: '9%' },
               { key: '4A', label: 'Category 4A — Suspicious', desc: 'Solid 8 to < 15 mm (baseline), growing < 8 mm, or new 6 to < 8 mm; part-solid ≥ 6 mm total with solid component 6 to < 8 mm (baseline), or new/growing solid component < 4 mm; segmental or more proximal endobronchial nodule (baseline); atypical thick-walled cyst, multilocular cyst (baseline), or thin/thick-walled cyst that becomes multilocular.', mgmt: '3-month low-dose CT; consider PET/CT if a solid nodule/component ≥ 8 mm is present.', prevalence: '4%' },
               { key: '4B', label: 'Category 4B — Very suspicious', desc: 'Segmental or more proximal endobronchial nodule, stable or growing; solid ≥ 15 mm (baseline), or new/growing ≥ 8 mm; part-solid with solid component ≥ 8 mm (baseline), or new/growing ≥ 4 mm; atypical cyst with growing wall thickness/nodularity, growing multilocular cyst, or increased loculation/new opacity; slow-growing solid or part-solid nodule with growth demonstrated over multiple screening exams.', mgmt: 'Referral for further clinical evaluation; diagnostic chest CT with or without contrast; consider PET/CT if a solid nodule/component ≥ 8 mm is present; tissue sampling as appropriate. Management depends on clinical evaluation, patient preference, and probability of malignancy.', prevalence: '2%' },
               { key: '4X', label: 'Category 4X — Category 3 or 4 with additional features', desc: 'Category 3 or 4 nodule with additional features or imaging findings that increase suspicion for lung cancer (e.g., spiculation, lymphadenopathy, frank metastatic disease, or a ground-glass nodule that doubles in size within 1 year). A distinct category; "X" should not be used as a modifier.', mgmt: 'Managed the same as category 4B (further clinical evaluation, diagnostic workup, tissue sampling as appropriate).', prevalence: '< 1%' },
             ],
             sLabel: '"S" modifier — clinically significant or potentially significant finding unrelated to lung cancer (e.g., coronary calcium, aortic aneurysm) — population prevalence ≈ 10%',
-            reportText: (cat, label, mgmt, sMod) => `Lung-RADS v2022:\nCategory: ${cat}${sMod ? 'S' : ''}\n${label}\nManagement: ${mgmt}`,
+            reportText: (cat, label, mgmt, sMod, path) => `Lung-RADS v2022:\nCategory: ${cat}${sMod ? 'S' : ''}\n${label}\nManagement: ${mgmt}${path ? '\nPath: ' + path : ''}`,
+            wizard: {
+              start: { q: 'What finding predominates in this exam? (assess the most suspicious one if there are multiple nodules)', options: [
+                { label: 'No lung nodules', next: 'leaf_none' },
+                { label: 'Incomplete study, pending comparison with prior CT, or a finding suggestive of an infectious/inflammatory process', next: 'leaf_incomplete' },
+                { label: 'Nodule with benign calcification (complete, central, popcorn, or concentric ring) or fat-containing nodule', next: 'leaf_benignCalc' },
+                { label: 'Solid nodule', next: 'solidContext' },
+                { label: 'Part-solid nodule', next: 'partSolidIsNew' },
+                { label: 'Non-solid nodule (pure ground-glass)', next: 'ggnSize' },
+                { label: 'Juxtapleural nodule', next: 'juxtaCriteria' },
+                { label: 'Endobronchial (airway) nodule', next: 'airwayLevel' },
+                { label: 'Atypical pulmonary cyst', next: 'cystWall' },
+                { label: 'Category 3 nodule that remains stable or decreases in size at the 6-month follow-up', next: 'leaf_reclass2' },
+                { label: 'Category 4A nodule that remains stable or decreases in size at the 3-month follow-up (excludes airway nodules)', next: 'leaf_reclass3' },
+                { label: 'Category 4B nodule proven benign after appropriate diagnostic work-up', next: 'leaf_reclass2b' },
+              ]},
+              nodes: {
+                solidContext: { q: 'Context of the solid nodule:', options: [
+                  { label: 'Baseline (first detection), or stable/without significant change on follow-up', next: 'solidBaselineSize' },
+                  { label: 'New (not seen on a prior study)', next: 'solidNewSize' },
+                  { label: 'On follow-up: has grown ≥ 1.5 mm mean diameter within a 12-month interval', next: 'solidGrowingSize' },
+                  { label: 'Has shown slow growth across multiple screening exams, without meeting the ≥ 1.5 mm threshold in a single 12-month interval', next: 'leaf_solidSlow_4B' },
+                ]},
+                solidBaselineSize: { q: 'Mean diameter of the solid nodule (baseline/stable):', numeric: true, branches: [{ lt: 6, next: 'leaf_solidBase_2' }, { lt: 8, next: 'leaf_solidBase_3' }, { lt: 15, next: 'leaf_solidBase_4A' }, { next: 'leaf_solidBase_4B' }] },
+                solidNewSize: { q: 'Mean diameter of the new solid nodule:', numeric: true, branches: [{ lt: 4, next: 'leaf_solidNew_2' }, { lt: 6, next: 'leaf_solidNew_3' }, { lt: 8, next: 'leaf_solidNew_4A' }, { next: 'leaf_solidNew_4B' }] },
+                solidGrowingSize: { q: 'CURRENT mean diameter of the growing solid nodule:', numeric: true, branches: [{ lt: 8, next: 'leaf_solidGrow_4A' }, { next: 'leaf_solidGrow_4B' }] },
+                partSolidIsNew: { q: 'Is the part-solid nodule new (not seen on a prior study)?', options: [
+                  { label: 'Yes, it is new', next: 'partSolidNewTotalSize' },
+                  { label: 'No, it is an already known finding (baseline or on follow-up)', next: 'partSolidComponentChange' },
+                ]},
+                partSolidNewTotalSize: { q: 'TOTAL mean diameter of the new nodule:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidNew_3' }, { next: 'partSolidNewSolidSize' }] },
+                partSolidNewSolidSize: { q: 'Mean diameter of the SOLID COMPONENT:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidNew_3b' }, { lt: 8, next: 'leaf_partSolidNew_4A' }, { next: 'leaf_partSolidNew_4B' }] },
+                partSolidComponentChange: { q: 'Is the solid component new, or has it grown ≥ 1.5 mm within a 12-month interval compared to a prior study?', options: [
+                  { label: 'Yes, the solid component is new or has grown ≥ 1.5 mm in 12 months', next: 'partSolidNewGrowingCompSize' },
+                  { label: 'No, the solid component is stable', next: 'partSolidTotalSize' },
+                  { label: 'Has shown slow growth across multiple exams, without meeting the 12-month threshold', next: 'leaf_partSolidSlow_4B' },
+                ]},
+                partSolidNewGrowingCompSize: { q: 'Mean diameter of the new/growing solid component:', numeric: true, branches: [{ lt: 4, next: 'leaf_partSolidChg_4A' }, { next: 'leaf_partSolidChg_4B' }] },
+                partSolidTotalSize: { q: 'TOTAL mean diameter of the nodule:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidStable_2' }, { next: 'partSolidCompSize' }] },
+                partSolidCompSize: { q: 'Mean diameter of the solid component:', numeric: true, branches: [{ lt: 6, next: 'leaf_partSolidStable_3' }, { lt: 8, next: 'leaf_partSolidStable_4A' }, { next: 'leaf_partSolidStable_4B' }] },
+                ggnSize: { q: 'Mean diameter of the pure ground-glass nodule:', numeric: true, branches: [{ lt: 30, next: 'leaf_ggn_2' }, { next: 'ggnGrowth' }] },
+                ggnGrowth: { q: 'Is it a new finding, baseline at this size, or did it grow ≥ 1.5 mm within a 12-month interval?', options: [
+                  { label: 'Yes (new, baseline at this size, or grew ≥ 1.5 mm in 12 months)', next: 'leaf_ggn_3' },
+                  { label: 'No — it is slow-growing and does not meet that threshold in any 12-month interval', next: 'leaf_ggn_2b' },
+                ]},
+                juxtaCriteria: { q: 'Does it meet ALL of these criteria: < 10 mm mean diameter, solid, smooth margins, and oval/lentiform/triangular shape?', options: [
+                  { label: 'Yes, it meets all of them', next: 'leaf_juxta_2' },
+                  { label: 'No — evaluate it as a conventional solid nodule', next: 'solidContext' },
+                ]},
+                airwayLevel: { q: 'Level of the endobronchial nodule:', options: [
+                  { label: 'Subsegmental', next: 'leaf_airway_2' },
+                  { label: 'Segmental or more proximal', next: 'airwayBehavior' },
+                ]},
+                airwayBehavior: { q: 'Is it a baseline finding (first detection), or does it persist/grow on a 3-month follow-up?', options: [
+                  { label: 'Baseline (first detection)', next: 'leaf_airway_4A' },
+                  { label: 'Persists or grows on the 3-month follow-up', next: 'leaf_airway_4B' },
+                ]},
+                cystWall: { q: 'Cyst wall thickness and characteristics:', options: [
+                  { label: 'Thin, uniform, < 2 mm (typical cyst)', next: 'leaf_cyst_notClassified' },
+                  { label: 'Thick (≥ 2 mm): uniform, asymmetric, or with wall nodularity', next: 'cystLocularity' },
+                ]},
+                cystLocularity: { q: 'Is it unilocular or multilocular?', options: [
+                  { label: 'Unilocular', next: 'cystUniBehavior' },
+                  { label: 'Multilocular (internal septations)', next: 'cystMultiBehavior' },
+                ]},
+                cystUniBehavior: { q: 'Behavior of the thick-walled unilocular cyst:', options: [
+                  { label: 'Baseline finding, or stable/unchanged', next: 'leaf_cystUni_4A' },
+                  { label: 'The cystic component has grown (mean diameter) compared to a prior study', next: 'leaf_cystUni_3' },
+                  { label: 'The wall has increased in thickness or nodularity', next: 'leaf_cystUni_4B' },
+                ]},
+                cystMultiBehavior: { q: 'Behavior of the multilocular cyst:', options: [
+                  { label: 'Baseline finding (multilocular from the start, or a thin/thick-walled cyst that becomes multilocular)', next: 'leaf_cystMulti_4A' },
+                  { label: 'The multilocular cyst has grown (mean diameter)', next: 'leaf_cystMulti_4B' },
+                  { label: 'The number of loculations increased, or a new/larger internal opacity appeared (nodular, ground-glass, or consolidation)', next: 'leaf_cystMulti_4B_2' },
+                ]},
+                leaf_none: { cat: '1' }, leaf_incomplete: { cat: '0' }, leaf_benignCalc: { cat: '1' },
+                leaf_solidBase_2: { cat: '2' }, leaf_solidBase_3: { cat: '3' }, leaf_solidBase_4A: { cat: '4A' }, leaf_solidBase_4B: { cat: '4B' },
+                leaf_solidNew_2: { cat: '2' }, leaf_solidNew_3: { cat: '3' }, leaf_solidNew_4A: { cat: '4A' }, leaf_solidNew_4B: { cat: '4B' },
+                leaf_solidGrow_4A: { cat: '4A' }, leaf_solidGrow_4B: { cat: '4B' }, leaf_solidSlow_4B: { cat: '4B' },
+                leaf_partSolidNew_3: { cat: '3' }, leaf_partSolidNew_3b: { cat: '3' }, leaf_partSolidNew_4A: { cat: '4A' }, leaf_partSolidNew_4B: { cat: '4B' },
+                leaf_partSolidChg_4A: { cat: '4A' }, leaf_partSolidChg_4B: { cat: '4B' }, leaf_partSolidSlow_4B: { cat: '4B' },
+                leaf_partSolidStable_2: { cat: '2' }, leaf_partSolidStable_3: { cat: '3' }, leaf_partSolidStable_4A: { cat: '4A' }, leaf_partSolidStable_4B: { cat: '4B' },
+                leaf_ggn_2: { cat: '2' }, leaf_ggn_2b: { cat: '2' }, leaf_ggn_3: { cat: '3' },
+                leaf_juxta_2: { cat: '2' },
+                leaf_airway_2: { cat: '2' }, leaf_airway_4A: { cat: '4A' }, leaf_airway_4B: { cat: '4B' },
+                leaf_cyst_notClassified: { cat: 'notClassified' },
+                leaf_cystUni_4A: { cat: '4A' }, leaf_cystUni_3: { cat: '3' }, leaf_cystUni_4B: { cat: '4B' },
+                leaf_cystMulti_4A: { cat: '4A' }, leaf_cystMulti_4B: { cat: '4B' }, leaf_cystMulti_4B_2: { cat: '4B' },
+                leaf_reclass2: { cat: '2' }, leaf_reclass3: { cat: '3' }, leaf_reclass2b: { cat: '2' },
+              },
+            },
             usage: [
               'Lung-RADS applies exclusively to nodules detected within a low-dose CT screening program (not to incidental nodules outside screening, where Fleischner is used).',
-              'Management is based on the highest category found among all nodules in the study. The "S" modifier is added when there is a clinically significant non-pulmonary incidental finding.',
+              'The step-by-step algorithm verbatim-reproduces the per-nodule-type criteria (solid, part-solid, non-solid/ground-glass, juxtapleural, endobronchial, and atypical cyst) from the official ACR Lung-RADS® v2022 document, including the growth definition (> 1.5 mm mean diameter within a 12-month interval) and the special rule for slow-growing nodules across multiple exams (category 4B even if the 12-month threshold is not met).',
+              'Management is based on the highest category found among all nodules in the study. The "S" modifier is added when there is a clinically significant non-pulmonary incidental finding. Category 4X (a category 3 or 4 nodule with additional features such as spiculation, lymphadenopathy, frank metastatic disease, or a ground-glass nodule that doubles in size within 1 year) is offered as an additional toggle at the end of the algorithm, since it requires radiologic judgment rather than a single numeric threshold.',
+              'A unilocular cyst with a uniform thin wall (< 2 mm) is considered benign and is not classified within Lung-RADS.',
               'Prevalence figures correspond to the estimated population prevalence of each category as reported in the official ACR Lung-RADS v2022 document (not the malignancy risk of an individual nodule).',
               'Criteria verbatim-verified against the official ACR Lung-RADS® v2022 document (release date: November 2022) provided by the user.',
             ],
@@ -2063,47 +2400,160 @@
           },
           lungCysts: {
             title: 'Cystic Lung Disease (Algorithm)',
-            start: { q: 'What is the predominant distribution of the cysts on CT?', options: [
-              { label: 'Subpleural (paraseptal), lower-lung predominant', next: 'subpleural' },
-              { label: 'Diffuse, throughout the lungs, round/oval shape, thin wall', next: 'diffuse' },
-              { label: 'Isolated/few, no other associated findings', next: 'isolated' },
-              { label: 'Multiple, with associated nodules', next: 'withNodules' },
-              { label: 'Multiple, with associated ground-glass opacity', next: 'withGgo' },
+            history: 'History',
+            undo: 'Go back',
+            recommendation: 'Recommendation',
+            start: { q: 'Step 1: Are these true cysts (thin wall < 2 mm, well-defined) or a cyst mimicker?', options: [
+              { label: 'True cysts: thin wall (< 2 mm), well-defined interface with normal lung', next: 'distribution' },
+              { label: 'Could be a mimicker: thick wall, no defined wall, or tubular structures', next: 'mimicType' },
             ]},
             nodes: {
-              subpleural: { q: 'Additional features:', options: [
-                { label: 'Thin-walled cysts, apex/base predominance per pattern', next: 'r_emphysemaHoneycomb' },
-                { label: 'Elliptical/lentiform paramediastinal cysts, lower-lung predominant, ± family history', next: 'r_bhd' },
+              mimicType: { q: 'Which best describes the finding?', options: [
+                { label: 'Air-containing space with a wall > 4 mm, within a consolidation, mass, or nodule', next: 'r_cavity' },
+                { label: 'Centrilobular lucencies without a defined wall, ≤ 1 cm, upper-lobe predominant, ± "central dot" (arterial branch)', next: 'r_centrilobularEmphysema' },
+                { label: 'Non-tapering tubular structures, paralleling the bronchovascular bundle, dilated bronchus ≥ 1.5× the diameter of the adjacent pulmonary artery', next: 'r_cysticBronchiectasis' },
               ]},
-              diffuse: { q: 'Sex and clinical context?', options: [
-                { label: 'Female, ± tuberous sclerosis, ± chylothorax/angiomyolipomas', next: 'r_lam' },
-                { label: 'Other context (less typical for LAM)', next: 'r_indeterminateDiffuse' },
+              distribution: { q: 'Step 2: Predominant distribution of the true cysts?', options: [
+                { label: 'Subpleural', next: 'subpleuralType' },
+                { label: 'Intraparenchymal (not predominantly subpleural)', next: 'assocFindings' },
               ]},
-              isolated: { cat: 'r_isolated' },
-              withNodules: { q: 'Type of associated nodules:', options: [
-                { label: 'Centrilobular/peribronchovascular nodules, autoimmune context (Sjögren, etc.)', next: 'r_lip' },
-                { label: 'Irregular/cavitated nodules, upper-lobe predominant, spares costophrenic angles, active smoker', next: 'r_plch' },
+              subpleuralType: { q: 'Features:', options: [
+                { label: 'Single rounded focus ≥ 1 cm, nearly imperceptible wall, asymptomatic patient', next: 'r_bulla' },
+                { label: 'Multiple, discrete, dorsal-surface predominant, bounded by pleura/septa, accompanying centrilobular emphysema', next: 'r_paraseptal' },
+                { label: 'Uniform diameter (3-10 mm), clustered, thicker walls (1-3 mm or more), architectural distortion and reticulation', next: 'r_honeycombing' },
               ]},
-              withGgo: { q: 'Clinical context:', options: [
-                { label: 'Immunosuppression (HIV, transplant, etc.), "crazy-paving" ground-glass', next: 'r_pjp' },
-                { label: 'Active smoker, basal/subpleural ground-glass', next: 'r_dip' },
+              assocFindings: { q: 'Step 3: Are there other associated findings on HRCT?', options: [
+                { label: 'None (cysts without other findings)', next: 'soloOrMulti' },
+                { label: 'Associated nodules', next: 'nodulesType' },
+                { label: 'Associated ground-glass opacity', next: 'ggoType' },
+              ]},
+              soloOrMulti: { q: 'Solitary/incidental or multifocal/diffuse?', options: [
+                { label: 'Solitary or incidental', next: 'solitaryType' },
+                { label: 'Multifocal or diffuse', next: 'multifocalType' },
+              ]},
+              solitaryType: { q: 'Features:', options: [
+                { label: 'Average size ~10 mm, asymptomatic, no relevant history', next: 'r_incidentalCyst' },
+                { label: 'Thin-walled, transient, history of acute pneumonia/trauma/hydrocarbon aspiration', next: 'r_pneumatocele' },
+                { label: 'Well-defined margins, water or soft-tissue attenuation if fluid-filled, mediastinal or lower-lobe location', next: 'r_bronchogenicCyst' },
+              ]},
+              multifocalType: { q: 'Step 3 (multifocal/diffuse): most specific pattern:', options: [
+                { label: 'Thin-walled in > 80% of cases, base and paramediastinal predominant, elongated shape hugging pulmonary veins, ± cutaneous fibrofolliculomas/family history/renal cancer', next: 'r_bhd' },
+                { label: 'Numerous, rounded, thin-walled, evenly diffuse distribution (includes pleural recesses), woman of childbearing age, ± pneumothorax/chylothorax/renal angiomyolipomas', next: 'r_lam' },
+                { label: 'Nodules progressing to thin/thick-walled cysts, history of laryngeal papillomas and tracheostomy', next: 'r_papillomatosis' },
+                { label: 'Irregular nodules cavitating into bizarre-shaped cysts, upper/mid-lobe predominant, spares costophrenic angles, active smoker 20-40 years', next: 'r_plchMultifocal' },
+                { label: 'Thin-walled, random distribution, few in number, < 30 mm, < 10% of parenchyma, autoimmune context (Sjögren)', next: 'r_lipMultifocal' },
+                { label: 'Peripheral/basal distribution, lentiform shape, history of sarcoma or squamous cell carcinoma (head/neck)', next: 'r_metastatic' },
+                { label: 'Infectious context (HIV/immunosuppression, mycobacteria, fungi, parasites)', next: 'r_infection' },
+              ]},
+              nodulesType: { q: 'Step 4 (cysts + nodules): nodule features:', options: [
+                { label: 'Ill-defined centrilobular ground-glass nodules, more profuse subpleurally, autoimmune context (Sjögren)', next: 'r_lipNodules' },
+                { label: 'Irregular, multiple, uni- or bilateral, monoclonal gammopathy/myeloma', next: 'r_lcdd' },
+                { label: 'Smooth, lobulated, 0.5-15 cm, ± central cavitation or calcification, lower-lobe/subpleural predominant', next: 'r_amyloid' },
+                { label: 'Irregular, sometimes cavitated (nodule with a cavitated center, "cheerio sign"), upper/mid-lobe predominant, spares costophrenic angles, active smoker', next: 'r_plchNodules' },
+              ]},
+              ggoType: { q: 'Step 5 (cysts + ground-glass): clinical context:', options: [
+                { label: 'Immunosuppression (HIV CD4 < 200, transplant), diffuse ground-glass, subacute fever/dyspnea', next: 'r_pjp' },
+                { label: 'Active smoker, few small cysts within ground-glass, basal/subpleural predominant', next: 'r_dip' },
               ]},
             },
             results: {
-              r_emphysemaHoneycomb: { cat: 'Differential diagnosis', risk: 'Centrilobular/paraseptal emphysema, bulla, or honeycombing (pulmonary fibrosis)', recs: 'Correlate with smoking history (emphysema) or fibrosis pattern (honeycombing: clustered, thick-walled cysts with architectural distortion).' },
-              r_bhd: { cat: 'Differential diagnosis', risk: 'Birt-Hogg-Dubé syndrome', recs: 'Consider genetic testing (FLCN) and evaluation for associated renal/skin lesions if clinically suspected or family history present.' },
-              r_lam: { cat: 'Differential diagnosis', risk: 'Lymphangioleiomyomatosis (LAM) / tuberous sclerosis', recs: 'Correlate with serum VEGF-D, renal angiomyolipomas, chylothorax; consider biopsy if the picture is not characteristic.' },
-              r_indeterminateDiffuse: { cat: 'Differential diagnosis', risk: 'Indeterminate (consider LAM, BHD, rarer causes)', recs: 'Requires further clinical correlation; consider excluding LAM and BHD before concluding.' },
-              r_isolated: { cat: 'Differential diagnosis', risk: 'Age-related incidental finding, old pneumatocele, or bronchogenic cyst', recs: 'Generally without pathologic significance if stable; correlate with prior studies if available.' },
-              r_lip: { cat: 'Differential diagnosis', risk: 'Lymphocytic interstitial pneumonia (LIP), amyloidosis, or light-chain deposition disease', recs: 'Correlate with autoimmune disease (Sjögren syndrome is the most frequent association) or monoclonal gammopathy.' },
-              r_plch: { cat: 'Differential diagnosis', risk: 'Pulmonary Langerhans cell histiocytosis (PLCH)', recs: 'Strongly associated with active smoking; smoking cessation is the main intervention.' },
-              r_pjp: { cat: 'Differential diagnosis', risk: 'Pneumocystis jirovecii pneumonia (PJP)', recs: 'Correlate with immune status and targeted microbiologic workup.' },
-              r_dip: { cat: 'Differential diagnosis', risk: 'Desquamative interstitial pneumonia (DIP)', recs: 'Strongly associated with active smoking; consider biopsy if the diagnosis is not clinically clear.' },
+              r_cavity: { cat: 'Cavity (cyst mimicker)', risk: 'Air-containing space within a consolidation, mass, or nodule, with a wall > 4 mm thick. Not a true cyst.', recs: 'Correlate with necrotizing infection, tuberculosis, cavitary carcinoma (more common in upper lobes), or septic emboli. A cavity wall can thin via a check-valve mechanism, giving the false impression of a true cyst.' },
+              r_centrilobularEmphysema: { cat: 'Centrilobular emphysema (cyst mimicker)', risk: 'Centrilobular lucencies without a defined wall, ≤ 1 cm, with a predilection for upper lobes; many show a "central dot" (branch of the pulmonary artery). Not a true cyst.', recs: 'Correlate with smoking history and an obstructive pattern on pulmonary function tests.' },
+              r_cysticBronchiectasis: { cat: 'Cystic bronchiectasis (cyst mimicker)', risk: 'Non-tapering tubular structures coursing peripherally to within 1 cm of the pleura, with a dilated bronchus usually ≥ 1.5× the diameter of the adjacent pulmonary artery. Not a true cyst.', recs: 'Coronal reconstructions or sequential axial images show their tubular continuity, distinguishing them from true cysts. Correlate with recurrent respiratory infections and an obstructive/mixed pattern on pulmonary function tests.' },
+              r_bulla: { cat: 'Bulla', risk: 'Rounded focal lucency ≥ 1 cm, bounded by a nearly imperceptible thin wall; may form by coalescence of paraseptal emphysema cysts.', recs: 'Usually asymptomatic. Can be complicated by spontaneous pneumothorax, hemoptysis, or infection if it enlarges and compresses adjacent parenchyma.' },
+              r_paraseptal: { cat: 'Paraseptal emphysema', risk: 'Discrete subpleural/peribronchovascular cysts bounded by the pleura and interlobular septa (no wall of their own), dorsal-surface predominant; underlying lung architecture preserved.', recs: 'Frequently coexists with centrilobular emphysema. Coalescence of these cysts can form bullae.' },
+              r_honeycombing: { cat: 'Honeycombing (advanced pulmonary fibrosis)', risk: 'Clustered cysts of uniform diameter (3-10 mm), subpleural predominant, with thicker walls (1-3 mm or more) that abut each other, architectural distortion, and reticulation.', recs: 'Represents advanced, irreversible fibrotic lung disease. Correlate with pulmonary function tests (restrictive pattern, low DLCO) and the overall radiologic pattern (e.g., UIP) to guide etiology.' },
+              r_incidentalCyst: { cat: 'Incidental cyst', risk: 'Uniform distribution across all lobes, average size ~10 mm. In a study of asymptomatic individuals, cysts were found in ~25% of patients > 75 years and in none < 55 years.', recs: 'Likely represents part of the normal aging process or a sequela of prior infection/trauma. Generally without pathologic significance if stable; correlate with prior studies if available.' },
+              r_pneumatocele: { cat: 'Pneumatocele', risk: 'Thin-walled, transient air space, most often caused by acute pneumonia, trauma, or aspiration of hydrocarbon fluids.', recs: 'Usually resolves spontaneously; can occasionally persist. Correlate with the clinical history and imaging follow-up to confirm resolution.' },
+              r_bronchogenicCyst: { cat: 'Bronchogenic cyst', risk: 'Arises from abnormal budding of the tracheobronchial tree. Most often a mediastinal mass, but presents as a lower-lobe intraparenchymal mass in about one-third of cases; usually fluid-filled (water or soft-tissue attenuation). Air-filled cysts are uncommon.', recs: 'Usually asymptomatic; may show an air-fluid level if superinfected. Consider in the differential of a well-defined solitary cystic mass, especially paramediastinal.' },
+              r_bhd: { cat: 'Birt-Hogg-Dubé syndrome (BHD)', risk: 'Thin-walled cysts in > 80% of patients, predominant in peripheral zones, bases, and along the mediastinum; characteristically elongated, abutting or encasing the proximal portion of the pulmonary veins. Spontaneous pneumothorax in ~24% (high recurrence probability). Autosomal dominant syndrome with cutaneous fibrofolliculomas and ~25% renal cancer risk.', recs: 'Confirm with skin biopsy (fibrofolliculomas) and genetic testing (FLCN gene). Evaluate for associated renal lesions if clinically suspected or family history present.' },
+              r_lam: { cat: 'Lymphangioleiomyomatosis (LAM)', risk: 'Numerous thin-walled cysts (from imperceptible up to < 4 mm), rounded, evenly and diffusely distributed throughout the lung (not sparing the costophrenic angles, unlike PLCH), with normal interstitial parenchyma. May be associated with tuberous sclerosis (TSC-LAM) or sporadic (nearly exclusive to women of childbearing age). Spontaneous pneumothorax in ~69% and chylothorax in ~23%; renal angiomyolipomas may be seen.', recs: 'Correlate with serum VEGF-D, renal angiomyolipomas, and chylothorax/chylous effusions. Biopsy (HMB-45 positive) can confirm the diagnosis if the picture is not characteristic.' },
+              r_papillomatosis: { cat: 'Tracheobronchial papillomatosis', risk: 'Small homogeneous nodules progress to thin- or thick-walled cystic lesions, randomly distributed centrally, peripherally, and occasionally subpleurally. Lung involvement typically occurs 10-12 years after diagnosis of laryngeal papillomas.', recs: 'Correlate with a history of recurrent laryngeal papillomas, prior endoscopies/resections, and tracheostomy. Reported complications include respiratory infection, sepsis, and death.' },
+              r_plchMultifocal: { cat: 'Pulmonary Langerhans cell histiocytosis (PLCH)', risk: 'Irregular nodules, initially small, that cavitate with progression into thick- or thin-walled cysts of sometimes bizarre shapes (a cavitated nodule center: "cheerio sign"). Upper/mid-lobe predominant, with relative sparing of the bases and costophrenic angles. Typical of young smokers (20-40 years).', recs: 'Strongly associated with active smoking; smoking cessation is the main intervention. Diagnosis can be made from typical HRCT findings; atypical cases require tissue confirmation (± BRAF mutation testing).' },
+              r_lipMultifocal: { cat: 'Lymphoid interstitial pneumonia (LIP)', risk: 'Thin-walled cysts, randomly distributed (± basal/perivascular predominance), usually few in number, up to 30 mm, typically involving < 10% of the parenchyma (~68% of cases).', recs: 'Strongly associated with autoimmune disease (Sjögren syndrome is the most frequent association), HIV, common variable immunodeficiency, and allogeneic hematopoietic stem cell transplant. Correlate with autoimmune serology and immune status.' },
+              r_metastatic: { cat: 'Metastatic disease with cysts/cavities', risk: 'Random distribution, peripheral/basal and subpleural predominant, often lentiform shape. Described with metastases from sarcoma, head-and-neck tumors, and other squamous cell carcinomas; adenocarcinoma metastases rarely cavitate.', recs: 'Consider with a known malignancy history, especially sarcoma or head-and-neck squamous cell carcinoma. Tissue sampling may be needed if the picture is not characteristic.' },
+              r_infection: { cat: 'Infection', risk: 'Pulmonary cysts/cavities can be seen in bacterial infections (including atypical mycobacteria and S. aureus), fungal infections (e.g., coccidioidomycosis), and parasitic infections (e.g., paragonimiasis).', recs: 'Correlate with epidemiologic context, immune status, and targeted microbiologic workup (cultures, serologies, PCR as suspected). If ground-glass predominates, consider PJP specifically.' },
+              r_lipNodules: { cat: 'Lymphoid interstitial pneumonia (LIP)', risk: 'Ill-defined centrilobular ground-glass nodules, more profuse subpleurally, together with randomly distributed thin-walled cysts; may be accompanied by bronchovascular bundle/septal thickening and lymphadenopathy.', recs: 'Strongly associated with Sjögren syndrome (the most frequent association) and other autoimmune diseases. Correlate with autoimmune serology.' },
+              r_lcdd: { cat: 'Light-chain deposition disease (LCDD)', risk: 'Irregular nodules, multiple, uni- or bilateral, associated with thin-walled, rounded cysts up to 2 cm. Occurs in middle-aged patients (mean age 67); ~75% is associated with multiple myeloma or macroglobulinemia.', recs: 'Correlate with monoclonal gammopathy workup (protein electrophoresis, free light chains) and rule out multiple myeloma. May require lung transplantation in cases with respiratory failure.' },
+              r_amyloid: { cat: 'Pulmonary amyloidosis (nodular form)', risk: 'Nodules with smooth, lobulated contours, 0.5-15 cm, slow-growing, with frequent central calcification or cavitation; lower-lobe and subpleural predominant, with thin-walled cysts and internal septa reaching the nodules.', recs: 'Frequently associated with Sjögren syndrome (with or without concomitant LIP), lymphoproliferative disease, or MALT lymphoma. Consider biopsy for tissue confirmation.' },
+              r_plchNodules: { cat: 'Pulmonary Langerhans cell histiocytosis (PLCH)', risk: 'Irregular nodules, sometimes with central cavitation ("cheerio sign"), upper/mid-lobe predominant, with relative sparing of the bases and costophrenic angles. Typical of young active smokers (20-40 years).', recs: 'Strongly associated with active smoking; smoking cessation is the main intervention. In atypical cases, consider tissue confirmation.' },
+              r_pjp: { cat: 'Pneumocystis jirovecii pneumonia (PJP)', risk: 'Extensive ground-glass opacity or air-space consolidation with a central/perihilar distribution and septal thickening; cysts occur in up to 34% of cases, multiple, upper-lobe predominant, variable in size/shape/wall thickness. Can rupture and cause pneumothorax.', recs: 'Correlate with immune status (typically HIV with CD4 < 200), subacute fever and dyspnea, low PaO2, increased D(A-a)O2 gradient, and elevated LDH. Definitive diagnosis requires targeted microbiologic workup.' },
+              r_dip: { cat: 'Desquamative interstitial pneumonia (DIP)', risk: 'Ground-glass opacity predominant in the bases and subpleural regions, with small, few, imperceptible-walled cysts located within the ground-glass (a characteristic finding, ~1/3 of cases); honeycombing is rare and architecture is preserved.', recs: 'Strongly associated with active smoking (90% of cases, more common in men 2:1); also described with inorganic particle exposure, connective tissue disease, sirolimus, and heavy marijuana use. Smoking cessation is the main intervention; consider biopsy if the diagnosis is not clinically clear.' },
             },
-            reportText: (path, risk, recs) => `Cystic lung disease (algorithm):\nFindings: ${path}\nSuggested differential diagnosis: ${risk}\n${recs}`,
+            reportText: (path, cat, risk, recs) => `Cystic lung disease (algorithm):\nFindings: ${path}\nDiagnosis: ${cat}\n${risk}\n${recs}`,
             usage: [
-              'This tree summarizes the published algorithmic approach to the differential diagnosis of diffuse cystic lung diseases, combining distribution, cyst morphology, associated findings (nodules, ground-glass), and clinical context (sex, smoking, immunosuppression).',
-              'This is a diagnostic support tool; it does not replace clinical/serologic correlation or eventual biopsy. Several entities (LAM, BHD, LIP) require confirmation with specific additional testing.',
+              'This tree reproduces the 5-step algorithm published by Raoof et al. (CHEST 2016) for the differential diagnosis of cystic lung disease: Step 1 (exclude mimickers: cavity, centrilobular emphysema, cystic bronchiectasis), Step 2 (subpleural vs. intraparenchymal), Step 3 (with or without other associated findings; solitary vs. multifocal/diffuse), Step 4 (cysts with associated nodules), and Step 5 (cysts with associated ground-glass).',
+              'Complementary practical rule ("rule of 4 and 40", Radiology Assistant): up to 4 cysts in a patient over 40 years are usually regarded as incidental; below 40 years, any cyst warrants further investigation.',
+              'Transparency note: the two cited sources differ on how they classify lymphoid interstitial pneumonia (LIP) — the Raoof et al. algorithm includes it both under the multifocal-cysts-without-other-findings branch and under the cysts-with-nodules branch (Fig. 18/27), while Radiology Assistant groups it under the ground-glass branch. This calculator follows the structure of Raoof et al. (primary source) and does not resolve this discrepancy between schemes.',
+              'This is an imaging-pattern-based diagnostic support tool; it does not replace clinical, serologic, or genetic correlation, or eventual biopsy. Several entities (LAM, BHD, LIP, amyloidosis, LCDD) require confirmation with specific additional testing, and several diseases (e.g., PLCH, LIP) can present in more than one category depending on the stage of disease.',
+            ],
+          },
+          bosniak: {
+            title: 'Bosniak Classification v2019 (Cystic Renal Masses)',
+            history: 'History',
+            undo: 'Go back',
+            recommendation: 'Management',
+            start: { q: 'Step 1: Does the enhancing soft-tissue component represent ≥ 25% of the mass volume?', options: [
+              { label: 'Yes, ≥ 25% of the mass is enhancing solid tissue', next: 'r_notApplicable' },
+              { label: 'No — it is a predominantly cystic mass (< 25% solid tissue)', next: 'nodule' },
+            ]},
+            nodes: {
+              nodule: { q: 'Step 2: Is there a nodule — a focal convex enhancing protrusion — in the wall or a septum?', options: [
+                { label: 'Yes, with acute margins relative to the wall/septum (any size)', next: 'r_IV_acute' },
+                { label: 'Yes, with obtuse margins and ≥ 4 mm', next: 'r_IV_obtuse' },
+                { label: 'There is no true nodule', next: 'wallThickIrregular' },
+              ]},
+              wallThickIrregular: { q: 'Step 3: Is the wall or septa thickened in a thick or irregular way, with enhancement?', options: [
+                { label: 'Thick: wall or septum ≥ 4 mm thick, smooth contour, enhancing', next: 'r_III_thick' },
+                { label: 'Irregular: focal or diffuse convex protrusion(s) ≤ 3 mm with obtuse margins, enhancing', next: 'r_III_irregular' },
+                { label: 'No — the wall and septa are smooth and ≤ 3 mm thick', next: 'smoothFeatures' },
+              ]},
+              smoothFeatures: { q: 'Step 4: Characteristics of the smooth wall/septa (≤ 3 mm):', options: [
+                { label: 'Smooth minimal thickening (3 mm) of the wall, or of one or more septa, enhancing', next: 'r_IIF_minimalThick' },
+                { label: 'Many (≥ 4) smooth thin (≤ 2 mm) enhancing septa, with a smooth wall', next: 'r_IIF_manySepta' },
+                { label: '(MRI) Heterogeneously hyperintense on unenhanced fat-saturated T1-weighted imaging, not meeting category III or IV criteria', next: 'r_IIF_mriHeterogeneous' },
+                { label: 'Few (1-3) thin (≤ 2 mm) septa, with or without enhancement, ± calcification of any type', next: 'r_II_fewSepta' },
+                { label: 'Thin (≤ 2 mm), smooth wall, no septa', next: 'hyperdenseCheck' },
+              ]},
+              hyperdenseCheck: { q: 'Step 5: Attenuation/signal of the mass without septa (thin wall, no significant enhancement of the contents):', options: [
+                { label: 'Noncontrast CT: homogeneous ≥ 70 HU', next: 'r_II_hyperdense70' },
+                { label: 'Renal mass protocol CT (no noncontrast phase available): homogeneous > 20 HU, nonenhancing', next: 'r_II_hyperdenseNonenhancing' },
+                { label: 'Noncontrast CT: homogeneous −9 to 20 HU', next: 'r_II_lowAtten' },
+                { label: 'Portal venous phase CT: homogeneous 21 to 30 HU', next: 'r_II_portal2130' },
+                { label: 'Too small to fully characterize (CT or MRI)', next: 'r_II_tooSmall' },
+                { label: 'MRI, unenhanced T1: homogeneously markedly hyperintense (~2.5× normal renal signal)', next: 'r_II_mriT1Hyper' },
+                { label: 'MRI, T2: homogeneous, signal similar to cerebrospinal fluid', next: 'r_II_mriT2csf' },
+                { label: 'Homogeneous simple-fluid (water) content, none of the above features', next: 'r_I' },
+              ]},
+            },
+            results: {
+              r_notApplicable: { cat: 'Not applicable — solid (non-cystic) mass', risk: 'The enhancing soft-tissue component represents ≥ 25% of the mass volume, so this is a solid (necrotic) renal mass, not a cystic mass.', recs: 'The Bosniak classification does not apply. It should be evaluated and staged as a solid renal mass.' },
+              r_IV_acute: { cat: 'Bosniak IV', risk: 'Nodule with acute margins relative to the wall or septum (focal convex enhancing protrusion, any size). Malignancy risk ≈ 90%.', recs: 'Treatment is generally recommended (usually surgical); confirm with multidisciplinary evaluation based on comorbidities and patient preference.' },
+              r_IV_obtuse: { cat: 'Bosniak IV', risk: 'Nodule with obtuse margins and ≥ 4 mm (focal convex enhancing protrusion). Malignancy risk ≈ 90%.', recs: 'Treatment is generally recommended (usually surgical); confirm with multidisciplinary evaluation based on comorbidities and patient preference.' },
+              r_III_thick: { cat: 'Bosniak III', risk: 'Thick wall or septum (≥ 4 mm), smooth contour, enhancing. Indeterminate category; malignancy risk ≈ 50%.', recs: 'Management varies between institutions (surgery, active surveillance, ablation, or biopsy) depending on size, comorbidities, age, and patient preference; multidisciplinary discussion is recommended.' },
+              r_III_irregular: { cat: 'Bosniak III', risk: 'Irregular wall or septum: focal or diffuse convex protrusion(s) ≤ 3 mm with obtuse margins, enhancing. Indeterminate category; malignancy risk ≈ 50%.', recs: 'Management varies between institutions (surgery, active surveillance, ablation, or biopsy) depending on size, comorbidities, age, and patient preference; multidisciplinary discussion is recommended.' },
+              r_IIF_minimalThick: { cat: 'Bosniak IIF', risk: 'Smooth minimal thickening (3 mm) of the wall, or of one or more septa, enhancing. Probably benign; variable malignancy risk (0-38% across series).', recs: 'Requires imaging surveillance; the specific interval and protocol vary by institution and clinical context. Progression on follow-up toward category III/IV features is a strong predictor of malignancy (≈85%).' },
+              r_IIF_manySepta: { cat: 'Bosniak IIF', risk: 'Many (≥ 4) thin (≤ 2 mm) enhancing septa, with a smooth wall. Probably benign; variable malignancy risk (0-38%).', recs: 'Requires imaging surveillance; the specific interval and protocol vary by institution and clinical context. Progression on follow-up toward category III/IV features is a strong predictor of malignancy (≈85%).' },
+              r_IIF_mriHeterogeneous: { cat: 'Bosniak IIF (MRI-specific criterion)', risk: 'Cystic mass heterogeneously hyperintense on unenhanced fat-saturated T1-weighted imaging, not meeting category III or IV criteria. This finding is particularly associated with papillary renal cell carcinoma.', recs: 'Requires imaging surveillance; the specific interval and protocol vary by institution and clinical context.' },
+              r_II_fewSepta: { cat: 'Bosniak II', risk: 'Thin (≤ 2 mm), smooth wall with few (1-3) thin (≤ 2 mm) septa, with or without perceived enhancement; may have calcification of any morphology (in the 2019 version, calcification alone, regardless of type, no longer raises the category). Malignancy risk < 1%.', recs: 'No imaging follow-up required.' },
+              r_II_hyperdense70: { cat: 'Bosniak II (hyperattenuating cyst)', risk: 'Homogeneous mass with attenuation ≥ 70 HU on noncontrast CT. Malignancy risk < 1%.', recs: 'No follow-up or additional contrast-enhanced phase required if these criteria are met.' },
+              r_II_hyperdenseNonenhancing: { cat: 'Bosniak II (hyperattenuating cyst)', risk: 'Homogeneous mass > 20 HU without enhancement on renal mass protocol CT (no noncontrast phase available for comparison). Malignancy risk < 1%.', recs: 'No further follow-up required.' },
+              r_II_lowAtten: { cat: 'Bosniak II', risk: 'Homogeneous mass −9 to 20 HU on noncontrast CT (simple-fluid attenuation). Malignancy risk < 1%.', recs: 'No further follow-up required.' },
+              r_II_portal2130: { cat: 'Bosniak II (possible pseudoenhancement)', risk: 'Homogeneous mass 21 to 30 HU on portal venous phase; this range is considered benign to avoid overclassification due to pseudoenhancement. Malignancy risk < 1%.', recs: 'No further follow-up required.' },
+              r_II_tooSmall: { cat: 'Bosniak II (too small to characterize)', risk: 'Homogeneous low-attenuation mass, too small to fully characterize by CT or MRI. Assumed benign.', recs: 'No specific additional follow-up required for this category; correlate with clinical context if there is doubt.' },
+              r_II_mriT1Hyper: { cat: 'Bosniak II (hyperattenuating cyst, MRI criterion)', risk: 'Homogeneous mass markedly hyperintense on unenhanced T1-weighted imaging (~2.5 times normal renal parenchymal signal). Malignancy risk < 1%.', recs: 'No further follow-up required.' },
+              r_II_mriT2csf: { cat: 'Bosniak II (MRI criterion)', risk: 'Homogeneous mass with T2 signal similar to cerebrospinal fluid. Malignancy risk < 1%.', recs: 'No further follow-up required.' },
+              r_I: { cat: 'Bosniak I', risk: 'Simple cyst: thin (≤ 2 mm), smooth, well-defined wall; homogeneous simple-fluid attenuation/signal content; no septa or calcifications. Malignancy risk essentially 0%. Note: in the 2019 version, the wall may show enhancement without this excluding category I.', recs: 'No imaging follow-up required.' },
+            },
+            reportText: (path, cat, risk, recs) => `Bosniak Classification v2019:\nFindings: ${path}\nCategory: ${cat}\n${risk}\n${recs}`,
+            usage: [
+              'This calculator reproduces the update proposed by Silverman et al. (Radiology 2019) to the Bosniak classification of cystic renal masses, which replaces the original classification\'s subjective "perceived vs. measurable" enhancement terminology with objective thickness (mm), septa-count, and attenuation/signal thresholds.',
+              'Key definitions: a mass is considered "cystic" when < 25% of its volume corresponds to enhancing tissue. "Enhancement" is defined as an unequivocally perceptible increase when comparing noncontrast and contrast-enhanced phases with the same technique, or an increase ≥ 20 HU at CT, or ≥ 15% signal intensity at MRI.',
+              'Thickness thresholds: thin wall/septum ≤ 2 mm; minimal thickening 3 mm (category IIF); thick ≥ 4 mm (category III). A "nodule" is a focal convex protrusion with acute margins (any size) or with obtuse margins ≥ 4 mm (category IV); an irregular protrusion ≤ 3 mm with obtuse margins corresponds to category III.',
+              'Transparency note: in the 2019 version, calcification of any morphology (including thick or nodular) no longer by itself raises the category, unlike previous versions of Bosniak. In addition, the wall of a category I cyst may show enhancement without this excluding that category, which differs from the classic teaching of "simple cyst = no enhancement."',
+              'Approximate malignancy risks by category (per the accumulated literature cited by the verified sources): I ≈ 0%; II < 1%; IIF 0-38% (with progression to category III/IV associated with ≈85% malignancy); III ≈ 50%; IV ≈ 90%. Management of categories III and IIF varies by institution, size, comorbidities, age, and patient preference; multidisciplinary discussion is recommended in indeterminate cases. This calculator does not specify a fixed follow-up interval for category IIF because the verified sources do not establish a single schedule.',
+              'This classification does not apply to cystic-appearing lesions of infectious, inflammatory, or vascular cause, or to masses with ≥ 25% solid component (considered solid renal masses). In patients with hereditary renal cancer syndromes (e.g., von Hippel-Lindau), management may differ from the standard scheme.',
+              'Primary source: Silverman SG, Pedrosa I, Ellis JH, et al. Bosniak Classification of Cystic Renal Masses, Version 2019: An Update Proposal and Needs Assessment. Radiology. 2019;292(2):475-488. Cross-checked against The Radiology Assistant (radiologyassistant.nl), which reproduces the same criteria table; both sources were consulted for this calculator.',
             ],
           },
           ntmBcd: {
@@ -2239,6 +2689,7 @@
       ],
       mriFf: [
         'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.',
+        'Ma X, Holalkere NS, Kambadakone RA, Mino-Kenudson M, Hahn PF, Sahani DV. Imaging-based quantification of hepatic fat: methods and clinical applications. RadioGraphics. 2009;29(5):1253-1277.',
       ],
       adrenalCt: [
         'Lee MJ, Hahn PF, Papanicolaou N, Egglin TK, Saini S, Mueller PR, Simeone JF. Benign and malignant adrenal masses: CT distinction with attenuation coefficients, size, and observer analysis. Radiology. 1991;179(2):415-418.',
@@ -2312,8 +2763,11 @@
       ],
       lungCysts: [
         'Raoof S, Bondalapati P, Vydyula R, et al. Cystic lung diseases: algorithmic approach. Chest. 2016;150(4):945-965.',
-        'Escalon JG, Richards JC, Kolesch T, Downey GP, Lynch DA. Isolated cystic lung disease: an algorithmic approach to distinguishing Birt-Hogg-Dubé syndrome, lymphangioleiomyomatosis, and lymphocytic interstitial pneumonia. AJR Am J Roentgenol. 2019;212:1-5.',
-        'Beddy P, Babar J, Devaraj A. A practical approach to cystic lung disease on HRCT. Insights Imaging. 2011;2:1-7.',
+        'The Radiology Assistant. Cystic Lung Disease - Differential Diagnosis. radiologyassistant.nl, Radiological Society of the Netherlands (accessed September 2026).',
+      ],
+      bosniak: [
+        'Silverman SG, Pedrosa I, Ellis JH, et al. Bosniak Classification of Cystic Renal Masses, Version 2019: An Update Proposal and Needs Assessment. Radiology. 2019;292(2):475-488.',
+        'The Radiology Assistant. Bosniak Classification 2019. radiologyassistant.nl, Radiological Society of the Netherlands (accessed September 2026).',
       ],
       ntmBcd: [
         'Hayashi M, Takishima H, Cho H, Yamaguchi F, Yokoe T, Matsukura S. Developing a simple scoring system on CT findings for predicting treatment failure in Mycobacterium avium complex pulmonary disease: the BCD (Bronchiectasis and Cavity Distribution) score. Open Forum Infect Dis. 2025;12(9):ofaf565.',
@@ -2411,30 +2865,77 @@
     function MRIFatFraction() {
       const { t, lang } = useLang();
       const c = t.calc.mriFf;
+      const [method, setMethod] = useState('ff'); // 'ff' = single dual-echo; 'pct' = spleen-normalized
       const [inPhase, setInPhase] = useState('');
       const [outPhase, setOutPhase] = useState('');
+      const [spleenIn, setSpleenIn] = useState('');
+      const [spleenOut, setSpleenOut] = useState('');
       const sIn = parseFloat(inPhase);
       const sOut = parseFloat(outPhase);
-      const isValid = !isNaN(sIn) && !isNaN(sOut) && sIn !== 0;
-      const ff = isValid ? ((sIn - sOut) / (2 * sIn)) * 100 : 0;
-      const hasAnyInput = inPhase !== '' || outPhase !== '';
+      const spIn = parseFloat(spleenIn);
+      const spOut = parseFloat(spleenOut);
+
+      const isValidFf = !isNaN(sIn) && !isNaN(sOut) && sIn !== 0;
+      const ff = isValidFf ? ((sIn - sOut) / (2 * sIn)) * 100 : 0;
+
+      const ratioIn = sIn / spIn;
+      const ratioOut = sOut / spOut;
+      const isValidPct = !isNaN(sIn) && !isNaN(sOut) && !isNaN(spIn) && !isNaN(spOut) && spIn !== 0 && spOut !== 0 && ratioIn !== 0;
+      const fp = isValidPct ? ((ratioIn - ratioOut) / (2 * ratioIn)) * 100 : 0;
+
+      const isValid = method === 'ff' ? isValidFf : isValidPct;
+      const value = method === 'ff' ? ff : fp;
+      const hasAnyInput = method === 'ff'
+        ? (inPhase !== '' || outPhase !== '')
+        : (inPhase !== '' || outPhase !== '' || spleenIn !== '' || spleenOut !== '');
 
       const handleCopy = () => {
-        const text = c.reportText(ff.toFixed(1), inPhase, outPhase);
+        const text = method === 'ff'
+          ? c.reportText(ff.toFixed(1), inPhase, outPhase)
+          : c.reportTextPct(fp.toFixed(1), inPhase, outPhase, spleenIn, spleenOut);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
 
       return (
         <div className="space-y-4 animate-in fade-in">
           <Card>
+            <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2">{c.methodLabel}</label>
+            <div className="space-y-2">
+              <button
+                onClick={() => setMethod('ff')}
+                className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${method === 'ff' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              >
+                {c.methodFf}
+              </button>
+              <button
+                onClick={() => setMethod('pct')}
+                className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${method === 'pct' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              >
+                {c.methodPct}
+              </button>
+            </div>
+          </Card>
+          <Card>
             <NumberField label={c.inPhase} placeholder={c.inPh} value={inPhase} onChange={setInPhase} />
-            <NumberField label={c.outPhase} placeholder={c.outPh} value={outPhase} onChange={setOutPhase} />
+            <div className="mt-3">
+              <NumberField label={c.outPhase} placeholder={c.outPh} value={outPhase} onChange={setOutPhase} />
+            </div>
+            {method === 'pct' && (
+              <>
+                <div className="mt-3">
+                  <NumberField label={c.spleenInPhase} placeholder={c.spleenInPh} value={spleenIn} onChange={setSpleenIn} />
+                </div>
+                <div className="mt-3">
+                  <NumberField label={c.spleenOutPhase} placeholder={c.spleenOutPh} value={spleenOut} onChange={setSpleenOut} />
+                </div>
+              </>
+            )}
           </Card>
           {hasAnyInput && (
             <Card>
               <div className="flex flex-col items-center justify-center p-4">
-                <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{c.estimated}</span>
-                <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{isValid ? ff.toFixed(1) + '%' : '—'}</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400 mb-1">{method === 'ff' ? c.estimated : c.estimatedPct}</span>
+                <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">{isValid ? value.toFixed(1) + '%' : '—'}</span>
                 {!isValid && <span className="text-xs text-slate-400 mt-2">{t.common.notEvaluated}</span>}
               </div>
               {isValid && <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>}
@@ -3969,6 +4470,178 @@
     }
 
     /* ============================================================
+       CALCULADORA: ENFERMEDAD QUÍSTICA PULMONAR (ALGORITMO)
+    ============================================================ */
+    function LungCysts() {
+      const { t, lang } = useLang();
+      const c = t.calc.lungCysts;
+      const [history, setHistory] = useState(['start']);
+      const [selectedLabels, setSelectedLabels] = useState([]);
+      const currentId = history[history.length - 1];
+      const currentNode = currentId === 'start' ? c.start : (c.nodes[currentId] || c.results[currentId]);
+      const isResult = !!currentNode.cat;
+
+      const handleSelect = (nextId, label) => {
+        setHistory([...history, nextId]);
+        setSelectedLabels([...selectedLabels, label]);
+      };
+      const handleReset = () => { setHistory(['start']); setSelectedLabels([]); };
+      const handleUndo = () => {
+        if (history.length > 1) {
+          setHistory(history.slice(0, -1));
+          setSelectedLabels(selectedLabels.slice(0, -1));
+        }
+      };
+      const handleCopy = () => {
+        if (!isResult) return;
+        const path = selectedLabels.join(' -> ');
+        const text = c.reportText(path, currentNode.cat, currentNode.risk, currentNode.recs);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 pb-4 animate-in fade-in">
+          {history.length > 1 && (
+            <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold uppercase">{c.history}</span>
+                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+              </div>
+              <ol className="list-decimal pl-4 space-y-1">
+                {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
+              </ol>
+            </div>
+          )}
+          {!isResult ? (
+            <Card>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">{currentNode.q}</h3>
+              <div className="space-y-2">
+                {currentNode.options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(opt.next, opt.label)}
+                    className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center"
+                  >
+                    <span>{opt.label}</span>
+                    <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+                  </button>
+                ))}
+              </div>
+            </Card>
+          ) : (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-blue-200 dark:border-blue-800 text-center space-y-4">
+              <div>
+                <h2 className="text-2xl font-black text-blue-600 dark:text-blue-400 mb-1">{currentNode.cat}</h2>
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 text-left">{currentNode.risk}</p>
+              </div>
+              <div className="bg-blue-50 dark:bg-slate-900 p-4 rounded-xl text-sm text-slate-700 dark:text-slate-300 text-left">
+                <span className="block font-semibold mb-1 text-blue-800 dark:text-blue-300">{c.recommendation}:</span>
+                {currentNode.recs}
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
+                  {t.common.reset}
+                </button>
+                <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                  <IconCopy size={18} /> {t.common.copy}
+                </button>
+              </div>
+            </div>
+          )}
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.lungCysts} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
+       CALCULADORA: CLASIFICACIÓN DE BOSNIAK v2019 (MASAS QUÍSTICAS RENALES)
+    ============================================================ */
+    function Bosniak() {
+      const { t, lang } = useLang();
+      const c = t.calc.bosniak;
+      const [history, setHistory] = useState(['start']);
+      const [selectedLabels, setSelectedLabels] = useState([]);
+      const currentId = history[history.length - 1];
+      const currentNode = currentId === 'start' ? c.start : (c.nodes[currentId] || c.results[currentId]);
+      const isResult = !!currentNode.cat;
+
+      const handleSelect = (nextId, label) => {
+        setHistory([...history, nextId]);
+        setSelectedLabels([...selectedLabels, label]);
+      };
+      const handleReset = () => { setHistory(['start']); setSelectedLabels([]); };
+      const handleUndo = () => {
+        if (history.length > 1) {
+          setHistory(history.slice(0, -1));
+          setSelectedLabels(selectedLabels.slice(0, -1));
+        }
+      };
+      const handleCopy = () => {
+        if (!isResult) return;
+        const path = selectedLabels.join(' -> ');
+        const text = c.reportText(path, currentNode.cat, currentNode.risk, currentNode.recs);
+        copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+      };
+
+      return (
+        <div className="space-y-4 pb-4 animate-in fade-in">
+          {history.length > 1 && (
+            <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold uppercase">{c.history}</span>
+                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
+              </div>
+              <ol className="list-decimal pl-4 space-y-1">
+                {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
+              </ol>
+            </div>
+          )}
+          {!isResult ? (
+            <Card>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">{currentNode.q}</h3>
+              <div className="space-y-2">
+                {currentNode.options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(opt.next, opt.label)}
+                    className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center"
+                  >
+                    <span>{opt.label}</span>
+                    <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+                  </button>
+                ))}
+              </div>
+            </Card>
+          ) : (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-blue-200 dark:border-blue-800 text-center space-y-4">
+              <div>
+                <h2 className="text-2xl font-black text-blue-600 dark:text-blue-400 mb-1">{currentNode.cat}</h2>
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 text-left">{currentNode.risk}</p>
+              </div>
+              <div className="bg-blue-50 dark:bg-slate-900 p-4 rounded-xl text-sm text-slate-700 dark:text-slate-300 text-left">
+                <span className="block font-semibold mb-1 text-blue-800 dark:text-blue-300">{c.recommendation}:</span>
+                {currentNode.recs}
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
+                  {t.common.reset}
+                </button>
+                <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                  <IconCopy size={18} /> {t.common.copy}
+                </button>
+              </div>
+            </div>
+          )}
+          <UsageNotes paragraphs={c.usage} />
+          <References items={REFERENCES.bosniak} />
+          <ReportBugLink calcTitle={c.title} />
+        </div>
+      );
+    }
+
+    /* ============================================================
        CALCULADORA: LUNG-RADS v2022 (TAMIZAJE)
     ============================================================ */
     function lungRadsCatColor(key) {
@@ -3981,49 +4654,145 @@
     function LungRADS() {
       const { t, lang } = useLang();
       const c = t.calc.lungRads;
-      const [catKey, setCatKey] = useState(null);
+      const w = c.wizard;
+      const [history, setHistory] = useState(['start']);
+      const [selectedLabels, setSelectedLabels] = useState([]);
+      const [numVal, setNumVal] = useState('');
       const [sMod, setSMod] = useState(false);
-      const catObj = c.categories.find(x => x.key === catKey);
+      const [upgrade4X, setUpgrade4X] = useState(false);
 
+      const currentId = history[history.length - 1];
+      const currentNode = currentId === 'start' ? w.start : w.nodes[currentId];
+      const isResult = !!currentNode.cat;
+      const isNotClassified = isResult && currentNode.cat === 'notClassified';
+      const canUpgrade4X = isResult && !isNotClassified && ['3', '4A', '4B'].includes(currentNode.cat);
+      const effectiveCat = canUpgrade4X && upgrade4X ? '4X' : currentNode.cat;
+      const effectiveCatObj = isResult && !isNotClassified ? c.categories.find(x => x.key === effectiveCat) : null;
+
+      const handleSelect = (nextId, label) => {
+        setHistory([...history, nextId]);
+        setSelectedLabels([...selectedLabels, label]);
+        setNumVal('');
+      };
+      const handleNumericSubmit = () => {
+        const val = parseFloat(String(numVal).replace(',', '.'));
+        if (isNaN(val)) return;
+        const branch = currentNode.branches.find(b => b.lt === undefined || val < b.lt);
+        if (!branch) return;
+        handleSelect(branch.next, `${currentNode.q} ${val} ${c.mmLabel}`);
+      };
+      const handleReset = () => {
+        setHistory(['start']); setSelectedLabels([]); setNumVal(''); setSMod(false); setUpgrade4X(false);
+      };
+      const handleUndo = () => {
+        if (history.length > 1) {
+          setHistory(history.slice(0, -1));
+          setSelectedLabels(selectedLabels.slice(0, -1));
+          setNumVal('');
+        }
+      };
       const handleCopy = () => {
-        if (!catObj) return;
-        const text = c.reportText(catObj.key, catObj.label, catObj.mgmt, sMod);
+        if (!isResult) return;
+        const path = selectedLabels.join(' -> ');
+        if (isNotClassified) {
+          const text = `${c.notClassifiedTitle}\n${c.notClassifiedDesc}${path ? '\n' + c.pathLabel + ': ' + path : ''}`;
+          copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
+          return;
+        }
+        const text = c.reportText(effectiveCatObj.key, effectiveCatObj.label, effectiveCatObj.mgmt, sMod, path);
         copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
       };
 
       return (
-        <div className="space-y-4 animate-in fade-in">
-          <Card>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.categoryLabel}</label>
-            <div className="space-y-2">
-              {c.categories.map(opt => (
-                <button
-                  key={opt.key}
-                  onClick={() => setCatKey(opt.key)}
-                  className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${catKey === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
-                >
-                  <span className="font-semibold block mb-0.5">{opt.label}</span>
-                  <span className="text-xs opacity-80">{opt.desc}</span>
-                </button>
-              ))}
-            </div>
-          </Card>
-          <Card>
-            <button onClick={() => setSMod(s => !s)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${sMod ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
-              {sMod ? <IconCheckCircle size={14} /> : <span className="w-3.5 shrink-0" />} <span>{c.sLabel}</span>
-            </button>
-          </Card>
-          {catObj && (
-            <Card className="text-center">
-              <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
-              <span className={`text-3xl font-black ${lungRadsCatColor(catObj.key)}`}>Lung-RADS {catObj.key}{sMod ? 'S' : ''}</span>
-              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 text-left">
-                <span className="text-xs text-slate-500 block mb-1">{c.managementLabel}</span>
-                <p className="text-sm text-slate-700 dark:text-slate-200 leading-snug">{catObj.mgmt}</p>
+        <div className="space-y-4 pb-4 animate-in fade-in">
+          {history.length > 1 && (
+            <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold uppercase">{c.history}</span>
+                <button onClick={handleUndo} className="text-blue-500 font-medium">{c.undo}</button>
               </div>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">{c.prevalenceLabel}: {catObj.prevalence}</p>
-              <CopyButton onClick={handleCopy}>{t.common.copyReport}</CopyButton>
+              <ol className="list-decimal pl-4 space-y-1">
+                {selectedLabels.map((lbl, i) => <li key={i}>{lbl}</li>)}
+              </ol>
+            </div>
+          )}
+          {!isResult ? (
+            <Card>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">{currentNode.q}</h3>
+              {currentNode.numeric ? (
+                <div className="space-y-3 mt-2">
+                  <NumberField value={numVal} onChange={setNumVal} placeholder={c.sizePh} />
+                  <button
+                    onClick={handleNumericSubmit}
+                    disabled={numVal === ''}
+                    className="w-full py-3 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {t.common.next}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {currentNode.options.map((opt, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSelect(opt.next, opt.label)}
+                      className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center"
+                    >
+                      <span>{opt.label}</span>
+                      <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </Card>
+          ) : isNotClassified ? (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-800 text-center space-y-4">
+              <h2 className="text-lg font-black text-emerald-600 dark:text-emerald-400">{c.notClassifiedTitle}</h2>
+              <p className="text-sm text-slate-600 dark:text-slate-300 text-left">{c.notClassifiedDesc}</p>
+              <div className="flex gap-2 pt-2">
+                <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
+                  {c.changeType}
+                </button>
+                <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                  <IconCopy size={18} /> {t.common.copy}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {canUpgrade4X && (
+                <Card>
+                  <button onClick={() => setUpgrade4X(u => !u)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${upgrade4X ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                    {upgrade4X ? <IconCheckCircle size={14} /> : <span className="w-3.5 shrink-0" />} <span>{c.upgrade4XLabel}</span>
+                  </button>
+                </Card>
+              )}
+              <Card>
+                <button onClick={() => setSMod(s => !s)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${sMod ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  {sMod ? <IconCheckCircle size={14} /> : <span className="w-3.5 shrink-0" />} <span>{c.sLabel}</span>
+                </button>
+              </Card>
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-blue-200 dark:border-blue-800 text-center space-y-4">
+                <div>
+                  <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
+                  <span className={`text-3xl font-black ${lungRadsCatColor(effectiveCatObj.key)}`}>Lung-RADS {effectiveCatObj.key}{sMod ? 'S' : ''}</span>
+                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 mt-1">{effectiveCatObj.label}</p>
+                </div>
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-700 text-left">
+                  <span className="text-xs text-slate-500 block mb-1">{c.managementLabel}</span>
+                  <p className="text-sm text-slate-700 dark:text-slate-200 leading-snug">{effectiveCatObj.mgmt}</p>
+                </div>
+                <p className="text-xs text-slate-400 dark:text-slate-500">{c.prevalenceLabel}: {effectiveCatObj.prevalence}</p>
+                <div className="flex gap-2 pt-2">
+                  <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
+                    {c.changeType}
+                  </button>
+                  <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                    <IconCopy size={18} /> {t.common.copy}
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
           <UsageNotes paragraphs={c.usage} />
           <References items={REFERENCES.lungRads} />
@@ -4361,6 +5130,8 @@
       { id: 'lungNodule', catKey: 'torax', component: LungNodule },
       { id: 'lungRads', catKey: 'torax', component: LungRADS },
       { id: 'lungScreening', catKey: 'torax', component: LungScreening },
+      { id: 'lungCysts', catKey: 'torax', component: LungCysts },
+      { id: 'bosniak', catKey: 'strat', component: Bosniak },
     ];
 
     /* ============================================================
