@@ -1,0 +1,54 @@
+name: Publicar en GitHub Pages
+
+# Se ejecuta automáticamente cada vez que subís cambios a la rama "main".
+# También se puede lanzar a mano desde la pestaña "Actions" del repositorio
+# en GitHub, con el botón "Run workflow".
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita que dos publicaciones se pisen si subís cambios varias veces seguidas.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar el sitio (npm run build)
+        run: npm run build
+
+      - name: Preparar el resultado para GitHub Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

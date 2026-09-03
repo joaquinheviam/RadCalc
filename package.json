@@ -1,0 +1,23 @@
+{
+  "name": "radiocalc-clinical",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "RadioCalc Clinical — calculadoras radiológicas para la práctica clínica diaria (PWA).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.2",
+    "vite-plugin-pwa": "^1.3.0"
+  }
+}

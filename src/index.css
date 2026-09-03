@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* Tailwind v4: activamos el modo oscuro por clase (.dark en <html>),
+   igual que estaba configurado antes con `darkMode: 'class'` en la CDN. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.refs-enter {
+  animation: fadeIn 0.2s ease-in-out;
+}
