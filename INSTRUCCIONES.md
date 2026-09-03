@@ -61,7 +61,7 @@ Si todavía no tenés una, creala gratis en **https://github.com/signup**.
 1. Descomprimí el archivo `.zip` que te compartí (por ejemplo, en tu carpeta de Documentos o Escritorio). Va a quedar una carpeta llamada `radiocalc-vite`.
 2. Abrí la terminal y andá a esa carpeta. Por ejemplo, si la dejaste en el Escritorio:
    ```
-   cd Desktop/radiocalc-vite
+   cd Desktop/radiocalc-vite (en realidad es cd C:\Users\joaqu\Downloads\radiocalc-vite\radiocalc-vite)
    ```
    (En Windows puede ser `cd Desktop\radiocalc-vite` o similar, según dónde la hayas puesto.)
 3. Instalá las dependencias del proyecto (las "piezas" que arman el sitio). Esto se hace **una sola vez** (y de nuevo si en el futuro cambian las dependencias):
@@ -100,7 +100,12 @@ Para detener la prueba, volvé a la terminal y presioná `Ctrl + C`.
 2. Ponele un nombre corto, por ejemplo `radiocalc`. **Anotá el nombre que elegiste**, porque lo vas a necesitar en el paso 5.
 3. Dejalo como **público** (para que GitHub Pages pueda publicarlo gratis) y **no** marques ninguna casilla de "agregar README" (ya tenemos uno).
 4. Hacé clic en "Create repository".
-5. GitHub te va a mostrar unos comandos bajo el título "…or push an existing repository from the command line". Volvé a tu terminal (en la carpeta `radiocalc-vite`) y ejecutá, uno por uno:
+5. Si es la **primera vez que usás Git** en esta computadora, decile quién sos (una sola vez, sirve para todos tus proyectos futuros). Ejecutá estas dos líneas, con tu email real de GitHub:
+   ```
+   git config --global user.email "tu-email@ejemplo.com"
+   git config --global user.name "Tu Nombre"
+   ```
+6. GitHub te va a mostrar unos comandos bajo el título "…or push an existing repository from the command line". Volvé a tu terminal (en la carpeta `radiocalc-vite`) y ejecutá los siguientes comandos **de a uno, presionando Enter después de cada línea** (si pegás las seis líneas juntas de una sola vez, algunas terminales las juntan en un solo renglón y da error):
    ```
    git init
    git add .
@@ -110,39 +115,39 @@ Para detener la prueba, volvé a la terminal y presioná `Ctrl + C`.
    git push -u origin main
    ```
    Reemplazá `TU-USUARIO` y `radiocalc` por tu usuario real de GitHub y el nombre que le pusiste al repositorio (GitHub te muestra la línea exacta para copiar, con tus datos ya puestos).
-6. Es posible que la primera vez te pida iniciar sesión en GitHub desde la terminal o el navegador. Seguí las indicaciones en pantalla.
+7. Es posible que la primera vez te pida iniciar sesión en GitHub desde la terminal o el navegador. Seguí las indicaciones en pantalla.
 
 ---
 
 ## 5. Ajustar el nombre del sitio (base path)
 
-GitHub Pages publica tu sitio en una dirección con esta forma:
+GitHub Pages publica tu sitio en una dirección con esta forma (dentro de una "subcarpeta" con el nombre del repositorio):
 
 ```
 https://TU-USUARIO.github.io/NOMBRE-DEL-REPOSITORIO/
 ```
 
-Para que todo funcione (imágenes, buscador, ícono, modo sin conexión), el proyecto necesita saber ese `NOMBRE-DEL-REPOSITORIO` de antemano.
+Para que todo funcione ahí (imágenes, buscador, ícono, modo sin conexión), el proyecto necesita saber ese `NOMBRE-DEL-REPOSITORIO` en el momento de compilarse. Esto ya está resuelto automáticamente:
 
-1. Abrí el archivo `vite.config.js` (con el Bloc de notas, TextEdit, o cualquier editor de texto) que está en la carpeta del proyecto.
-2. Buscá esta línea, cerca del principio:
-   ```js
-   const BASE_PATH = '/radiocalc/';
+- `vite.config.js` usa `/` (la raíz) por defecto — funciona tal cual para Vercel, Netlify, un dominio propio, o un repositorio "personal" `TU-USUARIO.github.io`.
+- El archivo `.github/workflows/deploy.yml` le indica a GitHub Actions, **solo durante la publicación en GitHub Pages**, que use `/NOMBRE-DEL-REPOSITORIO/` en su lugar (sin tocar `vite.config.js`).
+
+**Lo único que tenés que revisar** es que ese nombre, dentro de `.github/workflows/deploy.yml`, coincida exactamente (mayúsculas incluidas) con el nombre real de tu repositorio en GitHub:
+
+1. Abrí `.github/workflows/deploy.yml` con el Bloc de notas.
+2. Buscá esta línea:
+   ```yaml
+   VITE_BASE_PATH: /RadCalc/
    ```
-3. Si le pusiste al repositorio el nombre `radiocalc`, no hay que tocar nada. Si le pusiste otro nombre, cambialo para que coincida exactamente, con las barras `/` al principio y al final. Por ejemplo, si tu repositorio se llama `mis-calculadoras`:
-   ```js
-   const BASE_PATH = '/mis-calculadoras/';
-   ```
-4. **Caso especial**: si tu repositorio se llama exactamente `TU-USUARIO.github.io` (el repositorio "personal" de GitHub Pages), usá en cambio:
-   ```js
-   const BASE_PATH = '/';
-   ```
-5. Guardá el archivo. Si hiciste algún cambio, subilo a GitHub:
+3. Si tu repositorio se llama distinto, cambiá `RadCalc` por el nombre real, respetando mayúsculas/minúsculas, con las barras `/` al principio y al final.
+4. Guardá el archivo. Si hiciste algún cambio, subilo a GitHub:
    ```
    git add .
    git commit -m "Ajustar base path"
    git push
    ```
+
+> Si en el futuro publicás este mismo proyecto en otro lado además de GitHub Pages (Vercel, Netlify, etc.), no hace falta tocar nada: al no definirse `VITE_BASE_PATH` en esos otros servicios, usan automáticamente `/`, que es lo correcto porque esos servicios publican en la raíz del dominio.
 
 ---
 
@@ -211,6 +216,17 @@ Hacé clic sobre ese proceso para ver el detalle del error. Los motivos más com
 
 **`npm install` o `npm run dev` dan error de "comando no encontrado".**
 Probablemente Node.js no quedó bien instalado, o hay que cerrar y volver a abrir la terminal después de instalarlo.
+
+**`git commit` dice "Author identity unknown" / "Please tell me who you are".**
+Es la primera vez que usás Git en esta computadora y todavía no le dijiste tu nombre y email (ver paso 4.5). Ejecutá una sola vez:
+```
+git config --global user.email "tu-email@ejemplo.com"
+git config --global user.name "Tu Nombre"
+```
+y volvé a correr el `git commit`.
+
+**Al pegar los comandos de `git init` / `git add` / etc. da error de "unknown switch" o parece que se ejecutó todo junto.**
+Se pegaron varias líneas de una sola vez y la terminal las juntó en un solo renglón. Solución: pegá o escribí **una línea por vez**, presionando Enter después de cada una, en vez de pegar el bloque completo.
 
 **Quiero probar el modo sin conexión (PWA) en mi computadora antes de publicar.**
 Ejecutá:

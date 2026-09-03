@@ -1,17 +1,27 @@
+js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // ============================================================
-// BASE PATH para GitHub Pages
+// BASE PATH: dónde vive el sitio dentro del dominio
 // ------------------------------------------------------------
-// Si publicás el sitio en https://<usuario>.github.io/<repositorio>/
-// esta línea DEBE ser '/<repositorio>/' (con las barras).
-// Si publicás en un dominio propio o en https://<usuario>.github.io/
-// (repositorio "de usuario", nombre <usuario>.github.io), usá '/'.
+// Se lee de la variable de entorno VITE_BASE_PATH en el momento de
+// compilar, para poder publicar el mismo proyecto en dos lugares
+// distintos sin tocar el código:
+//
+//   - GitHub Pages publica en   https://<usuario>.github.io/<repositorio>/
+//     (una subcarpeta) -> el workflow de GitHub Actions
+//     (.github/workflows/deploy.yml) define VITE_BASE_PATH='/<repositorio>/'
+//     antes de compilar.
+//
+//   - Vercel (y la mayoría de los otros hostings) publican en la RAÍZ
+//     del dominio (https://tu-sitio.vercel.app/) -> no hace falta definir
+//     nada ahí, por eso el valor por defecto es '/'.
+//
 // Ver INSTRUCCIONES.md, paso 5, para más detalle.
-const BASE_PATH = '/RadCalc/';
+const BASE_PATH = process.env.VITE_BASE_PATH || '/';
 
 export default defineConfig({
   base: BASE_PATH,

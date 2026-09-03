@@ -16,7 +16,7 @@ Si buscás cómo instalar, compilar y publicar el sitio paso a paso (sin necesid
 ```
 radiocalc-vite/
 ├── index.html                 # HTML raíz (lo procesa Vite)
-├── vite.config.js             # Config de Vite, Tailwind y PWA (incluye el BASE_PATH de GitHub Pages)
+├── vite.config.js             # Config de Vite, Tailwind y PWA (base path vía VITE_BASE_PATH, ver INSTRUCCIONES.md)
 ├── public/                    # Archivos estáticos que se copian tal cual (favicon, íconos del manifest)
 ├── src/
 │   ├── main.jsx                # Punto de entrada: monta <App /> y el aviso de actualización
