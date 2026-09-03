@@ -11,7 +11,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 // Si publicás en un dominio propio o en https://<usuario>.github.io/
 // (repositorio "de usuario", nombre <usuario>.github.io), usá '/'.
 // Ver INSTRUCCIONES.md, paso 5, para más detalle.
-const BASE_PATH = '/radiocalc/';
+const BASE_PATH = '/RadCalc/';
 
 export default defineConfig({
   base: BASE_PATH,
