@@ -33,7 +33,11 @@ export default function EPIDExtent() {
     else if (gohAvg > 30) gohCategory = 'extensive';
     else if (hasFvc) gohCategory = fvcVal < 70 ? 'extensive' : 'limited';
   }
-  const gohHasResult = gohCategory !== null;
+  // Se muestra el resultado (con el promedio) apenas hay al menos un nivel
+  // cargado, aunque todavía no se pueda clasificar como limitada/extensa
+  // (zona indeterminada sin CVF). Así el % calculado no desaparece de la
+  // barra de resultado mientras se completan los niveles.
+  const gohHasResult = gohAvg !== null;
 
   // --- Tschalèr ---
   const [fibAreas, setFibAreas] = useState(emptyArr());
@@ -57,7 +61,7 @@ export default function EPIDExtent() {
           gohAvg.toFixed(1),
           nGohFilled,
           gohIsIndeterminate ? fvc : null,
-          c[gohCategory + 'Label']
+          gohCategory ? c[gohCategory + 'Label'] : c.gohIndeterminateLabel
         )
       : c.reportTextTschaler(tschalerPct.toFixed(1), nSlicesFilled, sumFib.toFixed(1), sumTotal.toFixed(1));
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
@@ -146,11 +150,17 @@ export default function EPIDExtent() {
         <StickyBar>
           {method === 'goh' ? (
             <div className="min-w-0 text-center">
-              <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.gohResultLabel} ({c.gohAverageLabel}: {gohAvg.toFixed(1)}%)</span>
-              <span className={`text-4xl font-black block mt-1 ${gohCategory === 'extensive' ? 'text-red-500' : 'text-emerald-500'}`}>
-                {c[gohCategory + 'Label']}
-              </span>
-              {gohIsIndeterminate && (
+              <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.gohResultLabel}</span>
+              <span className="text-4xl font-black block mt-1 text-slate-700 dark:text-slate-200">{gohAvg.toFixed(1)}%</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 block">{c.gohAverageLabel} ({nGohFilled}/{N_GOH_LEVELS} {c.gohLevelsWord})</span>
+              {gohCategory ? (
+                <span className={`text-sm font-semibold block mt-2 ${gohCategory === 'extensive' ? 'text-red-500' : 'text-emerald-500'}`}>
+                  {c[gohCategory + 'Label']}
+                </span>
+              ) : gohIsIndeterminate ? (
+                <span className="text-xs text-amber-600 dark:text-amber-400 block mt-2">{c.gohIndeterminateLabel}</span>
+              ) : null}
+              {gohIsIndeterminate && hasFvc && (
                 <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">{c.fvcLabel}: {fvc}%</span>
               )}
             </div>
