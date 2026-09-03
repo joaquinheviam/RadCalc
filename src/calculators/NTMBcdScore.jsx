@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const BCD_LOBES = ['rul', 'rml', 'rll', 'lul', 'lingula', 'lll'];
 
@@ -46,6 +46,8 @@ export default function NTMBcdScore() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.ntmBcd} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {hasAnyInput && (
         <StickyBar>
           <div className="min-w-0 text-center">

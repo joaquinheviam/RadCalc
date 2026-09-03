@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function cclsCompute(t2, cmp, ans) {
   const { fat, sei, ader, dwi, homog } = ans;
@@ -220,6 +220,8 @@ export default function CCLS() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.ccls} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {result && (
         <StickyBar>
           <div className="min-w-0 text-center">

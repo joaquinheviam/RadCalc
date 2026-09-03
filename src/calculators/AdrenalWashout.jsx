@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const ADRENAL_PROTOCOLS = {
   p15: { minutes: 15, apwCut: 60, rpwCut: 40 },
@@ -147,6 +147,8 @@ export default function AdrenalWashout() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.adrenalCt} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {isValid && (
         <StickyBar>
           <div className="min-w-0 text-center">

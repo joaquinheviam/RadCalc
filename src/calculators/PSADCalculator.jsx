@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function PSADCalculator() {
   const { t, lang } = useLang();
@@ -53,6 +53,8 @@ export default function PSADCalculator() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.psad} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {showVolume && (
         <StickyBar>
           <div className="min-w-0 text-center">

@@ -11,5 +11,7 @@ export { default as References } from './References.jsx';
 export { default as UsageNotes } from './UsageNotes.jsx';
 export { default as Schematic } from './Schematic.jsx';
 export { default as ReportBugLink } from './ReportBugLink.jsx';
+export { default as CalcDisclaimer } from './CalcDisclaimer.jsx';
 export { default as ScoreSelector5 } from './ScoreSelector5.jsx';
 export { default as SiteFooter } from './SiteFooter.jsx';
+export { default as DonationButton } from './DonationButton.jsx';

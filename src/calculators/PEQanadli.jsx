@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const PE_QANADLI_LUNGS = [
   { key: 'right', nameKey: 'qanadliRightLung', groups: [
@@ -157,6 +157,8 @@ export default function PEQanadli() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.peQanadli} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {(hasQ || hasRv) && (
         <StickyBar>
           <div className="min-w-0 text-center flex items-center justify-center gap-6">

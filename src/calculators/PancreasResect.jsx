@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const PANCREAS_LEVEL = { none: 0, borderline: 1, locallyAdvanced: 2 };
 
@@ -60,6 +60,8 @@ export default function PancreasResect() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.pancreasResect} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {resultObj && (
         <StickyBar>
           <div className="min-w-0 text-center">

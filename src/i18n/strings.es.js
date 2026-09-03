@@ -14,7 +14,7 @@ export default {
     createdBy: 'Creado por',
     donateText: 'Ayúdame a mantener esta calculadora clínica gratis y sin publicidad',
     donateButton: 'Invítame un café',
-    disclaimer: 'Esta herramienta es un apoyo de referencia rápida para el informe radiológico y no reemplaza el juicio clínico ni las guías vigentes de cada sociedad científica. Verifique siempre los criterios actualizados antes de tomar decisiones clínicas.',
+    disclaimer: 'Esta herramienta es un apoyo de referencia rápida con fines educativos para el informe radiológico. El autor no garantiza la exactitud de la información aquí contenida, y esta no reemplaza el juicio clínico ni las guías vigentes de cada sociedad científica. Verifique siempre los criterios actualizados antes de tomar decisiones clínicas.',
     back: 'Volver',
     reset: 'Reiniciar',
     langSwitch: 'English',

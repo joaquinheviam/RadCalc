@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCopy, IconCheckCircle, IconArrowRight } from '../components/icons/index.js';
-import { Card, NumberField, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, NumberField, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function lungRadsCatColor(key) {
   if (key === '1' || key === '2') return 'text-emerald-500';
@@ -161,6 +161,8 @@ export default function LungRADS() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.lungRads} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
     </div>
   );
 }

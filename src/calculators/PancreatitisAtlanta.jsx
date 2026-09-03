@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function PancreatitisAtlanta() {
   const { t, lang } = useLang();
@@ -153,6 +153,8 @@ export default function PancreatitisAtlanta() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.pancreatitisAtlanta} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {hasAnyResult && (
         <StickyBar>
           <div className="min-w-0 text-center">

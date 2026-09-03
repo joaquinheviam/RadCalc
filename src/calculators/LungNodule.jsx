@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function fleischnerRec(c, type, count, risk, size) {
   if (type === 'solid') {
@@ -206,6 +206,8 @@ export default function LungNodule() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.lungNodule} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {rec && (
         <StickyBar>
           <div className="min-w-0 text-center">

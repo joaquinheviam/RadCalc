@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function computeLiRads(size, aphe, feats) {
   // size: 1 (<10mm) | 2 (10-19mm) | 3 (>=20mm)
@@ -209,6 +209,8 @@ export default function LIRADS() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.lirads} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       {finalCat && (
         <StickyBar>
           <div className="min-w-0 text-center">

@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCopy, IconArrowRight } from '../components/icons/index.js';
-import { Card, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { Card, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function Bosniak() {
   const { t, lang } = useLang();
@@ -87,6 +87,8 @@ export default function Bosniak() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.bosniak} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default {
     createdBy: 'Created by',
     donateText: 'Help me keep this clinical calculator free and ad-free',
     donateButton: 'Buy me a coffee',
-    disclaimer: 'This tool is a quick reference aid for radiology reporting and does not replace clinical judgment or the current guidelines of each scientific society. Always verify up-to-date criteria before making clinical decisions.',
+    disclaimer: 'This tool is a quick reference aid for radiology reporting, intended for educational purposes only. The author makes no claims as to the accuracy of the information contained herein, and it does not replace clinical judgment or the current guidelines of each scientific society. Always verify up-to-date criteria before making clinical decisions.',
     back: 'Back',
     reset: 'Reset',
     langSwitch: 'Español',

@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const TIRADS_POINTS = {
   composition: [0, 0, 1, 2],
@@ -114,6 +114,8 @@ export default function TIRADS() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.tirads} />
       <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
       <StickyBar>
         <div className="min-w-0 text-center">
           <span className="block text-sm text-slate-500 dark:text-slate-400 mb-0.5">{c.totalScore}: {pts}</span>
