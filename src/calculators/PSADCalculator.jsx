@@ -21,11 +21,13 @@ export default function PSADCalculator() {
   const showVolume = hasVolume;
   const showPsad = hasVolume && hasPsa;
   const isHighRisk = psad >= 0.15;
+  const volCatKey = vol <= 30 ? 'volCatNormal' : vol <= 49 ? 'volCatMild' : vol <= 69 ? 'volCatModerate' : 'volCatMarked';
+  const volCatLabel = c[volCatKey];
 
   const handleCopy = () => {
     const text = showPsad
-      ? c.reportText(vol.toFixed(1), psa, psad.toFixed(2), isHighRisk ? c.highRisk : c.normal)
-      : c.reportTextVolOnly(vol.toFixed(1));
+      ? c.reportText(vol.toFixed(1), volCatLabel, psa, psad.toFixed(2), isHighRisk ? c.highRisk : c.normal)
+      : c.reportTextVolOnly(vol.toFixed(1), volCatLabel);
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setAp(''); setTr(''); setLong(''); setPsa(''); setFactor(0.52); };
@@ -58,14 +60,18 @@ export default function PSADCalculator() {
       {showVolume && (
         <StickyBar>
           <div className="min-w-0 text-center">
-            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.volume}: <span className="font-semibold text-slate-700 dark:text-slate-200">{vol.toFixed(1)} cc</span></span>
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.volume}: <span className="text-lg font-bold text-slate-700 dark:text-slate-200">{vol.toFixed(1)} cc</span></span>
+            <span className="text-xs text-slate-400 dark:text-slate-500 block">{volCatLabel}</span>
             {showPsad ? (
-              <span className={`text-4xl font-black flex items-center justify-center gap-2 mt-1 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
-                {isHighRisk ? <IconAlertTriangle size={26} /> : <IconCheckCircle size={26} />}
-                {psad.toFixed(2)}
-              </span>
+              <>
+                <span className="text-sm text-slate-500 dark:text-slate-400 block mt-2">{c.antigenDensityLabel}:</span>
+                <span className={`text-4xl font-black flex items-center justify-center gap-2 mt-1 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
+                  {isHighRisk ? <IconAlertTriangle size={26} /> : <IconCheckCircle size={26} />}
+                  {psad.toFixed(2)}
+                </span>
+              </>
             ) : (
-              <span className="text-sm text-slate-400 dark:text-slate-500">{c.psaPending}</span>
+              <span className="text-sm text-slate-400 dark:text-slate-500 block mt-2">{c.psaPending}</span>
             )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">

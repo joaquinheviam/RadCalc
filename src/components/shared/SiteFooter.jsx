@@ -2,11 +2,13 @@ import { useLang } from '../../i18n/LangContext.js';
 import { copyToClipboard } from '../../utils/clipboard.js';
 import { buildMailto, REPORT_EMAIL, LINKEDIN_URL } from '../../utils/mailto.js';
 import { IconLinkedin, IconMail, IconCopy } from '../icons/index.js';
+import DonationButton from './DonationButton.jsx';
 
 export default function SiteFooter() {
   const { t, lang } = useLang();
   return (
     <footer className="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4 text-center">
+      <DonationButton />
       <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed max-w-sm mx-auto">
         {t.common.disclaimer}
       </p>
