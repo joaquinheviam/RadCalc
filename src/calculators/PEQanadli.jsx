@@ -85,7 +85,7 @@ export default function PEQanadli() {
   };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${(hasQ || hasRv) ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${(hasQ || hasRv) ? 'pb-56' : ''}`}>
       <Card>
         <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.qanadliSectionTitle}</h3>
         <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg mb-3">
@@ -159,17 +159,17 @@ export default function PEQanadli() {
       <ReportBugLink calcTitle={c.title} />
       {(hasQ || hasRv) && (
         <StickyBar>
-          <div className="min-w-0 text-left flex items-center gap-3">
+          <div className="min-w-0 text-center flex items-center justify-center gap-6">
             {hasQ && (
               <div>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{c.qanadliPercent}</span>
-                <span className={`text-lg font-black ${qColor}`}>{qPercent.toFixed(0)}%</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.qanadliPercent}</span>
+                <span className={`text-3xl font-black ${qColor}`}>{qPercent.toFixed(0)}%</span>
               </div>
             )}
             {hasRv && (
               <div>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{c.rvRatio}</span>
-                <span className={`text-lg font-black ${rvStrain ? 'text-red-500' : 'text-emerald-500'}`}>{rvRatio.toFixed(2)}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.rvRatio}</span>
+                <span className={`text-3xl font-black ${rvStrain ? 'text-red-500' : 'text-emerald-500'}`}>{rvRatio.toFixed(2)}</span>
               </div>
             )}
           </div>

@@ -42,7 +42,7 @@ export default function LungScreening() {
   const toneClass = !result ? '' : result.tone === 'red' ? 'text-red-500' : result.tone === 'emerald' ? 'text-emerald-500' : 'text-slate-400';
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${result ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${result ? 'pb-56' : ''}`}>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.exclusionQ}</label>
         <ul className="text-xs text-slate-500 dark:text-slate-400 list-disc list-inside space-y-1 mb-3">
@@ -72,8 +72,8 @@ export default function LungScreening() {
       <ReportBugLink calcTitle={c.title} />
       {result && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className={`text-lg font-black block truncate ${toneClass}`}>{result.label}</span>
+          <div className="min-w-0 text-center">
+            <span className={`text-3xl font-black block leading-tight ${toneClass}`}>{result.label}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

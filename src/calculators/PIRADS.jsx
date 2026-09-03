@@ -35,7 +35,7 @@ export default function PIRADS() {
   const resetAll = () => { setZone('pz'); setDwi(0); setT2(0); setDce(''); setEpe(''); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${finalScore > 0 ? 'pb-24' : 'pb-10'}`}>
+    <div className={`space-y-4 animate-in fade-in ${finalScore > 0 ? 'pb-56' : 'pb-10'}`}>
       <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex">
         <button
           onClick={() => { setZone('pz'); setDwi(0); setT2(0); setDce(''); }}
@@ -128,9 +128,9 @@ export default function PIRADS() {
       <ReportBugLink calcTitle={c.title} />
       {finalScore > 0 && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.finalCategory}</span>
-            <span className={`text-xl font-black ${finalScore >= 4 ? 'text-red-500' : finalScore === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.finalCategory}</span>
+            <span className={`text-4xl font-black block mt-1 ${finalScore >= 4 ? 'text-red-500' : finalScore === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>
               PI-RADS {finalScore}
             </span>
           </div>

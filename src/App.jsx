@@ -32,12 +32,18 @@ export default function App() {
   const searchResults = useMemo(() => {
     if (!normalizedQuery) return null;
     return calculators.filter((cc) => {
-      const title = t.calc[cc.id] ? t.calc[cc.id].title : '';
-      const terms = (SEARCH_TERMS[lang] && SEARCH_TERMS[lang][cc.id]) || [];
-      const haystack = normalizeSearchText([title, ...terms].join(' '));
+      // Se busca en ambos idiomas a la vez (títulos y términos de búsqueda de
+      // ES y EN), sin importar el idioma activo de la interfaz. Así, alguien
+      // que use la app en español pero escriba un término en inglés (o
+      // viceversa) igual encuentra la calculadora.
+      const titleEs = STRINGS.es.calc[cc.id] ? STRINGS.es.calc[cc.id].title : '';
+      const titleEn = STRINGS.en.calc[cc.id] ? STRINGS.en.calc[cc.id].title : '';
+      const termsEs = (SEARCH_TERMS.es && SEARCH_TERMS.es[cc.id]) || [];
+      const termsEn = (SEARCH_TERMS.en && SEARCH_TERMS.en[cc.id]) || [];
+      const haystack = normalizeSearchText([titleEs, titleEn, ...termsEs, ...termsEn].join(' '));
       return haystack.includes(normalizedQuery);
     });
-  }, [normalizedQuery, lang]);
+  }, [normalizedQuery]);
 
   return (
     <LangContext.Provider value={{ lang, t, toggleLang }}>

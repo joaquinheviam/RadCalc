@@ -18,6 +18,7 @@ const LungNodule = lazy(() => import('./LungNodule.jsx'));
 const LungRADS = lazy(() => import('./LungRADS.jsx'));
 const LungScreening = lazy(() => import('./LungScreening.jsx'));
 const LungCysts = lazy(() => import('./LungCysts.jsx'));
+const EPIDExtent = lazy(() => import('./EPIDExtent.jsx'));
 const CADRADS = lazy(() => import('./CADRADS.jsx'));
 const MRIFatFraction = lazy(() => import('./MRIFatFraction.jsx'));
 const HepaticSiderosis = lazy(() => import('./HepaticSiderosis.jsx'));
@@ -47,6 +48,7 @@ export const calculators = [
   { id: 'lungRads', catKey: 'torax', component: LungRADS },
   { id: 'lungScreening', catKey: 'torax', component: LungScreening },
   { id: 'lungCysts', catKey: 'torax', component: LungCysts },
+  { id: 'epidExtent', catKey: 'torax', component: EPIDExtent },
   // Cardiovascular
   { id: 'cadrads', catKey: 'cardio', component: CADRADS },
   // Abdomen (hepatobiliopancreático y suprarrenal)

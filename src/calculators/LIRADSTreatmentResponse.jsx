@@ -51,7 +51,7 @@ export default function LIRADSTreatmentResponse() {
   const resetAll = () => { setCore(null); setCategory(null); setAfDiffusion(false); setAfT2(false); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${finalCatObj ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${finalCatObj ? 'pb-56' : ''}`}>
       <InfoBox tone="amber">{c.applicability}</InfoBox>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.coreLabel}</label>
@@ -112,8 +112,8 @@ export default function LIRADSTreatmentResponse() {
       <ReportBugLink calcTitle={c.title} />
       {finalCatObj && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className={`text-xl font-black ${liradsTrCatColor(finalCatObj.key)}`}>LR-TR {finalCatObj.label}</span>
+          <div className="min-w-0 text-center">
+            <span className={`text-4xl font-black block ${liradsTrCatColor(finalCatObj.key)}`}>LR-TR {finalCatObj.label}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

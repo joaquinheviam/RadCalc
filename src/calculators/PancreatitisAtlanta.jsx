@@ -58,7 +58,7 @@ export default function PancreatitisAtlanta() {
   const hasAnyResult = !!(morphResult || collectionResult || severityResult);
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${hasAnyResult ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${hasAnyResult ? 'pb-56' : ''}`}>
       <Card>
         <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.morphTitle}</h3>
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.morphQ}</p>
@@ -155,15 +155,15 @@ export default function PancreatitisAtlanta() {
       <ReportBugLink calcTitle={c.title} />
       {hasAnyResult && (
         <StickyBar>
-          <div className="min-w-0 text-left">
+          <div className="min-w-0 text-center">
             {finalDxText ? (
-              <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">{finalDxText}</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100 block leading-tight">{finalDxText}</span>
             ) : morphResult ? (
-              <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">{morphResult.label}</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100 block leading-tight">{morphResult.label}</span>
             ) : (
-              <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">{collectionResult.label}</span>
+              <span className="text-2xl font-black text-slate-800 dark:text-slate-100 block leading-tight">{collectionResult.label}</span>
             )}
-            <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{severityResult ? `${c.severityTitle}: ${severityResult.label}` : c.finalDxTitle}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">{severityResult ? `${c.severityTitle}: ${severityResult.label}` : c.finalDxTitle}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

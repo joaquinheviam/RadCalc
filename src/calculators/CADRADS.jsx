@@ -26,7 +26,7 @@ export default function CADRADS() {
   const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMod(''); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${stenosis ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${stenosis ? 'pb-56' : ''}`}>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.stenosisLabel}</label>
         <div className="space-y-2">
@@ -68,9 +68,9 @@ export default function CADRADS() {
       <ReportBugLink calcTitle={c.title} />
       {stenosis && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.resultLabel}</span>
-            <span className={`text-xl font-black ${riskColor}`}>{resultString}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultLabel}</span>
+            <span className={`text-3xl font-black block mt-1 leading-tight ${riskColor}`}>{resultString}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

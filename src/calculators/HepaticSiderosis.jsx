@@ -32,7 +32,7 @@ export default function HepaticSiderosis() {
   const resetAll = () => { setInputType('t2star'); setVal(''); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-56' : ''}`}>
       <InfoBox tone="amber">{c.fieldStrengthNote}</InfoBox>
       <Card>
         <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-1">
@@ -82,9 +82,10 @@ export default function HepaticSiderosis() {
       <ReportBugLink calcTitle={c.title} />
       {isValid && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.licEstimated}: <span className={`font-black ${color}`}>{lic.toFixed(2)}</span></span>
-            <span className={`text-sm font-semibold ${color}`}>{category}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.licEstimated}</span>
+            <span className={`text-4xl font-black block ${color}`}>{lic.toFixed(2)}</span>
+            <span className={`text-base font-semibold block mt-1 ${color}`}>{category}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

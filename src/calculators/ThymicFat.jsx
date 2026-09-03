@@ -27,7 +27,7 @@ export default function ThymicFat() {
   const resetAll = () => { setThymusIn(''); setThymusOut(''); setMuscleIn(''); setMuscleOut(''); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-56' : ''}`}>
       <Card className="space-y-5">
         <div>
           <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">{c.roiThymus}</h3>
@@ -66,9 +66,10 @@ export default function ThymicFat() {
       <ReportBugLink calcTitle={c.title} />
       {isValid && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.ratioCsr}: <span className={`font-black ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{csr.toFixed(2)}</span></span>
-            <span className={`text-sm font-semibold ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{isFatty ? c.fattyConcl : c.notFattyConcl}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.ratioCsr}</span>
+            <span className={`text-4xl font-black block ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{csr.toFixed(2)}</span>
+            <span className={`text-base font-semibold block mt-1 ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{isFatty ? c.fattyConcl : c.notFattyConcl}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

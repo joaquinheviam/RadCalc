@@ -27,7 +27,7 @@ export default function NTMBcdScore() {
   const resetAll = () => setLobes(Object.fromEntries(BCD_LOBES.map(l => [l, { cavity: false, be: false }])));
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${hasAnyInput ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${hasAnyInput ? 'pb-56' : ''}`}>
       <Card>
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{c.intro}</p>
         <div className="space-y-2">
@@ -48,9 +48,9 @@ export default function NTMBcdScore() {
       <ReportBugLink calcTitle={c.title} />
       {hasAnyInput && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.scoreLabel}</span>
-            <span className={`text-lg font-black ${riskColor}`}>{score}/6 — {riskLabel}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.scoreLabel}</span>
+            <span className={`text-3xl font-black block mt-1 leading-tight ${riskColor}`}>{score}/6 — {riskLabel}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

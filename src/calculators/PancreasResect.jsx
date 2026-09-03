@@ -32,7 +32,7 @@ export default function PancreasResect() {
   const resultColor = resultKey === 'resectable' ? 'text-emerald-500' : resultKey === 'borderline' ? 'text-amber-500' : 'text-red-500';
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${resultObj ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${resultObj ? 'pb-56' : ''}`}>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.arterialLabel}</label>
         <div className="space-y-2">
@@ -62,9 +62,9 @@ export default function PancreasResect() {
       <ReportBugLink calcTitle={c.title} />
       {resultObj && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className={`text-lg font-black block truncate ${resultColor}`}>{resultObj.label}</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{c.resultLabel}</span>
+          <div className="min-w-0 text-center">
+            <span className={`text-3xl font-black block leading-tight ${resultColor}`}>{resultObj.label}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">{c.resultLabel}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

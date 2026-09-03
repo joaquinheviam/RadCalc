@@ -40,7 +40,7 @@ export default function MRIFatFraction() {
   const resetAll = () => { setMethod('ff'); setInPhase(''); setOutPhase(''); setSpleenIn(''); setSpleenOut(''); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${hasAnyInput ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${hasAnyInput ? 'pb-56' : ''}`}>
       <Card>
         <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2">{c.methodLabel}</label>
         <div className="space-y-2">
@@ -79,10 +79,10 @@ export default function MRIFatFraction() {
       <ReportBugLink calcTitle={c.title} />
       {hasAnyInput && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{method === 'ff' ? c.estimated : c.estimatedPct}</span>
-            <span className="text-xl font-black text-blue-600 dark:text-blue-400">{isValid ? value.toFixed(1) + '%' : '—'}</span>
-            {!isValid && <span className="text-xs text-slate-400 ml-2">{t.common.notEvaluated}</span>}
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{method === 'ff' ? c.estimated : c.estimatedPct}</span>
+            <span className="text-4xl font-black text-blue-600 dark:text-blue-400 block mt-1">{isValid ? value.toFixed(1) + '%' : '—'}</span>
+            {!isValid && <span className="text-sm text-slate-400 block mt-1">{t.common.notEvaluated}</span>}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

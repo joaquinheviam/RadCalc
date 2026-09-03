@@ -59,7 +59,7 @@ export default function AdrenalWashout() {
   const resetAll = () => { setProtocol('p15'); setNc(''); setVen(''); setDel(''); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-56' : ''}`}>
       <Card>
         <div>
           <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.protocol}</label>
@@ -149,9 +149,9 @@ export default function AdrenalWashout() {
       <ReportBugLink calcTitle={c.title} />
       {isValid && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{protocolLabel}</span>
-            <span className={`text-lg font-black ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenoma ? c.adenomaCompatible : c.adenomaNot}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{protocolLabel}</span>
+            <span className={`text-3xl font-black block mt-1 leading-tight ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenoma ? c.adenomaCompatible : c.adenomaNot}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

@@ -113,7 +113,7 @@ export default function CCLS() {
   );
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${result ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${result ? 'pb-56' : ''}`}>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.gateQ}</label>
         <div className="space-y-2">
@@ -222,9 +222,9 @@ export default function CCLS() {
       <ReportBugLink calcTitle={c.title} />
       {result && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className={`text-lg font-black block truncate ${scoreColor}`}>ccLS {result.score}/5</span>
-            <span className={`text-xs font-semibold block truncate ${scoreColor}`}>{likertLabel}</span>
+          <div className="min-w-0 text-center">
+            <span className={`text-4xl font-black block ${scoreColor}`}>ccLS {result.score}/5</span>
+            <span className={`text-sm font-semibold block mt-1 ${scoreColor}`}>{likertLabel}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={handleReset} label={t.common.reset} />

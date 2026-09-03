@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
+import { StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink } from '../components/shared/index.js';
 
 const TIRADS_POINTS = {
   composition: [0, 0, 1, 2],
@@ -68,7 +68,7 @@ export default function TIRADS() {
   };
 
   return (
-    <div className="space-y-4 pb-28">
+    <div className="space-y-4 pb-56">
       {Object.entries(c.criteria).map(([key, data]) => (
         <div key={key} className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
           <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1 text-sm">{data.title}</h3>
@@ -114,22 +114,20 @@ export default function TIRADS() {
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.tirads} />
       <ReportBugLink calcTitle={c.title} />
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-4 shadow-lg z-40">
-        <div className="max-w-md mx-auto flex items-center justify-between">
-          <div>
-            <span className="block text-xs text-slate-500 mb-0.5">{c.totalScore}: {pts}</span>
-            <div className="flex items-center gap-2">
-              <span className={`font-bold text-xl ${color}`}>{catKey}</span>
-              <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{catInfo.risk}</span>
-            </div>
-            <span className="block text-[10px] text-slate-500 mt-0.5 leading-tight">{catInfo.recs}</span>
+      <StickyBar>
+        <div className="min-w-0 text-center">
+          <span className="block text-sm text-slate-500 dark:text-slate-400 mb-0.5">{c.totalScore}: {pts}</span>
+          <div className="flex items-center justify-center gap-2">
+            <span className={`font-black text-4xl ${color}`}>{catKey}</span>
+            <span className="text-base font-medium text-slate-600 dark:text-slate-300">{catInfo.risk}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
-          </div>
+          <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{catInfo.recs}</span>
         </div>
-      </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <ResetIconButton onClick={resetAll} label={t.common.reset} />
+          <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+        </div>
+      </StickyBar>
     </div>
   );
 }

@@ -31,7 +31,7 @@ export default function PSADCalculator() {
   const resetAll = () => { setAp(''); setTr(''); setLong(''); setPsa(''); setFactor(0.52); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${showVolume ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${showVolume ? 'pb-56' : ''}`}>
       <Card>
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{c.dims}</label>
@@ -55,15 +55,15 @@ export default function PSADCalculator() {
       <ReportBugLink calcTitle={c.title} />
       {showVolume && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.volume}: <span className="font-semibold text-slate-700 dark:text-slate-200">{vol.toFixed(1)} cc</span></span>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.volume}: <span className="font-semibold text-slate-700 dark:text-slate-200">{vol.toFixed(1)} cc</span></span>
             {showPsad ? (
-              <span className={`text-lg font-black flex items-center gap-1.5 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
-                {isHighRisk ? <IconAlertTriangle size={16} /> : <IconCheckCircle size={16} />}
-                {c.psad}: {psad.toFixed(2)}
+              <span className={`text-4xl font-black flex items-center justify-center gap-2 mt-1 ${isHighRisk ? 'text-red-500' : 'text-emerald-500'}`}>
+                {isHighRisk ? <IconAlertTriangle size={26} /> : <IconCheckCircle size={26} />}
+                {psad.toFixed(2)}
               </span>
             ) : (
-              <span className="text-xs text-slate-400 dark:text-slate-500">{c.psaPending}</span>
+              <span className="text-sm text-slate-400 dark:text-slate-500">{c.psaPending}</span>
             )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">

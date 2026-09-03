@@ -53,7 +53,7 @@ export default function UpdateToast() {
   if (!offlineReady && !needRefresh) return null;
 
   return (
-    <div className="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:right-4 sm:left-auto sm:max-w-sm z-[200]">
+    <div className="fixed top-20 inset-x-4 sm:inset-x-auto sm:right-4 sm:left-auto sm:max-w-sm z-[200]">
       <div className="fade-in flex items-center gap-3 rounded-2xl shadow-lg border px-4 py-3 bg-white text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
         <span className="text-sm flex-1">{needRefresh ? t.needRefresh : t.offlineReady}</span>
         {needRefresh ? (

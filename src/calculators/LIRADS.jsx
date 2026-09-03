@@ -96,7 +96,7 @@ export default function LIRADS() {
   };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${finalCat ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${finalCat ? 'pb-56' : ''}`}>
       <Card>
         <InfoBox tone="amber">{c.lrTiv}</InfoBox>
         <div className="flex gap-2">
@@ -211,9 +211,9 @@ export default function LIRADS() {
       <ReportBugLink calcTitle={c.title} />
       {finalCat && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className={`text-xl font-black ${finalCat === 'LR-5' || finalCat === 'LR-M' || finalCat === 'LR-TIV' ? 'text-red-500' : finalCat === 'LR-4' ? 'text-orange-500' : finalCat === 'LR-3' ? 'text-amber-500' : 'text-emerald-500'}`}>{finalCat}</span>
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-snug">{c.categories[finalCat]}</p>
+          <div className="min-w-0 text-center">
+            <span className={`text-4xl font-black block ${finalCat === 'LR-5' || finalCat === 'LR-M' || finalCat === 'LR-TIV' ? 'text-red-500' : finalCat === 'LR-4' ? 'text-orange-500' : finalCat === 'LR-3' ? 'text-amber-500' : 'text-emerald-500'}`}>{finalCat}</span>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug mt-1">{c.categories[finalCat]}</p>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

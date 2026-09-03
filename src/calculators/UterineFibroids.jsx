@@ -107,7 +107,7 @@ export default function UterineFibroids() {
   };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${hasAnyResult ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${hasAnyResult ? 'pb-56' : ''}`}>
       <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wide">{c.figoSectionTitle}</h3>
       <InfoBox tone="amber">{c.figoIntro}</InfoBox>
 
@@ -257,11 +257,11 @@ export default function UterineFibroids() {
       <ReportBugLink calcTitle={c.title} />
       {hasAnyResult && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">
+          <div className="min-w-0 text-center">
+            <span className="text-2xl font-black text-slate-800 dark:text-slate-100 block leading-tight">
               {figoTypeObj && resultObj ? `FIGO ${figoTypeObj.code}${hybridCode ? ` (${hybridCode})` : ''} · ${resultObj.label}` : figoTypeObj ? `FIGO ${figoTypeObj.code}${hybridCode ? ` (${hybridCode})` : ''}` : resultObj.label}
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">
               {figoTypeObj && resultObj ? `${c.figoResultLabel} · ${c.resultLabel}` : figoTypeObj ? c.figoResultLabel : c.resultLabel}
             </span>
           </div>

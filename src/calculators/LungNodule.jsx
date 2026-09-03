@@ -82,7 +82,7 @@ export default function LungNodule() {
   const showFleischnerForm = pfnStage === 'result-notpfn' || pfnStage === 'skipped';
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${rec ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${rec ? 'pb-56' : ''}`}>
       <Card>
         <div className="flex justify-between items-start gap-2 mb-1">
           <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{c.pfnTitle}</h3>
@@ -208,9 +208,9 @@ export default function LungNodule() {
       <ReportBugLink calcTitle={c.title} />
       {rec && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-sm font-bold text-slate-700 dark:text-slate-200 block truncate">{rec}</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{resultLabel}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-2xl font-black text-slate-800 dark:text-slate-100 block leading-tight">{rec}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">{resultLabel}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

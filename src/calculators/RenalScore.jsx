@@ -39,7 +39,7 @@ export default function RenalScore() {
   };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${canCompute ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${canCompute ? 'pb-56' : ''}`}>
       <Card>
         <NumberField label={c.radiusLabel} value={radius} onChange={setRadius} placeholder={c.radiusPh} />
       </Card>
@@ -91,9 +91,9 @@ export default function RenalScore() {
       <ReportBugLink calcTitle={c.title} />
       {canCompute && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-lg font-black text-slate-800 dark:text-slate-100 block truncate">{formula}{suffix} = {total}</span>
-            <span className={`text-xs font-semibold block truncate ${riskColor}`}>{risk}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-3xl font-black text-slate-800 dark:text-slate-100 block leading-tight">{formula}{suffix} = {total}</span>
+            <span className={`text-sm font-semibold block mt-1 ${riskColor}`}>{risk}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

@@ -25,7 +25,7 @@ export default function VIRADS() {
   const resetAll = () => { setT2(0); setDwi(0); setDce(0); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${final > 0 ? 'pb-24' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${final > 0 ? 'pb-56' : ''}`}>
       <Card className="space-y-6">
         <ScoreSelector5 label={c.step1} value={t2} onChange={setT2} defs={c.t2Defs} />
         <ScoreSelector5 label={c.step2} value={dwi} onChange={setDwi} defs={c.dwiDefs} />
@@ -38,9 +38,9 @@ export default function VIRADS() {
       <ReportBugLink calcTitle={c.title} />
       {final > 0 && (
         <StickyBar>
-          <div className="min-w-0 text-left">
-            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.finalCategory}</span>
-            <span className={`text-xl font-black ${final >= 4 ? 'text-red-500' : final === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>VI-RADS {final}</span>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.finalCategory}</span>
+            <span className={`text-4xl font-black block mt-1 ${final >= 4 ? 'text-red-500' : final === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>VI-RADS {final}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

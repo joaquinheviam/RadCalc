@@ -7,6 +7,10 @@ export const REFERENCES = {
     'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.',
     'Ma X, Holalkere NS, Kambadakone RA, Mino-Kenudson M, Hahn PF, Sahani DV. Imaging-based quantification of hepatic fat: methods and clinical applications. RadioGraphics. 2009;29(5):1253-1277.',
   ],
+  epidExtent: [
+    'Goh NS, Desai SR, Veeraraghavan S, et al. Interstitial lung disease in systemic sclerosis: a simple staging system. Am J Respir Crit Care Med. 2008;177(11):1248-1254.',
+    'Tschalèr L, Jordan S, Aaløkken TM, et al. Validation of a semi-quantitative method to assess interstitial lung disease severity and progression in systemic sclerosis by standard and low-dose HRCT scans. RMD Open. 2025;11(1):e004938.',
+  ],
   adrenalCt: [
     'Lee MJ, Hahn PF, Papanicolaou N, Egglin TK, Saini S, Mueller PR, Simeone JF. Benign and malignant adrenal masses: CT distinction with attenuation coefficients, size, and observer analysis. Radiology. 1991;179(2):415-418.',
     'Boland GW, Lee MJ, Gazelle GS, Halpern EF, McNicholas MM, Mueller PR. Characterization of adrenal masses using unenhanced CT: an analysis of the CT literature. AJR Am J Roentgenol. 1998;171(1):201-204.',
