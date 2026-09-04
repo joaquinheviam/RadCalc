@@ -31,10 +31,19 @@ export default function MRIFatFraction() {
     ? (inPhase !== '' || outPhase !== '')
     : (inPhase !== '' || outPhase !== '' || spleenIn !== '' || spleenOut !== '');
 
+  // Categorización orientativa del % graso estimado (aplica a ambos métodos).
+  let category = null;
+  if (isValid) {
+    if (value < 5) category = 'ffCatNormal';
+    else if (value < 15) category = 'ffCatMild';
+    else if (value < 30) category = 'ffCatModerate';
+    else category = 'ffCatMarked';
+  }
+
   const handleCopy = () => {
     const text = method === 'ff'
-      ? c.reportText(ff.toFixed(1), inPhase, outPhase)
-      : c.reportTextPct(fp.toFixed(1), inPhase, outPhase, spleenIn, spleenOut);
+      ? c.reportText(ff.toFixed(1), inPhase, outPhase, c[category])
+      : c.reportTextPct(fp.toFixed(1), inPhase, outPhase, spleenIn, spleenOut, c[category]);
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setMethod('ff'); setInPhase(''); setOutPhase(''); setSpleenIn(''); setSpleenOut(''); };
@@ -59,17 +68,32 @@ export default function MRIFatFraction() {
         </div>
       </Card>
       <Card>
-        <NumberField label={c.inPhase} placeholder={c.inPh} value={inPhase} onChange={setInPhase} />
-        <div className="mt-3">
-          <NumberField label={c.outPhase} placeholder={c.outPh} value={outPhase} onChange={setOutPhase} />
-        </div>
-        {method === 'pct' && (
+        {method === 'ff' ? (
           <>
+            <NumberField label={c.ffInPhase} placeholder={c.inPh} value={inPhase} onChange={setInPhase} />
             <div className="mt-3">
-              <NumberField label={c.spleenInPhase} placeholder={c.spleenInPh} value={spleenIn} onChange={setSpleenIn} />
+              <NumberField label={c.ffOutPhase} placeholder={c.outPh} value={outPhase} onChange={setOutPhase} />
             </div>
-            <div className="mt-3">
-              <NumberField label={c.spleenOutPhase} placeholder={c.spleenOutPh} value={spleenOut} onChange={setSpleenOut} />
+          </>
+        ) : (
+          <>
+            {/* Agrupado por fase (no por órgano): así el orden de carga sigue el
+                flujo real de medición en el PACS (se miden hígado y bazo sobre
+                la MISMA imagen en fase, y después ambos sobre la misma imagen
+                fuera de fase), reduciendo el riesgo de cruzar in/out-of-phase. */}
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+              {c.inPhaseGroupTitle}
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <NumberField small label={c.liverLabel} placeholder={c.inPh} value={inPhase} onChange={setInPhase} />
+              <NumberField small label={c.spleenLabel} placeholder={c.spleenInPh} value={spleenIn} onChange={setSpleenIn} />
+            </div>
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
+              {c.outPhaseGroupTitle}
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <NumberField small label={c.liverLabel} placeholder={c.outPh} value={outPhase} onChange={setOutPhase} />
+              <NumberField small label={c.spleenLabel} placeholder={c.spleenOutPh} value={spleenOut} onChange={setSpleenOut} />
             </div>
           </>
         )}
@@ -84,6 +108,11 @@ export default function MRIFatFraction() {
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{method === 'ff' ? c.estimated : c.estimatedPct}</span>
             <span className="text-4xl font-black text-blue-600 dark:text-blue-400 block mt-1">{isValid ? value.toFixed(1) + '%' : '—'}</span>
+            {isValid && (
+              <span className={`text-sm font-semibold block mt-1 ${category === 'ffCatNormal' ? 'text-emerald-500' : category === 'ffCatMild' ? 'text-amber-500' : 'text-red-500'}`}>
+                {c[category]}
+              </span>
+            )}
             {!isValid && <span className="text-sm text-slate-400 block mt-1">{t.common.notEvaluated}</span>}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
