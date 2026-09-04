@@ -16,3 +16,4 @@ export { default as IconStethoscope } from './IconStethoscope.jsx';
 export { default as IconSearch } from './IconSearch.jsx';
 export { default as IconX } from './IconX.jsx';
 export { default as IconCoffee } from './IconCoffee.jsx';
+export { default as IconStar } from './IconStar.jsx';

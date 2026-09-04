@@ -5,14 +5,63 @@ import { SEARCH_TERMS } from './i18n/searchTerms.js';
 import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
 import { Logo, SiteFooter } from './components/shared/index.js';
-import { IconChevronLeft, IconSun, IconMoon, IconSearch, IconX } from './components/icons/index.js';
+import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar } from './components/icons/index.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
+
+// Fila de una calculadora en el listado (favoritas, resultados de búsqueda o
+// categoría): la estrella y el botón de abrir son elementos hermanos (nunca
+// un <button> anidado dentro de otro) para que el click en cada uno se
+// maneje por separado sin efectos raros de propagación.
+function CalcListRow({ title, category, isFav, onToggleFav, favAddLabel, favRemoveLabel, onOpen, extra }) {
+  return (
+    <div className="w-full flex items-center gap-1">
+      <button
+        onClick={onToggleFav}
+        aria-label={isFav ? favRemoveLabel : favAddLabel}
+        aria-pressed={isFav}
+        className="p-3 -mr-1 shrink-0 rounded-full text-slate-300 dark:text-slate-600 hover:text-amber-400 dark:hover:text-amber-400 active:text-amber-400 transition-colors"
+      >
+        <IconStar size={18} filled={isFav} className={isFav ? 'text-amber-400' : ''} />
+      </button>
+      <button
+        onClick={onOpen}
+        className="flex-1 min-w-0 text-left py-4 pr-4 active:bg-slate-50 dark:active:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex justify-between items-center gap-3"
+      >
+        <span className="flex flex-col min-w-0">
+          <span className="font-medium text-slate-700 dark:text-slate-200 truncate">{title}</span>
+          {category && <span className="text-xs text-slate-400 dark:text-slate-500">{category}</span>}
+        </span>
+        <div className="flex items-center gap-1 shrink-0">
+          {extra}
+          <IconChevronLeft className="text-slate-400 transform rotate-180 w-4 h-4 shrink-0" />
+        </div>
+      </button>
+    </div>
+  );
+}
 
 export default function App() {
   const [darkMode, setDarkMode] = useLocalStorageState('radiocalc:darkMode', true);
   const [lang, setLang] = useLocalStorageState('radiocalc:lang', 'es');
+  const [favorites, setFavorites] = useLocalStorageState('radiocalc:favorites', []);
   const [activeCalc, setActiveCalc] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const isFavorite = (id) => favorites.includes(id);
+  const toggleFavorite = (id) => {
+    setFavorites((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+  const moveFavorite = (id, dir) => {
+    setFavorites((prev) => {
+      const idx = prev.indexOf(id);
+      const newIdx = idx + dir;
+      if (idx === -1 || newIdx < 0 || newIdx >= prev.length) return prev;
+      const copy = [...prev];
+      [copy[idx], copy[newIdx]] = [copy[newIdx], copy[idx]];
+      return copy;
+    });
+  };
+  const favoriteCalcs = favorites.map((id) => calculators.find((cc) => cc.id === id)).filter(Boolean);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
@@ -107,22 +156,63 @@ export default function App() {
                   </button>
                 )}
               </div>
+              {!searchResults && favoriteCalcs.length > 0 && (
+                <div>
+                  <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1 flex items-center gap-1.5">
+                    <IconStar size={14} filled className="text-amber-400" />
+                    {t.favorites.title}
+                  </h2>
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
+                    {favoriteCalcs.map((cc, i) => (
+                      <CalcListRow
+                        key={cc.id}
+                        title={t.calc[cc.id].title}
+                        category={t.categories[cc.catKey]}
+                        isFav
+                        onToggleFav={() => toggleFavorite(cc.id)}
+                        favAddLabel={t.favorites.addAria}
+                        favRemoveLabel={t.favorites.removeAria}
+                        onOpen={() => setActiveCalc(cc.id)}
+                        extra={
+                          <span className="flex flex-col shrink-0">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); moveFavorite(cc.id, -1); }}
+                              disabled={i === 0}
+                              aria-label={t.favorites.moveUpAria}
+                              className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-25 disabled:pointer-events-none"
+                            >
+                              <IconChevronDown size={16} className="rotate-180" />
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); moveFavorite(cc.id, 1); }}
+                              disabled={i === favoriteCalcs.length - 1}
+                              aria-label={t.favorites.moveDownAria}
+                              className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-25 disabled:pointer-events-none"
+                            >
+                              <IconChevronDown size={16} />
+                            </button>
+                          </span>
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
               {searchResults ? (
                 searchResults.length > 0 ? (
                   <div>
                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
                       {searchResults.map((cc) => (
-                        <button
+                        <CalcListRow
                           key={cc.id}
-                          onClick={() => setActiveCalc(cc.id)}
-                          className="w-full text-left px-5 py-4 active:bg-slate-50 dark:active:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex justify-between items-center gap-3"
-                        >
-                          <span className="flex flex-col">
-                            <span className="font-medium text-slate-700 dark:text-slate-200">{t.calc[cc.id].title}</span>
-                            <span className="text-xs text-slate-400 dark:text-slate-500">{t.categories[cc.catKey]}</span>
-                          </span>
-                          <IconChevronLeft className="text-slate-400 transform rotate-180 w-4 h-4 shrink-0" />
-                        </button>
+                          title={t.calc[cc.id].title}
+                          category={t.categories[cc.catKey]}
+                          isFav={isFavorite(cc.id)}
+                          onToggleFav={() => toggleFavorite(cc.id)}
+                          favAddLabel={t.favorites.addAria}
+                          favRemoveLabel={t.favorites.removeAria}
+                          onOpen={() => setActiveCalc(cc.id)}
+                        />
                       ))}
                     </div>
                   </div>
@@ -140,14 +230,15 @@ export default function App() {
                       </h2>
                       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
                         {calculators.filter((cc) => cc.catKey === catKey).map((cc) => (
-                          <button
+                          <CalcListRow
                             key={cc.id}
-                            onClick={() => setActiveCalc(cc.id)}
-                            className="w-full text-left px-5 py-4 active:bg-slate-50 dark:active:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex justify-between items-center gap-3"
-                          >
-                            <span className="font-medium text-slate-700 dark:text-slate-200">{t.calc[cc.id].title}</span>
-                            <IconChevronLeft className="text-slate-400 transform rotate-180 w-4 h-4 shrink-0" />
-                          </button>
+                            title={t.calc[cc.id].title}
+                            isFav={isFavorite(cc.id)}
+                            onToggleFav={() => toggleFavorite(cc.id)}
+                            favAddLabel={t.favorites.addAria}
+                            favRemoveLabel={t.favorites.removeAria}
+                            onOpen={() => setActiveCalc(cc.id)}
+                          />
                         ))}
                       </div>
                     </div>

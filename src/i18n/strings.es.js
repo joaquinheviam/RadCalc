@@ -13,7 +13,7 @@ export default {
     suggestGeneral: 'Sugerencia',
     createdBy: 'Creado por',
     donateText: 'Ayúdame a mantener esta calculadora clínica gratis y sin publicidad',
-    donateButton: 'Invítame un café',
+    donateButton: 'Cómprame un café',
     disclaimer: 'Esta herramienta es un apoyo de referencia rápida con fines educativos para el informe radiológico. El autor no garantiza la exactitud de la información aquí contenida, y esta no reemplaza el juicio clínico ni las guías vigentes de cada sociedad científica. Verifique siempre los criterios actualizados antes de tomar decisiones clínicas.',
     back: 'Volver',
     reset: 'Reiniciar',
@@ -45,6 +45,13 @@ export default {
     placeholder: 'Buscar calculadora o concepto...',
     noResults: 'No se encontraron calculadoras para',
     resultsCount: 'resultado(s)',
+  },
+  favorites: {
+    title: 'Favoritas',
+    addAria: 'Agregar a favoritas',
+    removeAria: 'Quitar de favoritas',
+    moveUpAria: 'Mover arriba',
+    moveDownAria: 'Mover abajo',
   },
   calc: {
     psad: {

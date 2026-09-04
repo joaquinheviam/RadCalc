@@ -46,6 +46,13 @@ export default {
     noResults: 'No calculators found for',
     resultsCount: 'result(s)',
   },
+  favorites: {
+    title: 'Favorites',
+    addAria: 'Add to favorites',
+    removeAria: 'Remove from favorites',
+    moveUpAria: 'Move up',
+    moveDownAria: 'Move down',
+  },
   calc: {
     psad: {
       title: 'PSAD and Prostate Volume',
