@@ -15,6 +15,7 @@ export default {
   liradsTr: ['li-rads treatment response', 'hcc treatment response', 'lirads tr', 'tace', 'ablation'],
   pancreatitisAtlanta: ['pancreatitis', 'atlanta classification', 'pancreatic necrosis', 'won', 'apfc', 'pseudocyst', 'anc', 'peripancreatic collection'],
   pancreasResect: ['pancreatic resectability', 'pancreatic cancer', 'pancreatic adenocarcinoma', 'vascular contact', 'nccn pancreas'],
+  pancreaticCyst: ['pancreatic cyst', 'pancreatic cysts', 'ipmn', 'mcn', 'mucinous cystic neoplasm', 'serous cystadenoma', 'sca', 'main pancreatic duct', 'pancreatic cyst follow-up', 'chilean consensus', 'acr incidental pancreatic', 'fukuoka'],
   adrenalCt: ['adrenal', 'adrenal washout', 'adrenal incidentaloma', 'adrenal adenoma'],
   adrenalMri: ['adrenal mri', 'csi', 'chemical shift imaging', 'adrenal adenoma mri'],
   psad: ['psad', 'psa density', 'prostate volume', 'prostate specific antigen'],

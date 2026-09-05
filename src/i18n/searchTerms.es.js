@@ -15,6 +15,7 @@ export default {
   liradsTr: ['li-rads respuesta al tratamiento', 'respuesta a tratamiento hepatocarcinoma', 'lirads tr', 'quimioembolizacion', 'ablacion'],
   pancreatitisAtlanta: ['pancreatitis', 'atlanta', 'necrosis pancreatica', 'won', 'apfc', 'pseudoquiste', 'anc', 'coleccion peripancreatica'],
   pancreasResect: ['resecabilidad pancreatica', 'resecabilidad pancreática', 'cancer de pancreas', 'cáncer de páncreas', 'adenocarcinoma pancreatico', 'contacto vascular', 'nccn pancreas'],
+  pancreaticCyst: ['quiste pancreatico', 'quiste pancreático', 'quistes pancreaticos', 'ipmn', 'mcn', 'neoplasia quistica mucinosa', 'cistoadenoma seroso', 'sca', 'conducto pancreatico principal', 'seguimiento quiste pancreas', 'consenso chileno', 'acr incidental pancreas', 'fukuoka'],
   adrenalCt: ['adrenal', 'suprarrenal', 'lavado adrenal', 'washout', 'incidentaloma adrenal', 'adenoma suprarrenal'],
   adrenalMri: ['adrenal rm', 'suprarrenal resonancia', 'csi', 'chemical shift', 'desplazamiento quimico', 'adenoma suprarrenal rm'],
   psad: ['psad', 'densidad de psa', 'volumen prostatico', 'volumen prostático', 'antigeno prostatico', 'antígeno prostático específico'],

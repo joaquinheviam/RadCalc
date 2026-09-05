@@ -86,6 +86,11 @@ export const REFERENCES = {
   pancreasResect: [
     'Khasawneh H, Dalla Pria HRF, Miranda J, et al. CT imaging assessment of pancreatic adenocarcinoma resectability after neoadjuvant therapy: current status and perspective on the use of radiomics. J Clin Med. 2023;12(21):6821.',
   ],
+  pancreaticCyst: [
+    'Megibow AJ, Baker ME, Morgan DE, Kamel IR, Sahani DV, Newman E, Brugge WR, Berland LL, Pandharipande PV. Management of Incidental Pancreatic Cysts: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2017;14(7):911-923.',
+    'Espino A, Vargas JI, Mancilla C, Muñoz P, Martínez W, Menéndez A, et al. Consenso chileno de diagnóstico y manejo de neoplasias quísticas pancreáticas. Club de Páncreas Chile-SCHGE. Rev Med Chile. 2021;149:1773-1786.',
+    'Tanaka M, Fernández-Del Castillo C, Kamisawa T, et al. Revisions of international consensus Fukuoka guidelines for the management of IPMN of the pancreas. Pancreatology. 2017;17(5):738-753.',
+  ],
   lungCysts: [
     'Raoof S, Bondalapati P, Vydyula R, et al. Cystic lung diseases: algorithmic approach. Chest. 2016;150(4):945-965.',
     'The Radiology Assistant. Cystic Lung Disease - Differential Diagnosis. radiologyassistant.nl, Radiological Society of the Netherlands (accessed September 2026).',
