@@ -14,16 +14,21 @@ export const REFERENCES = {
   adrenalCt: [
     'Lee MJ, Hahn PF, Papanicolaou N, Egglin TK, Saini S, Mueller PR, Simeone JF. Benign and malignant adrenal masses: CT distinction with attenuation coefficients, size, and observer analysis. Radiology. 1991;179(2):415-418.',
     'Boland GW, Lee MJ, Gazelle GS, Halpern EF, McNicholas MM, Mueller PR. Characterization of adrenal masses using unenhanced CT: an analysis of the CT literature. AJR Am J Roentgenol. 1998;171(1):201-204.',
-    'Korobkin M, Brodeur FJ, Yutzy GG, Francis IR, Quint LE, Dunnick NR, Kazerooni EA. Differentiation of adrenal adenomas from nonadenomas using CT attenuation values. AJR Am J Roentgenol. 1996;166(3):531-536.',
     'Caoili EM, Korobkin M, Francis IR, Cohan RH, Platt JF, Dunnick NR, Raghupathi KI. Adrenal masses: characterization with combined unenhanced and delayed enhanced CT. Radiology. 2002;222(3):629-633.',
     'Blake MA, Kalra MK, Sweeney AT, Lucey BC, Maher MM, Sahani DV, Halpern EF, Mueller PR, Hahn PF, Boland GW. Distinguishing benign from malignant adrenal masses: multi-detector row CT protocol with 10-minute delay. Radiology. 2006;238(2):578-585.',
     'Kamiyama T, Fukukura Y, Yoneyama T, Takumi K, Nakajo M. Distinguishing adrenal adenomas from nonadenomas: combined use of diagnostic parameters of unenhanced and short 5-minute dynamic enhanced CT protocol. Radiology. 2009;250(2):474-481.',
+    'Kumagae Y, Fukukura Y, Takumi K, Shindo T, Tateyama A, Kamiyama T, Nakajo M, Yoshiura T. Distinguishing adrenal adenomas from non-adenomas on dynamic enhanced CT: a comparison of 5 and 10 min delays after intravenous contrast medium injection. Clin Radiol. 2013;68(7):696-703.',
+    'Liu T, Sun H, Zhang H, Duan J, Hu Y, Xie S. Distinguishing adrenal adenomas from non-adenomas with multidetector CT: evaluation of percentage washout values at a short time delay triphasic enhanced CT. 2019.',
     'Nandra G, Duxbury O, Patel P, Patel JH, Patel N, Vlahos I. Technical and interpretive pitfalls in adrenal imaging. Radiographics. 2020;40(4):1041-1060.',
+    'Schieda N, Siegelman ES. Update on CT and MRI of adrenal nodules. AJR Am J Roentgenol. 2017;208(6):1206-1217.',
     'O\'Brien A, Oyanedel R, Huete A, Cruz F, Menias C. Masas suprarrenales: evaluación por tomografía computada y resonancia magnética. Rev Chil Radiol. 2009;15(1):31-38.',
+    'Hevia-Morel J, Guzmán Moncada C, Huete Garín A. Glándulas suprarrenales en tomografía computarizada y resonancia magnética: hallazgos, protocolos de estudio y principales patologías en imagenología. Artículo de revisión (en preparación), Departamento de Radiología, Pontificia Universidad Católica de Chile.',
   ],
   adrenalMri: [
     'Mitchell DG, Crovello M, Matteucci T, Petersen RO, Miettinen MM. Benign adrenocortical masses: diagnosis with chemical shift MR imaging. Radiology. 1992;185(2):345-351.',
     'Israel GM, Korobkin M, Wang C, Hecht EN, Krinsky GA. Comparison of unenhanced CT and chemical shift MRI in evaluating lipid-rich adrenal adenomas. AJR Am J Roentgenol. 2004;183(1):215-219.',
+    'Adam SZ, Nikolaidis P, Horowitz JM, Gabriel H, Hammond NA, Patel T, Miller FH. Chemical shift MR imaging of the adrenal gland: principles, pitfalls, and applications. Radiographics. 2016;36(2):414-432.',
+    'Hevia-Morel J, Guzmán Moncada C, Huete Garín A. Glándulas suprarrenales en tomografía computarizada y resonancia magnética: hallazgos, protocolos de estudio y principales patologías en imagenología. Artículo de revisión (en preparación), Departamento de Radiología, Pontificia Universidad Católica de Chile.',
   ],
   siderosis: [
     'St Pierre TG, Clark PR, Chua-Anusorn W, et al. Noninvasive measurement and imaging of liver iron concentrations using proton magnetic resonance. Blood. 2005;105(2):855-861.',
