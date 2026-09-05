@@ -56,6 +56,7 @@ export const REFERENCES = {
     'Panebianco V, Narumi Y, Altun E, et al. Multiparametric magnetic resonance imaging for bladder cancer: development of VI-RADS (Vesical Imaging-Reporting And Data System). Eur Urol. 2018;74(3):294-306.',
     'Woo S, Panebianco V, Narumi Y, et al. Diagnostic performance of vesical imaging reporting and data system for the prediction of muscle-invasive bladder cancer: a systematic review and meta-analysis. Eur Urol Oncol. 2020;3(3):306-315.',
     'Luo C, Huang B, Wu Y, Chen J, Chen L. Use of vesical imaging-reporting and data system (VI-RADS) for detecting the muscle invasion of bladder cancer: a diagnostic meta-analysis. Eur Radiol. 2020;30(8):4606-4614.',
+    'Séguier D, Puech P, Kool R, et al. Multiparametric magnetic resonance imaging for bladder cancer: a comprehensive systematic review of the Vesical Imaging-Reporting and Data System (VI-RADS) performance and potential clinical applications. Ther Adv Urol. 2021;13:17562872211039538.',
     'Del Giudice F, Pecoraro M, Vargas HA, et al. Systematic review and meta-analysis of vesical imaging-reporting and data system (VI-RADS) inter-observer reliability: an added value for muscle invasive bladder cancer detection. Cancers (Basel). 2020;12(10):2994.',
   ],
   lirads: [
