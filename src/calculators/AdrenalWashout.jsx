@@ -72,11 +72,28 @@ export default function AdrenalWashout() {
 
   const showMyelolipoma = hasNc && hNc <= -20;
   const showPheo = hasVen && hVen > 110 && (!hasNc || hNc >= 10);
+  // Para el veredicto del cuadro de resultado (más estricto que showPheo):
+  // solo se marca cuando el precontraste fue medido y es > 10 UH.
+  const showPheoInVerdict = canPlr && hasVen && hVen > 110 && hasNc && hNc > 10;
   let sizeTier = null;
   if (hasSize) {
     if (hSize > 6) sizeTier = 'sizeVeryHigh';
     else if (hSize > 4) sizeTier = 'sizeHigh';
   }
+
+  // Cuando el lavado es compatible con adenoma pero igual existe una salvedad
+  // relevante (tamaño grande o impregnación PV sospechosa de feocromocitoma),
+  // el veredicto grande se reemplaza por una única frase que integra ambas,
+  // en un solo tamaño de letra (con color distinto por cada salvedad) en vez
+  // de un titular + una nota chica aparte.
+  const verdictCaveatParts = [];
+  if (sizeTier === 'sizeVeryHigh') verdictCaveatParts.push({ text: c.verdictSizeClauseVeryHigh, tone: 'text-red-500' });
+  else if (sizeTier === 'sizeHigh') verdictCaveatParts.push({ text: c.verdictSizeClauseHigh, tone: 'text-red-500' });
+  if (showPheoInVerdict) verdictCaveatParts.push({ text: c.verdictPheoClause, tone: 'text-amber-500' });
+  const hasVerdictCaveat = verdictCaveatParts.length > 0;
+  const verdictCaveatPlainText = hasVerdictCaveat
+    ? c.verdictAdenomaPrefix + verdictCaveatParts.map(p => p.text).join(c.verdictJoiner) + '.'
+    : null;
 
   const handleCopy = () => {
     const lines = [];
@@ -89,7 +106,8 @@ export default function AdrenalWashout() {
       lines.push(pla !== null ? c.reportLinePla(pla.toFixed(1), isAdenomaPla ? c.compatible : c.notSuggestive) : c.reportLinePlaNA);
       lines.push(c.reportLinePlr(plr.toFixed(1), isAdenomaPlr ? c.compatible : c.notSuggestive));
       if (kamiyama) lines.push(c.reportLineKamiyama(kamiyamaCount));
-      lines.push(c.reportConclusion(isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot));
+      const conclusionText = (isAdenomaWashout && hasVerdictCaveat) ? verdictCaveatPlainText : (isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot);
+      lines.push(c.reportConclusion(conclusionText));
     } else if (hasNc) {
       lines.push(c.reportNcOnlyTitle);
       lines.push(c.reportLineNc(nc));
@@ -193,9 +211,22 @@ export default function AdrenalWashout() {
         <StickyBar>
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{protocolLabel}</span>
-            <span className={`text-3xl font-black block mt-1 leading-tight ${isAdenomaWashout ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot}</span>
-            {sizeTier && (
-              <span className={`text-xs font-semibold block mt-2 ${sizeTier === 'sizeVeryHigh' ? 'text-red-500' : 'text-amber-500'}`}>
+            {isAdenomaWashout && hasVerdictCaveat ? (
+              <span className="text-xl font-bold block mt-1 leading-snug">
+                <span className="text-emerald-500">{c.verdictAdenomaPrefix}</span>
+                {verdictCaveatParts.map((part, i) => (
+                  <span key={i}>
+                    {i > 0 && <span className="text-emerald-500">{c.verdictJoiner}</span>}
+                    <span className={part.tone}>{part.text}</span>
+                  </span>
+                ))}
+                <span className="text-emerald-500">.</span>
+              </span>
+            ) : (
+              <span className={`text-3xl font-black block mt-1 leading-tight ${isAdenomaWashout ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot}</span>
+            )}
+            {!isAdenomaWashout && sizeTier && (
+              <span className={`text-base sm:text-lg font-bold block mt-2 ${sizeTier === 'sizeVeryHigh' ? 'text-red-500' : 'text-amber-500'}`}>
                 {sizeTier === 'sizeVeryHigh' ? c.sizeRiskShortVeryHigh : c.sizeRiskShortHigh}
               </span>
             )}
@@ -212,7 +243,7 @@ export default function AdrenalWashout() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.ncOnlyShortLabel}</span>
             <span className={`text-3xl font-black block mt-1 leading-tight ${ncResultTone}`}>{ncResultLabel}</span>
             {sizeTier && (
-              <span className={`text-xs font-semibold block mt-2 ${sizeTier === 'sizeVeryHigh' ? 'text-red-500' : 'text-amber-500'}`}>
+              <span className={`text-base sm:text-lg font-bold block mt-2 ${sizeTier === 'sizeVeryHigh' ? 'text-red-500' : 'text-amber-500'}`}>
                 {sizeTier === 'sizeVeryHigh' ? c.sizeRiskShortVeryHigh : c.sizeRiskShortHigh}
               </span>
             )}
