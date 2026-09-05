@@ -124,18 +124,18 @@ export default function AdrenalWashout() {
         <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.heterogeneousNote}</p>
       </Card>
 
-      {hasNc && (
+      {hasNc && !canPlr && (
         <Card>
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{c.ncOnlyTitle}</p>
           <div className="space-y-2 text-sm">
             {ncTier === 'ncHighSpec' && <InfoBox tone="emerald">{c.ncHighSpec}</InfoBox>}
             {ncTier === 'ncIndeterminate' && <InfoBox tone="amber">{c.ncIndeterminate}</InfoBox>}
             {ncTier === 'ncSuspiciousMalignant' && <InfoBox tone="amber">{c.ncSuspiciousMalignant}</InfoBox>}
-            {showMyelolipoma && <InfoBox tone="amber">{c.myelolipoma}</InfoBox>}
           </div>
         </Card>
       )}
 
+      {showMyelolipoma && <InfoBox tone="amber">{c.myelolipoma}</InfoBox>}
       {showPheo && <InfoBox tone="amber">{c.pheoCaution}</InfoBox>}
       {sizeTier === 'sizeHigh' && <InfoBox tone="amber">{c.sizeHigh}</InfoBox>}
       {sizeTier === 'sizeVeryHigh' && <InfoBox tone="amber">{c.sizeVeryHigh}</InfoBox>}
