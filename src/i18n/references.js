@@ -86,6 +86,16 @@ export const REFERENCES = {
   pancreasResect: [
     'Khasawneh H, Dalla Pria HRF, Miranda J, et al. CT imaging assessment of pancreatic adenocarcinoma resectability after neoadjuvant therapy: current status and perspective on the use of radiomics. J Clin Med. 2023;12(21):6821.',
   ],
+  liradsUs: [
+    'American College of Radiology. CT/MRI LI-RADS v2018 and LI-RADS Ultrasound Surveillance v2024 Core. Reston, VA: American College of Radiology; 2024.',
+    'Singal AG, Llovet JM, Yarchoan M, et al. AASLD Practice Guidance on prevention, diagnosis, and treatment of hepatocellular carcinoma. Hepatology. 2023;78(6):1922-1965.',
+  ],
+  spleenSize: [
+    'Chow KU, Luxembourg B, Seifried E, Bonig H. Spleen Size Is Significantly Influenced by Body Height and Sex: Establishment of Normal Values for Spleen Size at US with a Cohort of 1200 Healthy Individuals. Radiology. 2016;279(1):306-313.',
+  ],
+  cholangiocarcinoma: [
+    'Lee DH, Kim B, Lee ES, Kim HJ, Min JH, Lee JM, et al. Radiologic Evaluation and Structured Reporting Form for Extrahepatic Bile Duct Cancer: 2019 Consensus Recommendations from the Korean Society of Abdominal Radiology. Korean J Radiol. 2021;22(1):41-62.',
+  ],
   pancreaticCyst: [
     'Megibow AJ, Baker ME, Morgan DE, Kamel IR, Sahani DV, Newman E, Brugge WR, Berland LL, Pandharipande PV. Management of Incidental Pancreatic Cysts: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2017;14(7):911-923.',
     'Espino A, Vargas JI, Mancilla C, Muñoz P, Martínez W, Menéndez A, et al. Consenso chileno de diagnóstico y manejo de neoplasias quísticas pancreáticas. Club de Páncreas Chile-SCHGE. Rev Med Chile. 2021;149:1773-1786.',
@@ -108,6 +118,7 @@ export const REFERENCES = {
     'Qanadli SD, El Hajjam M, Vieillard-Baron A, et al. New CT index to quantify arterial obstruction in pulmonary embolism: comparison with angiographic index and echocardiography. AJR Am J Roentgenol. 2001;176(6):1415-1420.',
     'Mastora I, Remy-Jardin M, Masson P, et al. Severity of acute pulmonary embolism: evaluation of a new spiral CT angiographic score in correlation with echocardiographic data. Eur Radiol. 2003;13(1):29-35.',
     'Albrecht MH, Bickford MW, Nance JW Jr, et al. State-of-the-art pulmonary CT angiography for acute pulmonary embolism. AJR Am J Roentgenol. 2017;208(3):495-504.',
+    'Koweek LM, et al. PE-RADS: a proposed structured reporting system for CT pulmonary angiography in suspected acute pulmonary embolism. Radiology. 2026 (in press).',
   ],
   pancreatitisAtlanta: [
     'Banks PA, Bollen TL, Dervenis C, et al. Classification of acute pancreatitis—2012: revision of the Atlanta classification and definitions by international consensus. Gut. 2013;62(1):102-111.',

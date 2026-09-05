@@ -17,7 +17,9 @@ export default function PIRADS() {
   if (zone === 'pz') {
     if (dwi > 0) finalScore = (dwi === 3 && dce === '+') ? 4 : dwi;
   } else {
-    if (t2 > 0) finalScore = (t2 === 3 && dwi === 5) ? 4 : t2;
+    if (t2 === 2) finalScore = (dwi >= 4) ? 3 : 2;
+    else if (t2 === 3) finalScore = (dwi === 5) ? 4 : 3;
+    else if (t2 > 0) finalScore = t2;
   }
 
   const handleCopy = () => {
@@ -94,7 +96,7 @@ export default function PIRADS() {
               </div>
               {t2 > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.t2Defs[t2 - 1]}</p>}
             </div>
-            {t2 === 3 && (
+            {(t2 === 2 || t2 === 3) && (
               <div className="animate-in fade-in slide-in-from-top-2">
                 <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.dwiStep}</h3>
                 <div className="flex gap-2">
@@ -104,7 +106,7 @@ export default function PIRADS() {
                     </button>
                   ))}
                 </div>
-                <p className="text-xs text-slate-500 mt-2">{c.dwiNote}</p>
+                <p className="text-xs text-slate-500 mt-2">{t2 === 2 ? c.dwiNoteT2_2 : c.dwiNote}</p>
                 {dwi > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-snug">{c.dwiDefs[dwi - 1]}</p>}
               </div>
             )}

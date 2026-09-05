@@ -39,26 +39,33 @@ export default function UterineFibroids() {
   const [step1, setStep1] = useState(null);
   const [t2, setT2] = useState(null);
   const [dw, setDw] = useState(null);
+  const [adcMode, setAdcMode] = useState('quant'); // 'quant' | 'qual'
   const [adc, setAdc] = useState('');
+  const [adcQual, setAdcQual] = useState(null); // null | 'low' | 'high'
   const [margins, setMargins] = useState(null);
   const [menop, setMenop] = useState(null);
 
-  const handleStep1 = (v) => { setStep1(v); setT2(null); setDw(null); setAdc(''); setMargins(null); setMenop(null); };
-  const handleT2 = (v) => { setT2(v); setDw(null); setAdc(''); setMargins(null); setMenop(null); };
-  const handleDw = (v) => { setDw(v); setAdc(''); setMargins(null); setMenop(null); };
+  const resetAdcStep = () => { setAdcMode('quant'); setAdc(''); setAdcQual(null); setMargins(null); setMenop(null); };
+  const handleStep1 = (v) => { setStep1(v); setT2(null); setDw(null); resetAdcStep(); };
+  const handleT2 = (v) => { setT2(v); setDw(null); resetAdcStep(); };
+  const handleDw = (v) => { setDw(v); resetAdcStep(); };
   const handleMargins = (v) => { setMargins(v); setMenop(null); };
-  const resetRisk = () => { setStep1(null); setT2(null); setDw(null); setAdc(''); setMargins(null); setMenop(null); };
+  const resetRisk = () => { setStep1(null); setT2(null); setDw(null); resetAdcStep(); };
   const handleRiskBack = () => {
     if (menop !== null) { setMenop(null); return; }
     if (margins !== null) { setMargins(null); return; }
-    if (adc !== '') { setAdc(''); return; }
+    if (adc !== '' || adcQual !== null) { setAdc(''); setAdcQual(null); return; }
     if (dw !== null) { setDw(null); return; }
     if (t2 !== null) { setT2(null); return; }
     if (step1 !== null) { setStep1(null); return; }
   };
 
   const adcNum = adc === '' ? null : parseFloat(adc);
-  const adcValid = adcNum !== null && !isNaN(adcNum);
+  const adcNumValid = adcNum !== null && !isNaN(adcNum);
+  const hasAdcInput = adcMode === 'quant' ? adcNumValid : adcQual !== null;
+  // "restringido" equivale a ADC <= 1.23 x10^-3 mm^2/s (umbral cuantitativo validado);
+  // en modo cualitativo, "marcadamente bajo" se mapea a esa misma rama.
+  const adcRestricted = !hasAdcInput ? null : (adcMode === 'quant' ? adcNum <= 1.23 : adcQual === 'low');
 
   let resultKey = null;
   if (step1 === 'no') resultKey = 'score1';
@@ -67,8 +74,8 @@ export default function UterineFibroids() {
     else if (t2 === 'highInt') {
       if (dw === 'low') resultKey = 'score2';
       else if (dw === 'high') {
-        if (adcValid) {
-          if (adcNum > 1.23) resultKey = 'score2';
+        if (hasAdcInput) {
+          if (!adcRestricted) resultKey = 'score2';
           else if (margins === 'smooth') resultKey = 'score3';
           else if (margins === 'irregular') {
             if (menop === 'pre') resultKey = 'score4';
@@ -81,7 +88,7 @@ export default function UterineFibroids() {
   const resultObj = resultKey ? c[resultKey] : null;
   const scoreColor = !resultKey ? '' : (resultKey === 'score1' ? 'text-slate-500' : resultKey === 'score2' ? 'text-emerald-500' : resultKey === 'score3' ? 'text-amber-500' : 'text-red-500');
 
-  const showMarginsQ = step1 === 'yes' && t2 === 'highInt' && dw === 'high' && adcValid && adcNum <= 1.23;
+  const showMarginsQ = step1 === 'yes' && t2 === 'highInt' && dw === 'high' && hasAdcInput && adcRestricted;
   const showMenopQ = showMarginsQ && margins === 'irregular';
 
   const riskReportStr = (() => {
@@ -90,7 +97,11 @@ export default function UterineFibroids() {
     if (step1) parts.push(step1 === 'yes' ? c.step1Yes : c.step1No);
     if (t2) parts.push(t2 === 'low' ? c.step2Low : c.step2HighInt);
     if (dw) parts.push(dw === 'low' ? c.step3Low : c.step3High);
-    if (dw === 'high' && adcValid) parts.push(`ADC ${adc} × 10⁻³ mm²/s`);
+    if (dw === 'high' && hasAdcInput) {
+      parts.push(adcMode === 'quant'
+        ? `ADC ${adc} × 10⁻³ mm²/s`
+        : `${c.adcQualLabelShort} (${adcQual === 'low' ? c.step4QualLow : c.step4QualHigh}) — ${c.step4QualWarningShort}`);
+    }
     if (margins) parts.push(margins === 'smooth' ? c.step5Smooth : c.step5Irregular);
     if (menop) parts.push(menop === 'pre' ? c.step6Pre : c.step6Post);
     const path = parts.join('; ');
@@ -218,8 +229,24 @@ export default function UterineFibroids() {
       )}
 
       {step1 === 'yes' && t2 === 'highInt' && dw === 'high' && (
-        <Card>
-          <NumberField label={c.step4Q} value={adc} onChange={setAdc} placeholder={c.step4Ph} />
+        <Card className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.adcModeLabel}</label>
+            <div className="flex gap-2">
+              <button onClick={() => { setAdcMode('quant'); setAdcQual(null); }} className={`flex-1 py-2 rounded-lg font-medium border text-xs transition-all ${adcMode === 'quant' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.adcModeQuant}</button>
+              <button onClick={() => { setAdcMode('qual'); setAdc(''); }} className={`flex-1 py-2 rounded-lg font-medium border text-xs transition-all ${adcMode === 'qual' ? 'border-amber-500 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.adcModeQual}</button>
+            </div>
+          </div>
+          {adcMode === 'quant' ? (
+            <NumberField label={c.step4Q} value={adc} onChange={setAdc} placeholder={c.step4Ph} />
+          ) : (
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{c.step4QualLabel}</label>
+              <button onClick={() => setAdcQual('low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${adcQual === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step4QualLow}</button>
+              <button onClick={() => setAdcQual('high')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${adcQual === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step4QualHigh}</button>
+              <InfoBox tone="amber">{c.step4QualWarning}</InfoBox>
+            </div>
+          )}
         </Card>
       )}
 
