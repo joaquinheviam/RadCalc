@@ -107,6 +107,11 @@ export default function AdrenalCSI() {
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{method === 'sii' ? c.siiIndex : c.csiIndex}</span>
             <span className={`text-4xl font-black block mt-1 ${isValid ? (isAdenoma ? 'text-emerald-500' : 'text-amber-500') : 'text-slate-400'}`}>{isValid ? (method === 'sii' ? sii : asr).toFixed(1) + '%' : '—'}</span>
+            {isValid && (
+              <span className={`text-sm font-semibold block mt-1 ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>
+                {isAdenoma ? c.resultAdenoma : c.resultIndeterminate}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

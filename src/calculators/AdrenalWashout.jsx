@@ -67,6 +67,9 @@ export default function AdrenalWashout() {
     else ncTier = 'ncSuspiciousMalignant';
   }
 
+  const ncResultLabel = ncTier === 'ncHighSpec' ? c.compatible : ncTier === 'ncIndeterminate' ? c.ncResultIndeterminate : ncTier === 'ncSuspiciousMalignant' ? c.ncResultSuspicious : null;
+  const ncResultTone = ncTier === 'ncHighSpec' ? 'text-emerald-500' : ncTier === 'ncIndeterminate' ? 'text-amber-500' : 'text-red-500';
+
   const showMyelolipoma = hasNc && hNc <= -20;
   const showPheo = hasVen && hVen > 110 && (!hasNc || hNc >= 10);
   let sizeTier = null;
@@ -98,7 +101,7 @@ export default function AdrenalWashout() {
   const resetAll = () => { setProtocol('p15'); setNc(''); setVen(''); setDel(''); setSize(''); };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${canPlr ? 'pb-56' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${(canPlr || hasNc) ? 'pb-56' : ''}`}>
       <Card>
         <div>
           <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.protocol}</label>
@@ -191,6 +194,28 @@ export default function AdrenalWashout() {
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{protocolLabel}</span>
             <span className={`text-3xl font-black block mt-1 leading-tight ${isAdenomaWashout ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot}</span>
+            {sizeTier && (
+              <span className={`text-xs font-semibold block mt-2 ${sizeTier === 'sizeVeryHigh' ? 'text-red-500' : 'text-amber-500'}`}>
+                {sizeTier === 'sizeVeryHigh' ? c.sizeRiskShortVeryHigh : c.sizeRiskShortHigh}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          </div>
+        </StickyBar>
+      )}
+      {!canPlr && hasNc && (
+        <StickyBar>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.ncOnlyShortLabel}</span>
+            <span className={`text-3xl font-black block mt-1 leading-tight ${ncResultTone}`}>{ncResultLabel}</span>
+            {sizeTier && (
+              <span className={`text-xs font-semibold block mt-2 ${sizeTier === 'sizeVeryHigh' ? 'text-red-500' : 'text-amber-500'}`}>
+                {sizeTier === 'sizeVeryHigh' ? c.sizeRiskShortVeryHigh : c.sizeRiskShortHigh}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />
