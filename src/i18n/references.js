@@ -148,6 +148,7 @@ export const REFERENCES = {
     'Raghu G, Remy-Jardin M, Richeldi L, et al. Idiopathic Pulmonary Fibrosis (an Update) and Progressive Pulmonary Fibrosis in Adults: An Official ATS/ERS/JRS/ALAT Clinical Practice Guideline. Am J Respir Crit Care Med. 2022;205(9):e18-e47.',
     'Dulcich M, et al. Smoking-related interstitial lung disease: imaging spectrum and diagnostic pitfalls. RadioGraphics.',
     'Chung JH, Cox CW, Montner SM, et al. CT Features of the Usual Interstitial Pneumonia Pattern: Differentiating Connective Tissue Disease-Associated Interstitial Lung Disease from Idiopathic Pulmonary Fibrosis. AJR Am J Roentgenol. 2018;210(2):307-313.',
+    'Ahuja J, Arora D, Kanne JP, Henry TS, Godwin JD. Imaging of Pulmonary Manifestations of Connective Tissue Diseases. Radiol Clin North Am. 2016;54(6):1015-1031.',
     'Raghu G, Remy-Jardin M, Ryerson CJ, et al. Diagnosis of Hypersensitivity Pneumonitis in Adults: An Official ATS/JRS/ALAT Clinical Practice Guideline. Am J Respir Crit Care Med. 2020;202(3):e36-e69.',
   ],
 };

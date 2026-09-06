@@ -101,13 +101,22 @@ export default function ILDClassifier() {
   const [threeDensity, setThreeDensity] = useState(false);
   const [consolidationOP, setConsolidationOP] = useState(false);
   const [subpleuralSparing, setSubpleuralSparing] = useState(false);
+  const [extensiveGGO, setExtensiveGGO] = useState(false);
+
+  // Antecedente de conectivopatía conocida (independiente de los signos morfológicos de Etapa 2)
+  const [ctdKnown, setCtdKnown] = useState('none'); // 'none','sle','sjogren','ssc','ra','pmdm','mctd'
 
   // --- Cálculos auxiliares de Etapa 2 (patrón), necesarios también para saber
   // si hay un "patrón fibrótico mayor" (criterio de EPID de la Tabla 3) ---
   const isFibroticFeature = feature === 'traction' || feature === 'honeycombing';
   const hasInconsistentDistribution = distribution === 'peribronchovascular' || distribution === 'upperMid';
-  const hasInconsistentFeatures = consolidationOP || ggoCentrilobular || threeDensity || cystsPLCH || cystsSRIF || subpleuralSparing;
-  const hasCTDSigns = straightEdge || exuberantHC || anteriorUpper || esophagus;
+  const hasInconsistentFeatures = consolidationOP || ggoCentrilobular || threeDensity || cystsPLCH || cystsSRIF || subpleuralSparing || extensiveGGO;
+  // Signos morfológicos específicos de CTD (Chung et al. 2018) — se usan para el mensaje msgCTDSuspect,
+  // que cita explícitamente esos tres signos y por eso no debe incluir la dilatación esofágica.
+  const hasCTDMorphSigns = straightEdge || exuberantHC || anteriorUpper;
+  // hasCTDSigns se mantiene con su significado original (incluye dilatación esofágica) porque también
+  // se usa para gatillar isFibroticNSIP y uipCategory === 'ALTERNATIVE'.
+  const hasCTDSigns = hasCTDMorphSigns || esophagus;
 
   let uipCategory = 'INDETERMINATE'; // 'TYPICAL', 'PROBABLE', 'INDETERMINATE', 'ALTERNATIVE'
   if (hasInconsistentDistribution || hasInconsistentFeatures) {
@@ -122,8 +131,19 @@ export default function ILDClassifier() {
 
   const isHPFibrotic = (threeDensity || distribution === 'peribronchovascular') && isFibroticFeature;
   const isFibroticNSIP = subpleuralSparing && !hasCTDSigns && isFibroticFeature;
-  // Tabla 3 (ATS 2025), criterio de imagen "patrón fibrótico mayor": UIP/probable UIP, HP fibrótica o NSIP fibrótica
-  const majorFibroticPattern = uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' || isHPFibrotic || isFibroticNSIP;
+  // Tabla 3 (ATS 2025), criterio de imagen "patrón fibrótico mayor": UIP/probable UIP, HP fibrótica o NSIP fibrótica.
+  // Bug corregido: este criterio de patrón SOLO cuenta como criterio de EPID
+  // si además alcanza ≥5% del volumen pulmonar TOTAL (volTotal === 'ge5'),
+  // no solo ≥5% de una zona (extentZone). Antes, elegir panal/bronquiectasias
+  // de tracción con la distribución subpleural-basal por defecto marcaba
+  // uipCategory como TYPICAL/PROBABLE y eso solo ya forzaba EPID sin mirar la
+  // extensión — así que un hallazgo focal (<5% del volumen total) que
+  // debería quedar como ILA subtipo "Subpleural Fibrótica" (alto riesgo de
+  // progresión, ver ilaSubFibrotic más abajo) terminaba clasificado como
+  // EPID franca. Con la extensión ≥5% de una zona pero <5% del volumen
+  // total, ahora sí puede quedar como ILA (siempre que no haya síntomas,
+  // progresión radiológica u otro criterio de Tabla 3 independiente).
+  const majorFibroticPattern = volTotal === 'ge5' && (uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' || isHPFibrotic || isFibroticNSIP);
 
   // --- Etapa 1 (ATS 2025): ¿ILA, EPID franca, o ninguno? ---
   const isSymptomatic = symptoms === true || pftAbnormal === true; // Tabla 3: Síntomas O Fisiología
@@ -153,8 +173,14 @@ export default function ILDClassifier() {
   // --- Etapa 2: Diagnósticos Alternativos Sugeridos (solo relevantes si entityType === 'EPID') ---
   let alternativeDetails = [];
   if (uipCategory === 'ALTERNATIVE' || hasCTDSigns) {
-    if (hasCTDSigns || subpleuralSparing) {
+    if (hasCTDMorphSigns || subpleuralSparing) {
       alternativeDetails.push(c.msgCTDSuspect);
+    }
+    if (esophagus) {
+      alternativeDetails.push(c.msgEsophagusSuspect);
+    }
+    if (extensiveGGO) {
+      alternativeDetails.push(c.msgExtensiveGGOSuspect);
     }
     if (cystsSRIF) {
       alternativeDetails.push(c.msgSRIFSuspect);
@@ -174,7 +200,35 @@ export default function ILDClassifier() {
     if (consolidationOP) {
       alternativeDetails.push(c.msgOPSuspect);
     }
+  } else {
+    // extensiveGGO es un hallazgo inconsistente por sí mismo (independiente de uipCategory/hasCTDSigns):
+    // aunque el resto del patrón sea típico, un vidrio esmerilado extenso amerita la misma advertencia.
+    if (extensiveGGO) {
+      alternativeDetails.push(c.msgExtensiveGGOSuspect);
+    }
   }
+
+  // Antecedente de conectivopatía CONOCIDA (Ahuja et al. 2016, Tabla 2): sugiere el patrón de EPID más
+  // frecuentemente descrito para esa conectivopatía, independientemente de los signos morfológicos de
+  // Etapa 2 — por eso va fuera del bloque condicionado a uipCategory/hasCTDSigns de arriba.
+  const CTD_PATTERNS = {
+    sle: { label: c.ctdOptSLE, pattern: c.ctdPatternSLE },
+    sjogren: { label: c.ctdOptSjogren, pattern: c.ctdPatternSjogren },
+    ssc: { label: c.ctdOptSSc, pattern: c.ctdPatternSSc },
+    ra: { label: c.ctdOptRA, pattern: c.ctdPatternRA },
+    pmdm: { label: c.ctdOptPMDM, pattern: c.ctdPatternPMDM },
+    mctd: { label: c.ctdOptMCTD, pattern: c.ctdPatternMCTD },
+  };
+  const ctdSelected = CTD_PATTERNS[ctdKnown] || null;
+  if (ctdSelected) {
+    alternativeDetails.push(
+      `${c.msgCTDPatternIntro} ${ctdSelected.label}, ${c.msgCTDPatternRef}: ${ctdSelected.pattern} (Ahuja et al. 2016).`
+    );
+  }
+
+  // Cuando hay EPID franca y además hay indicios de conectivopatía (signos morfológicos, dilatación
+  // esofágica, o antecedente conocido), se agrega la coletilla solicitada al patrón final.
+  const ctdIndicated = hasCTDSigns || Boolean(ctdSelected);
 
   // El resultado se muestra apenas el usuario empieza a interactuar con el formulario,
   // para cualquiera de las 3 entidades (incluyendo "sin criterios de ILA ni EPID").
@@ -182,7 +236,8 @@ export default function ILDClassifier() {
     extentZone !== 'under5' || volTotal !== 'under5' ||
     distribution !== 'subpleuralBasal' || feature !== 'ggo' ||
     straightEdge || exuberantHC || anteriorUpper || esophagus ||
-    smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity || consolidationOP || subpleuralSparing;
+    smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity || consolidationOP || subpleuralSparing ||
+    extensiveGGO || ctdKnown !== 'none';
 
   const showResult = started;
 
@@ -205,6 +260,8 @@ export default function ILDClassifier() {
     setThreeDensity(false);
     setConsolidationOP(false);
     setSubpleuralSparing(false);
+    setExtensiveGGO(false);
+    setCtdKnown('none');
   };
 
   const entityLabel = entityType === 'EPID' ? c.resEPID : entityType === 'ILA' ? c.resILA : c.resNormal;
@@ -221,6 +278,13 @@ export default function ILDClassifier() {
     ? ilaSubtype
     : c.msgNormalExplain;
 
+  // Coletilla "consistente con EPID asociada a conectivopatía de base": solo cuando la clasificación
+  // final es EPID franca y hay indicios de conectivopatía (signos morfológicos, dilatación esofágica,
+  // o antecedente conocido seleccionado arriba).
+  const patternLabelFinal = (entityType === 'EPID' && ctdIndicated)
+    ? `${patternLabel} — ${c.msgCTDAssociatedSuffix}`
+    : patternLabel;
+
   const handleCopy = () => {
     const lines = [
       c.reportTitle,
@@ -230,7 +294,7 @@ export default function ILDClassifier() {
       lines.push(`${c.reportSubtypeLabel} ${ilaSubtype}`);
     }
     if (entityType === 'EPID') {
-      lines.push(`${c.reportPatternLabel} ${patternLabel}`);
+      lines.push(`${c.reportPatternLabel} ${patternLabelFinal}`);
       if (alternativeDetails.length > 0) {
         lines.push(`${c.reportAltLabel}\n- ${alternativeDetails.join('\n- ')}`);
       }
@@ -287,6 +351,24 @@ export default function ILDClassifier() {
             ]}
           />
         </div>
+      </Card>
+
+      {/* Antecedente de Conectivopatía Conocida (independiente de los signos morfológicos de Etapa 2) */}
+      <Card>
+        <OptionList
+          label={c.ctdSelectorLabel}
+          value={ctdKnown}
+          onChange={setCtdKnown}
+          options={[
+            { key: 'none', label: c.ctdOptNone },
+            { key: 'sle', label: c.ctdOptSLE },
+            { key: 'sjogren', label: c.ctdOptSjogren },
+            { key: 'ssc', label: c.ctdOptSSc },
+            { key: 'ra', label: c.ctdOptRA },
+            { key: 'pmdm', label: c.ctdOptPMDM },
+            { key: 'mctd', label: c.ctdOptMCTD }
+          ]}
+        />
       </Card>
 
       {/* Sección 2: Tomografía Computada */}
@@ -356,6 +438,24 @@ export default function ILDClassifier() {
               className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
             />
             <span className="text-sm text-slate-700 dark:text-slate-300">{c.subpleuralSparing}</span>
+          </label>
+          <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={esophagus}
+              onChange={(e) => setEsophagus(e.target.checked)}
+              className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.signEsophagus}</span>
+          </label>
+          <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={extensiveGGO}
+              onChange={(e) => setExtensiveGGO(e.target.checked)}
+              className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.extensiveGGO}</span>
           </label>
         </div>
       </Card>
@@ -437,7 +537,7 @@ export default function ILDClassifier() {
 
             {entityType !== 'NORMAL_OR_MINIMAL' && (
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                {patternLabel}
+                {patternLabelFinal}
               </h3>
             )}
 
@@ -481,7 +581,7 @@ export default function ILDClassifier() {
                 {entityLabel}
               </div>
               <div className="text-base font-bold text-slate-900 dark:text-white">
-                {entityType === 'NORMAL_OR_MINIMAL' ? c.resNormal : patternLabel}
+                {entityType === 'NORMAL_OR_MINIMAL' ? c.resNormal : patternLabelFinal}
               </div>
             </div>
             <div className="flex items-center gap-2">
