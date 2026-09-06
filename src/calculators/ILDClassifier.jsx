@@ -83,6 +83,10 @@ export default function ILDClassifier() {
   const [progressionCT, setProgressionCT] = useState(null);
   const [extentZone, setExtentZone] = useState('under5'); // 'under5', 'ge5' — Tabla 1 (criterio de ILA)
   const [volTotal, setVolTotal] = useState('under5'); // 'under5', 'ge5' — Tabla 3 (criterio de EPID por imagen)
+  // Override de criterio clínico ("gestalt"): permite clasificar como EPID franca por magnitud/extensión
+  // aunque el patrón no sea fibrótico (p. ej. vidrio esmerilado extenso/difuso), sin pasar por el
+  // selector de % de volumen (que exige patrón fibrótico — Tabla 3 ATS 2025).
+  const [majorInterstitialDisease, setMajorInterstitialDisease] = useState(false);
 
   // Etapa 2: caracterización del patrón (solo se muestra en detalle si entityType === 'EPID')
   const [distribution, setDistribution] = useState('subpleuralBasal');
@@ -101,6 +105,8 @@ export default function ILDClassifier() {
   const [ggoCentrilobular, setGgoCentrilobular] = useState(false);
   const [threeDensity, setThreeDensity] = useState(false);
   const [consolidationOP, setConsolidationOP] = useState(false);
+  const [consolidationPeribronchovascular, setConsolidationPeribronchovascular] = useState(false);
+  const [consolidationPerilobular, setConsolidationPerilobular] = useState(false);
   const [subpleuralSparing, setSubpleuralSparing] = useState(false);
   const [extensiveGGO, setExtensiveGGO] = useState(false);
 
@@ -111,7 +117,10 @@ export default function ILDClassifier() {
   // si hay un "patrón fibrótico mayor" (criterio de EPID de la Tabla 3) ---
   const isFibroticFeature = feature === 'traction' || feature === 'honeycombing';
   const hasInconsistentDistribution = distribution === 'peribronchovascular' || distribution === 'upperMid';
-  const hasInconsistentFeatures = consolidationOP || ggoCentrilobular || threeDensity || cystsPLCH || cystsSRIF || subpleuralSparing || extensiveGGO;
+  // Consolidaciones sugerentes de OP (Neumonía Organizada): parcheadas/halo invertido, o de distribución
+  // peribroncovascular o perilobulillar (arciforme) — cualquiera de las tres amerita sospecha de OP.
+  const hasOPSigns = consolidationOP || consolidationPeribronchovascular || consolidationPerilobular;
+  const hasInconsistentFeatures = hasOPSigns || ggoCentrilobular || threeDensity || cystsPLCH || cystsSRIF || subpleuralSparing || extensiveGGO;
   // Signos morfológicos específicos de CTD (Chung et al. 2018) — se usan para el mensaje msgCTDSuspect,
   // que cita explícitamente esos tres signos y por eso no debe incluir la dilatación esofágica.
   const hasCTDMorphSigns = straightEdge || exuberantHC || anteriorUpper;
@@ -131,7 +140,13 @@ export default function ILDClassifier() {
     uipCategory = 'INDETERMINATE';
   }
 
-  const isHPFibrotic = (threeDensity || distribution === 'peribronchovascular') && isFibroticFeature;
+  // Signos de "enfermedad de la vía aérea pequeña" (Tablas 5/6, ATS 2020: nódulos centrolobulillares mal
+  // definidos, mosaico/atrapamiento aéreo, patrón de tres densidades) — junto con un hallazgo de infiltración
+  // parenquimatosa/fibrosis (siempre presente, ya que "feature" es obligatorio), sugieren BIP/HP. Los nódulos
+  // centrilobulillares en vidrio deslustrado (ggoCentrilobular) SOLO cuentan aquí si el paciente NO fuma:
+  // en fumadores, ese mismo hallazgo se atribuye primero a RB-ILD (ver más abajo).
+  const hasSmallAirwaySign = threeDensity || distribution === 'peribronchovascular' || (ggoCentrilobular && !smokingHistory);
+  const isHPFibrotic = hasSmallAirwaySign && isFibroticFeature;
   const isFibroticNSIP = subpleuralSparing && !hasCTDSigns && isFibroticFeature;
   // Tabla 3 (ATS 2025), criterio de imagen "patrón fibrótico mayor": UIP/probable UIP, HP fibrótica o NSIP fibrótica.
   // Bug corregido: este criterio de patrón SOLO cuenta como criterio de EPID
@@ -152,7 +167,10 @@ export default function ILDClassifier() {
   const meetsZoneILA = extentZone === 'ge5'; // Tabla 1: ≥5% de al menos una zona pulmonar
   const meetsImagingILDExtent = volTotal === 'ge5' && isFibroticFeature; // Tabla 3: ≥5% del volumen pulmonar total, con patrón fibrótico
   const meetsProgression = progressionCT === true; // Tabla 3: progresión radiológica en TC seriada
-  const meetsILD = isSymptomatic || meetsImagingILDExtent || meetsProgression || majorFibroticPattern;
+  // Override de criterio clínico: permite EPID franca por magnitud/extensión aunque el patrón no sea
+  // fibrótico (p. ej. vidrio esmerilado extenso/difuso), sin exigir el criterio de imagen de la Tabla 3
+  // (que requiere patrón fibrótico). Queda a criterio del radiólogo, vía el checkbox correspondiente.
+  const meetsILD = isSymptomatic || meetsImagingILDExtent || meetsProgression || majorFibroticPattern || majorInterstitialDisease;
 
   let entityType; // 'EPID', 'ILA', 'NORMAL_OR_MINIMAL'
   let ilaSubtype = null; // 'Nonsubpleural', 'SubpleuralNonFibrotic', 'SubpleuralFibrotic'
@@ -184,10 +202,9 @@ export default function ILDClassifier() {
     if (axillaryLymph) {
       alternativeDetails.push(c.msgAxillaryLymphSuspect);
     }
-    if (extensiveGGO) {
-      alternativeDetails.push(c.msgExtensiveGGOSuspect);
-    }
-    if (cystsSRIF) {
+    // cystsSRIF (SRIF/AEF) solo se nombra en fumadores: sin historia de tabaquismo, quistes irregulares
+    // no deben atribuirse a SRIF (aunque igual cuentan como hallazgo inconsistente con UIP más arriba).
+    if (cystsSRIF && smokingHistory) {
       alternativeDetails.push(c.msgSRIFSuspect);
     }
     if (cystsPLCH) {
@@ -196,20 +213,18 @@ export default function ILDClassifier() {
     if (ggoCentrilobular && smokingHistory) {
       alternativeDetails.push(c.msgRBILDSuspect);
     }
-    if (threeDensity || distribution === 'peribronchovascular') {
-      alternativeDetails.push(`${c.msgBIPHPSuspect} (${isHPFibrotic ? c.msgBIPFibr : c.msgBIPNonFibr})`);
+    // Signos de enfermedad de la vía aérea pequeña (mosaico/tres densidades, distribución peribroncovascular,
+    // o nódulos centrilobulillares en vidrio deslustrado SIN tabaquismo): sugieren BIP/HP. Se especifica
+    // además si el patrón corresponde a distribución típica (difusa) o compatible/variante (Tablas 5/6, ATS 2020).
+    if (hasSmallAirwaySign) {
+      const hpTier = distribution === 'diffuse' ? c.msgHPTierTypical : c.msgHPTierCompatible;
+      alternativeDetails.push(`${c.msgBIPHPSuspect} (${isHPFibrotic ? c.msgBIPFibr : c.msgBIPNonFibr}; ${hpTier})`);
     }
     if (subpleuralSparing && !hasCTDSigns) {
       alternativeDetails.push(c.msgNSIPSuspect);
     }
-    if (consolidationOP) {
+    if (hasOPSigns) {
       alternativeDetails.push(c.msgOPSuspect);
-    }
-  } else {
-    // extensiveGGO es un hallazgo inconsistente por sí mismo (independiente de uipCategory/hasCTDSigns):
-    // aunque el resto del patrón sea típico, un vidrio esmerilado extenso amerita la misma advertencia.
-    if (extensiveGGO) {
-      alternativeDetails.push(c.msgExtensiveGGOSuspect);
     }
   }
 
@@ -235,6 +250,27 @@ export default function ILDClassifier() {
   // esofágica, adenopatía axilar, o antecedente conocido), se agrega la coletilla solicitada al patrón final.
   const ctdIndicated = hasCTDSigns || Boolean(ctdSelected);
 
+  // Etiquetas cortas (sin citas) de los signos morfológicos de CTD, para construir la coletilla dinámica
+  // cuando la sospecha es solo por hallazgos (sin antecedente conocido de conectivopatía).
+  const ctdSignLabels = [];
+  if (straightEdge) ctdSignLabels.push(c.signStraightEdgeShort);
+  if (exuberantHC) ctdSignLabels.push(c.signExuberantHCShort);
+  if (anteriorUpper) ctdSignLabels.push(c.signAnteriorUpperShort);
+  if (esophagus) ctdSignLabels.push(c.signEsophagusShort);
+  if (axillaryLymph) ctdSignLabels.push(c.signAxillaryLymphShort);
+
+  // Texto de la coletilla: si hay un antecedente de conectivopatía YA CONOCIDO (ctdKnown), se mantiene la
+  // frase afirmativa "consistente con EPID asociada a conectivopatía de base". Si la sospecha surge solo de
+  // hallazgos morfológicos (sin diagnóstico conocido), se usa una frase más cautelosa que nombra el/los
+  // signo(s) presente(s): "...; la asociación a [signos] hace considerar una posible asociación a conectivopatía".
+  const ctdSuffixText = !ctdIndicated
+    ? null
+    : ctdKnown !== 'none'
+    ? c.msgCTDAssociatedSuffix
+    : ctdSignLabels.length > 0
+    ? `${c.msgCTDSuspectSuffixIntro} ${ctdSignLabels.join(', ')} ${c.msgCTDSuspectSuffixEnd}`
+    : c.msgCTDAssociatedSuffix;
+
   // --- Nombre específico del "patrón inconsistente con UIP" (antes solo se mostraba como titular
   // genérico "Patrón Inconsistente con UIP", con el diagnóstico específico escondido dentro del
   // cuadro de sugerencias). Ahora SRIF, PLCH, RB-ILD, HP fibrótica/no fibrótica, NSIP y OP pueden
@@ -247,13 +283,15 @@ export default function ILDClassifier() {
   if (uipCategory === 'ALTERNATIVE') {
     if (cystsPLCH) {
       altDiagnosisName = c.resAltPLCH;
-    } else if (cystsSRIF) {
+    } else if (cystsSRIF && smokingHistory) {
       altDiagnosisName = c.resAltSRIF;
-    } else if (threeDensity || distribution === 'peribronchovascular') {
-      altDiagnosisName = isHPFibrotic ? c.resAltHPFibrotic : c.resAltHPNonFibrotic;
+    } else if (hasSmallAirwaySign) {
+      // El titular se mantiene como "Inconsistente con UIP" con la sospecha de BIP anexada; el desglose
+      // fibrótica/no fibrótica (Tablas 5/6, ATS 2020) queda para el cuadro de sugerencias, no el titular.
+      altDiagnosisName = c.resAltBIPSuspect;
     } else if (ggoCentrilobular && smokingHistory) {
       altDiagnosisName = c.resAltRBILD;
-    } else if (consolidationOP) {
+    } else if (hasOPSigns) {
       altDiagnosisName = c.resAltOP;
     } else if (subpleuralSparing && !hasCTDSigns) {
       altDiagnosisName = isFibroticFeature ? c.resAltNSIPFibrotic : c.resAltNSIP;
@@ -263,10 +301,11 @@ export default function ILDClassifier() {
   // El resultado se muestra apenas el usuario empieza a interactuar con el formulario,
   // para cualquiera de las 3 entidades (incluyendo "sin criterios de ILA ni EPID").
   const started = symptoms !== null || pftAbnormal !== null || progressionCT !== null ||
-    extentZone !== 'under5' || volTotal !== 'under5' ||
+    extentZone !== 'under5' || volTotal !== 'under5' || majorInterstitialDisease ||
     distribution !== 'subpleuralBasal' || feature !== 'ggo' ||
     straightEdge || exuberantHC || anteriorUpper || esophagus || axillaryLymph ||
-    smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity || consolidationOP || subpleuralSparing ||
+    smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity ||
+    consolidationOP || consolidationPeribronchovascular || consolidationPerilobular || subpleuralSparing ||
     extensiveGGO || ctdKnown !== 'none';
 
   const showResult = started;
@@ -277,6 +316,7 @@ export default function ILDClassifier() {
     setProgressionCT(null);
     setExtentZone('under5');
     setVolTotal('under5');
+    setMajorInterstitialDisease(false);
     setDistribution('subpleuralBasal');
     setFeature('ggo');
     setStraightEdge(false);
@@ -290,6 +330,8 @@ export default function ILDClassifier() {
     setGgoCentrilobular(false);
     setThreeDensity(false);
     setConsolidationOP(false);
+    setConsolidationPeribronchovascular(false);
+    setConsolidationPerilobular(false);
     setSubpleuralSparing(false);
     setExtensiveGGO(false);
     setCtdKnown('none');
@@ -309,12 +351,17 @@ export default function ILDClassifier() {
     ? ilaSubtype
     : c.msgNormalExplain;
 
-  // Coletilla "consistente con EPID asociada a conectivopatía de base": solo cuando la clasificación
-  // final es EPID franca y hay indicios de conectivopatía (signos morfológicos, dilatación esofágica,
-  // o antecedente conocido seleccionado arriba).
-  const patternLabelFinal = (entityType === 'EPID' && ctdIndicated)
-    ? `${patternLabel} — ${c.msgCTDAssociatedSuffix}`
+  // Coletilla de conectivopatía: separador "—" (afirmativo) si hay antecedente CONOCIDO; separador ";"
+  // (más cauteloso, nombrando los signos presentes) si la sospecha surge solo de hallazgos morfológicos.
+  const patternLabelFinal = (entityType === 'EPID' && ctdSuffixText)
+    ? (ctdKnown !== 'none' ? `${patternLabel} — ${ctdSuffixText}` : `${patternLabel}; ${ctdSuffixText}`)
     : patternLabel;
+
+  // Vidrio esmerilado extenso, o un patrón cuya característica predominante YA ES vidrio esmerilado (feature
+  // === 'ggo'): en ambos casos se sugiere, de forma prominente en el cuadro de resultado (no solo como nota
+  // secundaria), diferir la clasificación definitiva y documentar persistencia o control en 3-6 meses, para
+  // descartar un componente de infección o exacerbación aguda sobreagregada.
+  const showGGOCaution = entityType === 'EPID' && (extensiveGGO || feature === 'ggo');
 
   const handleCopy = () => {
     const lines = [
@@ -358,6 +405,13 @@ export default function ILDClassifier() {
             label={c.progressionLabel}
             value={progressionCT}
             onChange={setProgressionCT}
+            yesLabel={t.common.yes}
+            noLabel={t.common.no}
+          />
+          <YesNo
+            label={c.majorInterstitialLabel}
+            value={majorInterstitialDisease}
+            onChange={setMajorInterstitialDisease}
             yesLabel={t.common.yes}
             noLabel={t.common.no}
           />
@@ -558,6 +612,24 @@ export default function ILDClassifier() {
             />
             <span className="text-sm text-slate-700 dark:text-slate-300">{c.consolidationOP}</span>
           </label>
+          <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={consolidationPeribronchovascular}
+              onChange={(e) => setConsolidationPeribronchovascular(e.target.checked)}
+              className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.consolidationPeribronchovascular}</span>
+          </label>
+          <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={consolidationPerilobular}
+              onChange={(e) => setConsolidationPerilobular(e.target.checked)}
+              className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.consolidationPerilobular}</span>
+          </label>
         </div>
       </Card>
 
@@ -591,6 +663,10 @@ export default function ILDClassifier() {
 
             {entityType === 'EPID' && (uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE') && (
               <p className="text-sm text-slate-600 dark:text-slate-400">{c.msgIPFSuspect}</p>
+            )}
+
+            {entityType === 'EPID' && showGGOCaution && (
+              <InfoBox tone="slate">{c.msgExtensiveGGOSuspect}</InfoBox>
             )}
 
             {entityType === 'EPID' && alternativeDetails.length > 0 && (
