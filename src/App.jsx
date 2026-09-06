@@ -1,3 +1,5 @@
+import InstallPromptIOS from './components/InstallPromptIOS';
+import UpdateToast from './components/UpdateToast';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { LangContext } from './i18n/LangContext.js';
 import { STRINGS } from './i18n/strings.js';
@@ -81,10 +83,6 @@ export default function App() {
   const searchResults = useMemo(() => {
     if (!normalizedQuery) return null;
     return calculators.filter((cc) => {
-      // Se busca en ambos idiomas a la vez (títulos y términos de búsqueda de
-      // ES y EN), sin importar el idioma activo de la interfaz. Así, alguien
-      // que use la app en español pero escriba un término en inglés (o
-      // viceversa) igual encuentra la calculadora.
       const titleEs = STRINGS.es.calc[cc.id] ? STRINGS.es.calc[cc.id].title : '';
       const titleEn = STRINGS.en.calc[cc.id] ? STRINGS.en.calc[cc.id].title : '';
       const termsEs = (SEARCH_TERMS.es && SEARCH_TERMS.es[cc.id]) || [];
@@ -250,6 +248,10 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* Prompts y notificaciones PWA */}
+      <UpdateToast />
+      <InstallPromptIOS />
     </LangContext.Provider>
   );
 }
