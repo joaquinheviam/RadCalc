@@ -37,6 +37,7 @@ export default function PancreaticCyst() {
   const c = t.calc.pancreaticCyst;
 
   const [diagnosis, setDiagnosis] = useState('indeterminate'); // 'indeterminate' | 'sca' | 'pseudocyst' | 'spn'
+  const [scaConfidence, setScaConfidence] = useState(null); // null | 'typical' | 'atypical' — solo aplica si diagnosis === 'sca'
   const [size, setSize] = useState('');
   const [symptomatic, setSymptomatic] = useState(null); // true | false | null
   const [age, setAge] = useState('');
@@ -168,11 +169,26 @@ export default function PancreaticCyst() {
   // ---- Veredicto global (para StickyBar / copia de informe) ----
   let bigLabel = null, bigTone = null, bigMsg = null, smallLabel = null, extraNote = null;
   if (diagnosis === 'sca') {
-    const scaHighSize = hasSize && hSize > 4;
+    // ACR 2017 White Paper: "SCA displays characteristic features in >60% of cases, although
+    // 'atypical' morphology can also be seen in a large proportion of cases" — y su Principio 1:
+    // "All incidental cysts should be presumed mucinous, unless the cyst has DEFINITIVE features
+    // of an alternative histology (eg, SCA)". Por eso no basta con que el radiólogo marque "SCA":
+    // si la morfología es atípica, no corresponde suspender el seguimiento (ver scaAtypicalMsg).
     smallLabel = c.diagnosisShortSca;
-    bigLabel = scaHighSize ? c.scaSurgicalBig : c.scaNoFollowupBig;
-    bigTone = scaHighSize ? 'amber' : 'emerald';
-    bigMsg = scaHighSize ? c.scaSurgical : c.scaNoFollowup;
+    if (scaConfidence === null) {
+      bigLabel = c.scaConfidenceNeededBig;
+      bigTone = 'slate';
+      bigMsg = c.scaConfidenceNeededMsg;
+    } else if (scaConfidence === 'atypical') {
+      bigLabel = c.scaAtypicalBig;
+      bigTone = 'amber';
+      bigMsg = c.scaAtypicalMsg;
+    } else {
+      const scaHighSize = hasSize && hSize > 4;
+      bigLabel = scaHighSize ? c.scaSurgicalBig : c.scaNoFollowupBig;
+      bigTone = scaHighSize ? 'amber' : 'emerald';
+      bigMsg = scaHighSize ? c.scaSurgical : c.scaNoFollowup;
+    }
   } else if (diagnosis === 'pseudocyst') {
     smallLabel = c.diagnosisShortPseudocyst;
     bigLabel = c.pseudocystVerdictBig;
@@ -232,7 +248,7 @@ export default function PancreaticCyst() {
   };
 
   const resetAll = () => {
-    setDiagnosis('indeterminate'); setSize(''); setSymptomatic(null); setAge('');
+    setDiagnosis('indeterminate'); setScaConfidence(null); setSize(''); setSymptomatic(null); setAge('');
     setSurgicalCandidate(null); setMpdComm(null); setMpdSize(''); setNodule('none'); setWallThickening(false);
     setJaundice(false); setCytology(false); setPancreatitis(false); setNewOnsetDm(false);
     setCa199(false); setRapidGrowth(false); setCalcification('none'); setLocation(null);
@@ -251,9 +267,23 @@ export default function PancreaticCyst() {
             { key: 'spn', label: c.diagnosisSpn },
           ]}
           value={diagnosis}
-          onChange={setDiagnosis}
+          onChange={(v) => { setDiagnosis(v); setScaConfidence(null); }}
         />
       </Card>
+
+      {diagnosis === 'sca' && (
+        <Card>
+          <OptionList
+            label={c.diagnosisScaConfidenceLabel}
+            options={[
+              { key: 'typical', label: c.scaConfidenceTypical },
+              { key: 'atypical', label: c.scaConfidenceAtypical },
+            ]}
+            value={scaConfidence}
+            onChange={setScaConfidence}
+          />
+        </Card>
+      )}
 
       <Card>
         <NumberField label={c.sizeLabel} value={size} onChange={setSize} />
