@@ -1,11 +1,13 @@
 import InstallPromptIOS from './components/InstallPromptIOS';
 import InstallPromptAndroid from './components/InstallPromptAndroid';
 import { Suspense, useEffect, useMemo, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import { LangContext } from './i18n/LangContext.js';
 import { STRINGS } from './i18n/strings.js';
 import { SEARCH_TERMS } from './i18n/searchTerms.js';
 import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
+import { updateSeoHead } from './utils/seoHead.js';
 import { Logo, SiteFooter } from './components/shared/index.js';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar } from './components/icons/index.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
@@ -42,11 +44,29 @@ function CalcListRow({ title, category, isFav, onToggleFav, favAddLabel, favRemo
   );
 }
 
-export default function App() {
+// Redirige la raíz "/" al idioma preferido del usuario (guardado de una
+// visita anterior) o a español por defecto. Es un redirect del lado del
+// cliente (más simple, sin depender de config de hosting); el redirect
+// HTTP real hacia "/es/" para bots/crawlers vive en vercel.json.
+function RootRedirect() {
+  const [storedLang] = useLocalStorageState('radiocalc:lang', 'es');
+  const lang = storedLang === 'en' ? 'en' : 'es';
+  return <Navigate to={`/${lang}/`} replace />;
+}
+
+// Todo el contenido de la app vivía antes en un solo componente App() con
+// `activeCalc`/`lang` como estado local. Ahora ambos se derivan de la URL
+// (useParams) para que cada calculadora y cada idioma tengan su propia ruta
+// indexable, pero el resto de la lógica (favoritos, tema oscuro, búsqueda)
+// es exactamente la misma que antes.
+function AppShell() {
+  const { lang: rawLang, calcId } = useParams();
+  const lang = rawLang === 'en' ? 'en' : 'es';
+  const navigate = useNavigate();
+
   const [darkMode, setDarkMode] = useLocalStorageState('radiocalc:darkMode', true);
-  const [lang, setLang] = useLocalStorageState('radiocalc:lang', 'es');
+  const [, setStoredLang] = useLocalStorageState('radiocalc:lang', 'es');
   const [favorites, setFavorites] = useLocalStorageState('radiocalc:favorites', []);
-  const [activeCalc, setActiveCalc] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const isFavorite = (id) => favorites.includes(id);
@@ -71,13 +91,49 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.lang = lang;
+    setStoredLang(lang); // recuerda el idioma para la próxima visita a "/"
   }, [lang]);
 
   const t = STRINGS[lang];
-  const toggleLang = () => setLang((l) => (l === 'es' ? 'en' : 'es'));
 
-  const activeEntry = activeCalc ? calculators.find((cc) => cc.id === activeCalc) : null;
+  const activeEntry = calcId ? calculators.find((cc) => cc.id === calcId) : null;
   const activeTitle = activeEntry ? t.calc[activeEntry.id].title : null;
+
+  // Link roto o id inválido en la URL: en vez de mostrar una pantalla vacía,
+  // volvemos a la portada del mismo idioma.
+  useEffect(() => {
+    if (calcId && !activeEntry) {
+      navigate(`/${lang}/`, { replace: true });
+    }
+  }, [calcId, activeEntry, lang, navigate]);
+
+  // Título/descripción/canonical/hreflang únicos por ruta, para que cada
+  // calculadora y cada idioma sean indexables como páginas distintas.
+  useEffect(() => {
+    if (activeEntry) {
+      const cc = t.calc[activeEntry.id];
+      updateSeoHead({
+        title: `${cc.title} | RadioCalc Clinical`,
+        description: cc.subtitle || t.tagline,
+        lang,
+        pathSuffix: `calc/${activeEntry.id}`,
+      });
+    } else {
+      updateSeoHead({
+        title: `${t.appName} — ${t.tagline}`,
+        description: t.tagline,
+        lang,
+        pathSuffix: '',
+      });
+    }
+  }, [lang, activeEntry, t]);
+
+  const toggleLang = () => {
+    const other = lang === 'es' ? 'en' : 'es';
+    navigate(activeEntry ? `/${other}/calc/${activeEntry.id}` : `/${other}/`);
+  };
+  const openCalc = (id) => navigate(`/${lang}/calc/${id}`);
+  const goHome = () => navigate(`/${lang}/`);
 
   const normalizedQuery = normalizeSearchText(searchQuery.trim());
   const searchResults = useMemo(() => {
@@ -97,8 +153,8 @@ export default function App() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-10">
         <header className="sticky top-0 z-50 bg-blue-600 dark:bg-slate-800 text-white shadow-md px-4 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            {activeCalc ? (
-              <button onClick={() => setActiveCalc(null)} aria-label={t.common.back} className="p-1 -ml-1 hover:bg-white/20 rounded-full transition-colors shrink-0">
+            {activeEntry ? (
+              <button onClick={goHome} aria-label={t.common.back} className="p-1 -ml-1 hover:bg-white/20 rounded-full transition-colors shrink-0">
                 <IconChevronLeft className="w-6 h-6" />
               </button>
             ) : (
@@ -170,7 +226,7 @@ export default function App() {
                         onToggleFav={() => toggleFavorite(cc.id)}
                         favAddLabel={t.favorites.addAria}
                         favRemoveLabel={t.favorites.removeAria}
-                        onOpen={() => setActiveCalc(cc.id)}
+                        onOpen={() => openCalc(cc.id)}
                         extra={
                           <span className="flex flex-col shrink-0">
                             <button
@@ -209,7 +265,7 @@ export default function App() {
                           onToggleFav={() => toggleFavorite(cc.id)}
                           favAddLabel={t.favorites.addAria}
                           favRemoveLabel={t.favorites.removeAria}
-                          onOpen={() => setActiveCalc(cc.id)}
+                          onOpen={() => openCalc(cc.id)}
                         />
                       ))}
                     </div>
@@ -235,7 +291,7 @@ export default function App() {
                             onToggleFav={() => toggleFavorite(cc.id)}
                             favAddLabel={t.favorites.addAria}
                             favRemoveLabel={t.favorites.removeAria}
-                            onOpen={() => setActiveCalc(cc.id)}
+                            onOpen={() => openCalc(cc.id)}
                           />
                         ))}
                       </div>
@@ -253,5 +309,18 @@ export default function App() {
       <InstallPromptIOS />
       <InstallPromptAndroid />
     </LangContext.Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <Routes>
+        <Route path="/" element={<RootRedirect />} />
+        <Route path="/:lang/calc/:calcId" element={<AppShell />} />
+        <Route path="/:lang/" element={<AppShell />} />
+        <Route path="*" element={<RootRedirect />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
