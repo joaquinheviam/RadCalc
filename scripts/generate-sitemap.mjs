@@ -16,7 +16,9 @@ const urls = [];
 for (const lang of LANGS) {
   urls.push(`${BASE_URL}/${lang}/`);
   for (const cc of calculators) {
-    urls.push(`${BASE_URL}/${lang}/calc/${cc.id}`);
+    // Barra final a propósito: mismo motivo que en App.jsx / seoHead.js —
+    // asegura que el archivo estático .../calc/<id>/index.html se resuelva.
+    urls.push(`${BASE_URL}/${lang}/calc/${cc.id}/`);
   }
 }
 

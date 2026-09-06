@@ -39,7 +39,10 @@ function setLinkByRelAndHreflang(rel, href, hreflang) {
  * @param {string} params.description - Descripción corta (150-160 caracteres ideal).
  * @param {'es'|'en'} params.lang - Idioma de la ruta activa.
  * @param {string} params.pathSuffix - Sufijo de ruta SIN barra inicial ni el
- *   idioma (ej. '' para portada, 'calc/tirads' para una calculadora).
+ *   idioma, pero CON barra final si no está vacío (ej. '' para portada,
+ *   'calc/tirads/' para una calculadora) — la barra final importa para que
+ *   el archivo estático prerenderizado (.../calc/tirads/index.html) se
+ *   resuelva de forma confiable en Vercel/GitHub Pages, ver App.jsx.
  */
 export function updateSeoHead({ title, description, lang, pathSuffix = '' }) {
   document.title = title;

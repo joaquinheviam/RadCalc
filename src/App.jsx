@@ -109,6 +109,16 @@ function AppShell() {
 
   // Título/descripción/canonical/hreflang únicos por ruta, para que cada
   // calculadora y cada idioma sean indexables como páginas distintas.
+  //
+  // Ojo: pathSuffix de una calculadora termina en "/" a propósito (ver
+  // openCalc y toggleLang más abajo, y scripts/prerender-seo.mjs). Vercel y
+  // GitHub Pages sirven de forma confiable un archivo estático anidado
+  // (.../calc/tirads/index.html) cuando la URL pedida termina en "/", pero
+  // esa resolución de "índice de directorio" no está garantizada para una
+  // URL sin barra final y sin extensión — por eso el canonical, el
+  // hreflang, la navegación y el sitemap usan siempre la barra final en las
+  // rutas de calculadora, igual que ya se usaba en la portada de cada
+  // idioma (/es/, /en/).
   useEffect(() => {
     if (activeEntry) {
       const cc = t.calc[activeEntry.id];
@@ -116,7 +126,7 @@ function AppShell() {
         title: `${cc.title} | RadioCalc Clinical`,
         description: cc.subtitle || t.tagline,
         lang,
-        pathSuffix: `calc/${activeEntry.id}`,
+        pathSuffix: `calc/${activeEntry.id}/`,
       });
     } else {
       updateSeoHead({
@@ -130,9 +140,9 @@ function AppShell() {
 
   const toggleLang = () => {
     const other = lang === 'es' ? 'en' : 'es';
-    navigate(activeEntry ? `/${other}/calc/${activeEntry.id}` : `/${other}/`);
+    navigate(activeEntry ? `/${other}/calc/${activeEntry.id}/` : `/${other}/`);
   };
-  const openCalc = (id) => navigate(`/${lang}/calc/${id}`);
+  const openCalc = (id) => navigate(`/${lang}/calc/${id}/`);
   const goHome = () => navigate(`/${lang}/`);
 
   const normalizedQuery = normalizeSearchText(searchQuery.trim());
