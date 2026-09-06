@@ -13,6 +13,7 @@ import {
   CalcDisclaimer
 } from '../components/shared/index.js';
 import { copyToClipboard } from '../utils/clipboard.js';
+import { REFERENCES } from '../i18n/references.js';
 
 // Componentes locales requeridos por las convenciones del proyecto
 function YesNo({ label, value, onChange, yesLabel, noLabel }) {
@@ -76,11 +77,14 @@ export default function ILDClassifier() {
   const c = t.calc.ildClassifier;
 
   // Estados del Formulario
+  // Etapa 1 (ATS 2025 ILA/ILD): dominio clínico-fisiológico y extensión tomográfica
   const [symptoms, setSymptoms] = useState(null);
   const [pftAbnormal, setPftAbnormal] = useState(null);
-  const [extentZone, setExtentZone] = useState('under5'); // 'under5', '5to10', 'over10'
-  const [volTotal, setVolTotal] = useState('under5'); // 'under5', 'over5'
+  const [progressionCT, setProgressionCT] = useState(null);
+  const [extentZone, setExtentZone] = useState('under5'); // 'under5', 'ge5' — Tabla 1 (criterio de ILA)
+  const [volTotal, setVolTotal] = useState('under5'); // 'under5', 'ge5' — Tabla 3 (criterio de EPID por imagen)
 
+  // Etapa 2: caracterización del patrón (solo se muestra en detalle si entityType === 'EPID')
   const [distribution, setDistribution] = useState('subpleuralBasal');
   const [feature, setFeature] = useState('ggo');
 
@@ -98,39 +102,14 @@ export default function ILDClassifier() {
   const [consolidationOP, setConsolidationOP] = useState(false);
   const [subpleuralSparing, setSubpleuralSparing] = useState(false);
 
-  // Lógica de Clasificación
-  const isSymptomatic = symptoms === true || pftAbnormal === true;
-  const isOver5Zone = extentZone !== 'under5';
-  const isOver5VolTotal = volTotal === 'over5';
-
-  // 1. ILA vs. EPID Franca
-  let entityType = null; // 'ILA' o 'EPID'
-  let ilaSubtype = null; // 'Nonsubpleural', 'SubpleuralNonFibrotic', 'SubpleuralFibrotic'
-
-  if (!isOver5Zone && !isOver5VolTotal && !isSymptomatic && feature === 'ggo') {
-    entityType = 'NORMAL_OR_MINIMAL';
-  } else if (!isSymptomatic && !isOver5VolTotal && feature !== 'honeycombing' && distribution !== 'peribronchovascular') {
-    entityType = 'ILA';
-    if (distribution === 'upperMid' || distribution === 'diffuse') {
-      ilaSubtype = c.ilaSubNonsubpleural;
-    } else if (feature === 'ggo') {
-      ilaSubtype = c.ilaSubNonFibrotic;
-    } else {
-      ilaSubtype = c.ilaSubFibrotic;
-    }
-  } else {
-    entityType = 'EPID';
-  }
-
-  // 2. Clasificación del Patrón UIP vs Alternativos
-  let uipCategory = 'INDETERMINATE'; // 'TYPICAL', 'PROBABLE', 'INDETERMINATE', 'ALTERNATIVE'
-  let alternativeDetails = [];
-  let isHPFibrotic = false;
-
+  // --- Cálculos auxiliares de Etapa 2 (patrón), necesarios también para saber
+  // si hay un "patrón fibrótico mayor" (criterio de EPID de la Tabla 3) ---
+  const isFibroticFeature = feature === 'traction' || feature === 'honeycombing';
   const hasInconsistentDistribution = distribution === 'peribronchovascular' || distribution === 'upperMid';
   const hasInconsistentFeatures = consolidationOP || ggoCentrilobular || threeDensity || cystsPLCH || cystsSRIF || subpleuralSparing;
   const hasCTDSigns = straightEdge || exuberantHC || anteriorUpper || esophagus;
 
+  let uipCategory = 'INDETERMINATE'; // 'TYPICAL', 'PROBABLE', 'INDETERMINATE', 'ALTERNATIVE'
   if (hasInconsistentDistribution || hasInconsistentFeatures) {
     uipCategory = 'ALTERNATIVE';
   } else if (feature === 'honeycombing' && distribution === 'subpleuralBasal') {
@@ -141,7 +120,38 @@ export default function ILDClassifier() {
     uipCategory = 'INDETERMINATE';
   }
 
-  // Diagnósticos Alternativos Sugeridos
+  const isHPFibrotic = (threeDensity || distribution === 'peribronchovascular') && isFibroticFeature;
+  const isFibroticNSIP = subpleuralSparing && !hasCTDSigns && isFibroticFeature;
+  // Tabla 3 (ATS 2025), criterio de imagen "patrón fibrótico mayor": UIP/probable UIP, HP fibrótica o NSIP fibrótica
+  const majorFibroticPattern = uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' || isHPFibrotic || isFibroticNSIP;
+
+  // --- Etapa 1 (ATS 2025): ¿ILA, EPID franca, o ninguno? ---
+  const isSymptomatic = symptoms === true || pftAbnormal === true; // Tabla 3: Síntomas O Fisiología
+  const meetsZoneILA = extentZone === 'ge5'; // Tabla 1: ≥5% de al menos una zona pulmonar
+  const meetsImagingILDExtent = volTotal === 'ge5' && isFibroticFeature; // Tabla 3: ≥5% del volumen pulmonar total, con patrón fibrótico
+  const meetsProgression = progressionCT === true; // Tabla 3: progresión radiológica en TC seriada
+  const meetsILD = isSymptomatic || meetsImagingILDExtent || meetsProgression || majorFibroticPattern;
+
+  let entityType; // 'EPID', 'ILA', 'NORMAL_OR_MINIMAL'
+  let ilaSubtype = null; // 'Nonsubpleural', 'SubpleuralNonFibrotic', 'SubpleuralFibrotic'
+
+  if (meetsILD) {
+    entityType = 'EPID';
+  } else if (meetsZoneILA) {
+    entityType = 'ILA';
+    if (distribution === 'upperMid' || distribution === 'diffuse' || distribution === 'peribronchovascular') {
+      ilaSubtype = c.ilaSubNonsubpleural;
+    } else if (feature === 'ggo') {
+      ilaSubtype = c.ilaSubNonFibrotic;
+    } else {
+      ilaSubtype = c.ilaSubFibrotic;
+    }
+  } else {
+    entityType = 'NORMAL_OR_MINIMAL';
+  }
+
+  // --- Etapa 2: Diagnósticos Alternativos Sugeridos (solo relevantes si entityType === 'EPID') ---
+  let alternativeDetails = [];
   if (uipCategory === 'ALTERNATIVE' || hasCTDSigns) {
     if (hasCTDSigns || subpleuralSparing) {
       alternativeDetails.push(c.msgCTDSuspect);
@@ -150,13 +160,12 @@ export default function ILDClassifier() {
       alternativeDetails.push(c.msgSRIFSuspect);
     }
     if (cystsPLCH) {
-      alternativeDetails.push("Sugerente de Histiocitosis de Células de Langerhans (PLCH) por quistes bizarros con respeto costofrénico.");
+      alternativeDetails.push(c.msgPLCHSuspect);
     }
     if (ggoCentrilobular && smokingHistory) {
-      alternativeDetails.push("Sugerente de Bronquiolitis Respiratoria - EPID (RB-ILD).");
+      alternativeDetails.push(c.msgRBILDSuspect);
     }
     if (threeDensity || distribution === 'peribronchovascular') {
-      isHPFibrotic = feature === 'traction' || feature === 'honeycombing';
       alternativeDetails.push(`${c.msgBIPHPSuspect} (${isHPFibrotic ? c.msgBIPFibr : c.msgBIPNonFibr})`);
     }
     if (subpleuralSparing && !hasCTDSigns) {
@@ -167,11 +176,20 @@ export default function ILDClassifier() {
     }
   }
 
-  const showResult = entityType !== null && entityType !== 'NORMAL_OR_MINIMAL';
+  // El resultado se muestra apenas el usuario empieza a interactuar con el formulario,
+  // para cualquiera de las 3 entidades (incluyendo "sin criterios de ILA ni EPID").
+  const started = symptoms !== null || pftAbnormal !== null || progressionCT !== null ||
+    extentZone !== 'under5' || volTotal !== 'under5' ||
+    distribution !== 'subpleuralBasal' || feature !== 'ggo' ||
+    straightEdge || exuberantHC || anteriorUpper || esophagus ||
+    smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity || consolidationOP || subpleuralSparing;
+
+  const showResult = started;
 
   const handleReset = () => {
     setSymptoms(null);
     setPftAbnormal(null);
+    setProgressionCT(null);
     setExtentZone('under5');
     setVolTotal('under5');
     setDistribution('subpleuralBasal');
@@ -189,47 +207,64 @@ export default function ILDClassifier() {
     setSubpleuralSparing(false);
   };
 
-  const handleCopy = () => {
-    const text = `--- REPORT DE CLASIFICACIÓN EPID / ILA ---
-Entidad: ${entityType === 'ILA' ? c.resILA : c.resEPID}
-${ilaSubtype ? `Subtipo ILA: ${ilaSubtype}\n` : ''}Categoría de Patrón UIP: ${
-      uipCategory === 'TYPICAL'
+  const entityLabel = entityType === 'EPID' ? c.resEPID : entityType === 'ILA' ? c.resILA : c.resNormal;
+
+  const patternLabel = entityType === 'EPID'
+    ? (uipCategory === 'TYPICAL'
         ? c.resUIPDef
         : uipCategory === 'PROBABLE'
         ? c.resUIPProb
         : uipCategory === 'INDETERMINATE'
         ? c.resUIPIndet
-        : c.resAlternative
+        : c.resAlternative)
+    : entityType === 'ILA'
+    ? ilaSubtype
+    : c.msgNormalExplain;
+
+  const handleCopy = () => {
+    const lines = [
+      c.reportTitle,
+      `${c.reportEntityLabel} ${entityLabel}`,
+    ];
+    if (entityType === 'ILA' && ilaSubtype) {
+      lines.push(`${c.reportSubtypeLabel} ${ilaSubtype}`);
     }
-${alternativeDetails.length > 0 ? `Sugerencias Clínicas / Alternativas:\n- ${alternativeDetails.join('\n- ')}\n` : ''}
-Criterios Tomográficos y Clínicos Evaluados según consensos ATS 2020-2025.`;
-    copyToClipboard(text);
+    if (entityType === 'EPID') {
+      lines.push(`${c.reportPatternLabel} ${patternLabel}`);
+      if (alternativeDetails.length > 0) {
+        lines.push(`${c.reportAltLabel}\n- ${alternativeDetails.join('\n- ')}`);
+      }
+    }
+    lines.push(c.reportFooter);
+    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-24">
-      {/* Encabezado */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{c.title}</h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{c.subtitle}</p>
-      </div>
-
       {/* Sección 1: Dominio Clínico */}
-      <Card title={c.secClinical}>
+      <Card>
+        <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm mb-2">{c.secClinical}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <YesNo
             label={c.symptomsLabel}
             value={symptoms}
             onChange={setSymptoms}
-            yesLabel={c.yes}
-            noLabel={c.no}
+            yesLabel={t.common.yes}
+            noLabel={t.common.no}
           />
           <YesNo
             label={c.pftLabel}
             value={pftAbnormal}
             onChange={setPftAbnormal}
-            yesLabel={c.yes}
-            noLabel={c.no}
+            yesLabel={t.common.yes}
+            noLabel={t.common.no}
+          />
+          <YesNo
+            label={c.progressionLabel}
+            value={progressionCT}
+            onChange={setProgressionCT}
+            yesLabel={t.common.yes}
+            noLabel={t.common.no}
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -239,8 +274,7 @@ Criterios Tomográficos y Clínicos Evaluados según consensos ATS 2020-2025.`;
             onChange={setExtentZone}
             options={[
               { key: 'under5', label: c.optUnder5 },
-              { key: '5to10', label: c.opt5to10 },
-              { key: 'over10', label: c.optOver10 }
+              { key: 'ge5', label: c.optGe5 }
             ]}
           />
           <OptionList
@@ -249,14 +283,15 @@ Criterios Tomográficos y Clínicos Evaluados según consensos ATS 2020-2025.`;
             onChange={setVolTotal}
             options={[
               { key: 'under5', label: c.optUnder5 },
-              { key: 'over5', label: c.optOver10 }
+              { key: 'ge5', label: c.optGe5 }
             ]}
           />
         </div>
       </Card>
 
       {/* Sección 2: Tomografía Computada */}
-      <Card title={c.secImaging}>
+      <Card>
+        <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm mb-2">{c.secImaging}</h3>
         <div className="space-y-4">
           <OptionList
             label={c.distributionLabel}
@@ -283,7 +318,8 @@ Criterios Tomográficos y Clínicos Evaluados según consensos ATS 2020-2025.`;
       </Card>
 
       {/* Sección 3: Signos Atípicos / Conectivopatía */}
-      <Card title={c.secSigns}>
+      <Card>
+        <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm mb-2">{c.secSigns}</h3>
         <div className="space-y-3">
           <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
             <input
@@ -325,7 +361,8 @@ Criterios Tomográficos y Clínicos Evaluados según consensos ATS 2020-2025.`;
       </Card>
 
       {/* Sección 4: Tabaquismo / Alternativos */}
-      <Card title={c.secSmoking}>
+      <Card>
+        <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm mb-2">{c.secSmoking}</h3>
         <div className="space-y-3">
           <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
             <input
@@ -386,39 +423,37 @@ Criterios Tomográficos y Clínicos Evaluados según consensos ATS 2020-2025.`;
 
       {/* Card Inline de Resultado */}
       {showResult && (
-        <Card className="border-amber-500/30 bg-amber-500/5">
+        <Card className={entityType === 'NORMAL_OR_MINIMAL' ? 'border-slate-300/50 bg-slate-500/5' : 'border-amber-500/30 bg-amber-500/5'}>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-                {entityType === 'ILA' ? c.resILA : c.resEPID}
+              <span className={`text-xs font-semibold uppercase tracking-wider ${entityType === 'NORMAL_OR_MINIMAL' ? 'text-slate-500 dark:text-slate-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                {entityLabel}
               </span>
               <div className="flex gap-2">
-                <CopyIconButton onClick={handleCopy} />
-                <ResetIconButton onClick={handleReset} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+                <ResetIconButton onClick={handleReset} label={t.common.reset} />
               </div>
             </div>
 
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-              {uipCategory === 'TYPICAL'
-                ? c.resUIPDef
-                : uipCategory === 'PROBABLE'
-                ? c.resUIPProb
-                : uipCategory === 'INDETERMINATE'
-                ? c.resUIPIndet
-                : c.resAlternative}
-            </h3>
-
-            {ilaSubtype && (
-              <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-                {ilaSubtype}
-              </p>
+            {entityType !== 'NORMAL_OR_MINIMAL' && (
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                {patternLabel}
+              </h3>
             )}
 
-            {uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' ? (
-              <p className="text-sm text-slate-600 dark:text-slate-400">{c.msgIPFSuspect}</p>
-            ) : null}
+            {entityType === 'NORMAL_OR_MINIMAL' && (
+              <p className="text-sm text-slate-600 dark:text-slate-400">{c.msgNormalExplain}</p>
+            )}
 
-            {alternativeDetails.length > 0 && (
+            {entityType === 'ILA' && (
+              <p className="text-sm text-slate-600 dark:text-slate-400">{c.msgILAFollowup}</p>
+            )}
+
+            {entityType === 'EPID' && (uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE') && (
+              <p className="text-sm text-slate-600 dark:text-slate-400">{c.msgIPFSuspect}</p>
+            )}
+
+            {entityType === 'EPID' && alternativeDetails.length > 0 && (
               <InfoBox tone="amber">
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   {alternativeDetails.map((detail, idx) => (
@@ -431,45 +466,27 @@ Criterios Tomográficos y Clínicos Evaluados según consensos ATS 2020-2025.`;
         </Card>
       )}
 
-      {/* Referencias y Fuentes */}
-      <div className="pt-4 space-y-4">
-        <References references="ildClassifier" />
-        <InfoBox tone="slate">
-          <div className="text-xs space-y-1">
-            <p className="font-semibold text-slate-700 dark:text-slate-300">{c.sourcesTitle}</p>
-            <ul className="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-0.5">
-              <li>ATS 2025 ILA Statement: Definición ILA vs ILD (Págs. 1134-1138, Tablas 1 y 3).</li>
-              <li>ERS/ATS 2025 Classification: Patrón BIP, DAD, AMP (Págs. 3-7, Tabla 1 y 2).</li>
-              <li>Consenso ATS 2022: Patrón UIP, Probable UIP y Criterios PPF (Págs. e20-e22, e34-e36).</li>
-              <li>RadioGraphics 2026: SRIF, AEF, PLCH, RB-ILD y AEP (Págs. 6-12, Tablas 1 y 2).</li>
-              <li>AJR 2017: Signos tomográficos específicos de Conectivopatía (Págs. 1-4, Tabla 3).</li>
-              <li>ATS 2020: Criterios para HP Fibrótica vs No Fibrótica.</li>
-            </ul>
-          </div>
-        </InfoBox>
-      </div>
+      <UsageNotes paragraphs={c.usage} />
+      <References items={REFERENCES.ildClassifier} />
+      <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
 
       {/* StickyBar Inferior */}
       {showResult && (
         <StickyBar>
           <div className="flex items-center justify-between w-full">
             <div>
-              <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold">
-                {entityType === 'ILA' ? c.resILA : c.resEPID}
+              <div className={`text-xs font-semibold ${entityType === 'NORMAL_OR_MINIMAL' ? 'text-slate-500 dark:text-slate-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                {entityLabel}
               </div>
               <div className="text-base font-bold text-slate-900 dark:text-white">
-                {uipCategory === 'TYPICAL'
-                  ? c.resUIPDef
-                  : uipCategory === 'PROBABLE'
-                  ? c.resUIPProb
-                  : uipCategory === 'INDETERMINATE'
-                  ? c.resUIPIndet
-                  : c.resAlternative}
+                {entityType === 'NORMAL_OR_MINIMAL' ? c.resNormal : patternLabel}
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <CopyIconButton onClick={handleCopy} />
-              <ResetIconButton onClick={handleReset} />
+              <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+              <ResetIconButton onClick={handleReset} label={t.common.reset} />
             </div>
           </div>
         </StickyBar>

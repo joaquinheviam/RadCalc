@@ -1,37 +1,5 @@
-import React, { useState, useEffect } from 'react';
-
-// Textos bilingües siguiendo la convención de tu proyecto
-const TEXT = {
-  es: {
-    title: 'Instala RadioCalc en tu iPhone',
-    desc: 'Úsala a pantalla completa y sin conexión como una app nativa:',
-    step1: 'Toca el botón',
-    step1Action: 'Compartir',
-    step1Tail: 'en Safari.',
-    step2: 'Selecciona',
-    step2Action: 'Agregar a inicio',
-    dismiss: 'Entendido',
-  },
-  en: {
-    title: 'Install RadioCalc on your iPhone',
-    desc: 'Use it full-screen and offline like a native app:',
-    step1: 'Tap the',
-    step1Action: 'Share',
-    step1Tail: 'button in Safari.',
-    step2: 'Select',
-    step2Action: 'Add to Home Screen',
-    dismiss: 'Got it',
-  },
-};
-
-function currentLang() {
-  try {
-    const stored = localStorage.getItem('radiocalc:lang');
-    return stored === 'en' ? 'en' : 'es';
-  } catch {
-    return 'es';
-  }
-}
+import { useState, useEffect, useContext } from 'react';
+import { LangContext } from '../i18n/LangContext.js';
 
 // Icono nativo de Compartir en iOS (cuadrado con flecha hacia arriba)
 const ShareIcon = () => (
@@ -48,12 +16,14 @@ const PlusSquareIcon = () => (
 );
 
 export default function InstallPromptIOS() {
+  const { t } = useContext(LangContext);
+  const c = t.common.installIOS;
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
     // 1. Detecta si el dispositivo es iOS (iPhone/iPad/iPod)
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
+
     // 2. Detecta si la app ya está corriendo instalada (standalone)
     const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
@@ -73,31 +43,30 @@ export default function InstallPromptIOS() {
 
   if (!showPrompt) return null;
 
-  const t = TEXT[currentLang()];
-
   return (
     <div className="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:right-4 sm:max-w-md z-[200]">
       <div className="fade-in p-4 rounded-2xl shadow-2xl border bg-slate-900/95 text-slate-100 border-slate-700 backdrop-blur-md space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h4 className="text-sm font-bold text-white flex items-center gap-2">
-            <span>📱</span> {t.title}
+            {c.title}
           </h4>
           <button
             onClick={handleDismiss}
+            aria-label={c.dismiss}
             className="text-slate-400 hover:text-white text-lg leading-none p-1"
           >
             ×
           </button>
         </div>
 
-        <p className="text-xs text-slate-300">{t.desc}</p>
+        <p className="text-xs text-slate-300">{c.desc}</p>
 
         <ol className="text-xs space-y-2 bg-slate-800/80 p-3 rounded-xl border border-slate-700/60">
           <li className="flex items-center">
-            <span>1. {t.step1} <strong>{t.step1Action}</strong> <ShareIcon /> {t.step1Tail}</span>
+            <span>1. {c.step1} <strong>{c.step1Action}</strong> <ShareIcon /> {c.step1Tail}</span>
           </li>
           <li className="flex items-center">
-            <span>2. {t.step2} <strong>"{t.step2Action}"</strong> <PlusSquareIcon />.</span>
+            <span>2. {c.step2} <strong>"{c.step2Action}"</strong> <PlusSquareIcon />.</span>
           </li>
         </ol>
 
@@ -106,7 +75,7 @@ export default function InstallPromptIOS() {
             onClick={handleDismiss}
             className="text-xs font-semibold px-4 py-1.5 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-colors"
           >
-            {t.dismiss}
+            {c.dismiss}
           </button>
         </div>
       </div>

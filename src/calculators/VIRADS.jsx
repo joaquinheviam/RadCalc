@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useLang } from '../i18n/LangContext.js';
+import { copyToClipboard } from '../utils/clipboard.js';
+import { REFERENCES } from '../i18n/references.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ScoreSelector5 } from '../components/shared/index.js';
 
 // SVG nativo consistente con la línea de íconos del sistema
 const RefreshIcon = () => (
@@ -15,7 +19,7 @@ const BackIcon = () => (
 
 const GitForkIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7a3 3 0 100-6 3 3 0 000 6pt0 000 6zM16 7a3 3 0 100-6 3 3 0 000 6pt0 000 6zM12 21a3 3 0 100-6 3 3 0 000 6pt0 000 6zM12 15V9m0 0a3 3 0 013-3h1m-4 3a3 3 0 00-3-3H9" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7a3 3 0 100-6 3 3 0 000 6zM16 7a3 3 0 100-6 3 3 0 000 6zM12 21a3 3 0 100-6 3 3 0 000 6zM12 15V9m0 0a3 3 0 013-3h1m-4 3a3 3 0 00-3-3H9" />
   </svg>
 );
 
@@ -25,18 +29,21 @@ const LayersIcon = () => (
   </svg>
 );
 
-export default function VIRADS({ strings, lang = 'es' }) {
+export default function VIRADS() {
+  const { t } = useLang();
+  const c = t.calc.virads;
+
   const [mode, setMode] = useState('algo');
 
-  // Estado Algorítmico e Historial
+  // Estado del modo algorítmico (árbol de decisión) + historial para "volver"
   const [algoStep, setAlgoStep] = useState(1);
   const [algoResult, setAlgoResult] = useState(null);
   const [history, setHistory] = useState([]);
 
-  // Estado Modo Clásico
-  const [t2w, setT2w] = useState(null);
-  const [dwi, setDwi] = useState(null);
-  const [dce, setDce] = useState(null);
+  // Estado del modo clásico por secuencias (ACR)
+  const [t2, setT2] = useState(0);
+  const [dwi, setDwi] = useState(0);
+  const [dce, setDce] = useState(0);
 
   const goToNextStep = (nextStep, result = null) => {
     setHistory((prev) => [...prev, { step: algoStep, result: algoResult }]);
@@ -55,126 +62,92 @@ export default function VIRADS({ strings, lang = 'es' }) {
     setAlgoResult(lastState.result);
   };
 
-  const resetAlgo = () => {
+  const resetAll = () => {
     setAlgoStep(1);
     setAlgoResult(null);
     setHistory([]);
+    setT2(0);
+    setDwi(0);
+    setDce(0);
   };
 
-  const resetClassic = () => {
-    setT2w(null);
-    setDwi(null);
-    setDce(null);
-  };
+  // Regla de dominancia clásica: DWI domina, si no está puntuado se usa DCE, si no T2W.
+  const classicCategory = dwi > 0 ? dwi : (dce > 0 ? dce : t2);
+  const final = mode === 'algo' ? algoResult : (classicCategory > 0 ? classicCategory : null);
 
-  const getClassicCategory = () => {
-    if (dwi) return dwi;
-    if (dce) return dce;
-    if (t2w) return t2w;
-    return null;
-  };
+  let interp = '';
+  if (final >= 4) interp = c.interpretation.high;
+  else if (final === 3) interp = c.interpretation.equivocal;
+  else if (final > 0) interp = c.interpretation.low;
 
-  const currentCategory = mode === 'algo' ? algoResult : getClassicCategory();
-
-  const categoryDetails = {
-    1: {
-      title: 'VI-RADS 1',
-      desc: 'Invasión muscular extremadamente improbable. Tumor superficial (< 1 cm) o muscular propia completamente intacta.',
-      badgeBg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    },
-    2: {
-      title: 'VI-RADS 2',
-      desc: 'Invasión muscular improbable. Presencia de tallo fibrovascular o tumor sésil/base amplia con estroma/submucosa intacta.',
-      badgeBg: 'bg-green-500/20 text-green-300 border-green-500/30',
-    },
-    3: {
-      title: 'VI-RADS 3',
-      desc: 'Invasión muscular dudosa / indeterminado. Hallazgos ambiguos en la capa submucosa o señal intermedia sin interrupción clara de la muscular.',
-      badgeBg: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-    },
-    4: {
-      title: 'VI-RADS 4',
-      desc: 'Invasión muscular probable. Interrupción clara de la capa muscular propia, pero confinada a la pared vesical (sin extensión a grasa).',
-      badgeBg: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-    },
-    5: {
-      title: 'VI-RADS 5',
-      desc: 'Invasión de muscular y extensión extravesical. Interrupción de la muscular con extensión a la grasa perivesical o a órganos adyacentes.',
-      badgeBg: 'bg-red-500/20 text-red-300 border-red-500/30',
-    },
+  const handleCopy = () => {
+    if (!final) return;
+    const text = mode === 'classic'
+      ? c.reportText(t2 || t.common.notEvaluated, dwi || t.common.notEvaluated, dce || t.common.notEvaluated, final)
+      : `${c.algoTitle}\n${c.finalCategory}: VI-RADS ${final}\n${c.categoryDesc[final - 1]}`;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
-    <div className="space-y-6">
-      {/* Selector de Modo */}
-      <div className="flex bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+    <div className={`space-y-4 animate-in fade-in ${final > 0 ? 'pb-56' : ''}`}>
+      {/* Selector de modo */}
+      <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
         <button
+          type="button"
           onClick={() => setMode('algo')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
             mode === 'algo'
               ? 'bg-blue-600 text-white shadow-md'
-              : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+              : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700/50'
           }`}
         >
           <GitForkIcon />
-          Modo Algorítmico (Recomendado)
+          {c.modeAlgo}
         </button>
         <button
+          type="button"
           onClick={() => setMode('classic')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
             mode === 'classic'
               ? 'bg-blue-600 text-white shadow-md'
-              : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+              : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700/50'
           }`}
         >
           <LayersIcon />
-          Modo por Secuencias (ACR)
+          {c.modeClassic}
         </button>
       </div>
 
       {/* MODO 1: ALGORÍTMICO */}
       {mode === 'algo' && (
-        <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 space-y-5">
-          <div className="flex items-center justify-between border-b border-slate-700/60 pb-3">
-            <h3 className="text-base font-semibold text-white">Árbol de Decisión VI-RADS</h3>
-            <button
-              onClick={resetAlgo}
-              className="text-xs text-slate-400 hover:text-white flex items-center gap-1 bg-slate-700/50 px-2.5 py-1 rounded-lg transition-colors"
-            >
-              <RefreshIcon /> Reiniciar
-            </button>
+        <Card className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{c.algoTitle}</h3>
+            <ResetIconButton onClick={resetAll} label={t.common.reset} />
           </div>
 
           {!algoResult ? (
             <div className="space-y-4">
-              {/* Botón Volver Atrás (Estilo Algoritmo Quístico) */}
               {history.length > 0 && (
                 <button
+                  type="button"
                   onClick={handleGoBack}
-                  className="inline-flex items-center gap-1.5 text-xs text-slate-300 hover:text-white bg-slate-700/60 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600/70 transition-all shadow-sm"
+                  className="inline-flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-700/60 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600/70 transition-all"
                 >
                   <BackIcon />
-                  <span>Volver al paso anterior</span>
+                  <span>{c.backStep}</span>
                 </button>
               )}
 
               {algoStep === 1 && (
                 <div className="space-y-3">
-                  <p className="text-slate-200 text-sm font-medium leading-relaxed">
-                    1. ¿Existe disrupción / interrupción clara de la capa muscular propia hipointensa en T2 / restricción continua en DWI?
-                  </p>
+                  <p className="text-slate-700 dark:text-slate-200 text-sm font-medium leading-relaxed">{c.algoQ1}</p>
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => goToNextStep('preguntaGrasa')}
-                      className="py-3 px-4 bg-slate-700 hover:bg-blue-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-blue-500 text-sm"
-                    >
-                      Sí (Interrupción visible)
+                    <button type="button" onClick={() => goToNextStep('preguntaGrasa')} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-blue-500 text-sm">
+                      {c.algoQ1Yes}
                     </button>
-                    <button
-                      onClick={() => goToNextStep('preguntaTamano')}
-                      className="py-3 px-4 bg-slate-700 hover:bg-blue-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-blue-500 text-sm"
-                    >
-                      No (Muscular continua / intacta)
+                    <button type="button" onClick={() => goToNextStep('preguntaTamano')} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-blue-500 text-sm">
+                      {c.algoQ1No}
                     </button>
                   </div>
                 </div>
@@ -182,21 +155,13 @@ export default function VIRADS({ strings, lang = 'es' }) {
 
               {algoStep === 'preguntaGrasa' && (
                 <div className="space-y-3">
-                  <p className="text-slate-200 text-sm font-medium leading-relaxed">
-                    2. ¿Existe extensión tumoral a la grasa perivesical o compromiso de órganos adyacentes?
-                  </p>
+                  <p className="text-slate-700 dark:text-slate-200 text-sm font-medium leading-relaxed">{c.algoQFat}</p>
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => goToNextStep(null, 5)}
-                      className="py-3 px-4 bg-slate-700 hover:bg-red-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-red-500 text-sm"
-                    >
-                      Sí → VI-RADS 5
+                    <button type="button" onClick={() => goToNextStep(null, 5)} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-red-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-red-500 text-sm">
+                      {c.algoQFatYes}
                     </button>
-                    <button
-                      onClick={() => goToNextStep(null, 4)}
-                      className="py-3 px-4 bg-slate-700 hover:bg-orange-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-orange-500 text-sm"
-                    >
-                      No → VI-RADS 4
+                    <button type="button" onClick={() => goToNextStep(null, 4)} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-orange-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-orange-500 text-sm">
+                      {c.algoQFatNo}
                     </button>
                   </div>
                 </div>
@@ -204,21 +169,13 @@ export default function VIRADS({ strings, lang = 'es' }) {
 
               {algoStep === 'preguntaTamano' && (
                 <div className="space-y-3">
-                  <p className="text-slate-200 text-sm font-medium leading-relaxed">
-                    2. ¿El tumor es menor a 1 cm (o lesión plana/sésil diminuta) sin alteración apreciable de la pared vesical?
-                  </p>
+                  <p className="text-slate-700 dark:text-slate-200 text-sm font-medium leading-relaxed">{c.algoQSize}</p>
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => goToNextStep(null, 1)}
-                      className="py-3 px-4 bg-slate-700 hover:bg-emerald-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-emerald-500 text-sm"
-                    >
-                      Sí → VI-RADS 1
+                    <button type="button" onClick={() => goToNextStep(null, 1)} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-emerald-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-emerald-500 text-sm">
+                      {c.algoQSizeYes}
                     </button>
-                    <button
-                      onClick={() => goToNextStep('preguntaTallo')}
-                      className="py-3 px-4 bg-slate-700 hover:bg-blue-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-blue-500 text-sm"
-                    >
-                      No (≥ 1 cm o características complejas)
+                    <button type="button" onClick={() => goToNextStep('preguntaTallo')} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-blue-500 text-sm">
+                      {c.algoQSizeNo}
                     </button>
                   </div>
                 </div>
@@ -226,128 +183,67 @@ export default function VIRADS({ strings, lang = 'es' }) {
 
               {algoStep === 'preguntaTallo' && (
                 <div className="space-y-3">
-                  <p className="text-slate-200 text-sm font-medium leading-relaxed">
-                    3. ¿Presenta tallo fibrovascular (stalk) claro O tumor sésil/base amplia con capa submucosa (capa interna) engrosada e intacta?
-                  </p>
+                  <p className="text-slate-700 dark:text-slate-200 text-sm font-medium leading-relaxed">{c.algoQStalk}</p>
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => goToNextStep(null, 2)}
-                      className="py-3 px-4 bg-slate-700 hover:bg-green-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-green-500 text-sm"
-                    >
-                      Sí → VI-RADS 2
+                    <button type="button" onClick={() => goToNextStep(null, 2)} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-green-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-green-500 text-sm">
+                      {c.algoQStalkYes}
                     </button>
-                    <button
-                      onClick={() => goToNextStep(null, 3)}
-                      className="py-3 px-4 bg-slate-700 hover:bg-amber-600 text-white font-medium rounded-xl transition-all border border-slate-600 hover:border-amber-500 text-sm"
-                    >
-                      No (Hallazgos ambiguos / indet.) → VI-RADS 3
+                    <button type="button" onClick={() => goToNextStep(null, 3)} className="py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-amber-600 hover:text-white text-slate-700 dark:text-white font-medium rounded-xl transition-all border border-slate-200 dark:border-slate-600 hover:border-amber-500 text-sm">
+                      {c.algoQStalkNo}
                     </button>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <div className="flex items-center justify-between p-3 bg-slate-900/60 rounded-lg border border-slate-700/50">
-              <span className="text-xs text-slate-400">Evaluación algorítmica completada</span>
-              <button
-                onClick={handleGoBack}
-                className="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors"
-              >
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/60 rounded-lg border border-slate-200 dark:border-slate-700/50">
+              <span className="text-xs text-slate-500 dark:text-slate-400">{c.algoCompleted}</span>
+              <button type="button" onClick={handleGoBack} className="inline-flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors">
                 <BackIcon />
-                <span>Modificar selección anterior</span>
+                <span>{c.modifySelection}</span>
               </button>
             </div>
           )}
-        </div>
+        </Card>
       )}
 
-      {/* MODO 2: SECUENCIAS (CLÁSICO) */}
+      {/* MODO 2: SECUENCIAS (ACR CLÁSICO) */}
       {mode === 'classic' && (
-        <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 space-y-5">
-          <div className="flex items-center justify-between border-b border-slate-700/60 pb-3">
-            <h3 className="text-base font-semibold text-white">Puntuación por Secuencia (ACR)</h3>
-            <button
-              onClick={resetClassic}
-              className="text-xs text-slate-400 hover:text-white flex items-center gap-1 bg-slate-700/50 px-2.5 py-1 rounded-lg transition-colors"
-            >
-              <RefreshIcon /> Reiniciar
-            </button>
+        <Card className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{c.modeClassic}</h3>
+            <ResetIconButton onClick={resetAll} label={t.common.reset} />
           </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-slate-300">1. Puntuación T2W (Anatómica)</label>
-            <div className="grid grid-cols-5 gap-2">
-              {[1, 2, 3, 4, 5].map((val) => (
-                <button
-                  key={`t2-${val}`}
-                  onClick={() => setT2w(val)}
-                  className={`py-2 rounded-lg font-semibold text-sm transition-all ${
-                    t2w === val
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-slate-700/60 text-slate-300 hover:bg-slate-700'
-                  }`}
-                >
-                  {val}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-slate-300">2. Puntuación DWI/ADC (Dominante Primaria)</label>
-            <div className="grid grid-cols-5 gap-2">
-              {[1, 2, 3, 4, 5].map((val) => (
-                <button
-                  key={`dwi-${val}`}
-                  onClick={() => setDwi(val)}
-                  className={`py-2 rounded-lg font-semibold text-sm transition-all ${
-                    dwi === val
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-slate-700/60 text-slate-300 hover:bg-slate-700'
-                  }`}
-                >
-                  {val}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-slate-300">3. Puntuación DCE (Dominante Secundaria)</label>
-            <div className="grid grid-cols-5 gap-2">
-              {[1, 2, 3, 4, 5].map((val) => (
-                <button
-                  key={`dce-${val}`}
-                  onClick={() => setDce(val)}
-                  className={`py-2 rounded-lg font-semibold text-sm transition-all ${
-                    dce === val
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-slate-700/60 text-slate-300 hover:bg-slate-700'
-                  }`}
-                >
-                  {val}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <p className="text-xs text-slate-400 italic">
-            La categoría final toma el valor de DWI (secuencia dominante). Si DWI no es interpretable, se utiliza DCE.
-          </p>
-        </div>
+          <ScoreSelector5 label={c.step1} value={t2} onChange={setT2} defs={c.t2Defs} />
+          <ScoreSelector5 label={c.step2} value={dwi} onChange={setDwi} defs={c.dwiDefs} />
+          <ScoreSelector5 label={c.step3} value={dce} onChange={setDce} defs={c.dceDefs} />
+          <p className="text-[11px] text-slate-400 dark:text-slate-500">{c.dominantNote}</p>
+        </Card>
       )}
 
-      {/* RESULTADO FINAL */}
-      {currentCategory && (
-        <div className={`p-5 rounded-xl border ${categoryDetails[currentCategory].badgeBg} space-y-2 transition-all shadow-lg`}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider">Categoría Obtenida</span>
-            <span className="text-2xl font-black">{categoryDetails[currentCategory].title}</span>
+      {final > 0 && (
+        <InfoBox tone={final >= 4 ? 'amber' : final === 3 ? 'amber' : 'emerald'}>
+          {mode === 'classic' ? interp : c.categoryDesc[final - 1]}
+        </InfoBox>
+      )}
+
+      <UsageNotes paragraphs={c.usage} />
+      <References items={REFERENCES.virads} />
+      <ReportBugLink calcTitle={c.title} />
+      <DonationButton />
+      <CalcDisclaimer />
+
+      {final > 0 && (
+        <StickyBar>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{mode === 'algo' ? c.categoryLabel : c.finalCategory}</span>
+            <span className={`text-4xl font-black block mt-1 ${final >= 4 ? 'text-red-500' : final === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>VI-RADS {final}</span>
           </div>
-          <p className="text-sm leading-relaxed text-slate-200">
-            {categoryDetails[currentCategory].desc}
-          </p>
-        </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          </div>
+        </StickyBar>
       )}
     </div>
   );

@@ -7,32 +7,6 @@ export const REFERENCES = {
     'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.',
     'Ma X, Holalkere NS, Kambadakone RA, Mino-Kenudson M, Hahn PF, Sahani DV. Imaging-based quantification of hepatic fat: methods and clinical applications. RadioGraphics. 2009;29(5):1253-1277.',
   ],
-  ildClassifier: [
-  {
-    authors: "Podolanczuk AJ, Hunninghake GM, Wilson KC, et al.",
-    title: "Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement",
-    journal: "Am J Respir Crit Care Med",
-    year: 2025,
-    volume: "211(7)",
-    pages: "1132-1155"
-  },
-  {
-    authors: "Ryerson CJ, Adegunsoye A, Piciucchi S, et al.",
-    title: "Update of the international multidisciplinary classification of the interstitial pneumonias: an ERS/ATS statement",
-    journal: "Eur Respir J",
-    year: 2025,
-    volume: "66",
-    pages: "2500158"
-  },
-  {
-    authors: "Raghu G, Remy-Jardin M, Richeldi L, et al.",
-    title: "Idiopathic Pulmonary Fibrosis (an Update) and Progressive Pulmonary Fibrosis in Adults: An Official ATS/ERS/JRS/ALAT Clinical Practice Guideline",
-    journal: "Am J Respir Crit Care Med",
-    year: 2022,
-    volume: "205(9)",
-    pages: "e18-e47"
-  }
-],
   epidExtent: [
     'Goh NS, Desai SR, Veeraraghavan S, et al. Interstitial lung disease in systemic sclerosis: a simple staging system. Am J Respir Crit Care Med. 2008;177(11):1248-1254.',
     'Tschalèr L, Jordan S, Aaløkken TM, et al. Validation of a semi-quantitative method to assess interstitial lung disease severity and progression in systemic sclerosis by standard and low-dose HRCT scans. RMD Open. 2025;11(1):e004938.',
@@ -164,5 +138,13 @@ export const REFERENCES = {
     'Munro MG, Critchley HOD, Broder MS, Fraser IS; FIGO Working Group on Menstrual Disorders. FIGO classification system (PALM-COEIN) for causes of abnormal uterine bleeding in nongravid women of reproductive age. Int J Gynaecol Obstet. 2011;113(1):3-13. (Leiomyoma subclassification revised by FIGO in 2018.)',
     'Zlotykamien-Taïeb E, Gherman D, Al Rouhban R, Florin M, Darai E, Haddad B, Dabi Y, Arbel S, Jha P, Thomassin-Naggara I. Novel approach to MRI based risk stratification of uterine myometrial lesions. Eur J Radiol. 2025;187:112126.',
     'Hindman NH, Kang F, Fournier L, et al. MRI Evaluation of Uterine Masses for Risk of Leiomyosarcoma: A Consensus Statement. Radiology. 2023;306(3):e211658.',
+  ],
+  ildClassifier: [
+    'Podolanczuk AJ, Hunninghake GM, et al. Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement. Am J Respir Crit Care Med. 2025;211(7):1132-1155.',
+    'Ryerson CJ, Wells AU, Richeldi L, et al. A Consensus Nomenclature and Classification for Fibrotic and Inflammatory Interstitial Lung Diseases: An Official ERS/ATS Statement. Eur Respir J / Am J Respir Crit Care Med. 2025.',
+    'Raghu G, Remy-Jardin M, Richeldi L, et al. Idiopathic Pulmonary Fibrosis (an Update) and Progressive Pulmonary Fibrosis in Adults: An Official ATS/ERS/JRS/ALAT Clinical Practice Guideline. Am J Respir Crit Care Med. 2022;205(9):e18-e47.',
+    'Dulcich M, et al. Smoking-related interstitial lung disease: imaging spectrum and diagnostic pitfalls. RadioGraphics.',
+    'Chung JH, Cox CW, Montner SM, et al. CT Features of the Usual Interstitial Pneumonia Pattern: Differentiating Connective Tissue Disease-Associated Interstitial Lung Disease from Idiopathic Pulmonary Fibrosis. AJR Am J Roentgenol. 2018;210(2):307-313.',
+    'Raghu G, Remy-Jardin M, Ryerson CJ, et al. Diagnosis of Hypersensitivity Pneumonitis in Adults: An Official ATS/JRS/ALAT Clinical Practice Guideline. Am J Respir Crit Care Med. 2020;202(3):e36-e69.',
   ],
 };
