@@ -31,4 +31,5 @@ export default {
   virads: ['vi-rads', 'virads', 'vejiga', 'cancer de vejiga', 'cáncer de vejiga', 'invasion muscular', 'tumor vesical'],
   orads: ['o-rads', 'orads', 'ovario', 'masa anexial', 'quiste ovarico', 'quiste ovárico', 'tumor de ovario'],
   leiomyoma: ['mioma', 'miomas uterinos', 'leiomioma', 'leiomiosarcoma', 'figo', 'palm-coein', 'clasificacion figo', 'utero', 'útero', 'masa miometrial', 'lesion miometrial'],
+  thoracicglossary: ['fleischner', 'glosario', 'glosario torax', 'glosario tórax', 'terminologia radiologica', 'terminología radiológica', 'vidrio esmerilado', 'panal de abejas', 'bronquiectasias de traccion', 'bronquiectasias de tracción', 'atrapamiento aereo', 'atrapamiento aéreo', 'consolidacion', 'consolidación', 'nodulo pulmonar', 'nódulo pulmonar', 'arbol en brote', 'árbol en brote', 'atenuacion en mosaico', 'atenuación en mosaico', 'signo del halo', 'diccionario radiologia torax'],
 };

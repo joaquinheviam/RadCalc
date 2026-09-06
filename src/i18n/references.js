@@ -1,4 +1,7 @@
 export const REFERENCES = {
+  thoracicglossary: [
+    'Bankier AA, MacMahon H, Colby T, Gevenois PA, Goo JM, Leung ANC, Lynch DA, Schaefer-Prokop CM, Tomiyama N, Travis WD, Verschakelen JA, White CS, Naidich DP. Fleischner Society: glossary of terms for thoracic imaging. Radiology. 2024;310(2):e232558.',
+  ],
   psad: [
     'Benson MC, Whang IS, Pantuck A, Ring K, Kaplan SA, Olsson CA, Cooner WH. Prostate specific antigen density: a means of distinguishing benign prostatic hypertrophy and prostate cancer. J Urol. 1992;147(3 Pt 2):815-816.',
     'Terris MK, Stamey TA. Determination of prostate volume by transrectal ultrasound. J Urol. 1991;145(5):984-987.',

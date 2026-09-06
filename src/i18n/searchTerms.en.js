@@ -31,4 +31,5 @@ export default {
   virads: ['vi-rads', 'virads', 'bladder', 'bladder cancer', 'muscle invasion', 'bladder tumor'],
   orads: ['o-rads', 'orads', 'ovary', 'adnexal mass', 'ovarian cyst', 'ovarian tumor'],
   leiomyoma: ['fibroid', 'uterine fibroids', 'leiomyoma', 'leiomyosarcoma', 'figo', 'palm-coein', 'figo classification', 'uterus', 'myometrial mass', 'myometrial lesion'],
+  thoracicglossary: ['fleischner', 'glossary', 'thoracic glossary', 'chest terminology', 'radiology terminology', 'ground glass', 'ground-glass opacity', 'honeycombing', 'traction bronchiectasis', 'air trapping', 'consolidation', 'pulmonary nodule', 'tree-in-bud', 'mosaic attenuation', 'halo sign', 'chest imaging dictionary', 'thoracic imaging terms'],
 };

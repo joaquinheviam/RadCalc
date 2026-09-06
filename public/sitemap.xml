@@ -45,6 +45,10 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://rad-calc.vercel.app/es/calc/thoracicglossary</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://rad-calc.vercel.app/es/calc/cadrads</loc>
     <changefreq>monthly</changefreq>
   </url>
@@ -170,6 +174,10 @@
   </url>
   <url>
     <loc>https://rad-calc.vercel.app/en/calc/epidExtent</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://rad-calc.vercel.app/en/calc/thoracicglossary</loc>
     <changefreq>monthly</changefreq>
   </url>
   <url>
