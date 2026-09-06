@@ -149,6 +149,7 @@ export default {
     },
     psad: {
       title: 'PSAD y Volumen Prostático',
+      subtitle: 'Cálculo del volumen prostático por fórmula elipsoide y estimación de la densidad de antígeno prostático específico (PSAD).',
       dims: 'Dimensiones (cm)',
       ap: 'AP', tr: 'TR', long: 'LONG',
       psaLabel: 'PSA Total (ng/mL)',
@@ -176,6 +177,7 @@ export default {
     },
     mriFf: {
       title: 'Fracción Grasa por RM (Dixon)',
+      subtitle: 'Cuantificación de la fracción grasa hepática mediante secuencias RM Dixon en fase y fuera de fase para evaluación de esteatosis.',
       methodLabel: 'Método',
       methodFf: 'Fracción grasa (doble eco único, misma excitación — método Dixon)',
       methodPct: 'Porcentaje graso (ecos adquiridos por separado — normalizado por bazo)',
@@ -207,6 +209,7 @@ export default {
     },
     adrenalCt: {
       title: 'Adrenales: Lavado en TC',
+      subtitle: 'Cálculo del porcentaje de lavado absoluto y relativo de contraste en TC para caracterización de adenomas suprarrenales.',
       nonContrast: 'Sin contraste (UH)',
       portal: 'Fase portovenosa (UH)',
       portalWarning: 'Debe corresponder a fase portovenosa (60-90 s post-contraste). No usar la fase arterial: sobreestimaría el lavado.',
@@ -278,6 +281,7 @@ export default {
     },
     adrenalMri: {
       title: 'Adrenales: Adenoma por RM',
+      subtitle: 'Evaluación de pérdida de señal en secuencias de RM en fase y fuera de fase para diferenciación de adenomas suprarrenales ricos en lípidos.',
       method: 'Método',
       methodAsr: 'Señal corregida (ASR)',
       methodSii: 'Señal adrenal (SII)',
@@ -315,6 +319,7 @@ export default {
     },
     siderosis: {
       title: 'Siderosis Hepática por RM (1.5 T)',
+      subtitle: 'Estimación de la concentración de hierro hepático (LIC) a partir de tiempos de relajación T2* o gradiente eco en RM de 1.5 Tesla.',
       enterT2: 'Ingresar T2* (ms)',
       enterR2: 'Ingresar R2* (Hz)',
       valueOf: 'Valor de',
@@ -334,6 +339,7 @@ export default {
     },
     thymic: {
       title: 'Grasa Tímica / Hiperplasia',
+      subtitle: 'Evaluación cuantitativa y cualitativa de atenuación en TC y caída de señal en RM para diferenciar hiperplasia tímica de neoplasia.',
       roiThymus: 'ROI Timo',
       roiMuscle: 'ROI Músculo',
       inPhase: 'In-Phase', outPhase: 'Out-Phase',
@@ -353,6 +359,7 @@ export default {
     },
     tirads: {
       title: 'ACR TI-RADS (Tiroides)',
+      subtitle: 'Estratificación de riesgo de malignidad en nódulos tiroideos por ecografía y recomendaciones de PAAF o seguimiento según el ACR TI-RADS.',
       totalScore: 'Puntaje Total',
       recommendation: 'Recomendación',
       points: 'pt',
@@ -419,6 +426,7 @@ export default {
     },
     orads: {
       title: 'ACR O-RADS MRI (Ovario)',
+      subtitle: 'Estratificación de riesgo de malignidad en masas anexiales y ováricas complejas mediante RM multiparamétrica según O-RADS MRI.',
       history: 'Historial',
       undo: 'Volver atrás',
       malignancyRisk: 'Riesgo de malignidad',
@@ -467,6 +475,7 @@ export default {
     },
     pirads: {
       title: 'PI-RADS v2.1 (Próstata)',
+      subtitle: 'Estratificación de riesgo de cáncer de próstata clínicamente significativo mediante RM multiparamétrica según PI-RADS v2.1.',
       pz: 'Zona Periférica (PZ)',
       tz: 'Zona de Transición (TZ)',
       dwiDominant: '1. Score DWI/ADC (secuencia dominante)',
@@ -514,6 +523,7 @@ export default {
     },
     virads: {
   title: 'VI-RADS (Vesical Imaging-Reporting and Data System)',
+      subtitle: 'Evaluación del riesgo de invasión de la capa muscular propia en cáncer vesical mediante RM multiparamétrica con VI-RADS.',
   step1: '1. Puntuación T2W (Anatómica)',
   step2: '2. Puntuación DWI/ADC (Secuencia Dominante Primaria)',
   step3: '3. Puntuación DCE (Secuencia Dominante Secundaria)',
@@ -581,6 +591,7 @@ export default {
 },
     lirads: {
       title: 'LI-RADS v2018 (TC/RM de Hígado)',
+      subtitle: 'Categorización de lesiones focales hepáticas en pacientes con riesgo de hepatocarcinoma mediante TC o RM según LI-RADS v2018.',
       sizeLabel: 'Tamaño de la observación',
       size1: '< 10 mm', size2: '10-19 mm', size3: '≥ 20 mm',
       apheLabel: 'Realce arterial no periférico (APHE) tipo "nonrim"',
@@ -655,6 +666,7 @@ export default {
     },
     liradsTr: {
       title: 'LI-RADS: Respuesta a Tratamiento (LR-TR) v2024',
+      subtitle: 'Evaluación de la respuesta tumoral post-terapia locorregional en carcinoma hepatocelular mediante TC o RM según LI-RADS TR v2024.',
       applicability: 'Aplíquelo en pacientes de alto riesgo (cirrosis, o infección crónica por hepatitis B con o sin cirrosis, o CHC actual/previo, incluyendo candidatos y receptores de trasplante hepático) para evaluar la respuesta de observaciones con categoría pretratamiento LR-4, LR-5 o LR-M, sobre TC/RM multifásica postratamiento (con agente de contraste extracelular o hepatobiliar). No lo aplique en TC/RM sin contraste o de fase única, en observaciones nuevas o no tratadas fuera de la zona de tratamiento (use el algoritmo diagnóstico CT/MRI Dx), en pacientes posquirúrgicos para hallazgos alejados del margen quirúrgico, ni en pacientes tratados solo con terapia sistémica (aplíquelo con precaución si combinan terapia sistémica con LRT).',
       coreLabel: 'Paso 1: tipo de terapia locorregional (LRT) recibida',
       coreNonradiation: 'No basada en radiación (o margen quirúrgico)',
@@ -711,6 +723,7 @@ export default {
     },
     cadrads: {
       title: 'CAD-RADS 2.0 (Angio-TC Coronaria)',
+      subtitle: 'Clasificación de estenosis coronaria, carga de placa y hallazgos de alto riesgo en angio-TC coronaria según CAD-RADS 2.0.',
       stenosisLabel: 'Estenosis máxima por segmento coronario',
       stenosisOptions: [
         { key: '0', label: '0% (sin placa ni estenosis)' },
@@ -750,6 +763,7 @@ export default {
     },
     lungNodule: {
       title: 'Nódulo Pulmonar Incidental (Fleischner / NCCN)',
+      subtitle: 'Guía de seguimiento de nódulos pulmonares sólidos y subsólidos incidentales basada en las recomendaciones Fleischner y NCCN.',
       stepBack: 'Paso anterior',
       pfnTitle: 'Paso 1: ¿Es un nódulo perifisural (ganglio linfático intrapulmonar)?',
       pfnIntro: 'Antes de aplicar el algoritmo por tamaño, evalúe si el nódulo cumple los criterios de nódulo perifisural (PFN) — la representación en TC de un ganglio linfático intrapulmonar (IPLN), típicamente benigno — que no requiere seguimiento adicional.',
@@ -845,6 +859,7 @@ export default {
     },
     lungRads: {
       title: 'Lung-RADS v2022 (Tamizaje)',
+      subtitle: 'Categorización de hallazgos en TC de tórax de baja dosis para tamizaje de cáncer de pulmón y conducta según Lung-RADS v2022.',
       categoryLabel: 'Seleccione la categoría según los hallazgos',
       resultLabel: 'Categoría Lung-RADS',
       managementLabel: 'Manejo recomendado',
@@ -970,6 +985,7 @@ export default {
     },
     lungScreening: {
       title: 'Elegibilidad para Tamizaje de Cáncer Pulmonar (NCCN)',
+      subtitle: 'Evaluación de criterios de elegibilidad para tamizaje de cáncer pulmonar mediante TC de baja dosis según guías NCCN vigentes.',
       exclusionQ: '¿El paciente presenta alguno de los siguientes?',
       exclusionOptions: [
         'Síntomas de cáncer pulmonar',
@@ -1000,6 +1016,7 @@ export default {
     },
     pancreasResect: {
       title: 'Resecabilidad de Adenocarcinoma Pancreático (NCCN)',
+      subtitle: 'Criterios de resecabilidad vascular del adenocarcinoma ductal pancreático en TC según las guías NCCN (resecable a metastásico).',
       arterialLabel: 'Compromiso arterial',
       arterialOptions: [
         { key: 'none', label: 'Sin contacto tumoral con eje celíaco (CA), arteria hepática común (CHA), o arteria mesentérica superior (SMA)' },
@@ -1028,6 +1045,7 @@ export default {
     },
     pancreaticCyst: {
       title: 'Quistes Pancreáticos Incidentales: Seguimiento (ACR / Consenso Chileno)',
+      subtitle: 'Estratificación de riesgo y conducta de seguimiento para lesiones quísticas pancreáticas incidentales según consensos ACR y locales.',
       diagnosisLabel: 'Diagnóstico',
       diagnosisIndeterminate: 'Indeterminado / presumiblemente mucinoso',
       diagnosisSca: 'Cistoadenoma seroso (SCA) confirmado',
@@ -1167,6 +1185,7 @@ export default {
     },
     liradsUs: {
       title: 'LI-RADS US Surveillance (v2024)',
+      subtitle: 'Estratificación del riesgo y adecuación técnica en la ecografía de tamizaje para hepatocarcinoma según LI-RADS Surveillance v2024.',
       highRiskLabel: '¿Paciente de alto riesgo para CHC (cirrosis de cualquier causa, o hepatitis B crónica incluso sin cirrosis)?',
       highRiskHelp: 'El algoritmo LI-RADS US Surveillance solo aplica a pacientes de alto riesgo para carcinoma hepatocelular.',
       notHighRiskWarning: 'El algoritmo LI-RADS US Surveillance no debe aplicarse en pacientes que no son de alto riesgo para CHC.',
@@ -1206,6 +1225,7 @@ export default {
     },
     spleenSize: {
       title: 'Índice Esplénico (Chow 2016)',
+      subtitle: 'Estimación rápida y precisa del volumen esplénico y diagnóstico de esplenomegalia mediante dimensiones lineales en TC o RM.',
       sexLabel: 'Sexo',
       sexFemale: 'Femenino',
       sexMale: 'Masculino',
@@ -1233,6 +1253,7 @@ export default {
     },
     cholangiocarcinoma: {
       title: 'Resecabilidad de Colangiocarcinoma Extrahepático (KSAR 2019)',
+      subtitle: 'Criterios radiológicos de resecabilidad vascular y compromiso ganglionar en colangiocarcinoma extrahepático según el consenso KSAR.',
       resultLabel: 'Estadio de resecabilidad',
       locationLabel: 'Localización del tumor',
       locPerihilar: 'Perihiliar (conducto hepático derecho/izquierdo o hepático común)',
@@ -1292,6 +1313,7 @@ export default {
     },
     lungCysts: {
       title: 'Enfermedad Quística Pulmonar (Algoritmo)',
+      subtitle: 'Algoritmo diagnóstico diferencial de enfermedades quísticas pulmonares difusas en TCAR según distribución y hallazgos asociados.',
       history: 'Historial',
       undo: 'Volver atrás',
       recommendation: 'Recomendación',
@@ -1382,6 +1404,7 @@ export default {
     },
     bosniak: {
       title: 'Clasificación de Bosniak v2019 (Masas Quísticas Renales)',
+      subtitle: 'Categorización y estimación del riesgo de malignidad en masas quísticas renales por TC y RM según la clasificación Bosniak v2019.',
       history: 'Historial',
       undo: 'Volver atrás',
       recommendation: 'Manejo',
@@ -1450,6 +1473,7 @@ export default {
     },
     ntmBcd: {
       title: 'Score BCD (Micobacterias No Tuberculosas)',
+      subtitle: 'Cuantificación de la extensión y severidad pulmonar por TC en infecciones por micobacterias no tuberculosas mediante el score BCD.',
       intro: 'Evalúe 6 lóbulos (LSD, LM, LID, LSI, língula, LII; la língula se cuenta como lóbulo independiente del LSI) marcando, para cada uno, si presenta cavidad > 2 cm de diámetro y/o bronquiectasias varicosas o quísticas.',
       lobeLabels: { rul: 'LSD', rml: 'LM', rll: 'LID', lul: 'LSI', lingula: 'Língula', lll: 'LII' },
       cavityLabel: 'Cavidad > 2 cm',
@@ -1473,6 +1497,7 @@ export default {
     },
     epidExtent: {
       title: 'EPID: Extensión Pulmonar (Goh y Tschalèr)',
+      subtitle: 'Estadiamiento y cuantificación visual de extensión del compromiso parenquimatoso en fibrosis pulmonar sistémica e idiopática.',
       methodLabel: 'Método',
       methodGoh: 'Goh (estadificación simple: limitada vs. extensa)',
       methodTschaler: 'Tschalèr (semicuantitativo: % de extensión por cortes)',
@@ -1516,6 +1541,7 @@ export default {
     },
     peQanadli: {
       title: 'TEP: Índice de Obstrucción (Qanadli) y Sobrecarga de VD',
+      subtitle: 'Cálculo del índice de obstrucción vascular arterial pulmonar de Qanadli y evaluación de signos de sobrecarga derecha por angio-TC.',
       modePerads: 'PE-RADS v2026',
       modeQuant: 'Cuantificación (Qanadli)',
       perads: {
@@ -1616,6 +1642,7 @@ export default {
     },
     pancreatitisAtlanta: {
       title: 'Pancreatitis Aguda: Clasificación de Atlanta Revisada',
+      subtitle: 'Clasificación de fase, severidad y colecciones líquidas peri y pancreáticas en pancreatitis aguda según Atlanta revisado.',
       finalDxTitle: 'Impresión diagnóstica',
       multiplicityQ: 'Número de colecciones (opcional):',
       multiplicitySingle: 'Única',
@@ -1687,6 +1714,7 @@ export default {
     },
     renalScore: {
       title: 'Score de Nefrometría R.E.N.A.L.',
+      subtitle: 'Sistema de cuantificación anatómica de complejidad tumoral renal en TC/RM para planeamiento quirúrgico o ablativo.',
       radiusLabel: 'R — Radio: diámetro máximo del tumor (cm)',
       radiusPh: 'Ej: 4.5',
       exoLabel: 'E — Propiedades exofítica/endofítica',
@@ -1726,6 +1754,7 @@ export default {
     },
     ccls: {
       title: 'Clear Cell Likelihood Score (ccLS v2) — RM Renal',
+      subtitle: 'Estimación de la probabilidad de carcinoma renal de células claras en masas sólidas renales mediante RM según el score ccLS v2.',
       gateQ: 'Paso 1: ¿La lesión es una masa renal sólida realzante (> 25% de componente sólido realzante), sin grasa macroscópica?',
       gateFat: 'Contiene grasa macroscópica (pérdida de señal con supresión grasa, o hiperintensidad en secuencia Dixon solo-grasa similar a la grasa retroperitoneal)',
       gateCystic: '< 25% de componente sólido realzante (masa predominantemente quística)',
@@ -1773,6 +1802,7 @@ export default {
     },
     leiomyoma: {
       title: 'Miomas Uterinos: Clasificación FIGO y Riesgo de Leiomiosarcoma',
+      subtitle: 'Clasificación topográfica FIGO de miomas uterinos y evaluación radiológica de hallazgos sospechosos de leiomiosarcoma en RM.',
       stepBack: 'Paso anterior',
       figoSectionTitle: 'Sección 1: Clasificación FIGO del mioma',
       figoIntro: 'Clasifica la localización del mioma según su relación con el endometrio y la serosa uterina (sistema FIGO/PALM-COEIN, Munro et al. 2011, revisado por FIGO en 2018).',
@@ -1882,7 +1912,7 @@ export default {
       copyReport: 'Copiar definición',
       usage: [
         'Glosario de referencia rápida con la nomenclatura estandarizada para radiología torácica publicada por la Fleischner Society en 2024 (actualización del glosario original de 2008).',
-        'Usá el buscador para encontrar un término por su nombre o dentro de su definición, en español o inglés, y los filtros para navegar por categoría (anatomía, patología/descriptores, distribución anatómica, patrones tomográficos, fisiología).',
+        'Utilice el buscador para encontrar un término por su nombre o dentro de su definición, en español o inglés, y los filtros para navegar por categoría (anatomía, patología/descriptores, distribución anatómica, patrones tomográficos, fisiología).',
         'Pensado como apoyo para la redacción de informes con terminología precisa y consistente, y como referencia educativa; no sustituye el glosario original ni el juicio clínico-radiológico.',
       ],
     },

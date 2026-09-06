@@ -149,6 +149,7 @@ export default {
     },
     psad: {
       title: 'PSAD and Prostate Volume',
+      subtitle: 'Calculation of prostate volume using the ellipsoid formula and estimation of prostate-specific antigen density (PSAD).',
       dims: 'Dimensions (cm)',
       ap: 'AP', tr: 'TR', long: 'LONG',
       psaLabel: 'Total PSA (ng/mL)',
@@ -176,6 +177,7 @@ export default {
     },
     mriFf: {
       title: 'MRI Fat Fraction (Dixon)',
+      subtitle: 'Hepatic fat fraction quantification using in-phase and opposed-phase Dixon MRI techniques for hepatic steatosis grading.',
       methodLabel: 'Method',
       methodFf: 'Fat fraction (single dual-echo, same excitation — Dixon method)',
       methodPct: 'Fat percentage (echoes acquired separately — spleen-normalized)',
@@ -207,6 +209,7 @@ export default {
     },
     adrenalCt: {
       title: 'Adrenal: CT Washout',
+      subtitle: 'Absolute and relative contrast enhancement washout percentage calculator for characterization of adrenal adenomas on CT.',
       nonContrast: 'Non-contrast (HU)',
       portal: 'Portal-venous phase (HU)',
       portalWarning: 'Must be the portal-venous phase (60-90 s post-contrast). Do not use the arterial phase: it would overestimate washout.',
@@ -278,6 +281,7 @@ export default {
     },
     adrenalMri: {
       title: 'Adrenal: Adenoma by MRI',
+      subtitle: 'Evaluation of signal loss on in-phase and out-of-phase chemical shift MRI for differentiating lipid-rich adrenal adenomas.',
       method: 'Method',
       methodAsr: 'Reference-corrected signal (ASR)',
       methodSii: 'Adrenal signal (SII)',
@@ -315,6 +319,7 @@ export default {
     },
     siderosis: {
       title: 'MRI Hepatic Siderosis (1.5 T)',
+      subtitle: 'Estimation of liver iron concentration (LIC) using T2* relaxation times or gradient-echo MRI sequences at 1.5 Tesla.',
       enterT2: 'Enter T2* (ms)',
       enterR2: 'Enter R2* (Hz)',
       valueOf: 'Value of',
@@ -334,6 +339,7 @@ export default {
     },
     thymic: {
       title: 'Thymic Fat / Hyperplasia',
+      subtitle: 'Quantitative CT attenuation and MRI signal drop-off evaluation to differentiate thymic hyperplasia from thymic neoplasm.',
       roiThymus: 'Thymus ROI',
       roiMuscle: 'Muscle ROI',
       inPhase: 'In-Phase', outPhase: 'Out-of-Phase',
@@ -353,6 +359,7 @@ export default {
     },
     tirads: {
       title: 'ACR TI-RADS (Thyroid)',
+      subtitle: 'Thyroid nodule malignancy risk stratification and fine-needle aspiration or follow-up recommendations based on ACR TI-RADS.',
       totalScore: 'Total Score',
       recommendation: 'Recommendation',
       points: 'pt',
@@ -419,6 +426,7 @@ export default {
     },
     orads: {
       title: 'ACR O-RADS MRI (Ovary)',
+      subtitle: 'Malignancy risk assessment and management of adnexal and ovarian masses using multiparametric MRI per O-RADS MRI.',
       history: 'History',
       undo: 'Go back',
       malignancyRisk: 'Malignancy risk',
@@ -467,6 +475,7 @@ export default {
     },
     pirads: {
       title: 'PI-RADS v2.1 (Prostate)',
+      subtitle: 'Risk stratification of clinically significant prostate cancer using multiparametric MRI evaluated under PI-RADS v2.1.',
       pz: 'Peripheral Zone (PZ)',
       tz: 'Transition Zone (TZ)',
       dwiDominant: '1. DWI/ADC Score (dominant sequence)',
@@ -514,6 +523,7 @@ export default {
     },
     virads: {
   title: 'VI-RADS (Vesical Imaging-Reporting and Data System)',
+      subtitle: 'Assessment of muscle-invasive bladder cancer probability using multiparametric MRI reporting per VI-RADS criteria.',
   step1: '1. T2W Score (Anatomical)',
   step2: '2. DWI/ADC Score (Primary Dominant Sequence)',
   step3: '3. DCE Score (Secondary Dominant Sequence)',
@@ -581,6 +591,7 @@ export default {
 },
     lirads: {
       title: 'LI-RADS v2018 (CT/MRI Liver)',
+      subtitle: 'Standardized risk categorization of focal liver lesions in high-risk patients for hepatocellular carcinoma using CT/MRI.',
       sizeLabel: 'Observation size',
       size1: '< 10 mm', size2: '10-19 mm', size3: '≥ 20 mm',
       apheLabel: 'Nonrim arterial phase hyperenhancement (APHE)',
@@ -655,6 +666,7 @@ export default {
     },
     liradsTr: {
       title: 'LI-RADS: Treatment Response (LR-TR) v2024',
+      subtitle: 'Post-locoregional therapy tumor response assessment in hepatocellular carcinoma using CT or MRI per LI-RADS TR v2024.',
       applicability: 'Apply in high-risk patients (cirrhosis, or chronic hepatitis B infection even without cirrhosis, or current/prior HCC, including liver transplant candidates and recipients) to assess response of observations with pretreatment category LR-4, LR-5, or LR-M, on posttreatment multiphase CT/MRI (extracellular or hepatobiliary contrast agent). Do not apply to noncontrast or single-phase CT/MRI, to new or untreated observations outside the treatment zone (use the CT/MRI Dx algorithm), to postsurgical patients for findings away from the surgical margin, or to patients treated with systemic therapy alone (apply with caution if combined with LRT).',
       coreLabel: 'Step 1: type of locoregional therapy (LRT) received',
       coreNonradiation: 'Nonradiation-based (or surgical margin)',
@@ -711,6 +723,7 @@ export default {
     },
     cadrads: {
       title: 'CAD-RADS 2.0 (Coronary CTA)',
+      subtitle: 'Coronary artery stenosis grading, plaque burden evaluation, and high-risk plaque feature reporting via CAD-RADS 2.0.',
       stenosisLabel: 'Maximum stenosis by coronary segment',
       stenosisOptions: [
         { key: '0', label: '0% (no plaque or stenosis)' },
@@ -750,6 +763,7 @@ export default {
     },
     lungNodule: {
       title: 'Incidental Pulmonary Nodule (Fleischner / NCCN)',
+      subtitle: 'Management and follow-up calculator for incidental solid and subsolid pulmonary nodules using Fleischner and NCCN guidelines.',
       stepBack: 'Previous step',
       pfnTitle: 'Step 1: Is this a perifissural nodule (intrapulmonary lymph node)?',
       pfnIntro: 'Before applying the size-based algorithm, assess whether the nodule meets the criteria for a perifissural nodule (PFN) — the CT representation of an intrapulmonary lymph node (IPLN), typically benign — which does not require further follow-up.',
@@ -845,6 +859,7 @@ export default {
     },
     lungRads: {
       title: 'Lung-RADS v2022 (Screening)',
+      subtitle: 'Standardized categorization and management of low-dose CT lung cancer screening findings per Lung-RADS v2022 guidelines.',
       categoryLabel: 'Select the category based on findings',
       resultLabel: 'Lung-RADS category',
       managementLabel: 'Recommended management',
@@ -970,6 +985,7 @@ export default {
     },
     lungScreening: {
       title: 'Lung Cancer Screening Eligibility (NCCN)',
+      subtitle: 'Assessment of patient eligibility for low-dose CT lung cancer screening based on risk criteria from NCCN guidelines.',
       exclusionQ: 'Does the patient have any of the following?',
       exclusionOptions: [
         'Symptoms of lung cancer',
@@ -1000,6 +1016,7 @@ export default {
     },
     pancreasResect: {
       title: 'Pancreatic Adenocarcinoma Resectability (NCCN)',
+      subtitle: 'CT vascular involvement criteria to determine pancreatic ductal adenocarcinoma resectability according to NCCN guidelines.',
       arterialLabel: 'Arterial involvement',
       arterialOptions: [
         { key: 'none', label: 'No tumor contact with the celiac axis (CA), common hepatic artery (CHA), or superior mesenteric artery (SMA)' },
@@ -1028,6 +1045,7 @@ export default {
     },
     pancreaticCyst: {
       title: 'Incidental Pancreatic Cysts: Follow-Up (ACR / Chilean Consensus)',
+      subtitle: 'Risk stratification and follow-up management algorithm for incidental pancreatic cystic lesions based on ACR consensus.',
       diagnosisLabel: 'Diagnosis',
       diagnosisIndeterminate: 'Indeterminate / presumed mucinous',
       diagnosisSca: 'Confirmed serous cystadenoma (SCA)',
@@ -1167,6 +1185,7 @@ export default {
     },
     liradsUs: {
       title: 'LI-RADS US Surveillance (v2024)',
+      subtitle: 'Ultrasound surveillance risk category allocation and technical adequacy assessment for HCC screening per LI-RADS v2024.',
       highRiskLabel: 'Is the patient at high risk for HCC (cirrhosis of any cause, or chronic hepatitis B even without cirrhosis)?',
       highRiskHelp: 'The LI-RADS US Surveillance algorithm only applies to patients at high risk for hepatocellular carcinoma.',
       notHighRiskWarning: 'The LI-RADS US Surveillance algorithm should not be applied to patients who are not at high risk for HCC.',
@@ -1206,6 +1225,7 @@ export default {
     },
     spleenSize: {
       title: 'Splenic Index (Chow 2016)',
+      subtitle: 'Rapid estimation of splenic volume and objective splenomegaly diagnosis using linear measurements on CT or MRI.',
       sexLabel: 'Sex',
       sexFemale: 'Female',
       sexMale: 'Male',
@@ -1233,6 +1253,7 @@ export default {
     },
     cholangiocarcinoma: {
       title: 'Extrahepatic Cholangiocarcinoma Resectability (KSAR 2019)',
+      subtitle: 'Radiological criteria for vascular invasion and nodal involvement in extrahepatic cholangiocarcinoma based on KSAR consensus.',
       resultLabel: 'Resectability stage',
       locationLabel: 'Tumor location',
       locPerihilar: 'Perihilar (right/left hepatic duct or common hepatic duct)',
@@ -1292,6 +1313,7 @@ export default {
     },
     lungCysts: {
       title: 'Cystic Lung Disease (Algorithm)',
+      subtitle: 'Differential diagnosis decision tree for diffuse cystic lung diseases on HRCT based on cyst distribution and features.',
       history: 'History',
       undo: 'Go back',
       recommendation: 'Recommendation',
@@ -1382,6 +1404,7 @@ export default {
     },
     bosniak: {
       title: 'Bosniak Classification v2019 (Cystic Renal Masses)',
+      subtitle: 'Malignancy risk categorization and follow-up guidance for cystic renal masses on CT and MRI via Bosniak v2019.',
       history: 'History',
       undo: 'Go back',
       recommendation: 'Management',
@@ -1450,6 +1473,7 @@ export default {
     },
     ntmBcd: {
       title: 'BCD Score (Nontuberculous Mycobacteria)',
+      subtitle: 'CT-based scoring tool to quantify pulmonary extent and severity of non-tuberculous mycobacterial lung disease.',
       intro: 'Assess 6 lobes (RUL, RML, RLL, LUL, lingula, LLL; the lingula is counted separately from the LUL) marking, for each one, whether it shows a cavity > 2 cm in diameter and/or varicose or cystic bronchiectasis.',
       lobeLabels: { rul: 'RUL', rml: 'RML', rll: 'RLL', lul: 'LUL', lingula: 'Lingula', lll: 'LLL' },
       cavityLabel: 'Cavity > 2 cm',
@@ -1473,6 +1497,7 @@ export default {
     },
     epidExtent: {
       title: 'ILD: Lung Extent (Goh and Tschalèr)',
+      subtitle: 'Visual staging and quantitative assessment of parenchymal involvement in systemic and idiopathic pulmonary fibrosis.',
       methodLabel: 'Method',
       methodGoh: 'Goh (simple staging: limited vs. extensive)',
       methodTschaler: 'Tschalèr (semiquantitative: % extent by slices)',
@@ -1516,6 +1541,7 @@ export default {
     },
     peQanadli: {
       title: 'PE: Obstruction Index (Qanadli) and RV Strain',
+      subtitle: 'Assessment of pulmonary artery obstruction index by Qanadli score and right ventricular strain signs on CT pulmonary angiography.',
       modePerads: 'PE-RADS v2026',
       modeQuant: 'Quantification (Qanadli)',
       perads: {
@@ -1616,6 +1642,7 @@ export default {
     },
     pancreatitisAtlanta: {
       title: 'Acute Pancreatitis: Revised Atlanta Classification',
+      subtitle: 'Classification of acute pancreatitis phase, severity, and pancreatic/peripancreatic fluid collections according to Revised Atlanta.',
       finalDxTitle: 'Diagnostic impression',
       multiplicityQ: 'Number of collections (optional):',
       multiplicitySingle: 'Single',
@@ -1687,6 +1714,7 @@ export default {
     },
     renalScore: {
       title: 'R.E.N.A.L. Nephrometry Score',
+      subtitle: 'Standardized anatomical quantification system for renal mass complexity on CT/MRI to assist surgical or ablative planning.',
       radiusLabel: 'R — Radius: maximal tumor diameter (cm)',
       radiusPh: 'E.g.: 4.5',
       exoLabel: 'E — Exophytic/endophytic properties',
@@ -1726,6 +1754,7 @@ export default {
     },
     ccls: {
       title: 'Clear Cell Likelihood Score (ccLS v2) — Renal MRI',
+      subtitle: 'Estimation of clear cell renal cell carcinoma probability in solid renal masses using multiparametric MRI per ccLS v2.',
       gateQ: 'Step 1: Is the lesion an enhancing solid renal mass (> 25% enhancing solid component), without macroscopic fat?',
       gateFat: 'Contains macroscopic fat (signal loss with fat suppression, or fat-only Dixon hyperintensity similar to retroperitoneal fat)',
       gateCystic: '< 25% enhancing solid component (predominantly cystic mass)',
@@ -1773,6 +1802,7 @@ export default {
     },
     leiomyoma: {
       title: 'Uterine Fibroids: FIGO Classification & Leiomyosarcoma Risk',
+      subtitle: 'FIGO anatomical categorization of uterine fibroids and MRI features assessing risk of underlying leiomyosarcoma.',
       stepBack: 'Previous step',
       figoSectionTitle: 'Section 1: FIGO classification of the fibroid',
       figoIntro: 'Classifies the fibroid\'s location by its relationship to the endometrium and uterine serosa (FIGO/PALM-COEIN system, Munro et al. 2011, revised by FIGO in 2018).',
