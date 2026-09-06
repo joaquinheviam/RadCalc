@@ -93,6 +93,7 @@ export default function ILDClassifier() {
   const [exuberantHC, setExuberantHC] = useState(false);
   const [anteriorUpper, setAnteriorUpper] = useState(false);
   const [esophagus, setEsophagus] = useState(false);
+  const [axillaryLymph, setAxillaryLymph] = useState(false);
 
   const [smokingHistory, setSmokingHistory] = useState(false);
   const [cystsSRIF, setCystsSRIF] = useState(false);
@@ -114,9 +115,10 @@ export default function ILDClassifier() {
   // Signos morfológicos específicos de CTD (Chung et al. 2018) — se usan para el mensaje msgCTDSuspect,
   // que cita explícitamente esos tres signos y por eso no debe incluir la dilatación esofágica.
   const hasCTDMorphSigns = straightEdge || exuberantHC || anteriorUpper;
-  // hasCTDSigns se mantiene con su significado original (incluye dilatación esofágica) porque también
-  // se usa para gatillar isFibroticNSIP y uipCategory === 'ALTERNATIVE'.
-  const hasCTDSigns = hasCTDMorphSigns || esophagus;
+  // hasCTDSigns se mantiene con su significado original (incluye dilatación esofágica y, ahora,
+  // adenopatía axilar — Marinescu et al. 2026) porque también se usa para gatillar isFibroticNSIP
+  // y uipCategory === 'ALTERNATIVE'.
+  const hasCTDSigns = hasCTDMorphSigns || esophagus || axillaryLymph;
 
   let uipCategory = 'INDETERMINATE'; // 'TYPICAL', 'PROBABLE', 'INDETERMINATE', 'ALTERNATIVE'
   if (hasInconsistentDistribution || hasInconsistentFeatures) {
@@ -179,6 +181,9 @@ export default function ILDClassifier() {
     if (esophagus) {
       alternativeDetails.push(c.msgEsophagusSuspect);
     }
+    if (axillaryLymph) {
+      alternativeDetails.push(c.msgAxillaryLymphSuspect);
+    }
     if (extensiveGGO) {
       alternativeDetails.push(c.msgExtensiveGGOSuspect);
     }
@@ -227,15 +232,40 @@ export default function ILDClassifier() {
   }
 
   // Cuando hay EPID franca y además hay indicios de conectivopatía (signos morfológicos, dilatación
-  // esofágica, o antecedente conocido), se agrega la coletilla solicitada al patrón final.
+  // esofágica, adenopatía axilar, o antecedente conocido), se agrega la coletilla solicitada al patrón final.
   const ctdIndicated = hasCTDSigns || Boolean(ctdSelected);
+
+  // --- Nombre específico del "patrón inconsistente con UIP" (antes solo se mostraba como titular
+  // genérico "Patrón Inconsistente con UIP", con el diagnóstico específico escondido dentro del
+  // cuadro de sugerencias). Ahora SRIF, PLCH, RB-ILD, HP fibrótica/no fibrótica, NSIP y OP pueden
+  // aparecer como el nombre del resultado principal cuando son la causa de uipCategory==='ALTERNATIVE',
+  // en orden de especificidad diagnóstica (los hallazgos más patognomónicos primero). isHPFibrotic ya
+  // distingue HP fibrótica de no fibrótica según haya o no un elemento fibrótico (Tabla 5/6, ATS 2020);
+  // el hallazgo aislado que más se asocia a HP fibrótica es el signo de las tres densidades (OR 3.5,
+  // Marinescu et al. 2026), ya capturado por isHPFibrotic/threeDensity.
+  let altDiagnosisName = c.resAlternative;
+  if (uipCategory === 'ALTERNATIVE') {
+    if (cystsPLCH) {
+      altDiagnosisName = c.resAltPLCH;
+    } else if (cystsSRIF) {
+      altDiagnosisName = c.resAltSRIF;
+    } else if (threeDensity || distribution === 'peribronchovascular') {
+      altDiagnosisName = isHPFibrotic ? c.resAltHPFibrotic : c.resAltHPNonFibrotic;
+    } else if (ggoCentrilobular && smokingHistory) {
+      altDiagnosisName = c.resAltRBILD;
+    } else if (consolidationOP) {
+      altDiagnosisName = c.resAltOP;
+    } else if (subpleuralSparing && !hasCTDSigns) {
+      altDiagnosisName = isFibroticFeature ? c.resAltNSIPFibrotic : c.resAltNSIP;
+    }
+  }
 
   // El resultado se muestra apenas el usuario empieza a interactuar con el formulario,
   // para cualquiera de las 3 entidades (incluyendo "sin criterios de ILA ni EPID").
   const started = symptoms !== null || pftAbnormal !== null || progressionCT !== null ||
     extentZone !== 'under5' || volTotal !== 'under5' ||
     distribution !== 'subpleuralBasal' || feature !== 'ggo' ||
-    straightEdge || exuberantHC || anteriorUpper || esophagus ||
+    straightEdge || exuberantHC || anteriorUpper || esophagus || axillaryLymph ||
     smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity || consolidationOP || subpleuralSparing ||
     extensiveGGO || ctdKnown !== 'none';
 
@@ -253,6 +283,7 @@ export default function ILDClassifier() {
     setExuberantHC(false);
     setAnteriorUpper(false);
     setEsophagus(false);
+    setAxillaryLymph(false);
     setSmokingHistory(false);
     setCystsSRIF(false);
     setCystsPLCH(false);
@@ -273,7 +304,7 @@ export default function ILDClassifier() {
         ? c.resUIPProb
         : uipCategory === 'INDETERMINATE'
         ? c.resUIPIndet
-        : c.resAlternative)
+        : altDiagnosisName)
     : entityType === 'ILA'
     ? ilaSubtype
     : c.msgNormalExplain;
@@ -447,6 +478,15 @@ export default function ILDClassifier() {
               className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
             />
             <span className="text-sm text-slate-700 dark:text-slate-300">{c.signEsophagus}</span>
+          </label>
+          <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={axillaryLymph}
+              onChange={(e) => setAxillaryLymph(e.target.checked)}
+              className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.signAxillaryLymph}</span>
           </label>
           <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
             <input

@@ -149,6 +149,7 @@ export const REFERENCES = {
     'Dulcich M, et al. Smoking-related interstitial lung disease: imaging spectrum and diagnostic pitfalls. RadioGraphics.',
     'Chung JH, Cox CW, Montner SM, et al. CT Features of the Usual Interstitial Pneumonia Pattern: Differentiating Connective Tissue Disease-Associated Interstitial Lung Disease from Idiopathic Pulmonary Fibrosis. AJR Am J Roentgenol. 2018;210(2):307-313.',
     'Ahuja J, Arora D, Kanne JP, Henry TS, Godwin JD. Imaging of Pulmonary Manifestations of Connective Tissue Diseases. Radiol Clin North Am. 2016;54(6):1015-1031.',
+    'Marinescu DC, Hague CJ, Muller NL, et al. Association of CT Features with Radiologic Patterns in Interstitial Lung Disease: Multinomial Analysis in CARE-PF. Radiology. 2026;318(3):e251944.',
     'Raghu G, Remy-Jardin M, Ryerson CJ, et al. Diagnosis of Hypersensitivity Pneumonitis in Adults: An Official ATS/JRS/ALAT Clinical Practice Guideline. Am J Respir Crit Care Med. 2020;202(3):e36-e69.',
   ],
 };
