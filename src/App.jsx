@@ -1,5 +1,4 @@
 import InstallPromptIOS from './components/InstallPromptIOS';
-import UpdateToast from './components/UpdateToast';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { LangContext } from './i18n/LangContext.js';
 import { STRINGS } from './i18n/strings.js';
@@ -250,7 +249,6 @@ export default function App() {
       </div>
 
       {/* Prompts y notificaciones PWA */}
-      <UpdateToast />
       <InstallPromptIOS />
     </LangContext.Provider>
   );
