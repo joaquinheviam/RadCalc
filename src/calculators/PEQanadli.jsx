@@ -3,7 +3,32 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, Accordion, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+
+// Lista de botones de opción única (patrón compartido con otras calculadoras).
+function OptionList({ label, options, value, onChange }) {
+  return (
+    <div>
+      {label && <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{label}</label>}
+      <div className="space-y-2">
+        {options.map(opt => (
+          <button key={opt.key} onClick={() => onChange(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+function YesNo({ label, value, onChange, yesLabel, noLabel }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{label}</label>
+      <div className="flex gap-2">
+        <button onClick={() => onChange(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm transition-all ${value === true ? 'bg-amber-500 border-amber-500 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{yesLabel}</button>
+        <button onClick={() => onChange(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm transition-all ${value === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{noLabel}</button>
+      </div>
+    </div>
+  );
+}
 
 const PE_QANADLI_LUNGS = [
   { key: 'right', nameKey: 'qanadliRightLung', groups: [
@@ -23,6 +48,54 @@ const PE_QANADLI_ALL_IDS = PE_QANADLI_LUNGS.flatMap(l => l.groups.flatMap(g => g
 export default function PEQanadli() {
   const { t, lang } = useLang();
   const c = t.calc.peQanadli;
+  const p = c.perads;
+  const [mode, setMode] = useState('perads'); // 'perads' (por defecto) | 'quant'
+
+  // ---- Estado PE-RADS v2026 ----
+  const [quality, setQuality] = useState('optimal'); // 'optimal' | 'limited' | 'nondiagnostic'
+  const [location, setLocation] = useState(null); // '0' | '1' | '2' | '3' | '4'
+  const [exception, setException] = useState(false);
+  const [rvPlus, setRvPlus] = useState(false);
+  const [tPlus, setTPlus] = useState(false);
+
+  const showPerads = quality === 'nondiagnostic' || location !== null;
+  let peradsCode = '', peradsTitle = '', peradsTone = 'slate', peradsFindings = '', peradsMgmt = '', peradsInv = '';
+  if (quality === 'nondiagnostic') {
+    peradsCode = 'PE-RADS N' + (exception ? '/E' : '');
+    peradsTitle = p.catNTitle; peradsTone = 'red'; peradsFindings = p.catNText;
+  } else if (quality === 'limited' && location === '0') {
+    peradsCode = 'PE-RADS 0L' + (exception ? '/E' : '');
+    peradsTitle = p.cat0LTitle; peradsTone = 'amber'; peradsFindings = p.cat0LText;
+  } else if (location !== null) {
+    let code = `PE-RADS ${location}`;
+    if (exception) code += '/E';
+    if (rvPlus) code += '/RV+';
+    if (tPlus) code += '/T+';
+    peradsCode = code;
+    if (location === '0') {
+      peradsTitle = 'PE-RADS 0'; peradsTone = 'emerald'; peradsFindings = p.cat0Text;
+    } else if (location === '1') {
+      peradsTitle = p.cat1Title; peradsTone = 'amber'; peradsFindings = p.cat1Text; peradsMgmt = p.cat1Mgmt; peradsInv = p.cat1Inv;
+    } else if (location === '2') {
+      peradsTitle = p.cat2Title; peradsTone = 'amber'; peradsFindings = p.cat2Text + (rvPlus ? ' ' + p.cat2RvText : ''); peradsMgmt = p.cat2Mgmt; peradsInv = rvPlus ? p.cat2RvInv : '';
+    } else if (location === '3') {
+      peradsTitle = p.cat3Title; peradsTone = 'red'; peradsFindings = p.cat3Text + (rvPlus ? ' ' + p.cat3RvText : ''); peradsMgmt = p.cat3Mgmt; peradsInv = rvPlus ? p.cat3RvInv : '';
+    } else if (location === '4') {
+      peradsTitle = p.cat4Title; peradsTone = 'red'; peradsFindings = p.cat4Text + (rvPlus ? ' ' + p.cat4RvText : ''); peradsMgmt = p.cat4Mgmt; peradsInv = p.cat4RvInv;
+    }
+  }
+  const peradsToneClass = peradsTone === 'red' ? 'text-red-500' : peradsTone === 'amber' ? 'text-amber-500' : peradsTone === 'emerald' ? 'text-emerald-500' : 'text-slate-500';
+
+  const handleCopyPerads = () => {
+    const lines = [p.reportTitle, `${p.categoryLabel}: ${peradsCode}`, peradsFindings];
+    if (peradsMgmt) lines.push(`${p.managementTitle}: ${peradsMgmt}`);
+    if (peradsInv) lines.push(`${p.investigationsTitle}: ${peradsInv}`);
+    if (exception) lines.push(p.modifierEText);
+    if (tPlus) lines.push(p.modifierTText);
+    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+  };
+  const resetPerads = () => { setQuality('optimal'); setLocation(null); setException(false); setRvPlus(false); setTPlus(false); };
+
   const [qMode, setQMode] = useState('manual'); // 'manual' | 'segments'
   const [qScore, setQScore] = useState('');
   const [segGrades, setSegGrades] = useState(() => Object.fromEntries(PE_QANADLI_ALL_IDS.map(id => [id, 0])));
@@ -84,8 +157,72 @@ export default function PEQanadli() {
     );
   };
 
+  const showResult = mode === 'perads' ? showPerads : (hasQ || hasRv);
+
   return (
-    <div className={`space-y-4 animate-in fade-in ${(hasQ || hasRv) ? 'pb-56' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${showResult ? 'pb-56' : ''}`}>
+      <Card>
+        <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
+          <button onClick={() => setMode('perads')} className={`flex-1 px-3 py-1.5 rounded-md text-xs ${mode === 'perads' ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : 'text-slate-500'}`}>{c.modePerads}</button>
+          <button onClick={() => setMode('quant')} className={`flex-1 px-3 py-1.5 rounded-md text-xs ${mode === 'quant' ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : 'text-slate-500'}`}>{c.modeQuant}</button>
+        </div>
+      </Card>
+
+      {mode === 'perads' && (
+        <>
+          <Card className="space-y-4">
+            <OptionList
+              label={p.qualityLabel}
+              options={[
+                { key: 'optimal', label: p.qualityOptimal },
+                { key: 'limited', label: p.qualityLimited },
+                { key: 'nondiagnostic', label: p.qualityNondiagnostic },
+              ]}
+              value={quality}
+              onChange={(v) => { setQuality(v); if (v === 'nondiagnostic') setLocation(null); }}
+            />
+            {quality !== 'nondiagnostic' && (
+              <OptionList
+                label={p.locationLabel}
+                options={[
+                  { key: '0', label: p.loc0 },
+                  { key: '1', label: p.loc1 },
+                  { key: '2', label: p.loc2 },
+                  { key: '3', label: p.loc3 },
+                  { key: '4', label: p.loc4 },
+                ]}
+                value={location}
+                onChange={setLocation}
+              />
+            )}
+          </Card>
+          {(quality === 'nondiagnostic' || location !== null) && (
+            <Card className="space-y-4">
+              <YesNo label={p.exceptionLabel} value={exception} onChange={setException} yesLabel={t.common.yes} noLabel={t.common.no} />
+              {quality !== 'nondiagnostic' && location !== null && location !== '0' && (
+                <>
+                  <YesNo label={p.rvLabel} value={rvPlus} onChange={setRvPlus} yesLabel={t.common.yes} noLabel={t.common.no} />
+                  <YesNo label={p.thrombusLabel} value={tPlus} onChange={setTPlus} yesLabel={t.common.yes} noLabel={t.common.no} />
+                </>
+              )}
+            </Card>
+          )}
+          {showPerads && (
+            <Card className="text-center">
+              <span className="text-xs text-slate-500 block mb-1">{p.categoryLabel}</span>
+              <span className={`text-2xl font-black ${peradsToneClass}`}>{peradsCode}</span>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-snug">{peradsFindings}</p>
+              {peradsMgmt && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug"><strong>{p.managementTitle}:</strong> {peradsMgmt}</p>}
+              {peradsInv && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug"><strong>{p.investigationsTitle}:</strong> {peradsInv}</p>}
+              {exception && <InfoBox tone="amber">{p.modifierEText}</InfoBox>}
+              {tPlus && <InfoBox tone="red">{p.modifierTText}</InfoBox>}
+            </Card>
+          )}
+        </>
+      )}
+
+      {mode === 'quant' && (
+      <>
       <Card>
         <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.qanadliSectionTitle}</h3>
         <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg mb-3">
@@ -154,12 +291,29 @@ export default function PEQanadli() {
           <p className={`text-sm font-semibold mt-1 ${rvStrain ? 'text-red-500' : 'text-emerald-500'}`}>{rvStrain ? c.rvStrainPositive : c.rvStrainNegative}</p>
         </Card>
       )}
+      </>
+      )}
+
+      <InfoBox tone="slate">{p.disclaimerNote}</InfoBox>
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.peQanadli} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />
-      {(hasQ || hasRv) && (
+
+      {mode === 'perads' && showPerads && (
+        <StickyBar>
+          <div className="min-w-0 text-center">
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{p.categoryLabel}</span>
+            <span className={`text-3xl font-black block leading-tight ${peradsToneClass}`}>{peradsCode}</span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <ResetIconButton onClick={resetPerads} label={t.common.reset} />
+            <CopyIconButton onClick={handleCopyPerads} label={t.common.copyReport} />
+          </div>
+        </StickyBar>
+      )}
+      {mode === 'quant' && (hasQ || hasRv) && (
         <StickyBar>
           <div className="min-w-0 text-center flex items-center justify-center gap-6">
             {hasQ && (

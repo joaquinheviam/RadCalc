@@ -36,10 +36,11 @@ export default function PancreaticCyst() {
   const { t, lang } = useLang();
   const c = t.calc.pancreaticCyst;
 
-  const [diagnosis, setDiagnosis] = useState('indeterminate'); // 'indeterminate' | 'sca' | 'pseudocyst'
+  const [diagnosis, setDiagnosis] = useState('indeterminate'); // 'indeterminate' | 'sca' | 'pseudocyst' | 'spn'
   const [size, setSize] = useState('');
   const [symptomatic, setSymptomatic] = useState(null); // true | false | null
   const [age, setAge] = useState('');
+  const [surgicalCandidate, setSurgicalCandidate] = useState(null); // true | false | null — solo se pregunta si edad >= 80
   const [mpdComm, setMpdComm] = useState(null); // 'established' | 'absent' | null
   const [mpdSize, setMpdSize] = useState('');
   const [nodule, setNodule] = useState('none'); // 'none' | 'nonenhancing' | 'highrisk'
@@ -52,6 +53,8 @@ export default function PancreaticCyst() {
   const [rapidGrowth, setRapidGrowth] = useState(false);
   const [calcification, setCalcification] = useState('none'); // informativo
   const [location, setLocation] = useState(null); // informativo
+  const [sex, setSex] = useState(null); // informativo
+  const [morphology, setMorphology] = useState('none'); // informativo
 
   const hSize = parseFloat(size);
   const hAge = parseFloat(age);
@@ -78,6 +81,27 @@ export default function PancreaticCyst() {
     { key: 'head', label: c.locationHead },
     { key: 'bodytail', label: c.locationBodyTail },
   ];
+  const sexOptions = [
+    { key: 'female', label: c.sexFemale },
+    { key: 'male', label: c.sexMale },
+  ];
+  const morphologyOptions = [
+    { key: 'none', label: c.morphologyNone },
+    { key: 'microcystic', label: c.morphologyMicrocystic },
+    { key: 'macrocystic', label: c.morphologyMacrocystic },
+    { key: 'complex', label: c.morphologyComplex },
+  ];
+
+  const SCHEDULE_SHORT_KEY = {
+    schLt15Lt65: 'schShortLt15Lt65',
+    schLt15_65_79: 'schShortLt15_65_79',
+    sch15_19Established: 'schShort15_19Established',
+    sch20_25Established: 'schShort20_25Established',
+    sch15_25NotEstablished: 'schShort15_25NotEstablished',
+    schGt25Lt80: 'schShortGt25Lt80',
+    sch80Le25: 'schShort80Le25',
+    sch80Gt25: 'schShort80Gt25',
+  };
 
   // ---- Lógica solo para la vía "indeterminado / presumiblemente mucinoso" ----
   const highRiskTriggers = [];
@@ -98,7 +122,9 @@ export default function PancreaticCyst() {
   const isWorrisome = worrisomeTriggers.length > 0;
 
   const needsMpdComm = hasSize && hSize >= 1.5 && hSize <= 2.5;
-  const hasScheduleInputs = hasAge && hasSize && (!needsMpdComm || mpdComm !== null);
+  const needsSurgicalCandidateAnswer = hasAge && hAge >= 80;
+  const hasScheduleInputs = hasAge && hasSize && (!needsMpdComm || mpdComm !== null) && (!needsSurgicalCandidateAnswer || surgicalCandidate !== null);
+  const notCandidate = needsSurgicalCandidateAnswer && surgicalCandidate === false;
 
   let scheduleKey = null;
   if (hasScheduleInputs && !isHighRisk && !isWorrisome) {
@@ -129,27 +155,51 @@ export default function PancreaticCyst() {
 
   const mpdCommLabelText = mpdComm === 'established' ? c.mpdCommEstablished : mpdComm === 'absent' ? c.mpdCommAbsent : null;
 
-  const diagnosisLabelText = diagnosis === 'sca' ? c.diagnosisSca : diagnosis === 'pseudocyst' ? c.diagnosisPseudocyst : c.diagnosisIndeterminate;
+  const diagnosisLabelText = diagnosis === 'sca' ? c.diagnosisSca : diagnosis === 'pseudocyst' ? c.diagnosisPseudocyst : diagnosis === 'spn' ? c.diagnosisSpn : c.diagnosisIndeterminate;
+
+  // Sugerencias diagnósticas informativas (no cambian la conducta), combinando
+  // morfología, sexo, localización y comunicación con el CPP.
+  const suggestions = [];
+  if (morphology === 'microcystic') suggestions.push(c.suggestSca);
+  if (morphology === 'macrocystic' && sex === 'female' && location === 'bodytail') suggestions.push(c.suggestMcn);
+  if (mpdComm === 'established') suggestions.push(c.suggestBdIpmn);
+  if (mpdComm === 'established' && hasMpdSize && hMpdSize >= 5) suggestions.push(c.suggestMixedIpmn);
 
   // ---- Veredicto global (para StickyBar / copia de informe) ----
-  let bigLabel = null, bigTone = null, bigMsg = null;
+  let bigLabel = null, bigTone = null, bigMsg = null, smallLabel = null, extraNote = null;
   if (diagnosis === 'sca') {
     const scaHighSize = hasSize && hSize > 4;
-    bigLabel = c.scaVerdictBig;
+    smallLabel = c.diagnosisShortSca;
+    bigLabel = scaHighSize ? c.scaSurgicalBig : c.scaNoFollowupBig;
     bigTone = scaHighSize ? 'amber' : 'emerald';
     bigMsg = scaHighSize ? c.scaSurgical : c.scaNoFollowup;
   } else if (diagnosis === 'pseudocyst') {
+    smallLabel = c.diagnosisShortPseudocyst;
     bigLabel = c.pseudocystVerdictBig;
     bigTone = 'slate';
     bigMsg = c.pseudocystNote;
+  } else if (diagnosis === 'spn') {
+    smallLabel = c.diagnosisShortSpn;
+    bigLabel = c.spnVerdictBig;
+    bigTone = 'amber';
+    bigMsg = c.spnMsg;
   } else if (symptomatic === true) {
+    smallLabel = c.diagnosisIndeterminate;
     bigLabel = c.exclusionStopTitle;
     bigTone = 'red';
     bigMsg = c.exclusionStop;
   } else if (symptomatic === false) {
-    if (indeterminateVerdict === 'highrisk') { bigLabel = c.highRiskVerdictBig; bigTone = 'red'; bigMsg = c.highRiskMsg; }
-    else if (indeterminateVerdict === 'worrisome') { bigLabel = c.worrisomeVerdictBig; bigTone = 'amber'; bigMsg = c.worrisomeMsg; }
-    else if (indeterminateVerdict === 'routine') { bigLabel = c.routineVerdictBig; bigTone = 'emerald'; bigMsg = c.routineMsg; }
+    smallLabel = c.diagnosisIndeterminate;
+    if (indeterminateVerdict === 'highrisk') {
+      bigLabel = c.highRiskVerdictBig; bigTone = 'red'; bigMsg = c.highRiskMsg;
+      if (notCandidate) extraNote = c.notCandidateNote;
+    } else if (indeterminateVerdict === 'worrisome') {
+      bigLabel = c.worrisomeVerdictBig; bigTone = 'amber'; bigMsg = c.worrisomeMsg;
+      if (notCandidate) extraNote = c.notCandidateNote;
+    } else if (indeterminateVerdict === 'routine') {
+      if (notCandidate) { bigLabel = c.notCandidateVerdictBig; bigTone = 'slate'; bigMsg = c.notCandidateNote; }
+      else { bigLabel = c.routineNextControl(c[SCHEDULE_SHORT_KEY[scheduleKey]]); bigTone = 'emerald'; bigMsg = c.routineMsg; }
+    }
   }
 
   const showResult = bigLabel !== null;
@@ -171,7 +221,9 @@ export default function PancreaticCyst() {
           lines.push(c.reportLineSchedule(c[scheduleKey]));
           if (chileanKey) lines.push(c.reportLineChilean(c[chileanKey]));
         }
+        if (suggestions.length) lines.push(...suggestions);
         if (bigMsg) lines.push(c.reportConclusion(bigLabel + ' — ' + bigMsg));
+        if (extraNote) lines.push(extraNote);
       }
     } else if (bigMsg) {
       lines.push(c.reportConclusion(bigMsg));
@@ -181,9 +233,10 @@ export default function PancreaticCyst() {
 
   const resetAll = () => {
     setDiagnosis('indeterminate'); setSize(''); setSymptomatic(null); setAge('');
-    setMpdComm(null); setMpdSize(''); setNodule('none'); setWallThickening(false);
+    setSurgicalCandidate(null); setMpdComm(null); setMpdSize(''); setNodule('none'); setWallThickening(false);
     setJaundice(false); setCytology(false); setPancreatitis(false); setNewOnsetDm(false);
     setCa199(false); setRapidGrowth(false); setCalcification('none'); setLocation(null);
+    setSex(null); setMorphology('none');
   };
 
   return (
@@ -195,6 +248,7 @@ export default function PancreaticCyst() {
             { key: 'indeterminate', label: c.diagnosisIndeterminate },
             { key: 'sca', label: c.diagnosisSca },
             { key: 'pseudocyst', label: c.diagnosisPseudocyst },
+            { key: 'spn', label: c.diagnosisSpn },
           ]}
           value={diagnosis}
           onChange={setDiagnosis}
@@ -216,6 +270,12 @@ export default function PancreaticCyst() {
           <Card>
             <NumberField label={c.ageLabel} value={age} onChange={setAge} />
           </Card>
+
+          {needsSurgicalCandidateAnswer && (
+            <Card>
+              <YesNo label={c.surgicalCandidateLabel} value={surgicalCandidate} onChange={setSurgicalCandidate} yesLabel={t.common.yes} noLabel={t.common.no} />
+            </Card>
+          )}
 
           <Card className="space-y-4">
             <OptionList label={c.mpdCommLabel} options={mpdCommOptions} value={mpdComm} onChange={setMpdComm} />
@@ -243,8 +303,19 @@ export default function PancreaticCyst() {
               {calcification === 'peripheral' && <InfoBox tone="amber">{c.calcificationPeripheralNote}</InfoBox>}
               <OptionList label={c.locationLabel} options={locationOptions} value={location} onChange={setLocation} />
               {location && <InfoBox tone="amber">{c.locationNote}</InfoBox>}
+              <OptionList label={c.sexLabel} options={sexOptions} value={sex} onChange={setSex} />
+              <OptionList label={c.morphologyLabel} options={morphologyOptions} value={morphology} onChange={setMorphology} />
             </div>
           </Accordion>
+
+          {suggestions.length > 0 && (
+            <Card>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">{c.diagnosticSuggestionsTitle}</p>
+              <ul className="space-y-1.5 text-sm text-slate-600 dark:text-slate-300 list-disc pl-4">
+                {suggestions.map((s, i) => <li key={i}>{s}</li>)}
+              </ul>
+            </Card>
+          )}
 
           {(indeterminateVerdict === 'highrisk' || indeterminateVerdict === 'worrisome') && (
             <Card>
@@ -255,15 +326,19 @@ export default function PancreaticCyst() {
             </Card>
           )}
 
+          {(indeterminateVerdict === 'highrisk' || indeterminateVerdict === 'worrisome') && notCandidate && (
+            <InfoBox tone="amber">{c.notCandidateNote}</InfoBox>
+          )}
+
           {indeterminateVerdict === 'worrisome' && sizeGe3Alone && (
             <InfoBox tone="amber">{c.sizeGe3Note}</InfoBox>
           )}
 
           {!hasScheduleInputs && !isHighRisk && !isWorrisome && (
-            <InfoBox tone="amber">{needsMpdComm && hasAge && hasSize ? c.needMpdCommNote : c.needMoreDataNote}</InfoBox>
+            <InfoBox tone="amber">{needsSurgicalCandidateAnswer && surgicalCandidate === null ? c.surgicalCandidateLabel : (needsMpdComm && hasAge && hasSize ? c.needMpdCommNote : c.needMoreDataNote)}</InfoBox>
           )}
 
-          {indeterminateVerdict === 'routine' && scheduleKey && (
+          {indeterminateVerdict === 'routine' && scheduleKey && !notCandidate && (
             <Card className="space-y-4">
               <div>
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{c.acrScheduleTitle}</p>
@@ -278,6 +353,10 @@ export default function PancreaticCyst() {
               {sizeGe3Alone && <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug pt-1">{c.sizeGe3Note}</p>}
             </Card>
           )}
+
+          {indeterminateVerdict === 'routine' && notCandidate && (
+            <InfoBox tone="amber">{c.notCandidateNote}</InfoBox>
+          )}
         </>
       )}
 
@@ -290,9 +369,10 @@ export default function PancreaticCyst() {
       {showResult && (
         <StickyBar>
           <div className="min-w-0 text-center">
-            <span className="text-sm text-slate-500 dark:text-slate-400 block">{diagnosisLabelText}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{smallLabel}</span>
             <span className={`text-2xl font-black block mt-1 leading-tight ${toneClass}`}>{bigLabel}</span>
             {bigMsg && <span className="text-base font-semibold block mt-2 leading-snug">{bigMsg}</span>}
+            {extraNote && <span className="text-sm font-medium block mt-2 leading-snug text-amber-500">{extraNote}</span>}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />
