@@ -7,6 +7,32 @@ export const REFERENCES = {
     'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.',
     'Ma X, Holalkere NS, Kambadakone RA, Mino-Kenudson M, Hahn PF, Sahani DV. Imaging-based quantification of hepatic fat: methods and clinical applications. RadioGraphics. 2009;29(5):1253-1277.',
   ],
+  ildClassifier: [
+  {
+    authors: "Podolanczuk AJ, Hunninghake GM, Wilson KC, et al.",
+    title: "Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement",
+    journal: "Am J Respir Crit Care Med",
+    year: 2025,
+    volume: "211(7)",
+    pages: "1132-1155"
+  },
+  {
+    authors: "Ryerson CJ, Adegunsoye A, Piciucchi S, et al.",
+    title: "Update of the international multidisciplinary classification of the interstitial pneumonias: an ERS/ATS statement",
+    journal: "Eur Respir J",
+    year: 2025,
+    volume: "66",
+    pages: "2500158"
+  },
+  {
+    authors: "Raghu G, Remy-Jardin M, Richeldi L, et al.",
+    title: "Idiopathic Pulmonary Fibrosis (an Update) and Progressive Pulmonary Fibrosis in Adults: An Official ATS/ERS/JRS/ALAT Clinical Practice Guideline",
+    journal: "Am J Respir Crit Care Med",
+    year: 2022,
+    volume: "205(9)",
+    pages: "e18-e47"
+  }
+],
   epidExtent: [
     'Goh NS, Desai SR, Veeraraghavan S, et al. Interstitial lung disease in systemic sclerosis: a simple staging system. Am J Respir Crit Care Med. 2008;177(11):1248-1254.',
     'Tschalèr L, Jordan S, Aaløkken TM, et al. Validation of a semi-quantitative method to assess interstitial lung disease severity and progression in systemic sclerosis by standard and low-dose HRCT scans. RMD Open. 2025;11(1):e004938.',

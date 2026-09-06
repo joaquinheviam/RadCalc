@@ -3,6 +3,8 @@ export default {
   thymic: ['timo', 'grasa timica', 'grasa tímica', 'hiperplasia timica', 'masa timica', 'mediastino anterior', 'timoma'],
   ntmBcd: ['micobacteria no tuberculosa', 'ntm', 'bronquiectasias', 'bcd score', 'mac', 'mycobacterium avium'],
   peQanadli: ['tep', 'tromboembolismo pulmonar', 'embolia pulmonar', 'qanadli', 'indice de obstruccion', 'índice de obstrucción', 'angiotac pulmonar', 'pe-rads', 'perads', 'trombo en transito', 'trombo en tránsito', 'sobrecarga vd'],
+  ildClassifier: ["epid", "ila", "uip", "fibrosis pulmonar", "fpi", "ats 2025", "pneumonia intersticial","srif", "bip", "neumonitis por hipersensibilidad", "hp", "nsip", "cop", "op", "tabaquismo",
+  "plch", "amp", "dip", "borde recto", "panal exuberante"],
   epidExtent: ['epid', 'enfermedad pulmonar intersticial', 'enfermedad pulmonar intersticial difusa', 'fibrosis pulmonar', 'esclerosis sistemica', 'esclerosis sistémica', 'goh', 'tschaler', 'tschalèr', 'extension pulmonar', 'extensión pulmonar', 'tcar'],
   lungNodule: ['nodulo pulmonar', 'nódulo pulmonar', 'fleischner', 'seguimiento nodulo', 'nodulo incidental'],
   lungRads: ['lung-rads', 'lungrads', 'tamizaje pulmonar', 'cribado pulmonar', 'catac', 'tac de baja dosis'],

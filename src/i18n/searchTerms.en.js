@@ -3,6 +3,8 @@ export default {
   thymic: ['thymus', 'thymic fat', 'thymic hyperplasia', 'thymic mass', 'anterior mediastinum', 'thymoma'],
   ntmBcd: ['nontuberculous mycobacteria', 'ntm', 'bronchiectasis', 'bcd score', 'mac', 'mycobacterium avium'],
   peQanadli: ['pe', 'pulmonary embolism', 'qanadli', 'obstruction index', 'ct pulmonary angiogram', 'ctpa', 'pe-rads', 'perads', 'thrombus in transit', 'rv strain'],
+  ildClassifier: ["ild", "ila", "uip", "pulmonary fibrosis", "ipf", "ats 2025", "interstitial pneumonia",  "srif", "bip", "hypersensitivity pneumonitis", "hp", "nsip", "cop", "op", "smoking",
+  "plch", "amp", "dip", "straight edge sign", "exuberant honeycombing"],
   epidExtent: ['ild', 'interstitial lung disease', 'pulmonary fibrosis', 'systemic sclerosis', 'goh', 'tschaler', 'tschalèr', 'lung extent', 'hrct'],
   lungNodule: ['lung nodule', 'pulmonary nodule', 'fleischner', 'nodule follow-up', 'incidental nodule'],
   lungRads: ['lung-rads', 'lungrads', 'lung cancer screening', 'low dose ct'],

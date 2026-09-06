@@ -10,6 +10,7 @@
 // calculadoras la primera vez que se visita el sitio.
 import { lazy } from 'react';
 
+const ILDClassifier = lazy(() => import('./ILDClassifier.jsx'));
 const TIRADS = lazy(() => import('./TIRADS.jsx'));
 const ThymicFat = lazy(() => import('./ThymicFat.jsx'));
 const NTMBcdScore = lazy(() => import('./NTMBcdScore.jsx'));
@@ -52,6 +53,7 @@ export const calculators = [
   { id: 'lungRads', catKey: 'torax', component: LungRADS },
   { id: 'lungScreening', catKey: 'torax', component: LungScreening },
   { id: 'lungCysts', catKey: 'torax', component: LungCysts },
+  { id: 'ildClassifier', catKey: 'torax', component: ILDClassifier },
   { id: 'epidExtent', catKey: 'torax', component: EPIDExtent },
   // Cardiovascular
   { id: 'cadrads', catKey: 'cardio', component: CADRADS },
