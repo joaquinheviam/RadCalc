@@ -28,6 +28,7 @@ const LIRADS = lazy(() => import('./LIRADS.jsx'));
 const LIRADSTreatmentResponse = lazy(() => import('./LIRADSTreatmentResponse.jsx'));
 const PancreatitisAtlanta = lazy(() => import('./PancreatitisAtlanta.jsx'));
 const PancreasResect = lazy(() => import('./PancreasResect.jsx'));
+const PancreaticCystDx = lazy(() => import('./PancreaticCystDx.jsx'));
 const PancreaticCyst = lazy(() => import('./PancreaticCyst.jsx'));
 const Cholangiocarcinoma = lazy(() => import('./Cholangiocarcinoma.jsx'));
 const SpleenSize = lazy(() => import('./SpleenSize.jsx'));
@@ -67,6 +68,7 @@ export const calculators = [
   { id: 'liradsUs', catKey: 'abdomen', component: LIRADSUS },
   { id: 'pancreatitisAtlanta', catKey: 'abdomen', component: PancreatitisAtlanta },
   { id: 'pancreasResect', catKey: 'abdomen', component: PancreasResect },
+  { id: 'pancreaticCystDx', catKey: 'abdomen', component: PancreaticCystDx },
   { id: 'pancreaticCyst', catKey: 'abdomen', component: PancreaticCyst },
   { id: 'cholangiocarcinoma', catKey: 'abdomen', component: Cholangiocarcinoma },
   { id: 'spleenSize', catKey: 'abdomen', component: SpleenSize },
