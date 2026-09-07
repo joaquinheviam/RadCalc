@@ -58,6 +58,8 @@ export default function PancreaticCyst() {
   const [morphology, setMorphology] = useState('none'); // informativo
   const [previousSize, setPreviousSize] = useState('');
   const [monthsSinceBaseline, setMonthsSinceBaseline] = useState('');
+  const [lymphadenopathy, setLymphadenopathy] = useState(false);
+  const [ductCaliberChange, setDuctCaliberChange] = useState(false);
 
   const hSize = parseFloat(size);
   const hAge = parseFloat(age);
@@ -142,6 +144,13 @@ export default function PancreaticCyst() {
   if (rapidGrowth) worrisomeTriggers.push(c.triggerGrowthRate);
   if (hasAcrGrowth) worrisomeTriggers.push(c.triggerAcrGrowth(previousSize, size));
   if (hasCalculatedRapidGrowth) worrisomeTriggers.push(c.triggerGrowthRateCalculated(growthRateMmPerYear.toFixed(1)));
+  // Guías Kyoto 2024 (Rahmatullah et al., Abdom Radiol 2025; Hamada et al., Clin Gastroenterol Hepatol 2024):
+  // dos características preocupantes (WF) que no estaban cubiertas por ACR/Consenso chileno. El resto de la
+  // lista Kyoto de 10 WF ya coincide con triggers existentes (pared, nódulo, CPP 5-9,9mm, pancreatitis, DM,
+  // CA19-9, crecimiento ≥2,5mm/año); el tamaño ≥30mm queda deliberadamente fuera de este conteo compartido
+  // (ver sizeGe3Alone) porque el algoritmo ACR permite continuar en seguimiento si es el único hallazgo.
+  if (lymphadenopathy) worrisomeTriggers.push(c.triggerLymphadenopathy);
+  if (ductCaliberChange) worrisomeTriggers.push(c.triggerDuctCaliberChange);
   const isWorrisome = worrisomeTriggers.length > 0;
 
   const needsMpdComm = hasSize && hSize >= 15 && hSize <= 25;
@@ -169,6 +178,16 @@ export default function PancreaticCyst() {
     else if (hSize <= 20) chileanKey = 'cl1_2';
     else if (hSize <= 30) chileanKey = 'cl2_3';
     else chileanKey = 'clGt3';
+  }
+
+  // Esquema Kyoto 2024 (Rahmatullah et al., Abdom Radiol 2025, texto verificado): < 20 mm control
+  // inicial a los 6 meses, luego cada 18 meses × 5 años; 20-30 mm cada 6 meses × 1 año, luego anual;
+  // > 30 mm cada 6 meses de forma continua. Target population de Kyoto es IPMN específicamente.
+  let kyotoKey = null;
+  if (hasSize) {
+    if (hSize < 20) kyotoKey = 'schKyotoLt20';
+    else if (hSize <= 30) kyotoKey = 'schKyoto20_30';
+    else kyotoKey = 'schKyotoGt30';
   }
 
   // ---- Próximo control estimado, a partir de los meses transcurridos desde el estudio basal ----
@@ -223,6 +242,30 @@ export default function PancreaticCyst() {
     return null;
   };
 
+  // Esquema Kyoto: control inicial a los 6 meses para todos; luego cada 18 meses (<20mm), cada 6
+  // meses × 1 año y luego anual (20-30mm), o cada 6 meses de forma continua (>30mm). A los 5 años
+  // (60 meses) sin cambios en un quiste <20mm, Kyoto permite detener o continuar (kyotoStopOrContinueApplies).
+  const kyotoNextControl = (key, elapsedMonths) => {
+    if (key === 'schKyotoLt20') {
+      if (elapsedMonths < 6 - 1e-9) return { monthsUntilNext: Math.round(6 - elapsedMonths) };
+      const rem = (elapsedMonths - 6) % 18;
+      return { monthsUntilNext: Math.round(rem < 1e-9 ? 18 : 18 - rem) };
+    }
+    if (key === 'schKyoto20_30') {
+      if (elapsedMonths < 12 - 1e-9) {
+        const rem = elapsedMonths % 6;
+        return { monthsUntilNext: Math.round(rem < 1e-9 ? 6 : 6 - rem) };
+      }
+      const rem = (elapsedMonths - 12) % 12;
+      return { monthsUntilNext: Math.round(rem < 1e-9 ? 12 : 12 - rem) };
+    }
+    if (key === 'schKyotoGt30') {
+      const rem = elapsedMonths % 6;
+      return { monthsUntilNext: Math.round(rem < 1e-9 ? 6 : 6 - rem) };
+    }
+    return null;
+  };
+
   // Nota especial ACR: tamaño >=30mm por sí solo (sin otras características) no obliga a EUS-FNA.
   const sizeGe3Alone = hasSize && hSize >= 30 && !isHighRisk && !isWorrisome;
 
@@ -234,6 +277,10 @@ export default function PancreaticCyst() {
   const chileanNextControlResult = (indeterminateVerdict === 'routine' && chileanKey && hasMonthsSinceBaseline)
     ? chileanNextControl(chileanKey, hMonthsSinceBaseline)
     : null;
+  const kyotoNextControlResult = (indeterminateVerdict === 'routine' && kyotoKey && hasMonthsSinceBaseline)
+    ? kyotoNextControl(kyotoKey, hMonthsSinceBaseline)
+    : null;
+  const kyotoStopOrContinueApplies = kyotoKey === 'schKyotoLt20' && hasMonthsSinceBaseline && hMonthsSinceBaseline >= 60 - 1e-9;
 
   // ---- Badge combinado para el veredicto principal (StickyBar) ----
   // El esquema estático (SCHEDULE_SHORT_KEY) solo refleja el intervalo INICIAL del esquema ACR y
@@ -251,7 +298,10 @@ export default function PancreaticCyst() {
         ? { lo: 3, hi: 6 }
         : { lo: chileanNextControlResult.monthsUntilNext, hi: chileanNextControlResult.monthsUntilNext })
     : null;
-  const combinedNextControlParts = [acrNextControlPart, chileanNextControlPart].filter(Boolean);
+  const kyotoNextControlPart = kyotoNextControlResult
+    ? { lo: kyotoNextControlResult.monthsUntilNext, hi: kyotoNextControlResult.monthsUntilNext }
+    : null;
+  const combinedNextControlParts = [acrNextControlPart, chileanNextControlPart, kyotoNextControlPart].filter(Boolean);
   const combinedNextControl = combinedNextControlParts.length
     ? { lo: Math.min(...combinedNextControlParts.map(p => p.lo)), hi: Math.max(...combinedNextControlParts.map(p => p.hi)) }
     : null;
@@ -350,6 +400,10 @@ export default function PancreaticCyst() {
           if (acrNextControlResult) {
             lines.push(acrNextControlResult.done ? c.scheduleCompleteNote : c.reportLineNextControl(acrNextControlResult.monthsUntilNext));
           }
+          if (kyotoKey) {
+            lines.push(c.reportLineKyoto(c[kyotoKey]));
+            if (kyotoNextControlResult) lines.push(c.reportLineNextControl(kyotoNextControlResult.monthsUntilNext));
+          }
         }
         if (suggestions.length) lines.push(...suggestions);
         if (bigMsg) lines.push(c.reportConclusion(bigLabel + ' — ' + bigMsg));
@@ -367,6 +421,7 @@ export default function PancreaticCyst() {
     setJaundice(false); setCytology(false); setPancreatitis(false); setNewOnsetDm(false);
     setCa199(false); setRapidGrowth(false); setCalcification('none'); setLocation(null);
     setSex(null); setMorphology('none'); setPreviousSize(''); setMonthsSinceBaseline('');
+    setLymphadenopathy(false); setDuctCaliberChange(false);
   };
 
   return (
@@ -441,6 +496,12 @@ export default function PancreaticCyst() {
           </Card>
 
           <Card className="space-y-4">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{c.kyotoExtrasTitle}</p>
+            <YesNo label={c.lymphadenopathyLabel} value={lymphadenopathy} onChange={setLymphadenopathy} yesLabel={t.common.yes} noLabel={t.common.no} />
+            <YesNo label={c.ductCaliberChangeLabel} value={ductCaliberChange} onChange={setDuctCaliberChange} yesLabel={t.common.yes} noLabel={t.common.no} />
+          </Card>
+
+          <Card className="space-y-4">
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{c.previousComparisonTitle}</p>
             <NumberField label={c.previousSizeLabel} value={previousSize} onChange={setPreviousSize} />
             <NumberField label={c.monthsSinceBaselineLabel} value={monthsSinceBaseline} onChange={setMonthsSinceBaseline} />
@@ -474,6 +535,10 @@ export default function PancreaticCyst() {
                 {[...highRiskTriggers, ...worrisomeTriggers].map((tr, i) => <li key={i}>{tr}</li>)}
               </ul>
             </Card>
+          )}
+
+          {indeterminateVerdict !== null && (
+            <InfoBox tone="slate">{c.wfCountRiskNote(worrisomeTriggers.length)}</InfoBox>
           )}
 
           {(indeterminateVerdict === 'highrisk' || indeterminateVerdict === 'worrisome') && notCandidate && (
@@ -511,6 +576,20 @@ export default function PancreaticCyst() {
                         ? c.nextControlEstimateWindow
                         : c.nextControlEstimate(chileanNextControlResult.monthsUntilNext)}
                     </p>
+                  )}
+                </div>
+              )}
+              {kyotoKey && (
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-700">
+                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{c.kyotoScheduleTitle}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c[kyotoKey]}</p>
+                  {kyotoNextControlResult && (
+                    <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 leading-snug pt-1.5">
+                      {c.nextControlEstimate(kyotoNextControlResult.monthsUntilNext)}
+                    </p>
+                  )}
+                  {kyotoStopOrContinueApplies && (
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug pt-1">{c.kyotoStopOrContinueNote}</p>
                   )}
                 </div>
               )}

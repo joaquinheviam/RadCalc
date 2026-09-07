@@ -1124,6 +1124,11 @@ export default {
       newOnsetDmLabel: 'Diabetes mellitus de inicio reciente',
       ca199Label: 'CA 19-9 sérico elevado (> 37 U/mL)',
       rapidGrowthLabel: 'Crecimiento > 2,5 mm/año en controles previos',
+      kyotoExtrasTitle: 'Otras características preocupantes (Guías Kyoto 2024)',
+      lymphadenopathyLabel: 'Linfadenopatía peripancreática',
+      triggerLymphadenopathy: 'Linfadenopatía peripancreática',
+      ductCaliberChangeLabel: 'Cambio abrupto de calibre del CPP con atrofia distal',
+      triggerDuctCaliberChange: 'Cambio abrupto de calibre del conducto pancreático principal con atrofia parenquimatosa distal',
       redFlagAlways: 'La aparición de cualquier nódulo mural captante, engrosamiento/realce de la pared, dilatación del CPP ≥ 7 mm, u obstrucción biliar extrahepática/ictericia debe motivar EUS-FNA y evaluación quirúrgica, independientemente del tamaño o el grado de crecimiento (ambas guías).',
       extraInfoTitle: 'Datos adicionales (opcional; no modifican la recomendación)',
       diagnosticSuggestionsTitle: 'Sugerencias diagnósticas (no modifican la conducta)',
@@ -1206,6 +1211,7 @@ export default {
       needMpdCommNote: 'El tamaño está entre 15 y 25 mm: indique si hay comunicación establecida con el conducto pancreático principal para obtener el esquema correspondiente (Figura 2A vs. 2B).',
       acrScheduleTitle: 'Esquema ACR 2017',
       chileanScheduleTitle: 'Intervalo — Consenso chileno 2021',
+      kyotoScheduleTitle: 'Esquema Kyoto (2024)',
       schLt15Lt65: 'Quiste < 15 mm en paciente < 65 años (Figura 1): reimagen anual × 5 años. Si se mantiene estable, continuar cada 2 años × 2 más y detener si continúa estable (mínimo 9 años en total). Si hay crecimiento y el quiste sigue < 15 mm, reimagen anual o EUS-FNA (detener si se mantiene < 15 mm durante un mínimo de 10 años); si alcanza ≥ 15 mm, continuar con el esquema de 15-25 mm.',
       schLt15_65_79: 'Quiste < 15 mm en paciente de 65-79 años (Figura 1): reimagen cada 2 años × 5 (10 años en total). Detener si se mantiene estable. Si hay crecimiento y el quiste sigue < 15 mm, reimagen anual o EUS-FNA; si alcanza ≥ 15 mm, continuar con el esquema de 15-25 mm.',
       sch15_19Established: 'Quiste 15-19 mm con comunicación establecida al CPP — BD-IPMN (Figura 2A): reimagen anual × 5 años, luego cada 2 años × 2 más (mínimo 9 años). Detener si se mantiene estable. Si hay crecimiento: si sigue ≤ 25 mm, reimagen cada 6 meses × 4, luego anual × 2, luego cada 2 años × 3 (o considere EUS-FNA); si supera 25 mm, EUS-FNA. Alternativa válida: EUS-FNA directa al momento de la detección.',
@@ -1218,7 +1224,17 @@ export default {
       cl1_2: '10-20 mm: control anual.',
       cl2_3: '20-30 mm: control cada 6 meses, luego anual.',
       clGt3: '> 30 mm: derivar a equipo multidisciplinario; primer control precoz a los 3-6 meses.',
-      reportTitle: 'Quiste pancreático incidental — seguimiento (ACR 2017 / Consenso chileno 2021):',
+      schKyotoLt20: 'Quiste < 20 mm sin HRS ni WF (Kyoto 2024, específico para IPMN): control inicial con TC/RM a los 6 meses. Si permanece estable, continuar con TC/RM cada 18 meses durante 5 años; a partir de ese punto, la guía permite optar por detener o continuar el seguimiento.',
+      schKyoto20_30: 'Quiste de 20 a 30 mm sin HRS ni WF (Kyoto 2024): control inicial con TC/RM cada 6 meses durante el primer año. Si no muestra cambios, continuar con controles anuales.',
+      schKyotoGt30: 'Quiste > 30 mm sin HRS ni WF (Kyoto 2024): control con TC/RM cada 6 meses de forma continua.',
+      kyotoStopOrContinueNote: 'A los 5 años de seguimiento sin cambios en un quiste pequeño (< 20 mm) sin HRS ni WF, la guía Kyoto da la opción de detener o continuar el seguimiento (a diferencia de ACR/Chile, que sí fijan una duración total). La decisión debe considerar la edad del paciente, comorbilidades, expectativa de vida y preferencia informada.',
+      wfCountRiskNote: (n) => {
+        if (n === 0) return 'Estudio de cohorte observacional (Hamada et al. 2024, n=3336 pacientes con IPMN): la ausencia de características preocupantes (WF) se asoció a un riesgo bajo de incidencia de carcinoma pancreático durante el seguimiento.';
+        if (n === 1) return 'Estudio de cohorte observacional (Hamada et al. 2024): la presencia de 1 característica preocupante (WF) se asoció a un hazard ratio ajustado (SHR) de 1,43 (IC 95%: 0,93–2,19) para la incidencia de carcinoma pancreático, frente a ninguna WF.';
+        if (n === 2) return 'Estudio de cohorte observacional (Hamada et al. 2024): la presencia de 2 características preocupantes (WF) se asoció a un hazard ratio ajustado (SHR) de 2,17 (IC 95%: 1,17–4,05) para la incidencia de carcinoma pancreático, frente a ninguna WF.';
+        return `Estudio de cohorte observacional (Hamada et al. 2024): la presencia de 3 o más características preocupantes (${n} en este caso) se asoció, en el estrato de 3-4 WF del estudio, a un hazard ratio ajustado (SHR) de 10,1 (IC 95%: 4,20–24,5) para la incidencia de carcinoma pancreático; conteos mayores a 4 no fueron analizados como grupo aparte. Es una asociación observacional, no una regla de decisión validada de forma prospectiva.`;
+      },
+      reportTitle: 'Quiste pancreático incidental — seguimiento (ACR 2017 / Consenso chileno 2021 / Kyoto 2024):',
       reportLineDiagnosis: (d) => `Diagnóstico: ${d}`,
       reportLineSize: (v) => `Tamaño: ${v} mm`,
       reportLineAge: (v) => `Edad: ${v} años`,
@@ -1227,6 +1243,7 @@ export default {
       reportLineNoTriggers: 'Sin características preocupantes ni de alto riesgo.',
       reportLineSchedule: (v) => `Esquema ACR: ${v}`,
       reportLineChilean: (v) => `Intervalo, Consenso chileno: ${v}`,
+      reportLineKyoto: (v) => `Esquema Kyoto: ${v}`,
       reportLinePreviousSize: (v) => `Tamaño en estudio de comparación: ${v} mm`,
       reportLineMonthsSinceBaseline: (v) => `Meses desde ese estudio: ${v}`,
       reportLineNextControl: (m) => `Próximo control estimado: en aproximadamente ${m} meses`,
@@ -1254,6 +1271,8 @@ export default {
         'La evidencia sobre el riesgo de quistes múltiples es contradictoria (algunos estudios muestran mayor riesgo de displasia de alto grado o malignidad en IPMN multifocal frente a IPMN solitario, otros no); el algoritmo se aplica igual con uno o múltiples quistes incidentales, evaluando cada uno por sus propias características.',
         'Modalidad de seguimiento: TC con protocolo pancreático o RM con colangio-RM son equivalentes para el seguimiento; la RM evita la radiación acumulada de controles repetidos y define mejor la comunicación con el CPP, mientras que la TC detecta mejor las calcificaciones (ambas guías).',
         'Pacientes con lesión indeterminada, sospecha de MCN o IPMN de rama secundaria deben evaluarse por un equipo multidisciplinario ante dudas diagnósticas, aparición de características de alto riesgo o preocupantes, síntomas nuevos atribuibles, o reevaluación programada tras un control previo (Consenso chileno).',
+        'Se incorpora el esquema internacional consensuado Kyoto 2024 (revisión de Fukuoka 2017 por la IAP, específico para IPMN) como un tercer marco de referencia junto con ACR 2017 y el Consenso chileno, incluyendo sus dos hallazgos preocupantes nuevos: linfadenopatía peripancreática y cambio abrupto de calibre del conducto pancreático principal con atrofia distal.',
+        'Nota de concordancia sobre tamaño ≥ 30 mm: la guía Kyoto 2024 clasifica formalmente el tamaño ≥ 30 mm como una característica preocupante (WF). Sin embargo, bajo la excepción ACR ya implementada en esta calculadora, un quiste ≥ 30 mm que carece de cualquier otra característica preocupante o estigma de alto riesgo no gatilla por sí solo una indicación quirúrgica, y puede mantenerse en seguimiento (ver nota sobre tamaño ≥ 30 mm más arriba); el conteo de características preocupantes mostrado en pantalla no incluye el tamaño, precisamente por esta discordancia entre guías.',
       ],
     },
     pancreaticCystDx: {

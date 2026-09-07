@@ -1124,6 +1124,11 @@ export default {
       newOnsetDmLabel: 'New-onset diabetes mellitus',
       ca199Label: 'Elevated serum CA 19-9 (> 37 U/mL)',
       rapidGrowthLabel: 'Growth > 2.5 mm/year on prior follow-up',
+      kyotoExtrasTitle: 'Other worrisome features (Kyoto guidelines 2024)',
+      lymphadenopathyLabel: 'Peripancreatic lymphadenopathy',
+      triggerLymphadenopathy: 'Peripancreatic lymphadenopathy',
+      ductCaliberChangeLabel: 'Abrupt MPD caliber change with distal atrophy',
+      triggerDuctCaliberChange: 'Abrupt main pancreatic duct caliber change with distal parenchymal atrophy',
       redFlagAlways: 'The appearance of any enhancing mural nodule, wall thickening/enhancement, MPD dilation ≥ 7 mm, or extrahepatic biliary obstruction/jaundice should prompt EUS-FNA and surgical evaluation, regardless of size or amount of growth (both guidelines).',
       extraInfoTitle: 'Additional data (optional; does not change the recommendation)',
       diagnosticSuggestionsTitle: 'Diagnostic suggestions (does not change management)',
@@ -1206,6 +1211,7 @@ export default {
       needMpdCommNote: 'Size is between 15 and 25 mm: indicate whether MPD communication is established to get the corresponding schedule (Figure 2A vs. 2B).',
       acrScheduleTitle: 'ACR 2017 schedule',
       chileanScheduleTitle: 'Interval — Chilean Consensus 2021',
+      kyotoScheduleTitle: 'Kyoto schedule (2024)',
       schLt15Lt65: 'Cyst < 15 mm in a patient < 65 years old (Figure 1): reimage yearly × 5 years. If stable, continue every 2 years × 2 more and stop if it remains stable (minimum 9 years total). If there is interval growth and the cyst is still < 15 mm, reimage yearly or EUS/FNA (stop if it stays < 15 mm for a minimum of 10 years); if it reaches ≥ 15 mm, move to the 15-25 mm schedule.',
       schLt15_65_79: 'Cyst < 15 mm in a patient 65-79 years old (Figure 1): reimage every 2 years × 5 (10 years total). Stop if it remains stable. If there is interval growth and the cyst is still < 15 mm, reimage yearly or EUS/FNA; if it reaches ≥ 15 mm, move to the 15-25 mm schedule.',
       sch15_19Established: 'Cyst 15-19 mm with established MPD communication — BD-IPMN (Figure 2A): reimage yearly × 5 years, then every 2 years × 2 more (minimum 9 years). Stop if it remains stable. If there is growth: if it stays ≤ 25 mm, reimage every 6 months × 4, then yearly × 2, then every 2 years × 3 (or consider EUS/FNA); if it exceeds 25 mm, EUS/FNA. A valid alternative is direct EUS/FNA at the time of detection.',
@@ -1218,7 +1224,17 @@ export default {
       cl1_2: '10-20 mm: yearly control.',
       cl2_3: '20-30 mm: control every 6 months, then yearly.',
       clGt3: '> 30 mm: refer to a multidisciplinary team; first control early, at 3-6 months.',
-      reportTitle: 'Incidental pancreatic cyst — follow-up (ACR 2017 / Chilean Consensus 2021):',
+      schKyotoLt20: 'Cyst < 20 mm without HRS or WF (Kyoto 2024, specific to IPMN): initial CT/MRI follow-up at 6 months. If stable, continue CT/MRI every 18 months for 5 years; from that point, the guideline allows either stopping or continuing surveillance.',
+      schKyoto20_30: 'Cyst 20 to 30 mm without HRS or WF (Kyoto 2024): initial CT/MRI follow-up every 6 months for the first year. If unchanged, continue with annual imaging.',
+      schKyotoGt30: 'Cyst > 30 mm without HRS or WF (Kyoto 2024): CT/MRI follow-up every 6 months, continuously.',
+      kyotoStopOrContinueNote: 'After 5 years of stable follow-up in a small cyst (< 20 mm) without HRS or WF, the Kyoto guidelines offer the option to either stop or continue surveillance (unlike ACR/Chile, which set a total duration). The decision should account for patient age, comorbidities, life expectancy, and informed preference.',
+      wfCountRiskNote: (n) => {
+        if (n === 0) return 'Observational cohort study (Hamada et al. 2024, n=3336 patients with IPMN): the absence of worrisome features (WF) was associated with a low incidence risk of pancreatic carcinoma during surveillance.';
+        if (n === 1) return 'Observational cohort study (Hamada et al. 2024): presence of 1 worrisome feature (WF) was associated with an adjusted subdistribution hazard ratio (SHR) of 1.43 (95% CI: 0.93–2.19) for pancreatic carcinoma incidence, compared to no WF.';
+        if (n === 2) return 'Observational cohort study (Hamada et al. 2024): presence of 2 worrisome features (WF) was associated with an adjusted subdistribution hazard ratio (SHR) of 2.17 (95% CI: 1.17–4.05) for pancreatic carcinoma incidence, compared to no WF.';
+        return `Observational cohort study (Hamada et al. 2024): presence of 3 or more worrisome features (${n} in this case) was associated, in the study's 3-4 WF stratum, with an adjusted subdistribution hazard ratio (SHR) of 10.1 (95% CI: 4.20–24.5) for pancreatic carcinoma incidence; counts above 4 were not analyzed as a separate group. This is an observational association, not a prospectively validated decision rule.`;
+      },
+      reportTitle: 'Incidental pancreatic cyst — follow-up (ACR 2017 / Chilean Consensus 2021 / Kyoto 2024):',
       reportLineDiagnosis: (d) => `Diagnosis: ${d}`,
       reportLineSize: (v) => `Size: ${v} mm`,
       reportLineAge: (v) => `Age: ${v} years`,
@@ -1227,6 +1243,7 @@ export default {
       reportLineNoTriggers: 'No worrisome features or high-risk stigmata.',
       reportLineSchedule: (v) => `ACR schedule: ${v}`,
       reportLineChilean: (v) => `Chilean Consensus interval: ${v}`,
+      reportLineKyoto: (v) => `Kyoto schedule: ${v}`,
       reportLinePreviousSize: (v) => `Size on comparison study: ${v} mm`,
       reportLineMonthsSinceBaseline: (v) => `Months since that study: ${v}`,
       reportLineNextControl: (m) => `Estimated next control: in approximately ${m} months`,
@@ -1254,6 +1271,8 @@ export default {
         'Evidence on the risk of multiple cysts is conflicting (some studies show increased risk of high-grade dysplasia or malignancy in multifocal IPMN compared with solitary IPMN, others do not); the algorithm applies the same way with one or multiple incidental cysts, evaluating each on its own features.',
         'Follow-up modality: pancreas-protocol CT or MRI with MRCP are equivalent for follow-up; MRI avoids cumulative radiation from repeated studies and better defines MPD communication, while CT better detects calcifications (both guidelines).',
         'Patients with an indeterminate lesion, suspected MCN, or branch-duct IPMN should be evaluated by a multidisciplinary team when there is diagnostic doubt, new high-risk or worrisome features, new attributable symptoms, or scheduled re-evaluation after a prior control (Chilean Consensus).',
+        'The Kyoto 2024 international consensus guidelines (IAP revision of Fukuoka 2017, specific to IPMN) are incorporated as a third reference framework alongside ACR 2017 and the Chilean Consensus, including their two new worrisome features: peripancreatic lymphadenopathy and abrupt main pancreatic duct caliber change with distal atrophy.',
+        'Concordance note on size ≥ 30 mm: the Kyoto 2024 guidelines formally classify size ≥ 30 mm as a worrisome feature (WF). However, under the ACR exception already implemented in this calculator, a cyst ≥ 30 mm with no other worrisome feature or high-risk stigma does not by itself trigger a surgical indication and may remain under follow-up (see the size ≥ 30 mm note above); the worrisome-feature count shown on screen excludes size for this reason.',
       ],
     },
     pancreaticCystDx: {

@@ -104,6 +104,8 @@ export const REFERENCES = {
     'Megibow AJ, Baker ME, Morgan DE, Kamel IR, Sahani DV, Newman E, Brugge WR, Berland LL, Pandharipande PV. Management of Incidental Pancreatic Cysts: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2017;14(7):911-923.',
     'Espino A, Vargas JI, Mancilla C, Muñoz P, Martínez W, Menéndez A, et al. Consenso chileno de diagnóstico y manejo de neoplasias quísticas pancreáticas. Club de Páncreas Chile-SCHGE. Rev Med Chile. 2021;149:1773-1786.',
     'Tanaka M, Fernández-Del Castillo C, Kamisawa T, et al. Revisions of international consensus Fukuoka guidelines for the management of IPMN of the pancreas. Pancreatology. 2017;17(5):738-753.',
+    'Rahmatullah ZF, Yazdani Nia I, Afghani E, Zaheer A. Exploring the new Kyoto guidelines for managing pancreatic cysts: an overview and comparison with previous guidelines. Abdom Radiol. 2025;50:2660-2675.',
+    'Hamada T, Oyama H, Tange S, Hakuta R, Ishigaki K, Kanai S, Kawaguchi Y, Noguchi K, Saito T, Sato T, Suzuki T, Takahara N, Tanaka M, Hasegawa K, Ushiku T, Nakai Y, Fujishiro M. The Revised Kyoto Criteria and Risk of Malignancy Among Patients With Intraductal Papillary Mucinous Neoplasms. Clin Gastroenterol Hepatol. 2024;22:2413-2423.',
   ],
   pancreaticCystDx: [
     'Hevia Morel J. Diagnóstico diferencial de lesiones quísticas del páncreas (clase, agradecimientos: Huete Á). Congreso de Gastroenterología (material docente no publicado).',
