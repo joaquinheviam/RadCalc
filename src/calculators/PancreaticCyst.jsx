@@ -71,15 +71,16 @@ export default function PancreaticCyst() {
   const hasMonthsSinceBaseline = !isNaN(hMonthsSinceBaseline) && hMonthsSinceBaseline >= 0;
 
   // Definición de crecimiento del ACR White Paper (Megibow et al., JACR 2017): 100% de aumento
-  // del diámetro mayor para quistes < 0,5 cm; 50% para 0,5-<1,5 cm; 20% para >= 1,5 cm. Es una
+  // del diámetro mayor para quistes < 5 mm; 50% para 5-<15 mm; 20% para >= 15 mm. Es una
   // definición basada solo en el cambio de tamaño (no depende del tiempo transcurrido).
-  const acrGrowthPct = hPrevSize < 0.5 ? 1.0 : hPrevSize < 1.5 ? 0.5 : 0.2;
+  const acrGrowthPct = hPrevSize < 5 ? 1.0 : hPrevSize < 15 ? 0.5 : 0.2;
   const acrGrowthThresholdSize = hasPrevSize ? hPrevSize * (1 + acrGrowthPct) : null;
   const hasAcrGrowth = hasPrevSize && hasSize && hSize >= acrGrowthThresholdSize - 1e-9 && hSize > hPrevSize;
 
   // Tasa de crecimiento en mm/año (Consenso chileno: > 2,5 mm/año es una característica preocupante).
+  // El tamaño ya se ingresa en mm, por lo que no requiere conversión adicional.
   const growthRateMmPerYear = (hasPrevSize && hasSize && hasMonthsSinceBaseline && hMonthsSinceBaseline > 0)
-    ? ((hSize - hPrevSize) * 10) / (hMonthsSinceBaseline / 12)
+    ? (hSize - hPrevSize) / (hMonthsSinceBaseline / 12)
     : null;
   const hasCalculatedRapidGrowth = growthRateMmPerYear !== null && growthRateMmPerYear > 2.5;
 
@@ -143,7 +144,7 @@ export default function PancreaticCyst() {
   if (hasCalculatedRapidGrowth) worrisomeTriggers.push(c.triggerGrowthRateCalculated(growthRateMmPerYear.toFixed(1)));
   const isWorrisome = worrisomeTriggers.length > 0;
 
-  const needsMpdComm = hasSize && hSize >= 1.5 && hSize <= 2.5;
+  const needsMpdComm = hasSize && hSize >= 15 && hSize <= 25;
   const needsSurgicalCandidateAnswer = hasAge && hAge >= 80;
   const hasScheduleInputs = hasAge && hasSize && (!needsMpdComm || mpdComm !== null) && (!needsSurgicalCandidateAnswer || surgicalCandidate !== null);
   const notCandidate = needsSurgicalCandidateAnswer && surgicalCandidate === false;
@@ -151,11 +152,11 @@ export default function PancreaticCyst() {
   let scheduleKey = null;
   if (hasScheduleInputs && !isHighRisk && !isWorrisome) {
     if (hAge >= 80) {
-      scheduleKey = hSize <= 2.5 ? 'sch80Le25' : 'sch80Gt25';
-    } else if (hSize < 1.5) {
+      scheduleKey = hSize <= 25 ? 'sch80Le25' : 'sch80Gt25';
+    } else if (hSize < 15) {
       scheduleKey = hAge < 65 ? 'schLt15Lt65' : 'schLt15_65_79';
-    } else if (hSize <= 2.5) {
-      if (mpdComm === 'established') scheduleKey = hSize < 2.0 ? 'sch15_19Established' : 'sch20_25Established';
+    } else if (hSize <= 25) {
+      if (mpdComm === 'established') scheduleKey = hSize < 20 ? 'sch15_19Established' : 'sch20_25Established';
       else scheduleKey = 'sch15_25NotEstablished';
     } else {
       scheduleKey = 'schGt25Lt80';
@@ -164,9 +165,9 @@ export default function PancreaticCyst() {
 
   let chileanKey = null;
   if (hasSize) {
-    if (hSize < 1) chileanKey = 'clLt1';
-    else if (hSize <= 2) chileanKey = 'cl1_2';
-    else if (hSize <= 3) chileanKey = 'cl2_3';
+    if (hSize < 10) chileanKey = 'clLt1';
+    else if (hSize <= 20) chileanKey = 'cl1_2';
+    else if (hSize <= 30) chileanKey = 'cl2_3';
     else chileanKey = 'clGt3';
   }
 
@@ -222,8 +223,8 @@ export default function PancreaticCyst() {
     return null;
   };
 
-  // Nota especial ACR: tamaño >=3cm por sí solo (sin otras características) no obliga a EUS-FNA.
-  const sizeGe3Alone = hasSize && hSize >= 3 && !isHighRisk && !isWorrisome;
+  // Nota especial ACR: tamaño >=30mm por sí solo (sin otras características) no obliga a EUS-FNA.
+  const sizeGe3Alone = hasSize && hSize >= 30 && !isHighRisk && !isWorrisome;
 
   const indeterminateVerdict = isHighRisk ? 'highrisk' : isWorrisome ? 'worrisome' : (scheduleKey ? 'routine' : null);
 
@@ -232,6 +233,27 @@ export default function PancreaticCyst() {
     : null;
   const chileanNextControlResult = (indeterminateVerdict === 'routine' && chileanKey && hasMonthsSinceBaseline)
     ? chileanNextControl(chileanKey, hMonthsSinceBaseline)
+    : null;
+
+  // ---- Badge combinado para el veredicto principal (StickyBar) ----
+  // El esquema estático (SCHEDULE_SHORT_KEY) solo refleja el intervalo INICIAL del esquema ACR y
+  // no se actualiza según los meses transcurridos; por eso el veredicto principal debe preferir la
+  // estimación dinámica (que sí ubica la fase correcta) cuando el usuario ingresó los meses desde
+  // el basal. Si ACR y el Consenso chileno difieren en el intervalo resultante, se muestra el rango
+  // (ej. "6-12 meses") en vez de un solo número, para no ocultar la discordancia entre guías.
+  const acrNextControlPart = (acrNextControlResult && !acrNextControlResult.done)
+    ? { lo: acrNextControlResult.monthsUntilNext, hi: acrNextControlResult.monthsUntilNext }
+    : null;
+  const chileanNextControlPart = chileanNextControlResult
+    ? (chileanNextControlResult.indefinite
+        ? null
+        : chileanNextControlResult.approxWindow
+        ? { lo: 3, hi: 6 }
+        : { lo: chileanNextControlResult.monthsUntilNext, hi: chileanNextControlResult.monthsUntilNext })
+    : null;
+  const combinedNextControlParts = [acrNextControlPart, chileanNextControlPart].filter(Boolean);
+  const combinedNextControl = combinedNextControlParts.length
+    ? { lo: Math.min(...combinedNextControlParts.map(p => p.lo)), hi: Math.max(...combinedNextControlParts.map(p => p.hi)) }
     : null;
 
   const mpdCommLabelText = mpdComm === 'established' ? c.mpdCommEstablished : mpdComm === 'absent' ? c.mpdCommAbsent : null;
@@ -264,7 +286,7 @@ export default function PancreaticCyst() {
       bigTone = 'amber';
       bigMsg = c.scaAtypicalMsg;
     } else {
-      const scaHighSize = hasSize && hSize > 4;
+      const scaHighSize = hasSize && hSize > 40;
       bigLabel = scaHighSize ? c.scaSurgicalBig : c.scaNoFollowupBig;
       bigTone = scaHighSize ? 'amber' : 'emerald';
       bigMsg = scaHighSize ? c.scaSurgical : c.scaNoFollowup;
@@ -294,7 +316,14 @@ export default function PancreaticCyst() {
       if (notCandidate) extraNote = c.notCandidateNote;
     } else if (indeterminateVerdict === 'routine') {
       if (notCandidate) { bigLabel = c.notCandidateVerdictBig; bigTone = 'slate'; bigMsg = c.notCandidateNote; }
-      else { bigLabel = c.routineNextControl(c[SCHEDULE_SHORT_KEY[scheduleKey]]); bigTone = 'emerald'; bigMsg = c.routineMsg; }
+      else if (hasMonthsSinceBaseline && !combinedNextControl && acrNextControlResult?.done) {
+        bigLabel = c.scheduleCompleteVerdictBig; bigTone = 'emerald'; bigMsg = c.scheduleCompleteNote;
+      } else {
+        const nextControlBadgeText = combinedNextControl
+          ? c.nextControlBadge(combinedNextControl.lo, combinedNextControl.hi)
+          : c[SCHEDULE_SHORT_KEY[scheduleKey]];
+        bigLabel = c.routineNextControl(nextControlBadgeText); bigTone = 'emerald'; bigMsg = c.routineMsg;
+      }
     }
   }
 
