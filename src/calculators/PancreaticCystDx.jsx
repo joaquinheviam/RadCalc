@@ -34,8 +34,8 @@ function OptionList({ label, options, value, onChange }) {
 // Peso de cada criterio en el "espectro de confianza" de cada diagnóstico candidato.
 // Fuentes: clase del Dr. Joaquín Hevia M. (agradecimientos Dr. Álvaro Huete G.) y sus citas
 // (Kalb 2009, Demos 2002, Cohen-Scali 2003, Lee 2012, Low 2011, Thoeni 2012, Fernandez-del
-// Castillo 2003, Spinelli 2004), más el primer de Sekhar (ACS 2018) y sus citas (Correa-Gallego
-// 2010, Del Chiaro 2014, Gardner 2013). Solo se pondera positivamente la PRESENCIA de un hallazgo
+// Castillo 2003, Spinelli 2004), más material docente complementario de referencia y sus citas
+// (Correa-Gallego 2010, Del Chiaro 2014, Gardner 2013). Solo se pondera positivamente la PRESENCIA de un hallazgo
 // (no se penaliza por defecto la ausencia no evaluada); las contradicciones fuertes y bien
 // establecidas en la literatura (ej. comunicación ductal para MCN, cápsula para SCA) sí restan.
 function buildCandidates(inputs) {
@@ -198,7 +198,7 @@ export default function PancreaticCystDx() {
 
   const tierOf = (score) => score >= 6 ? { tone: 'emerald', label: c.tierHigh } : score >= 3 ? { tone: 'amber', label: c.tierModerate } : { tone: 'slate', label: c.tierLow };
 
-  // Alerta de MCN de bajo grado que simula pseudoquiste (Sekhar 2018): mujer, edad media,
+  // Alerta de MCN de bajo grado que simula pseudoquiste: mujer, edad media,
   // cuerpo/cola, con cápsula u oligoquístico, pese al antecedente de pancreatitis.
   const showMcnMimicsPseudocystCaution = hasCoreInputs && candidates[0]?.key === 'pseudocyst' && pancreatitisHx &&
     sex === 'female' && location === 'bodytail' && (capsule || architecture === 'oligocystic');
