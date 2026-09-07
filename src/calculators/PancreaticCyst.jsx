@@ -56,6 +56,8 @@ export default function PancreaticCyst() {
   const [location, setLocation] = useState(null); // informativo
   const [sex, setSex] = useState(null); // informativo
   const [morphology, setMorphology] = useState('none'); // informativo
+  const [previousSize, setPreviousSize] = useState('');
+  const [monthsSinceBaseline, setMonthsSinceBaseline] = useState('');
 
   const hSize = parseFloat(size);
   const hAge = parseFloat(age);
@@ -63,6 +65,23 @@ export default function PancreaticCyst() {
   const hasSize = !isNaN(hSize);
   const hasAge = !isNaN(hAge);
   const hasMpdSize = !isNaN(hMpdSize);
+  const hPrevSize = parseFloat(previousSize);
+  const hMonthsSinceBaseline = parseFloat(monthsSinceBaseline);
+  const hasPrevSize = !isNaN(hPrevSize) && hPrevSize > 0;
+  const hasMonthsSinceBaseline = !isNaN(hMonthsSinceBaseline) && hMonthsSinceBaseline >= 0;
+
+  // Definición de crecimiento del ACR White Paper (Megibow et al., JACR 2017): 100% de aumento
+  // del diámetro mayor para quistes < 0,5 cm; 50% para 0,5-<1,5 cm; 20% para >= 1,5 cm. Es una
+  // definición basada solo en el cambio de tamaño (no depende del tiempo transcurrido).
+  const acrGrowthPct = hPrevSize < 0.5 ? 1.0 : hPrevSize < 1.5 ? 0.5 : 0.2;
+  const acrGrowthThresholdSize = hasPrevSize ? hPrevSize * (1 + acrGrowthPct) : null;
+  const hasAcrGrowth = hasPrevSize && hasSize && hSize >= acrGrowthThresholdSize - 1e-9 && hSize > hPrevSize;
+
+  // Tasa de crecimiento en mm/año (Consenso chileno: > 2,5 mm/año es una característica preocupante).
+  const growthRateMmPerYear = (hasPrevSize && hasSize && hasMonthsSinceBaseline && hMonthsSinceBaseline > 0)
+    ? ((hSize - hPrevSize) * 10) / (hMonthsSinceBaseline / 12)
+    : null;
+  const hasCalculatedRapidGrowth = growthRateMmPerYear !== null && growthRateMmPerYear > 2.5;
 
   const noduleOptions = [
     { key: 'none', label: c.noduleNone },
@@ -120,6 +139,8 @@ export default function PancreaticCyst() {
   if (newOnsetDm) worrisomeTriggers.push(c.triggerDM);
   if (ca199) worrisomeTriggers.push(c.triggerCa199);
   if (rapidGrowth) worrisomeTriggers.push(c.triggerGrowthRate);
+  if (hasAcrGrowth) worrisomeTriggers.push(c.triggerAcrGrowth(previousSize, size));
+  if (hasCalculatedRapidGrowth) worrisomeTriggers.push(c.triggerGrowthRateCalculated(growthRateMmPerYear.toFixed(1)));
   const isWorrisome = worrisomeTriggers.length > 0;
 
   const needsMpdComm = hasSize && hSize >= 1.5 && hSize <= 2.5;
@@ -149,10 +170,69 @@ export default function PancreaticCyst() {
     else chileanKey = 'clGt3';
   }
 
+  // ---- Próximo control estimado, a partir de los meses transcurridos desde el estudio basal ----
+  // Cada esquema ACR se modela como una secuencia de fases [intervalo en meses, número de controles
+  // en esa fase]; se recorre la secuencia consumiendo la duración de cada fase hasta ubicar en cuál
+  // cae el tiempo transcurrido, y se informa el intervalo de esa fase (no una fecha exacta: es una
+  // estimación orientadora, asumiendo controles previos realizados según lo recomendado).
+  const ACR_SCHEDULE_PHASES = {
+    schLt15Lt65: [[12, 5], [24, 2]],
+    schLt15_65_79: [[24, 5]],
+    sch15_19Established: [[12, 5], [24, 2]],
+    sch20_25Established: [[6, 4], [12, 2], [24, 3]],
+    sch15_25NotEstablished: [[6, 4], [12, 2], [24, 3]],
+    schGt25Lt80: [[6, 4], [12, 2], [24, 3]],
+    sch80Le25: [[24, 2]],
+    sch80Gt25: [[24, 2]],
+  };
+  const nextControlFromPhases = (phases, elapsedMonths) => {
+    let remaining = elapsedMonths;
+    for (const [m, n] of phases) {
+      const dur = m * n;
+      if (remaining < dur - 1e-9) {
+        const posInPhase = remaining % m;
+        const monthsUntilNext = posInPhase < 1e-9 ? m : m - posInPhase;
+        return { done: false, monthsUntilNext: Math.round(monthsUntilNext) };
+      }
+      remaining -= dur;
+    }
+    return { done: true };
+  };
+  // Esquema chileno: solo clLt1 y cl2_3 tienen una fase inicial distinta antes del intervalo
+  // habitual; ninguno especifica una duración total de seguimiento (a diferencia del ACR).
+  const chileanNextControl = (key, elapsedMonths) => {
+    if (key === 'clLt1') {
+      if (elapsedMonths < 12 - 1e-9) return { monthsUntilNext: Math.round(12 - elapsedMonths) };
+      const rem = (elapsedMonths - 12) % 24;
+      return { monthsUntilNext: Math.round(rem < 1e-9 ? 24 : 24 - rem) };
+    }
+    if (key === 'cl1_2') {
+      const rem = elapsedMonths % 12;
+      return { monthsUntilNext: Math.round(rem < 1e-9 ? 12 : 12 - rem) };
+    }
+    if (key === 'cl2_3') {
+      if (elapsedMonths < 6 - 1e-9) return { monthsUntilNext: Math.round(6 - elapsedMonths) };
+      const rem = (elapsedMonths - 6) % 12;
+      return { monthsUntilNext: Math.round(rem < 1e-9 ? 12 : 12 - rem) };
+    }
+    if (key === 'clGt3') {
+      if (elapsedMonths < 6 - 1e-9) return { monthsUntilNext: Math.round(6 - elapsedMonths), approxWindow: true };
+      return { indefinite: true };
+    }
+    return null;
+  };
+
   // Nota especial ACR: tamaño >=3cm por sí solo (sin otras características) no obliga a EUS-FNA.
   const sizeGe3Alone = hasSize && hSize >= 3 && !isHighRisk && !isWorrisome;
 
   const indeterminateVerdict = isHighRisk ? 'highrisk' : isWorrisome ? 'worrisome' : (scheduleKey ? 'routine' : null);
+
+  const acrNextControlResult = (indeterminateVerdict === 'routine' && scheduleKey && hasMonthsSinceBaseline)
+    ? nextControlFromPhases(ACR_SCHEDULE_PHASES[scheduleKey], hMonthsSinceBaseline)
+    : null;
+  const chileanNextControlResult = (indeterminateVerdict === 'routine' && chileanKey && hasMonthsSinceBaseline)
+    ? chileanNextControl(chileanKey, hMonthsSinceBaseline)
+    : null;
 
   const mpdCommLabelText = mpdComm === 'established' ? c.mpdCommEstablished : mpdComm === 'absent' ? c.mpdCommAbsent : null;
 
@@ -233,9 +313,14 @@ export default function PancreaticCyst() {
         if (mpdCommLabelText) lines.push(c.reportLineMpdComm(mpdCommLabelText));
         const allTriggers = [...highRiskTriggers, ...worrisomeTriggers];
         lines.push(allTriggers.length ? c.reportLineTriggers(allTriggers.join('; ')) : c.reportLineNoTriggers);
+        if (previousSize !== '') lines.push(c.reportLinePreviousSize(previousSize));
+        if (monthsSinceBaseline !== '') lines.push(c.reportLineMonthsSinceBaseline(monthsSinceBaseline));
         if (indeterminateVerdict === 'routine' && scheduleKey) {
           lines.push(c.reportLineSchedule(c[scheduleKey]));
           if (chileanKey) lines.push(c.reportLineChilean(c[chileanKey]));
+          if (acrNextControlResult) {
+            lines.push(acrNextControlResult.done ? c.scheduleCompleteNote : c.reportLineNextControl(acrNextControlResult.monthsUntilNext));
+          }
         }
         if (suggestions.length) lines.push(...suggestions);
         if (bigMsg) lines.push(c.reportConclusion(bigLabel + ' — ' + bigMsg));
@@ -252,7 +337,7 @@ export default function PancreaticCyst() {
     setSurgicalCandidate(null); setMpdComm(null); setMpdSize(''); setNodule('none'); setWallThickening(false);
     setJaundice(false); setCytology(false); setPancreatitis(false); setNewOnsetDm(false);
     setCa199(false); setRapidGrowth(false); setCalcification('none'); setLocation(null);
-    setSex(null); setMorphology('none');
+    setSex(null); setMorphology('none'); setPreviousSize(''); setMonthsSinceBaseline('');
   };
 
   return (
@@ -326,6 +411,12 @@ export default function PancreaticCyst() {
             <YesNo label={c.rapidGrowthLabel} value={rapidGrowth} onChange={setRapidGrowth} yesLabel={t.common.yes} noLabel={t.common.no} />
           </Card>
 
+          <Card className="space-y-4">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{c.previousComparisonTitle}</p>
+            <NumberField label={c.previousSizeLabel} value={previousSize} onChange={setPreviousSize} />
+            <NumberField label={c.monthsSinceBaselineLabel} value={monthsSinceBaseline} onChange={setMonthsSinceBaseline} />
+          </Card>
+
           <Accordion icon={<IconInfo size={16} />} title={c.extraInfoTitle}>
             <div className="space-y-4">
               <OptionList label={c.calcificationLabel} options={calcificationOptions} value={calcification} onChange={setCalcification} />
@@ -373,11 +464,25 @@ export default function PancreaticCyst() {
               <div>
                 <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{c.acrScheduleTitle}</p>
                 <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c[scheduleKey]}</p>
+                {acrNextControlResult && (
+                  <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 leading-snug pt-1.5">
+                    {acrNextControlResult.done ? c.scheduleCompleteNote : c.nextControlEstimate(acrNextControlResult.monthsUntilNext)}
+                  </p>
+                )}
               </div>
               {chileanKey && (
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-700">
                   <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{c.chileanScheduleTitle}</p>
                   <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c[chileanKey]}</p>
+                  {chileanNextControlResult && (
+                    <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 leading-snug pt-1.5">
+                      {chileanNextControlResult.indefinite
+                        ? c.chileanNextControlIndefinite
+                        : chileanNextControlResult.approxWindow
+                        ? c.nextControlEstimateWindow
+                        : c.nextControlEstimate(chileanNextControlResult.monthsUntilNext)}
+                    </p>
+                  )}
                 </div>
               )}
               {sizeGe3Alone && <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug pt-1">{c.sizeGe3Note}</p>}
