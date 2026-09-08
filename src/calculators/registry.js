@@ -32,6 +32,7 @@ const PancreaticCystDx = lazy(() => import('./PancreaticCystDx.jsx'));
 const PancreaticCyst = lazy(() => import('./PancreaticCyst.jsx'));
 const Cholangiocarcinoma = lazy(() => import('./Cholangiocarcinoma.jsx'));
 const SpleenSize = lazy(() => import('./SpleenSize.jsx'));
+const SplenicLesion = lazy(() => import('./SplenicLesion.jsx'));
 const LIRADSUS = lazy(() => import('./LIRADSUS.jsx'));
 const AdrenalWashout = lazy(() => import('./AdrenalWashout.jsx'));
 const AdrenalCSI = lazy(() => import('./AdrenalCSI.jsx'));
@@ -72,6 +73,7 @@ export const calculators = [
   { id: 'pancreaticCyst', catKey: 'abdomen', component: PancreaticCyst },
   { id: 'cholangiocarcinoma', catKey: 'abdomen', component: Cholangiocarcinoma },
   { id: 'spleenSize', catKey: 'abdomen', component: SpleenSize },
+  { id: 'splenicLesion', catKey: 'abdomen', component: SplenicLesion },
   { id: 'adrenalCt', catKey: 'abdomen', component: AdrenalWashout },
   { id: 'adrenalMri', catKey: 'abdomen', component: AdrenalCSI },
   // Genitourinario (próstata, riñón, vejiga)

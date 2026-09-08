@@ -15,3 +15,6 @@ export { default as CalcDisclaimer } from './CalcDisclaimer.jsx';
 export { default as ScoreSelector5 } from './ScoreSelector5.jsx';
 export { default as SiteFooter } from './SiteFooter.jsx';
 export { default as DonationButton } from './DonationButton.jsx';
+export { default as Modal } from './Modal.jsx';
+export { default as Changelog } from './Changelog.jsx';
+export { default as AboutInfo } from './AboutInfo.jsx';
