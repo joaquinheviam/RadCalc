@@ -96,7 +96,13 @@ function buildVerdict(s) {
 
     if (suspicious) return { key: 'suspicious', tone: 'red' };
     if (explainedBenign) {
-      return { key: s.knownMalignancy === true ? 'benignOrStableKnownMalignancy' : 'benignOrStableNoMalignancy', tone: s.knownMalignancy === true ? 'amber' : 'emerald' };
+      // benignSubtype distingue, para el cuadro resumen, entre benignidad por
+      // patrón diagnóstico específico y benignidad sugerida solo por estabilidad.
+      return {
+        key: s.knownMalignancy === true ? 'benignOrStableKnownMalignancy' : 'benignOrStableNoMalignancy',
+        tone: s.knownMalignancy === true ? 'amber' : 'emerald',
+        benignSubtype: typicalBenignPattern ? 'pattern' : 'stability',
+      };
     }
     return { key: s.knownMalignancy === true ? 'noCharacteristicPatternKnownMalignancy' : 'noCharacteristicPatternNoMalignancy', tone: 'amber' };
   }
@@ -173,6 +179,39 @@ export default function SplenicLesion() {
     ? c[SYMPTOM_NOTE_KEY[symptomCategory]]
     : (verdict ? VERDICT_NOTE[verdict.key] : null);
 
+  // Cuadro resumen (StickyBar): estado granular benigno/estable/indeterminado/
+  // sospechoso/sintomático, más una conducta sugerida entre 3 frases fijas.
+  // Ambas asignaciones son lógica de clasificación y por lo tanto responsabilidad
+  // exclusiva del código (no delegada a redacción externa).
+  const STICKY_STATUS = {
+    suspicious: c.stickyStatusSuspicious,
+    noCharacteristicPatternNoMalignancy: c.stickyStatusIndeterminate,
+    noCharacteristicPatternKnownMalignancy: c.stickyStatusIndeterminate,
+    'specific-fever': c.stickyStatusSymptomatic,
+    'specific-bSymptoms': c.stickyStatusSymptomatic,
+    'specific-massEffect': c.stickyStatusSymptomatic,
+    'specific-hypersplenism': c.stickyStatusSymptomatic,
+  };
+  const CONDUCTA = {
+    suspicious: c.conductaAdditionalWorkup,
+    benignOrStableNoMalignancy: c.conductaNoFollowUp,
+    // Antecedente de neoplasia siempre inclina hacia estudio adicional/correlación,
+    // aun con patrón de imagen benigno o estabilidad demostrada (ver nota clínica).
+    benignOrStableKnownMalignancy: c.conductaAdditionalWorkup,
+    noCharacteristicPatternNoMalignancy: c.conducta6MonthMRI,
+    // "Evaluación más proactiva" (nota clínica) es más que un control pasivo a 6 meses.
+    noCharacteristicPatternKnownMalignancy: c.conductaAdditionalWorkup,
+    'specific-fever': c.conductaAdditionalWorkup,
+    'specific-bSymptoms': c.conductaAdditionalWorkup,
+    'specific-massEffect': c.conductaAdditionalWorkup,
+    'specific-hypersplenism': c.conductaAdditionalWorkup,
+  };
+  const stickyStatus = !verdict ? null
+    : (verdict.key === 'benignOrStableNoMalignancy' || verdict.key === 'benignOrStableKnownMalignancy')
+      ? (verdict.benignSubtype === 'pattern' ? c.stickyStatusBenignPattern : c.stickyStatusBenignStable)
+      : (STICKY_STATUS[verdict.key] || null);
+  const conducta = verdict ? (CONDUCTA[verdict.key] || null) : null;
+
   const DX_TITLE = {
     dxCyst: c.dxCystTitle, dxHydatid: c.dxHydatidTitle, dxLymphangioma: c.dxLymphangiomaTitle, dxAbscess: c.dxAbscessTitle,
     dxHemangioma: c.dxHemangiomaTitle, dxHamartoma: c.dxHamartomaTitle, dxSANT: c.dxSANTTitle, dxLCA: c.dxLCATitle,
@@ -185,6 +224,7 @@ export default function SplenicLesion() {
     dxLymphoma: c.dxLymphomaDescription, dxMetastasis: c.dxMetastasisDescription, dxSarcoidosis: c.dxSarcoidosisDescription,
     dxInfarct: c.dxInfarctDescription, dxAngiosarcoma: c.dxAngiosarcomaDescription,
   };
+  const mostLikelyDx = differential.length > 0 ? DX_TITLE[differential[0]] : null;
 
   const handleCopy = () => {
     const lines = [c.title];
@@ -195,6 +235,7 @@ export default function SplenicLesion() {
     }
     if (verdict && VERDICT_BIG[verdict.key]) {
       lines.push('', `${c.managementSectionTitle}: ${VERDICT_BIG[verdict.key]}`);
+      if (conducta) lines.push(`${c.conductaLabel}: ${conducta}`);
       if (verdictNote) lines.push(verdictNote);
     }
     copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
@@ -211,7 +252,7 @@ export default function SplenicLesion() {
   };
 
   return (
-    <div className={`space-y-4 animate-in fade-in ${showResult ? 'pb-56' : ''}`}>
+    <div className={`space-y-4 animate-in fade-in ${showResult ? 'pb-72' : ''}`}>
       <Card className="space-y-4">
         <YesNo label={c.symptomaticLabel} value={symptomatic} onChange={(v) => { setSymptomatic(v); if (!v) setSymptomCategory(null); }} yesLabel={t.common.yes} noLabel={t.common.no} />
         {symptomatic === true && (
@@ -305,8 +346,17 @@ export default function SplenicLesion() {
 
       {verdict && VERDICT_BIG[verdict.key] && (
         <StickyBar>
-          <div className="min-w-0 text-center">
-            <span className={`text-xl font-black block leading-tight ${TONE_TEXT[verdict.tone]}`}>{VERDICT_BIG[verdict.key]}</span>
+          <div className="min-w-0 w-full text-center space-y-1.5">
+            {mostLikelyDx && (
+              <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                {c.stickyMostLikelyDxLabel}: <span className="font-semibold text-slate-700 dark:text-slate-200">{mostLikelyDx}</span>
+              </div>
+            )}
+            <div className={`text-lg font-black leading-tight ${TONE_TEXT[verdict.tone]}`}>{stickyStatus}</div>
+            {conducta && (
+              <div className="text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">{conducta}</div>
+            )}
+            <div className="text-[11px] text-slate-400 dark:text-slate-500">{c.stickySeeMoreHint}</div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />

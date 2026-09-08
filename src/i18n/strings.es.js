@@ -85,6 +85,9 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-08', text: 'En la calculadora de Lesión Focal Esplénica: se rediseña el cuadro resumen final para mostrar el diagnóstico más probable, un estado más granular (benigna por patrón específico vs. benigna/estable por estabilidad demostrada, indeterminada, sospechosa o hallazgo sintomático) y una conducta sugerida (No requiere seguimiento / Requiere estudio adicional / Se recomienda control con RM en 6 meses).' },
+      { date: '2026-09-08', text: "En la calculadora de Lesión Focal Esplénica: se ajusta el enfrentamiento algorítmico según la clase del Dr. Hevia — se corrige un error donde el antecedente de neoplasia extraesplénica no modificaba la conducta ante un hallazgo benigno; se agregan patrones de imagen específicos para hamartoma (fase arterial) y SANT (susceptibilidad magnética en RM); esplenomegalia y estructura heterogénea ahora se consideran sospechosas salvo que exista un hallazgo típicamente benigno o estabilidad ≥1 año que las explique; se agrega el bucket 'sin patrón característico → RM de control a los 6 meses'." },
+      { date: '2026-09-08', text: 'En la calculadora de PSA/densidad prostática (PSAD): se agrega un cuadro de resultado con el volumen prostático completo (con decimal); el cuadro resumen inferior ahora muestra el volumen redondeado a números enteros, con texto de mayor tamaño.' },
       { date: '2026-09-08', text: 'Se agrega la calculadora de Lesión Focal Esplénica Incidental: diferencial diagnóstico orientativo y conducta de seguimiento según ACR 2013, con la salvedad explícita de la evidencia de Siewert et al. 2018.' },
       { date: '2026-09-08', text: "Se agregan las secciones 'Acerca de' e 'Historial de actualizaciones'." },
       { date: '2026-09-06', text: 'Se incorporan las guías Kyoto 2024 a la calculadora de Quiste Pancreático Incidental, junto con una nota de riesgo según el número de características preocupantes presentes (Hamada et al. 2024).' },
@@ -1564,6 +1567,18 @@ export default {
       noCharacteristicPatternVerdictBig: 'Sin patrón característico',
       noCharacteristicPatternNoMalignancyNote: 'La lesión no presenta un patrón de imagen específico de benignidad, no se ha demostrado estable, y tampoco cumple criterios de agresividad (heterogeneidad, márgenes irregulares, necrosis, invasión, crecimiento o esplenomegalia no explicada). Se sugiere RM de control a los 6 meses.',
       noCharacteristicPatternKnownMalignancyNote: 'La lesión no presenta un patrón de imagen específico de benignidad ni criterios de agresividad, pero dado el antecedente de neoplasia extraesplénica (probabilidad de malignidad considerablemente mayor en este subgrupo, 33.8% según Siewert et al. 2018) se recomienda una evaluación más proactiva (RM o PET-CT) en lugar de un control pasivo a los 6 meses, especialmente si la lesión mide >1 cm.',
+      // D. Cuadro resumen (StickyBar)
+      stickyMostLikelyDxLabel: 'Diagnóstico más probable',
+      stickyStatusSuspicious: 'Sospechosa (criterios de agresividad)',
+      stickyStatusIndeterminate: 'Indeterminada (sin patrón característico)',
+      stickyStatusSymptomatic: 'Hallazgo sintomático',
+      stickyStatusBenignPattern: 'Benigna (patrón diagnóstico específico)',
+      stickyStatusBenignStable: 'Benigna / estable (la estabilidad sugiere benignidad)',
+      stickySeeMoreHint: '(ver más detalles en sección de conducta y seguimiento)',
+      conductaLabel: 'Conducta sugerida',
+      conductaNoFollowUp: 'No requiere seguimiento',
+      conductaAdditionalWorkup: 'Requiere estudio adicional',
+      conducta6MonthMRI: 'Se recomienda control con RM en 6 meses',
       usage: [
         'La conducta de seguimiento se basa principalmente en el enfrentamiento algorítmico enseñado por el Dr. Hevia (sintomática → manejo dirigido; incidental sospechosa → evaluación adicional; incidental benigna o estable ≥1 año → control clínico o por imagen 6-12 meses; sin patrón característico ni criterios de agresividad → RM de control a los 6 meses), a su vez basado en el flowchart del White Paper del ACR Incidental Findings Committee II sobre hallazgos esplénicos (Heller et al., J Am Coll Radiol 2013).',
         'Para una lesión incidental, benigna o estable, asintomática y sin antecedente de neoplasia, se muestra además de forma explícita la evidencia de Siewert et al. (Radiology 2018), que en 205 pacientes verdaderamente incidentales encontró solo 1.0% de malignidad y cuestiona la necesidad de cualquier seguimiento independientemente del tamaño en ese contexto específico. Se deja la decisión final al criterio clínico, sin imponer una conducta.',

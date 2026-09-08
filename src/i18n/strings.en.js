@@ -85,6 +85,9 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-08', text: 'In the Splenic Focal Lesion calculator: the final summary card is redesigned to show the most likely diagnosis, a more granular status (benign by specific pattern vs. benign/stable by demonstrated stability, indeterminate, suspicious, or symptomatic finding), and a suggested course of action (No follow-up required / Additional workup required / 6-month follow-up MRI recommended).' },
+      { date: '2026-09-08', text: "In the Splenic Focal Lesion calculator: the management algorithm is refined per Dr. Hevia's teaching approach — fixes a bug where a history of extra-splenic malignancy did not change the recommendation for an otherwise benign finding; adds specific imaging patterns for hamartoma (arterial-phase-only enhancement) and SANT (MRI magnetic susceptibility); splenomegaly and heterogeneous structure now count as suspicious unless a typically benign finding or ≥1-year stability explains them; adds a 'no characteristic pattern → 6-month follow-up MRI' bucket." },
+      { date: '2026-09-08', text: 'In the PSA density (PSAD) calculator: added a result card showing the full prostate volume (with decimal); the bottom summary card now shows the volume rounded to a whole number, in larger text.' },
       { date: '2026-09-08', text: 'Added the Incidental Splenic Focal Lesion calculator: an orientative differential diagnosis and follow-up guidance per ACR 2013, with the explicit caveat from Siewert et al. 2018.' },
       { date: '2026-09-08', text: "Added the 'About' and 'Update log' sections." },
       { date: '2026-09-06', text: 'Added the Kyoto 2024 guidelines to the Incidental Pancreatic Cyst calculator, along with a risk note based on the number of worrisome features present (Hamada et al. 2024).' },
@@ -1564,6 +1567,18 @@ export default {
       noCharacteristicPatternVerdictBig: 'No characteristic pattern',
       noCharacteristicPatternNoMalignancyNote: 'The lesion does not show a specific benign imaging pattern, has not been demonstrated stable, and does not meet aggressive-feature criteria (heterogeneity, irregular margins, necrosis, invasion, growth, or unexplained splenomegaly). Follow-up MRI at 6 months is suggested.',
       noCharacteristicPatternKnownMalignancyNote: 'The lesion does not show a specific benign imaging pattern or aggressive-feature criteria, but given the history of extra-splenic malignancy (a substantially higher probability of malignancy in this subgroup, 33.8% per Siewert et al. 2018), a more proactive evaluation (MRI or PET-CT) is recommended rather than a passive 6-month follow-up, especially if the lesion measures >1 cm.',
+      // D. Summary card (StickyBar)
+      stickyMostLikelyDxLabel: 'Most likely diagnosis',
+      stickyStatusSuspicious: 'Suspicious (aggressive features)',
+      stickyStatusIndeterminate: 'Indeterminate (no characteristic pattern)',
+      stickyStatusSymptomatic: 'Symptomatic finding',
+      stickyStatusBenignPattern: 'Benign (specific diagnostic pattern)',
+      stickyStatusBenignStable: 'Benign / stable (stability suggests benignity)',
+      stickySeeMoreHint: '(see more detail in the management and follow-up section)',
+      conductaLabel: 'Suggested course of action',
+      conductaNoFollowUp: 'No follow-up required',
+      conductaAdditionalWorkup: 'Additional workup required',
+      conducta6MonthMRI: '6-month follow-up MRI recommended',
       usage: [
         'Follow-up guidance is based primarily on the algorithmic approach taught by Dr. Hevia (symptomatic → symptom-directed management; incidental and suspicious → further evaluation; incidental, benign or stable ≥1 year → clinical or imaging follow-up at 6-12 months; no characteristic pattern and no aggressive features → follow-up MRI at 6 months), itself based on the flowchart from the ACR Incidental Findings Committee II white paper on splenic findings (Heller et al., J Am Coll Radiol 2013).',
         'For an incidental, benign-or-stable lesion in an asymptomatic patient without a malignancy history, the calculator also explicitly displays the evidence from Siewert et al. (Radiology 2018), which found only 1.0% malignancy among 205 truly incidental patients and questions the need for any follow-up regardless of size in that specific setting. The final decision is left to clinical judgment, without imposing a course of action.',
