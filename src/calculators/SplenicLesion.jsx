@@ -47,6 +47,9 @@ function buildDifferential(s) {
     if (!dx.includes('dxCyst')) push('dxCyst');
     if (s.numberOfLesions === 'multiple' && !dx.includes('dxHydatid')) push('dxHydatid');
   } else if (s.consistency === 'solid') {
+    // Hallazgos de alta especificidad primero, para que encabecen la lista.
+    if (s.arterialPhaseOnlyEnhancement) push('dxHamartoma');
+    if (s.centralScarSusceptibility) push('dxSANT');
     if (s.peripheralCentripetalEnhancement) push('dxHemangioma');
     if (s.spokeWheelScar) push('dxSANT');
     if (s.numberOfLesions === 'multiple' && s.progressiveIsoenhancement) push('dxLCA');
@@ -62,7 +65,14 @@ function buildDifferential(s) {
   return dx;
 }
 
-// Veredicto de conducta (flowchart ACR 2013 + salvedad Siewert 2018).
+// Veredicto de conducta: enfrentamiento algorítmico del Dr. Hevia (basado en
+// ACR 2013), con la salvedad explícita de Siewert et al. 2018. La lógica de
+// clasificación es responsabilidad exclusiva del código (no delegada).
+//
+// Prioridad: sintomática > sospechosa (seguridad primero) > benigna/estable
+// (patrón típico O estabilidad demostrada ≥1 año) > sin patrón característico.
+// Un antecedente de neoplasia nunca queda ignorado: siempre determina qué
+// variante de nota se muestra dentro de la rama que corresponda.
 function buildVerdict(s) {
   if (s.symptomatic === true) {
     if (!s.symptomCategory) return { key: 'pending-symptom', tone: 'slate' };
@@ -70,13 +80,25 @@ function buildVerdict(s) {
   }
   if (s.symptomatic === false) {
     if (!s.consistency) return null;
-    const suspicious = s.irregularMarginsInvasion || s.necrosis;
-    const benignDiagnostic = s.thinWallLowAttenuation || s.peripheralCentripetalEnhancement || s.thickCalcifiedWall;
-    const indeterminate = !suspicious && !benignDiagnostic && s.heterogeneous;
+
+    // Patrón morfológico específicamente benigno (independiente de si se ha
+    // demostrado estabilidad en el tiempo).
+    const typicalBenignPattern = s.thinWallLowAttenuation || s.peripheralCentripetalEnhancement || s.thickCalcifiedWall
+      || s.spokeWheelScar || s.centralScarSusceptibility || s.arterialPhaseOnlyEnhancement
+      || (s.numberOfLesions === 'multiple' && s.progressiveIsoenhancement);
+    // La estabilidad demostrada ≥1 año también explica/justifica hallazgos
+    // que de otro modo serían preocupantes (heterogeneidad, esplenomegalia).
+    const explainedBenign = typicalBenignPattern || s.stableOverOneYear;
+
+    const suspicious = s.irregularMarginsInvasion || s.necrosis || s.demonstratedGrowth
+      || (s.heterogeneous && !explainedBenign)
+      || (s.splenomegaly && !explainedBenign);
+
     if (suspicious) return { key: 'suspicious', tone: 'red' };
-    if (benignDiagnostic) return { key: 'benignDiagnostic', tone: 'emerald' };
-    if (indeterminate) return { key: 'indeterminate', tone: 'amber' };
-    return { key: s.knownMalignancy === true ? 'benignImagingKnownMalignancy' : 'benignImagingNoMalignancy', tone: s.knownMalignancy === true ? 'amber' : 'emerald' };
+    if (explainedBenign) {
+      return { key: s.knownMalignancy === true ? 'benignOrStableKnownMalignancy' : 'benignOrStableNoMalignancy', tone: s.knownMalignancy === true ? 'amber' : 'emerald' };
+    }
+    return { key: s.knownMalignancy === true ? 'noCharacteristicPatternKnownMalignancy' : 'noCharacteristicPatternNoMalignancy', tone: 'amber' };
   }
   return null;
 }
@@ -105,16 +127,21 @@ export default function SplenicLesion() {
   const [peripheralCentripetalEnhancement, setPeripheralCentripetalEnhancement] = useState(false);
   const [progressiveIsoenhancement, setProgressiveIsoenhancement] = useState(false);
   const [spokeWheelScar, setSpokeWheelScar] = useState(false);
+  const [arterialPhaseOnlyEnhancement, setArterialPhaseOnlyEnhancement] = useState(false);
+  const [centralScarSusceptibility, setCentralScarSusceptibility] = useState(false);
   const [wedgeShapedNoEnhancement, setWedgeShapedNoEnhancement] = useState(false);
   const [heterogeneous, setHeterogeneous] = useState(false);
   const [irregularMarginsInvasion, setIrregularMarginsInvasion] = useState(false);
   const [necrosis, setNecrosis] = useState(false);
   const [splenomegaly, setSplenomegaly] = useState(false);
+  const [demonstratedGrowth, setDemonstratedGrowth] = useState(false);
+  const [stableOverOneYear, setStableOverOneYear] = useState(false);
 
   const state = {
     symptomatic, symptomCategory, knownMalignancy, numberOfLesions, consistency, hypervascular,
     thinWallLowAttenuation, thickCalcifiedWall, peripheralCentripetalEnhancement, progressiveIsoenhancement,
-    spokeWheelScar, wedgeShapedNoEnhancement, heterogeneous, irregularMarginsInvasion, necrosis, splenomegaly,
+    spokeWheelScar, arterialPhaseOnlyEnhancement, centralScarSusceptibility, wedgeShapedNoEnhancement,
+    heterogeneous, irregularMarginsInvasion, necrosis, splenomegaly, demonstratedGrowth, stableOverOneYear,
   };
 
   const differential = consistency ? buildDifferential(state) : [];
@@ -128,17 +155,17 @@ export default function SplenicLesion() {
     'specific-massEffect': c.specificManagementVerdictBig,
     'specific-hypersplenism': c.specificManagementVerdictBig,
     suspicious: c.suspiciousVerdictBig,
-    indeterminate: c.indeterminateVerdictBig,
-    benignDiagnostic: c.benignDiagnosticVerdictBig,
-    benignImagingNoMalignancy: c.benignImagingIncidentalVerdictBig,
-    benignImagingKnownMalignancy: c.benignImagingIncidentalVerdictBig,
+    benignOrStableNoMalignancy: c.benignOrStableVerdictBig,
+    benignOrStableKnownMalignancy: c.benignOrStableVerdictBig,
+    noCharacteristicPatternNoMalignancy: c.noCharacteristicPatternVerdictBig,
+    noCharacteristicPatternKnownMalignancy: c.noCharacteristicPatternVerdictBig,
   };
   const VERDICT_NOTE = {
     suspicious: c.suspiciousNote,
-    indeterminate: c.indeterminateNote,
-    benignDiagnostic: c.benignDiagnosticNote,
-    benignImagingNoMalignancy: c.benignImagingNoMalignancyNote,
-    benignImagingKnownMalignancy: c.benignImagingKnownMalignancyNote,
+    benignOrStableNoMalignancy: c.benignOrStableNoMalignancyNote,
+    benignOrStableKnownMalignancy: c.benignOrStableKnownMalignancyNote,
+    noCharacteristicPatternNoMalignancy: c.noCharacteristicPatternNoMalignancyNote,
+    noCharacteristicPatternKnownMalignancy: c.noCharacteristicPatternKnownMalignancyNote,
   };
   const TONE_TEXT = { red: 'text-red-500', amber: 'text-amber-500', emerald: 'text-emerald-500', slate: 'text-slate-500' };
 
@@ -177,8 +204,10 @@ export default function SplenicLesion() {
     setSymptomatic(null); setSymptomCategory(null); setKnownMalignancy(null);
     setNumberOfLesions(null); setConsistency(null); setHypervascular(null); setSize('');
     setThinWallLowAttenuation(false); setThickCalcifiedWall(false); setPeripheralCentripetalEnhancement(false);
-    setProgressiveIsoenhancement(false); setSpokeWheelScar(false); setWedgeShapedNoEnhancement(false);
+    setProgressiveIsoenhancement(false); setSpokeWheelScar(false); setArterialPhaseOnlyEnhancement(false);
+    setCentralScarSusceptibility(false); setWedgeShapedNoEnhancement(false);
     setHeterogeneous(false); setIrregularMarginsInvasion(false); setNecrosis(false); setSplenomegaly(false);
+    setDemonstratedGrowth(false); setStableOverOneYear(false);
   };
 
   return (
@@ -226,6 +255,8 @@ export default function SplenicLesion() {
           <YesNo label={c.peripheralCentripetalEnhancementLabel} value={peripheralCentripetalEnhancement} onChange={setPeripheralCentripetalEnhancement} yesLabel={t.common.yes} noLabel={t.common.no} />
           <YesNo label={c.progressiveIsoenhancementLabel} value={progressiveIsoenhancement} onChange={setProgressiveIsoenhancement} yesLabel={t.common.yes} noLabel={t.common.no} />
           <YesNo label={c.spokeWheelScarLabel} value={spokeWheelScar} onChange={setSpokeWheelScar} yesLabel={t.common.yes} noLabel={t.common.no} />
+          <YesNo label={c.arterialPhaseOnlyEnhancementLabel} value={arterialPhaseOnlyEnhancement} onChange={setArterialPhaseOnlyEnhancement} yesLabel={t.common.yes} noLabel={t.common.no} />
+          <YesNo label={c.centralScarSusceptibilityLabel} value={centralScarSusceptibility} onChange={setCentralScarSusceptibility} yesLabel={t.common.yes} noLabel={t.common.no} />
         </Card>
       )}
       {consistency && (
@@ -235,6 +266,8 @@ export default function SplenicLesion() {
           <YesNo label={c.irregularMarginsInvasionLabel} value={irregularMarginsInvasion} onChange={setIrregularMarginsInvasion} yesLabel={t.common.yes} noLabel={t.common.no} />
           <YesNo label={c.necrosisLabel} value={necrosis} onChange={setNecrosis} yesLabel={t.common.yes} noLabel={t.common.no} />
           <YesNo label={c.splenomegalyLabel} value={splenomegaly} onChange={setSplenomegaly} yesLabel={t.common.yes} noLabel={t.common.no} />
+          <YesNo label={c.demonstratedGrowthLabel} value={demonstratedGrowth} onChange={setDemonstratedGrowth} yesLabel={t.common.yes} noLabel={t.common.no} />
+          <YesNo label={c.stableOverOneYearLabel} value={stableOverOneYear} onChange={setStableOverOneYear} yesLabel={t.common.yes} noLabel={t.common.no} />
         </Card>
       )}
 
