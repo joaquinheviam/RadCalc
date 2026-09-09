@@ -85,6 +85,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-09', text: 'En la calculadora de Adrenales (lavado en TC): se corrige el veredicto cuando la densidad sin contraste es ≤10 UH (muy específica de adenoma) pero el lavado no cumple los criterios — ya no se muestra un "no adenoma" plano, sino una nota que reconoce la especificidad del precontraste y pide confirmar que la lesión sea sólida (no quística) y homogénea.' },
       { date: '2026-09-08', text: 'En la calculadora de Lesión Focal Esplénica: se rediseña el cuadro resumen final para mostrar el diagnóstico más probable, un estado más granular (benigna por patrón específico vs. benigna/estable por estabilidad demostrada, indeterminada, sospechosa o hallazgo sintomático) y una conducta sugerida (No requiere seguimiento / Requiere estudio adicional / Se recomienda control con RM en 6 meses).' },
       { date: '2026-09-08', text: "En la calculadora de Lesión Focal Esplénica: se ajusta el enfrentamiento algorítmico según la clase del Dr. Hevia — se corrige un error donde el antecedente de neoplasia extraesplénica no modificaba la conducta ante un hallazgo benigno; se agregan patrones de imagen específicos para hamartoma (fase arterial) y SANT (susceptibilidad magnética en RM); esplenomegalia y estructura heterogénea ahora se consideran sospechosas salvo que exista un hallazgo típicamente benigno o estabilidad ≥1 año que las explique; se agrega el bucket 'sin patrón característico → RM de control a los 6 meses'." },
       { date: '2026-09-08', text: 'En la calculadora de PSA/densidad prostática (PSAD): se agrega un cuadro de resultado con el volumen prostático completo (con decimal); el cuadro resumen inferior ahora muestra el volumen redondeado a números enteros, con texto de mayor tamaño.' },
@@ -295,6 +296,8 @@ export default {
       noAbsoluteCriterion: 'Sin criterio absoluto validado a este tiempo',
       adenomaCompatible: 'Los valores de lavado son compatibles con un adenoma suprarrenal.',
       adenomaNot: 'Los valores no alcanzan el punto de corte típico para adenoma. Considerar otros diagnósticos diferenciales.',
+      washoutNotButNcHighSpecNote: 'Si bien el lavado no cumple los criterios de adenoma, la densidad sin contraste <10 UH es bastante específica de adenoma (confirmar que corresponda a una lesión sólida, no quística, y homogénea; una lesión quística o heterogénea puede simular este patrón sin ser un verdadero adenoma).',
+      stickyWashoutNotButNcHighSpec: 'Lavado no diagnóstico, pero la densidad <10 UH es específica de adenoma',
       compatible: 'Compatible con adenoma',
       notSuggestive: 'No sugestivo de adenoma',
       protocol: 'Protocolo de lavado',

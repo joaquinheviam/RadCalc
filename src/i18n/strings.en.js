@@ -85,6 +85,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-09', text: 'In the Adrenal (CT washout) calculator: fixed the verdict shown when unenhanced attenuation is ≤10 HU (fairly specific for adenoma) but washout does not meet criteria — instead of a flat "not adenoma" result, it now shows a note acknowledging the specificity of the unenhanced value and asking to confirm the lesion is solid (non-cystic) and homogeneous.' },
       { date: '2026-09-08', text: 'In the Splenic Focal Lesion calculator: the final summary card is redesigned to show the most likely diagnosis, a more granular status (benign by specific pattern vs. benign/stable by demonstrated stability, indeterminate, suspicious, or symptomatic finding), and a suggested course of action (No follow-up required / Additional workup required / 6-month follow-up MRI recommended).' },
       { date: '2026-09-08', text: "In the Splenic Focal Lesion calculator: the management algorithm is refined per Dr. Hevia's teaching approach — fixes a bug where a history of extra-splenic malignancy did not change the recommendation for an otherwise benign finding; adds specific imaging patterns for hamartoma (arterial-phase-only enhancement) and SANT (MRI magnetic susceptibility); splenomegaly and heterogeneous structure now count as suspicious unless a typically benign finding or ≥1-year stability explains them; adds a 'no characteristic pattern → 6-month follow-up MRI' bucket." },
       { date: '2026-09-08', text: 'In the PSA density (PSAD) calculator: added a result card showing the full prostate volume (with decimal); the bottom summary card now shows the volume rounded to a whole number, in larger text.' },
@@ -295,6 +296,8 @@ export default {
       noAbsoluteCriterion: 'No validated absolute criterion at this timepoint',
       adenomaCompatible: 'Washout values are compatible with an adrenal adenoma.',
       adenomaNot: 'Values do not reach the typical cutoff for adenoma. Consider other differential diagnoses.',
+      washoutNotButNcHighSpecNote: 'Although washout does not meet adenoma criteria, an unenhanced attenuation <10 HU is fairly specific for adenoma (confirm that this corresponds to a solid, non-cystic, homogeneous lesion; a cystic or heterogeneous lesion can mimic this pattern without being a true adenoma).',
+      stickyWashoutNotButNcHighSpec: 'Washout non-diagnostic, but <10 HU attenuation is specific for adenoma',
       compatible: 'Compatible with adenoma',
       notSuggestive: 'Not suggestive of adenoma',
       protocol: 'Washout protocol',

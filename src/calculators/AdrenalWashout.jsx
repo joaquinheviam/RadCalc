@@ -50,6 +50,14 @@ export default function AdrenalWashout() {
   const isAdenomaPlr = plr !== null && plr >= cfg.rpwCut;
   const isAdenomaWashout = isAdenomaPla || isAdenomaPlr;
 
+  // Salvedad: cuando el lavado no cumple criterios pero la densidad sin
+  // contraste es ≤10 UH (umbral clásico, muy específico de adenoma rico en
+  // grasa), un veredicto plano de "no adenoma" es engañoso — se reemplaza por
+  // una nota que reconoce la especificidad del precontraste y pide confirmar
+  // que la lesión sea sólida (no quística) y homogénea (una lesión quística o
+  // heterogénea puede tener densidad baja y lavado nulo sin ser un adenoma).
+  const ncHighSpecDespiteWashout = canPlr && !isAdenomaWashout && hasNc && hNc <= 10;
+
   // Evidencia adicional a los 5 min (Kamiyama 2009), solo si también hay precontraste.
   const kamiyama = (cfg.hasKamiyama && canPla) ? {
     nc: hNc <= 19,
@@ -106,7 +114,9 @@ export default function AdrenalWashout() {
       lines.push(pla !== null ? c.reportLinePla(pla.toFixed(1), isAdenomaPla ? c.compatible : c.notSuggestive) : c.reportLinePlaNA);
       lines.push(c.reportLinePlr(plr.toFixed(1), isAdenomaPlr ? c.compatible : c.notSuggestive));
       if (kamiyama) lines.push(c.reportLineKamiyama(kamiyamaCount));
-      const conclusionText = (isAdenomaWashout && hasVerdictCaveat) ? verdictCaveatPlainText : (isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot);
+      const conclusionText = (isAdenomaWashout && hasVerdictCaveat)
+        ? verdictCaveatPlainText
+        : (isAdenomaWashout ? c.adenomaCompatible : (ncHighSpecDespiteWashout ? c.washoutNotButNcHighSpecNote : c.adenomaNot));
       lines.push(c.reportConclusion(conclusionText));
     } else if (hasNc) {
       lines.push(c.reportNcOnlyTitle);
@@ -184,7 +194,7 @@ export default function AdrenalWashout() {
           {cfg.lowerEvidence && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.lowerEvidenceNote}</p>}
           <div className="mt-2">
             <InfoBox tone={isAdenomaWashout ? 'emerald' : 'amber'}>
-              {isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot}
+              {isAdenomaWashout ? c.adenomaCompatible : (ncHighSpecDespiteWashout ? c.washoutNotButNcHighSpecNote : c.adenomaNot)}
             </InfoBox>
           </div>
           {kamiyama && (
@@ -222,6 +232,8 @@ export default function AdrenalWashout() {
                 ))}
                 <span className="text-emerald-500">.</span>
               </span>
+            ) : ncHighSpecDespiteWashout ? (
+              <span className="text-base sm:text-lg font-bold block mt-1 leading-snug text-amber-500">{c.stickyWashoutNotButNcHighSpec}</span>
             ) : (
               <span className={`text-3xl font-black block mt-1 leading-tight ${isAdenomaWashout ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot}</span>
             )}
