@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function cclsCompute(t2, cmp, ans) {
   const { fat, sei, ader, dwi, homog } = ans;
@@ -66,13 +66,48 @@ export default function CCLS() {
   const [dwi, setDwi] = useState(null);
   const [homog, setHomog] = useState(null);
 
-  const resetAncillary = () => { setFat(null); setSei(null); setAder(null); setDwi(null); setHomog(null); };
-  const handleGate = (key) => { setGate(key); setT2(null); setCmp(null); resetAncillary(); };
-  const handleT2 = (key) => { setT2(key); setCmp(null); resetAncillary(); };
+  // Campos del cálculo "if uncertain" para el realce en CMP (Paso 3) y para
+  // ADER — opcionales, complementan (no reemplazan) la evaluación visual,
+  // que sigue siendo la opción por defecto y recomendada. Fórmulas según
+  // Shetty et al., RadioGraphics 2023;43(7):e220209 (única referencia citada
+  // en esta calculadora): realce% = (SI-CMP − SI-pre) / SI-pre × 100, y
+  // ADER = (SI-CMP − SI-pre) / (SI-tardía − SI-pre), umbral ≥ 1.5.
+  const [cmpTumorPre, setCmpTumorPre] = useState('');
+  const [cmpTumorCmp, setCmpTumorCmp] = useState('');
+  const [cmpCortexPre, setCmpCortexPre] = useState('');
+  const [cmpCortexCmp, setCmpCortexCmp] = useState('');
+  const [aderTumorPre, setAderTumorPre] = useState('');
+  const [aderTumorCmp, setAderTumorCmp] = useState('');
+  const [aderTumorDelayed, setAderTumorDelayed] = useState('');
+
+  const resetCmpCalc = () => { setCmpTumorPre(''); setCmpTumorCmp(''); setCmpCortexPre(''); setCmpCortexCmp(''); };
+  const resetAderCalc = () => { setAderTumorPre(''); setAderTumorCmp(''); setAderTumorDelayed(''); };
+  const resetAncillary = () => { setFat(null); setSei(null); setAder(null); setDwi(null); setHomog(null); resetAderCalc(); };
+  const handleGate = (key) => { setGate(key); setT2(null); setCmp(null); resetAncillary(); resetCmpCalc(); };
+  const handleT2 = (key) => { setT2(key); setCmp(null); resetAncillary(); resetCmpCalc(); };
   const handleCmp = (key) => { setCmp(key); resetAncillary(); };
   const handleFat = (v) => { setFat(v); setSei(null); setDwi(null); };
   const handleAder = (v) => { setAder(v); setDwi(null); setHomog(null); };
   const handleDwi = (v) => { setDwi(v); setHomog(null); };
+
+  const cmpPreT = parseFloat(cmpTumorPre);
+  const cmpCmpT = parseFloat(cmpTumorCmp);
+  const cmpPreC = parseFloat(cmpCortexPre);
+  const cmpCmpC = parseFloat(cmpCortexCmp);
+  const cmpCalcReady = [cmpPreT, cmpCmpT, cmpPreC, cmpCmpC].every(v => !isNaN(v)) && cmpPreT !== 0 && cmpPreC !== 0;
+  const tumorEnhPct = cmpCalcReady ? ((cmpCmpT - cmpPreT) / cmpPreT) * 100 : null;
+  const cortexEnhPct = cmpCalcReady ? ((cmpCmpC - cmpPreC) / cmpPreC) * 100 : null;
+  const cmpRelPct = (cmpCalcReady && cortexEnhPct !== 0) ? (tumorEnhPct / cortexEnhPct) * 100 : null;
+  const cmpCalcBucket = cmpRelPct === null ? null : (cmpRelPct > 75 ? 'intense' : cmpRelPct >= 40 ? 'moderate' : 'mild');
+  const applyCmpCalc = () => { if (cmpCalcBucket) handleCmp(cmpCalcBucket); };
+
+  const aderPre = parseFloat(aderTumorPre);
+  const aderCmpV = parseFloat(aderTumorCmp);
+  const aderDel = parseFloat(aderTumorDelayed);
+  const aderCalcReady = [aderPre, aderCmpV, aderDel].every(v => !isNaN(v)) && (aderDel - aderPre) !== 0;
+  const aderValue = aderCalcReady ? (aderCmpV - aderPre) / (aderDel - aderPre) : null;
+  const aderCalcAnswer = aderValue === null ? null : (aderValue >= 1.5 ? 'y' : 'n');
+  const applyAderCalc = () => { if (aderCalcAnswer) handleAder(aderCalcAnswer); };
 
   const showFatQ = gate === 'proceed' && t2 && cmp && !(t2 === 'hyper' && cmp === 'mild') && !(t2 === 'hypo' && cmp !== 'mild');
   const showSeiQ = showFatQ && fat === 'n' && (t2 === 'hyper' || t2 === 'iso') && (cmp === 'intense' || cmp === 'moderate');
@@ -103,7 +138,7 @@ export default function CCLS() {
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
-  const handleReset = () => { setGate(null); setT2(null); setCmp(null); resetAncillary(); };
+  const handleReset = () => { setGate(null); setT2(null); setCmp(null); resetAncillary(); resetCmpCalc(); };
 
   const YesNo = ({ value, onChange }) => (
     <div className="flex gap-2">
@@ -155,6 +190,28 @@ export default function CCLS() {
                   <button key={opt.key} onClick={() => handleCmp(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cmp === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
                 ))}
               </div>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mt-2">{c.cmpVisualNote}</p>
+              <div className="mt-3">
+                <Accordion title={c.cmpCalcTitle}>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mb-3">{c.cmpCalcIntro}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <NumberField label={c.cmpCalcTumorPre} value={cmpTumorPre} onChange={setCmpTumorPre} small />
+                    <NumberField label={c.cmpCalcTumorCmp} value={cmpTumorCmp} onChange={setCmpTumorCmp} small />
+                    <NumberField label={c.cmpCalcCortexPre} value={cmpCortexPre} onChange={setCmpCortexPre} small />
+                    <NumberField label={c.cmpCalcCortexCmp} value={cmpCortexCmp} onChange={setCmpCortexCmp} small />
+                  </div>
+                  {cmpRelPct !== null && (
+                    <div className="mt-3 text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+                      <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.cmpCalcResultLabel}</span>
+                      <span className="text-xl font-bold text-slate-700 dark:text-slate-200">{cmpRelPct.toFixed(0)}%</span>
+                      <span className="block text-[11px] text-slate-400 mt-1">&rarr; {c.cmpCalcBucketLabels[cmpCalcBucket]}</span>
+                      <button onClick={applyCmpCalc} className="mt-2 w-full py-2 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors">
+                        {c.cmpCalcApply}
+                      </button>
+                    </div>
+                  )}
+                </Accordion>
+              </div>
             </Card>
           )}
 
@@ -180,6 +237,25 @@ export default function CCLS() {
             <Card>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.aderQ}</label>
               <YesNo value={ader} onChange={handleAder} />
+              <div className="mt-3">
+                <Accordion title={c.aderCalcTitle}>
+                  <div className="space-y-2">
+                    <NumberField label={c.aderCalcTumorPre} value={aderTumorPre} onChange={setAderTumorPre} small />
+                    <NumberField label={c.aderCalcTumorCmp} value={aderTumorCmp} onChange={setAderTumorCmp} small />
+                    <NumberField label={c.aderCalcTumorDelayed} value={aderTumorDelayed} onChange={setAderTumorDelayed} small />
+                  </div>
+                  {aderValue !== null && (
+                    <div className="mt-3 text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+                      <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.aderCalcResultLabel}</span>
+                      <span className="text-xl font-bold text-slate-700 dark:text-slate-200">{aderValue.toFixed(2)}</span>
+                      <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; 1.5</span>
+                      <button onClick={applyAderCalc} className="mt-2 w-full py-2 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors">
+                        {c.aderCalcApply} ({aderCalcAnswer === 'y' ? t.common.yes : t.common.no})
+                      </button>
+                    </div>
+                  )}
+                </Accordion>
+              </div>
             </Card>
           )}
           {showDwiHypoQ && (

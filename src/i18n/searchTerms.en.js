@@ -26,7 +26,7 @@ export default {
   adrenalMri: ['adrenal mri', 'csi', 'chemical shift imaging', 'adrenal adenoma mri', 'in phase', 'out of phase', 'signal drop', 'lipid rich adenoma', 'chemical shift mri'],
   psad: ['psad', 'psa density', 'prostate volume', 'prostate specific antigen', 'prostate', 'ellipsoid prostate', 'prostate size', 'psa calculation'],
   pirads: ['pi-rads', 'pirads', 'prostate', 'prostate mri', 'prostate cancer', 'pi rads', 'pirads 2.1', 'prostate lesion'],
-  renalScore: ['renal score', 'nephrometry', 'renal mass', 'kidney tumor', 'partial nephrectomy', 'renal', 'renal masses', 'renal complexity', 'nephrometry score'],
+  renalScore: ['renal score', 'nephrometry', 'renal mass', 'kidney tumor', 'partial nephrectomy', 'renal', 'renal masses', 'renal complexity', 'nephrometry score', 'rcc', 'renal cell carcinoma', 'renal carcinoma', 'kidney cancer', 'renal cancer'],
   bosniak: ['bosniak', 'renal cyst', 'complex renal cyst', 'cystic renal mass', 'bosniak 2019', 'cystic mass', 'bosniak v2019', 'renal ct cyst', 'renal mri cyst', 'cystic rcc'],
   ccls: ['ccls', 'clear cell likelihood', 'solid renal mass', 'clear cell renal cell carcinoma', 'ccls v2', 'clear cell', 'renal mri', 'renal cancer mri', 'clear cell rcc'],
   virads: ['vi-rads', 'virads', 'bladder', 'bladder cancer', 'muscle invasion', 'bladder tumor', 'vi rads', 'vesical', 'bladder mri', 'detrusor invasion'],
