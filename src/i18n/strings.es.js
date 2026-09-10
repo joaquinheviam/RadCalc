@@ -85,6 +85,8 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-10', text: 'Se agrega la calculadora de Diferencial de Neoplasia Ovárica por Patrón de Imagen (Algoritmo de Taylor): ayuda de diagnóstico diferencial por correlación radiológico-patológica para una neoplasia ovárica indeterminada, según Taylor et al., RadioGraphics 2021. No reemplaza a O-RADS MRI (que estima riesgo de malignidad); esta calculadora es puramente un diferencial basado en el patrón de imagen.' },
+      { date: '2026-09-10', text: 'Se agrega la calculadora de Manejo de Lesión Anexial Incidental (TC/RM): implementa el algoritmo del ACR 2020 (Patel et al., JACR 2020) para triage de masas anexiales incidentales, armonizado con el consenso SRU 2019 (Levine et al., Radiology 2019) y la síntesis de Wang et al., RadioGraphics 2022. Es una herramienta de TRIAGE para hallazgos incidentales, distinta de O-RADS MRI (que estratifica el riesgo de una masa ya en estudio dedicado).' },
       { date: '2026-09-09', text: 'En la calculadora ccLS (Clear Cell Likelihood Score): el Paso 2 ahora especifica que la señal en T2 se compara en una secuencia single-shot fast spin-echo (SSFSE), según el algoritmo original. Se agregó una herramienta opcional de "calcular si hay duda" tanto para el paso de realce en fase corticomedular (CMP) como para la pregunta de ADER (relación de realce arterial-a-tardío) — la evaluación visual sigue siendo la opción por defecto y recomendada, pero ahora se pueden ingresar valores de intensidad de señal para calcular el porcentaje de realce relativo o el valor de ADER, y aplicar el resultado con un toque.' },
       { date: '2026-09-09', text: 'El buscador ahora también encuentra la calculadora de Score de Nefrometría R.E.N.A.L. al buscar "RCC" o "carcinoma de células renales" (además de los términos ya existentes "masa renal" / "tumor renal").' },
       { date: '2026-09-09', text: 'Se corrige el aviso de "app lista para usarse sin conexión / nueva versión disponible": podía mostrarse en español incluso navegando en inglés (dependía de una preferencia guardada, no de la página que se estaba viendo). Ahora el idioma del aviso siempre coincide con el de la página actual.' },
@@ -2249,6 +2251,203 @@ export default {
         'Los STUMP (tumores de músculo liso de potencial maligno incierto) se agrupan junto con los leiomiosarcomas como "maligno o STUMP" en este modelo, ya que ambos requieren manejo cauteloso distinto al leiomioma típico.',
         'El valor de ADC es dependiente del equipo y protocolo de RM (1.5 T o 3 T en la cohorte original); los propios autores señalan que este es un modelo desarrollado y validado en un solo estudio bicéntrico, pendiente de validación externa adicional en poblaciones más diversas.',
       ],
+    },
+    adnexalIncidental: {
+      title: "Manejo de Lesión Anexial Incidental (TC/RM)",
+      subtitle: "Algoritmo ACR 2020 para triage de masas anexiales incidentales en TC/RM, armonizado con el consenso SRU 2019.",
+
+      gateQ: "¿Aplica alguna de las siguientes situaciones de exclusión?",
+      gateNormal: "Hallazgo normal (pared crenulada de cuerpo lúteo, asimetría ovárica leve sin masa)",
+      gateCalcOnly: "Calcificación sin masa no calcificada asociada",
+      gatePreviouslyCharacterized: "Ya caracterizada previamente con ecografía o RM",
+      gateStable2y: "Estabilidad documentada en tamaño y aspecto por ≥2 años",
+      gateSymptomatic: "Sintomática (síntomas atribuibles a la masa: dolor agudo, hemorragia, rotura o torsión)",
+      gateHighRisk: "Alto riesgo genético de cáncer de ovario",
+      gateNone: "Ninguna de las anteriores — continuar",
+
+      resultNormalDesc: "Hallazgo compatible con la fisiología normal. El algoritmo no aplica y en general no se sugieren estudios adicionales.",
+      resultCalcOnlyDesc: "Las calcificaciones aisladas sin masa asociada no suelen requerir seguimiento de rutina.",
+      resultPreviouslyCharacterizedDesc: "La lesión ya cuenta con caracterización dedicada; se sugiere referirse a las recomendaciones de dicho estudio previo.",
+      resultStable2yDesc: "La estabilidad documentada por ≥2 años hace muy improbable una neoplasia maligna (la evidencia ecográfica sugiere que estas cambian en ≤7 meses). En general no se sugieren más estudios de imagen.",
+      resultSymptomaticDesc: "El algoritmo se aborta. Se sugiere manejo clínico o evaluación urgente dirigida según el síntoma, no una conducta de vigilancia diferida.",
+      resultHighRiskDesc: "Algoritmo no aplicable. En pacientes con alto riesgo genético se sugiere individualizar el manejo clínico y aplicar umbrales más estrictos.",
+
+      sizeLabel: "Tamaño máximo / mayor diámetro (cm)",
+      sizeTooSmallDesc: "Lesión <1 cm. Se considera fisiológica o demasiado pequeña para caracterizar adecuadamente por TC/RM; el algoritmo no aplica.",
+      menopausalLabel: "Estado menopáusico",
+      menopausalPre: "Premenopáusica (o <50 años si se desconoce)",
+      menopausalPost: "Posmenopáusica (o ≥50 años si se desconoce)",
+      menopausalUnknown: "Se desconoce el estado menopáusico",
+      ageLabel: "Edad de la paciente (años)",
+
+      categoryLabel: "Categoría morfológica de la masa",
+      categorySimpleCyst: "Quiste de aspecto simple (pared lisa/imperceptible, sin componente sólido ni tabique, sin flujo interno)",
+      categoryCharacteristic: "Otra lesión con características de imagen definitorias (ej. quiste hemorrágico, endometrioma, dermoide)",
+      categoryUncertain: "Diagnóstico incierto (sin características definitorias específicas)",
+
+      resultCharacterizeDesc: "Se sugiere ecografía pélvica o RM con contraste para CARACTERIZAR prontamente. Una masa ≥10 cm puede ser evaluada de forma más óptima con RM con contraste debido al tamaño.",
+
+      limitedAssessmentQ: "¿Evaluación limitada en TC/RM? (baja relación señal-ruido, artefactos, falta de contraste IV, o cobertura anatómica incompleta)",
+      fullyCharacterizedMRQ: "¿Fue completamente caracterizado por RM dedicada? (T2, T1 pre y poscontraste, y cobertura anatómica completa en ≥2 planos)",
+
+      resultNoFurtherImagingDesc: "Sin más estudios de imagen. El riesgo de malignidad en un quiste de aspecto simple por debajo de este umbral se considera estadísticamente despreciable.",
+      resultUSFollowUpDesc: "Control ecográfico en 6-12 meses. El objetivo es evaluar crecimiento en el tiempo, asumiendo una probable naturaleza benigna.",
+      resultUSCharacterizePromptDesc: "Ecografía pélvica pronta para CARACTERIZAR. La limitación técnica del estudio inicial sugiere la necesidad de confirmar morfológicamente la lesión.",
+
+      entityLabel: "Entidad con características definitorias",
+      entityHemorrhagic: "Quiste hemorrágico",
+      entityParaovarianGroup: "Quiste paraovárico / Inclusión peritoneal / Hidrosálpinx simple / Fibroma / Leiomioma",
+      entityEndometriomaDermoid: "Endometrioma / Dermoide (teratoma quístico maduro)",
+      entitySuspectedMalignancy: "Sospecha de malignidad",
+
+      hemorrhagicPreSmallDesc: "Premenopáusica ≤5 cm: Hallazgo habitualmente fisiológico. En general no se sugieren más estudios de imagen.",
+      hemorrhagicPreLargeDesc: "Premenopáusica >5 cm: Se sugiere control ecográfico en 2-3 meses para evaluar resolución.",
+      hemorrhagicPostDesc: "Posmenopáusica (cualquier tamaño): Se sugiere ecografía o RM para caracterizar prontamente. No es un hallazgo fisiológicamente esperable y puede requerir descartar patología subyacente.",
+      paraovarianGroupDesc: "En general no requieren más estudios de imagen; se sugiere manejo clínico.",
+      endometriomaDermoidDesc: "Suele sugerirse manejo por ginecología; puede requerir vigilancia periódica con imagen.",
+      suspectedMalignancyDesc: "Se sugiere ecografía pélvica o RM para caracterizar prontamente y derivación clínica oportuna.",
+
+      stickyLabel: "Conducta sugerida",
+      stickyNormal: "Hallazgo normal",
+      stickyCalcOnly: "Sin seguimiento de rutina",
+      stickyReferPrevious: "Ver estudio previo",
+      stickyStableExcluded: "Malignidad muy improbable (estabilidad ≥2a)",
+      stickySymptomatic: "Manejo clínico/quirúrgico dirigido",
+      stickyHighRisk: "Individualizar manejo",
+      stickyTooSmall: "No aplica (<1 cm)",
+      stickyNoFurtherImaging: "Sin más estudios de imagen",
+      stickyFollowUp: "Control ecográfico 6-12 meses",
+      stickyCharacterizePrompt: "Caracterizar pronto (US/RM)",
+      stickyGynManaged: "Manejo por ginecología",
+      stickyClinicalManagement: "Manejo clínico",
+      stickySuspectedMalignancy: "Sospecha de malignidad — caracterizar",
+      stickySeeMoreHint: "(ver detalle de la recomendación más arriba)",
+
+      usage: [
+        "Implementa el algoritmo ACR 2020 para hallazgos anexiales incidentales en TC/RM, con umbrales armonizados con el consenso SRU 2019.",
+        "Esta herramienta es para TRIAGE de hallazgos incidentales en estudios de rutina, no para estratificar el riesgo de masas ya en estudio dedicado con RM multiparamétrica (ver calculadora O-RADS MRI).",
+        "Las recomendaciones aplican a pacientes asintomáticas, no embarazadas, posmenárquicas y de riesgo promedio de cáncer de ovario.",
+        "'Caracterizar' indica un estudio pronto para precisar morfología; 'Seguimiento' indica un control diferido (6-12 meses) para evaluar crecimiento."
+      ]
+    },
+    ovarianNeoplasmDx: {
+      title: "Diferencial de Neoplasia Ovárica por Patrón de Imagen (Algoritmo de Taylor)",
+      subtitle: "Ayuda de diagnóstico diferencial por correlación radiológico-patológica para una neoplasia ovárica o anexial indeterminada, no corresponde a un score de riesgo.",
+      introNote: "Nota: Este es un apoyo educativo basado en patrones descritos en la literatura y no un diagnóstico automático. Debe interpretarse en el contexto clínico completo (edad, marcadores tumorales y hallazgos asociados).",
+
+      fatQ: "¿La masa contiene grasa macroscópica?",
+      fatCalcCoarseLabel: "Sí, con calcificaciones groseras ('en diente')",
+      fatCalcIrregularLabel: "Sí, con calcificaciones irregulares y más pequeñas (mayor tamaño, paciente más joven)",
+      fatNoLabel: "No contiene grasa",
+
+      t2SolidQ: "¿Presenta un componente sólido con señal T2 hipointensa en RM?",
+
+      ageQ: "Edad de la paciente",
+      ageUnder30Label: "Típicamente < 30 años",
+      ageOver30Label: "Típicamente > 30 años",
+
+      proportionQ: "Proporción del componente sólido y quístico",
+      proportionSolidCysticLabel: "Sólido y quístico",
+      proportionMostlySolidLabel: "Predominantemente sólido",
+      proportionMostlyCysticLabel: "Predominantemente quístico",
+
+      lateralityQ: "Lateralidad",
+      lateralityUnilateralLabel: "Más frecuentemente unilateral",
+      lateralityBilateralLabel: "Más frecuentemente bilateral",
+
+      unilocularQ: "Arquitectura quística",
+      unilocularLabel: "Unilocular",
+      multilocularLabel: "Multilocular",
+
+      wallSepticQ: "¿Presenta septos engrosados, pared interna irregular o componentes sólidos (particularmente si vascularizados)?",
+
+      cystContentQ: "Características del contenido quístico",
+      cystContentVariableLabel: "Señal/atenuación/ecogenicidad variable (por mucina)",
+      cystContentHomogeneousLabel: "Contenido homogéneo",
+
+      dxMatureTeratomaTitle: "Teratoma maduro (dermoide)",
+      dxMatureTeratomaDescription: "El patrón sugiere un teratoma maduro. Clásicamente presenta grasa y calcificaciones groseras o 'en diente'.",
+
+      dxImmatureTeratomaTitle: "Teratoma inmaduro",
+      dxImmatureTeratomaDescription: "Puede corresponder a un teratoma inmaduro, especialmente sugerido por calcificaciones más pequeñas e irregulares, mayor tamaño tumoral y presentación en una paciente más joven.",
+
+      dxBrennerFibromaGroupTitle: "Tumor de Brenner / (Cisto)adenofibroma / Fibroma-fibrotecoma",
+      dxBrennerFibromaGroupDescription: "El componente sólido hipointenso en T2 sugiere lesiones de este grupo. Se recomienda buscar calcificaciones y/o neoplasia quística asociada (el fibrotecoma se asocia al síndrome de Meigs). Los tumores más grandes pueden mostrar degeneración quística y una señal T2 levemente más alta.",
+
+      dxJuvenileGranulosaTitle: "Tumor de células de la granulosa juvenil",
+      dxJuvenileGranulosaDescription: "Puede sugerir un tumor de células de la granulosa juvenil. Se asocia a estrogenismo (hiperplasia endometrial) y a los síndromes de Maffucci y Ollier.",
+
+      dxDysgerminomaTitle: "Disgerminoma",
+      dxDysgerminomaDescription: "El patrón es compatible con disgerminoma, típicamente de aspecto predominantemente sólido con septos fibrovasculares. Puede asociarse a elevación de LDH y embarazo.",
+
+      dxChoriocarcinomaTitle: "Coriocarcinoma",
+      dxChoriocarcinomaDescription: "Puede representar un coriocarcinoma, una neoplasia característicamente asociada a niveles elevados de b-hCG.",
+
+      dxYolkSacTitle: "Tumor del saco vitelino (seno endodérmico)",
+      dxYolkSacDescription: "Sugiere un tumor del saco vitelino. Puede presentar niveles elevados de AFP; en imágenes se recomienda buscar el signo del 'punto brillante'.",
+
+      dxEmbryonalCarcinomaTitle: "Carcinoma embrionario",
+      dxEmbryonalCarcinomaDescription: "Puede corresponder a un carcinoma embrionario, el cual forma parte del diferencial de tumores de células germinales en este grupo etario.",
+
+      dxEndometrioidClearCellTitle: "Carcinoma endometrioide / Carcinoma de células claras",
+      dxEndometrioidClearCellDescription: "El patrón puede sugerir carcinoma endometrioide o de células claras. Suelen asociarse a endometriosis, y debe buscarse áreas de hemorragia y/o engrosamiento o carcinoma endometrial concurrente. Prestar especial atención a posibles fenómenos tromboembólicos e hipercalcemia.",
+
+      dxAdultGranulosaBilateralTitle: "Tumor de células de la granulosa del adulto",
+      dxAdultGranulosaBilateralDescription: "Puede sugerir un tumor de células de la granulosa del adulto. Clásicamente presenta un patrón en 'queso suizo' y se asocia a hiperestrogenismo.",
+
+      dxMucinousNeoplasmTitle: "Neoplasias mucinosas",
+      dxMucinousNeoplasmDescription: "Sugiere una neoplasia mucinosa. El aumento de tamaño, mayor cantidad de loculaciones internas y presencia de componentes sólidos pueden sugerir tumores mucinosos borderline o malignos, que suelen ser mayores a 13 cm en comparación con las metástasis.",
+
+      dxSerousBorderlineHGSCTitle: "Tumor seroso borderline / LGSC / HGSC",
+      dxSerousBorderlineHGSCDescription: "Puede corresponder a un tumor seroso borderline, carcinoma seroso de bajo grado (LGSC) o de alto grado (HGSC). Se recomienda evaluar la presencia de proyecciones papilares y niveles de CA-125.",
+
+      dxMetastasisGITitle: "Metástasis",
+      dxMetastasisGIDescription: "El patrón bilateral obliga a descartar secundarismo. Se recomienda buscar una neoplasia primaria (ej. gastrointestinal), carcinomatosis peritoneal y evaluar los niveles de CEA.",
+
+      dxMucinousAdenocarcinomaTitle: "Adenocarcinoma mucinoso",
+      dxMucinousAdenocarcinomaDescription: "Una masa predominantemente sólida y unilateral puede sugerir un adenocarcinoma mucinoso en este contexto clínico.",
+
+      dxAdultGranulosaSolidTitle: "Tumor de células de la granulosa del adulto",
+      dxAdultGranulosaSolidDescription: "Puede sugerir la variante predominantemente sólida de un tumor de células de la granulosa del adulto, aunque son más frecuentemente de patrón sólido y quístico.",
+
+      dxSertoliLeydigTitle: "Tumor de Sertoli-Leydig",
+      dxSertoliLeydigDescription: "Puede representar un tumor de Sertoli-Leydig. Suele asociarse clínicamente a síndromes de exceso de andrógenos o virilización.",
+
+      dxMetastasisSolidBilateralTitle: "Metástasis (Predominio Sólido)",
+      dxMetastasisSolidBilateralDescription: "Las masas sólidas bilaterales sugieren fuertemente secundarismo. Las metástasis de origen gástrico y de mama suelen presentarse con frecuencia de forma predominantemente sólida.",
+
+      dxOvarianLymphomaTitle: "Linfoma ovárico",
+      dxOvarianLymphomaDescription: "El compromiso ovárico por linfoma (habitualmente secundario a enfermedad sistémica) puede presentarse como masas sólidas bilaterales, de aspecto más homogéneo que las metástasis o el HGSC, típicamente con adenopatías voluminosas y sin ascitis asociada.",
+
+      dxHGSCBilateralTitle: "Carcinoma seroso de alto grado (HGSC)",
+      dxHGSCBilateralDescription: "El patrón es sugerente de carcinoma seroso de alto grado (HGSC), que se presenta con mayor frecuencia de forma bilateral.",
+
+      dxSerousCystadenomaTitle: "Cistoadenoma seroso",
+      dxSerousCystadenomaDescription: "Si la lesión carece de características sospechosas, este patrón sugiere un cistoadenoma seroso, aunque puede llegar a presentar unos pocos septos finos.",
+
+      dxSerousBorderlineUnilocularTitle: "Tumor seroso borderline / LGSC / HGSC",
+      dxSerousBorderlineUnilocularDescription: "La presencia de septos engrosados, paredes irregulares o nódulos sólidos en una lesión unilocular sugiere un tumor seroso borderline, LGSC o HGSC.",
+
+      dxMucinousMultilocularTitle: "Neoplasias mucinosas",
+      dxMucinousMultilocularDescription: "El patrón multilocular unilateral con variabilidad en la señal, atenuación o ecogenicidad (por mucina) sugiere una neoplasia mucinosa.",
+
+      dxSerousCystadenomaMultilocularTitle: "Cistoadenoma seroso",
+      dxSerousCystadenomaMultilocularDescription: "Un patrón multilocular unilateral con contenido quístico homogéneo puede corresponder a un cistoadenoma seroso.",
+
+      dxSerousBorderlineBilateralMultilocularTitle: "Tumor seroso borderline / LGSC / HGSC",
+      dxSerousBorderlineBilateralMultilocularDescription: "El patrón quístico multilocular bilateral sugiere tumores del espectro seroso (borderline, LGSC o HGSC), que suelen ser con mayor frecuencia bilaterales.",
+
+      dxMetastasisCysticBilateralTitle: "Metástasis (Quísticas)",
+      dxMetastasisCysticBilateralDescription: "El patrón quístico multilocular bilateral sugiere metástasis. Las neoplasias primarias de apéndice, colorrectales y pancreatobiliares suelen generar secundarismos frecuentemente quísticos.",
+
+      stickyLabel: "Diagnóstico diferencial sugerido",
+      stickyMultipleLabel: "Ver diferencial completo arriba",
+
+      usage: [
+        "Esta calculadora implementa el algoritmo de enfoque algorítmico por correlación radiológico-patológica detallado por Taylor et al. (2021) para el diagnóstico diferencial de una neoplasia ovárica indeterminada.",
+        "Constituye puramente un diferencial basado en el patrón de imagen. No representa una guía de conducta de manejo ni un score de riesgo de malignidad (para estimación de riesgo, por favor refiérase a la calculadora O-RADS MRI disponible en esta misma aplicación).",
+        "Los marcadores tumorales (LDH, b-hCG, AFP, CA-125, CEA) y hallazgos clínicos mencionados son orientativos de acuerdo a lo descrito en el artículo, y requieren de estricta correlación con el perfil de laboratorio real de la paciente."
+      ]
     },
       thoracicglossary: {
       title: 'Glosario Torácico Fleischner (2024)',

@@ -32,5 +32,7 @@ export default {
   virads: ['vi-rads', 'virads', 'bladder', 'bladder cancer', 'muscle invasion', 'bladder tumor', 'vi rads', 'vesical', 'bladder mri', 'detrusor invasion'],
   orads: ['o-rads', 'orads', 'ovary', 'adnexal mass', 'ovarian cyst', 'ovarian tumor', 'o rads', 'orads mri', 'adnexal', 'ovarian mass', 'pelvic mri ovary'],
   leiomyoma: ['fibroid', 'uterine fibroids', 'leiomyoma', 'leiomyosarcoma', 'figo', 'palm-coein', 'figo classification', 'uterus', 'myometrial mass', 'myometrial lesion', 'figo fibroid', 'uterine fibroid', 'uterine mri', 'uterine sarcoma'],
+  adnexalIncidental: ['incidental adnexal lesion', 'incidental adnexal mass', 'incidental adnexal cyst', 'incidental adnexal finding', 'simple adnexal cyst', 'incidental ovarian cyst', 'acr adnexal', 'adnexal management', 'hemorrhagic cyst', 'para-ovarian cyst', 'endometrioma', 'dermoid', 'sru cyst consensus'],
+  ovarianNeoplasmDx: ['ovarian neoplasm differential', 'taylor algorithm', 'taylor ovarian', 'ovarian differential diagnosis', 'ovarian tumor differential', 'teratoma', 'dysgerminoma', 'granulosa cell tumor', 'sertoli-leydig', 'serous cystadenoma', 'borderline serous tumor', 'ovarian metastasis'],
   thoracicglossary: ['fleischner', 'glossary', 'thoracic glossary', 'chest terminology', 'radiology terminology', 'ground glass', 'ground-glass opacity', 'honeycombing', 'traction bronchiectasis', 'air trapping', 'consolidation', 'pulmonary nodule', 'tree-in-bud', 'mosaic attenuation', 'halo sign', 'chest imaging dictionary', 'thoracic imaging terms'],
 };

@@ -166,6 +166,14 @@ export const REFERENCES = {
     'Zlotykamien-Taïeb E, Gherman D, Al Rouhban R, Florin M, Darai E, Haddad B, Dabi Y, Arbel S, Jha P, Thomassin-Naggara I. Novel approach to MRI based risk stratification of uterine myometrial lesions. Eur J Radiol. 2025;187:112126.',
     'Hindman NH, Kang F, Fournier L, et al. MRI Evaluation of Uterine Masses for Risk of Leiomyosarcoma: A Consensus Statement. Radiology. 2023;306(3):e211658.',
   ],
+  adnexalIncidental: [
+    'Patel MD, Ascher SM, Horrow MM, Pickhardt PJ, Poder L, Goldman M, Berland LL, Pandharipande PV, Maturen KE. Management of Incidental Adnexal Findings on CT and MRI: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2020;17(2):248-254.',
+    'Levine D, Patel MD, Suh-Burgmann EJ, Andreotti RF, Benacerraf BR, Benson CB, Brewster WR, Coleman BG, Doubilet PM, Goldstein SR, Hamper UM, Hecht JL, Horrow MM, Hur HC, Marnach ML, Pavlik E, Platt LD, Puscheck E, Smith-Bindman R, Brown DL. Simple Adnexal Cysts: SRU Consensus Conference Update on Follow-up and Reporting. Radiology. 2019;293(2):359-371.',
+    'Wang PS, Schoeck OG, Horrow MM. Benign-appearing Incidental Adnexal Cysts at US, CT, and MRI: Putting the ACR, O-RADS, and SRU Guidelines All Together. RadioGraphics. 2022;42(2):609-624.',
+  ],
+  ovarianNeoplasmDx: [
+    'Taylor EC, Irshaid L, Mathur M. Multimodality Imaging Approach to Ovarian Neoplasms with Pathologic Correlation. RadioGraphics. 2021;41(1):289-315.',
+  ],
   ildClassifier: [
     'Podolanczuk AJ, Hunninghake GM, et al. Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement. Am J Respir Crit Care Med. 2025;211(7):1132-1155.',
     'Ryerson CJ, Wells AU, Richeldi L, et al. A Consensus Nomenclature and Classification for Fibrotic and Inflammatory Interstitial Lung Diseases: An Official ERS/ATS Statement. Eur Respir J / Am J Respir Crit Care Med. 2025.',

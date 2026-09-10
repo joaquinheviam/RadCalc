@@ -85,6 +85,8 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-10', text: 'Added the Ovarian Neoplasm Imaging Pattern Differential calculator (Taylor Algorithm): a diagnostic differential aid based on radiologic-pathologic correlation for an indeterminate ovarian neoplasm, per Taylor et al., RadioGraphics 2021. It does not replace O-RADS MRI (which estimates malignancy risk); this tool is purely an imaging-pattern-based differential.' },
+      { date: '2026-09-10', text: 'Added the Incidental Adnexal Lesion Management (CT/MRI) calculator: implements the ACR 2020 algorithm (Patel et al., JACR 2020) for triage of incidental adnexal masses, aligned with the SRU 2019 consensus (Levine et al., Radiology 2019) and the synthesis by Wang et al., RadioGraphics 2022. It is a TRIAGE tool for incidental findings, distinct from O-RADS MRI (which risk-stratifies a mass already under dedicated evaluation).' },
       { date: '2026-09-09', text: 'In the ccLS (Clear Cell Likelihood Score) calculator: Step 2 now specifies that the T2 signal is compared on a single-shot fast spin-echo (SSFSE) sequence, per the original algorithm. Added an optional "calculate if uncertain" tool for both the corticomedullary-phase (CMP) enhancement step and the ADER (arterial-to-delayed enhancement ratio) question — visual assessment remains the default, recommended approach, but you can now enter signal-intensity values to compute the relative enhancement percentage or the ADER value and apply the result with one tap.' },
       { date: '2026-09-09', text: 'Search now also finds the R.E.N.A.L. Nephrometry Score calculator when searching for "RCC" or "renal cell carcinoma" (in addition to the existing "renal mass" / "kidney tumor" terms).' },
       { date: '2026-09-09', text: 'Fixed the "app ready to work offline / new version available" toast: it could show Spanish text even while browsing in English (it depended on a saved preference rather than the page actually being viewed). The toast\'s language now always matches the current page.' },
@@ -2249,6 +2251,203 @@ export default {
         'STUMPs (smooth muscle tumors of uncertain malignant potential) are grouped together with leiomyosarcomas as "malignant or STUMP" in this model, since both require cautious management distinct from typical leiomyoma.',
         'ADC value is dependent on the MRI equipment and protocol (1.5 T or 3 T in the original cohort); the authors themselves note that this model was developed and validated in a single bicentric study and requires further external validation in more diverse populations.',
       ],
+    },
+    adnexalIncidental: {
+      title: "Incidental Adnexal Lesion Management (CT/MRI)",
+      subtitle: "ACR 2020 algorithm for triage of incidental adnexal masses on CT/MRI, aligned with the SRU 2019 consensus.",
+
+      gateQ: "Do any of the following exclusion criteria apply?",
+      gateNormal: "Normal finding (crenulated wall of corpus luteum, mild ovarian asymmetry without a mass)",
+      gateCalcOnly: "Calcification without an associated non-calcified mass",
+      gatePreviouslyCharacterized: "Previously characterized by US or MRI",
+      gateStable2y: "Documented stability in size and appearance for ≥2 years",
+      gateSymptomatic: "Symptomatic (symptoms attributable to the mass: acute pain, hemorrhage, rupture, or torsion)",
+      gateHighRisk: "High genetic risk for ovarian cancer",
+      gateNone: "None of the above — continue",
+
+      resultNormalDesc: "Finding consistent with normal physiology. The algorithm does not apply and no further imaging is generally suggested.",
+      resultCalcOnlyDesc: "Isolated calcifications without an associated mass do not typically require routine follow-up.",
+      resultPreviouslyCharacterizedDesc: "The lesion has dedicated prior characterization; referral to the recommendations of that prior study is suggested.",
+      resultStable2yDesc: "Documented stability for ≥2 years makes malignancy highly unlikely (evidence suggests malignant neoplasms change within ≤7 months). No further imaging is typically suggested.",
+      resultSymptomaticDesc: "Algorithm aborted. Prompt symptom-directed clinical or surgical management is suggested, rather than delayed imaging surveillance.",
+      resultHighRiskDesc: "Algorithm not applicable. In patients with high genetic risk, individualized clinical management and stricter thresholds are suggested.",
+
+      sizeLabel: "Maximum size / largest diameter (cm)",
+      sizeTooSmallDesc: "Lesion <1 cm. Considered physiologic or too small to adequately characterize on CT/MRI; the algorithm does not apply.",
+      menopausalLabel: "Menopausal status",
+      menopausalPre: "Premenopausal (or age <50 years if status unknown)",
+      menopausalPost: "Postmenopausal (or age ≥50 years if status unknown)",
+      menopausalUnknown: "Menopausal status unknown",
+      ageLabel: "Patient age (years)",
+
+      categoryLabel: "Morphologic category of the mass",
+      categorySimpleCyst: "Simple-appearing cyst (smooth/imperceptible wall, no solid component, no septation, no internal flow)",
+      categoryCharacteristic: "Other lesion with defining characteristic features (e.g., hemorrhagic cyst, endometrioma, dermoid)",
+      categoryUncertain: "Uncertain diagnosis (lacking specific defining features)",
+
+      resultCharacterizeDesc: "Prompt pelvic US or contrast-enhanced MRI is suggested to CHARACTERIZE. A mass ≥10 cm may be better evaluated with contrast-enhanced MRI due to size limitations.",
+
+      limitedAssessmentQ: "Limited assessment on CT/MRI? (low signal-to-noise ratio, artifact, lack of IV contrast, or incomplete anatomical coverage)",
+      fullyCharacterizedMRQ: "Fully characterized by dedicated MRI? (T2, pre- and post-contrast T1, and complete anatomical coverage in ≥2 planes)",
+
+      resultNoFurtherImagingDesc: "No further imaging. The risk of malignancy in a simple-appearing cyst below this threshold is considered statistically negligible.",
+      resultUSFollowUpDesc: "Follow-up pelvic US in 6-12 months. The objective is to assess growth over time, assuming a likely benign nature.",
+      resultUSCharacterizePromptDesc: "Prompt pelvic US to CHARACTERIZE. Technical limitations of the initial study suggest the need for morphologic confirmation.",
+
+      entityLabel: "Entity with defining characteristics",
+      entityHemorrhagic: "Hemorrhagic cyst",
+      entityParaovarianGroup: "Para-ovarian cyst / Peritoneal inclusion / Simple hydrosalpinx / Fibroma / Leiomyoma",
+      entityEndometriomaDermoid: "Endometrioma / Dermoid (mature cystic teratoma)",
+      entitySuspectedMalignancy: "Suspected malignancy",
+
+      hemorrhagicPreSmallDesc: "Premenopausal ≤5 cm: Typically a physiologic finding. No further imaging is generally suggested.",
+      hemorrhagicPreLargeDesc: "Premenopausal >5 cm: US follow-up in 2-3 months is suggested to assess resolution.",
+      hemorrhagicPostDesc: "Postmenopausal (any size): Prompt US or MRI is suggested to characterize. This is not an expected physiologic finding and may require ruling out underlying pathology.",
+      paraovarianGroupDesc: "Further imaging is usually unnecessary; clinical management is suggested.",
+      endometriomaDermoidDesc: "Gynecology management is generally suggested; may require periodic imaging surveillance.",
+      suspectedMalignancyDesc: "Prompt pelvic US or MRI is suggested to characterize, alongside timely clinical referral.",
+
+      stickyLabel: "Suggested management",
+      stickyNormal: "Normal finding",
+      stickyCalcOnly: "No routine follow-up",
+      stickyReferPrevious: "See prior study",
+      stickyStableExcluded: "Malignancy highly unlikely (≥2y stability)",
+      stickySymptomatic: "Symptom-directed clinical/surgical management",
+      stickyHighRisk: "Individualize management",
+      stickyTooSmall: "Not applicable (<1 cm)",
+      stickyNoFurtherImaging: "No further imaging",
+      stickyFollowUp: "US follow-up in 6-12 months",
+      stickyCharacterizePrompt: "Characterize promptly (US/MRI)",
+      stickyGynManaged: "Gynecology-managed",
+      stickyClinicalManagement: "Clinical management",
+      stickySuspectedMalignancy: "Suspected malignancy — characterize",
+      stickySeeMoreHint: "(see recommendation detail above)",
+
+      usage: [
+        "Implements the ACR 2020 algorithm for incidental adnexal findings on CT/MRI, with thresholds aligned with the SRU 2019 consensus.",
+        "This tool is intended for TRIAGE of incidental findings on routine studies, not for risk stratification of masses already under dedicated multiparametric MRI evaluation (see O-RADS MRI calculator).",
+        "Recommendations apply to asymptomatic, non-pregnant, post-menarchal patients at average risk for ovarian cancer.",
+        "'Characterize' implies a prompt study to clarify morphology; 'Follow-up' implies delayed surveillance (6-12 months) to assess growth."
+      ]
+    },
+    ovarianNeoplasmDx: {
+      title: "Ovarian Neoplasm Imaging Pattern Differential (Taylor Algorithm)",
+      subtitle: "Diagnostic differential aid based on radiologic-pathologic correlation for an indeterminate ovarian or adnexal neoplasm; this is not a malignancy risk score.",
+      introNote: "Note: This is an educational tool based on patterns described in the literature, not an automated diagnosis. It must be interpreted within the complete clinical context (age, tumor markers, and associated findings).",
+
+      fatQ: "Does the mass contain macroscopic fat?",
+      fatCalcCoarseLabel: "Yes, with coarsened, 'tooth-like' calcifications",
+      fatCalcIrregularLabel: "Yes, with irregular/smaller calcifications (larger size, younger patient)",
+      fatNoLabel: "No fat",
+
+      t2SolidQ: "Is there a solid component with T2-hypointense MRI signal?",
+
+      ageQ: "Patient Age",
+      ageUnder30Label: "Typically < 30 years old",
+      ageOver30Label: "Typically > 30 years old",
+
+      proportionQ: "Proportion of solid and cystic components",
+      proportionSolidCysticLabel: "Solid and cystic",
+      proportionMostlySolidLabel: "Predominantly solid",
+      proportionMostlyCysticLabel: "Predominantly cystic",
+
+      lateralityQ: "Laterality",
+      lateralityUnilateralLabel: "More often unilateral",
+      lateralityBilateralLabel: "More often bilateral",
+
+      unilocularQ: "Cystic architecture",
+      unilocularLabel: "Unilocular",
+      multilocularLabel: "Multilocular",
+
+      wallSepticQ: "Are there thickened septations, an irregular inner wall, or solid components (particularly when vascularized)?",
+
+      cystContentQ: "Cyst content characteristics",
+      cystContentVariableLabel: "Varying signal/attenuation/echogenicity (from mucin)",
+      cystContentHomogeneousLabel: "Homogeneous cyst contents",
+
+      dxMatureTeratomaTitle: "Mature Teratoma (Dermoid)",
+      dxMatureTeratomaDescription: "The pattern suggests a mature teratoma. It classically presents with macroscopic fat and coarsened or 'tooth-like' calcifications.",
+
+      dxImmatureTeratomaTitle: "Immature Teratoma",
+      dxImmatureTeratomaDescription: "May correspond to an immature teratoma, especially suggested by smaller irregular calcifications, larger tumor size, and presentation in a younger patient.",
+
+      dxBrennerFibromaGroupTitle: "Brenner Tumor / (Cyst)adenofibroma / Fibroma-fibrothecoma",
+      dxBrennerFibromaGroupDescription: "The T2-hypointense solid component suggests a Brenner tumor, (cyst)adenofibroma, or fibroma-fibrothecoma. Look for calcifications and/or an associated cystic neoplasm. Fibrothecomas are associated with Meigs syndrome. Larger tumors may display cystic degeneration and slightly higher T2 signal.",
+
+      dxJuvenileGranulosaTitle: "Juvenile Granulosa Cell Tumor",
+      dxJuvenileGranulosaDescription: "May suggest a juvenile granulosa cell tumor. It is associated with estrogenic effects (look for endometrial hyperplasia) and Maffucci and Ollier syndromes.",
+
+      dxDysgerminomaTitle: "Dysgerminoma",
+      dxDysgerminomaDescription: "The pattern is compatible with dysgerminoma, typically predominantly solid with fibrovascular septae. It may be associated with elevated LDH levels and pregnancy.",
+
+      dxChoriocarcinomaTitle: "Choriocarcinoma",
+      dxChoriocarcinomaDescription: "May represent a choriocarcinoma, characteristically associated with elevated b-hCG levels.",
+
+      dxYolkSacTitle: "Yolk Sac Tumor (Endodermal Sinus Tumor)",
+      dxYolkSacDescription: "Suggests a yolk sac tumor. It may present with elevated AFP levels; looking for the imaging 'bright dot' sign is recommended.",
+
+      dxEmbryonalCarcinomaTitle: "Embryonal Carcinoma",
+      dxEmbryonalCarcinomaDescription: "May correspond to embryonal carcinoma, which is part of the germ cell tumor differential in this age group.",
+
+      dxEndometrioidClearCellTitle: "Endometrioid Carcinoma / Clear Cell Carcinoma",
+      dxEndometrioidClearCellDescription: "A solid and cystic pattern may suggest endometrioid or clear cell carcinoma. These are frequently associated with endometriosis, thromboembolic phenomena, and hypercalcemia. Areas of hemorrhage or concurrent endometrial thickening/carcinoma should be assessed.",
+
+      dxAdultGranulosaBilateralTitle: "Adult Granulosa Cell Tumor",
+      dxAdultGranulosaBilateralDescription: "May suggest an adult granulosa cell tumor. It is associated with hyperestrogenism and classically demonstrates a 'Swiss-cheese' appearance.",
+
+      dxMucinousNeoplasmTitle: "Mucinous Neoplasms",
+      dxMucinousNeoplasmDescription: "Suggests a mucinous neoplasm. Increasing size, internal locules, and solid components suggest borderline and malignant variants, which are usually larger (>13 cm) compared to metastases.",
+
+      dxSerousBorderlineHGSCTitle: "Borderline Serous Tumor / LGSC / HGSC",
+      dxSerousBorderlineHGSCDescription: "May correspond to a borderline serous tumor, low-grade serous carcinoma (LGSC), or high-grade serous carcinoma (HGSC). Look for papillary projections and correlate with elevated CA-125 levels.",
+
+      dxMetastasisGITitle: "Metastases",
+      dxMetastasisGIDescription: "A bilateral pattern strongly suggests metastatic disease. Look for a primary neoplasm (e.g., gastrointestinal), peritoneal carcinomatosis, and elevated CEA levels.",
+
+      dxMucinousAdenocarcinomaTitle: "Mucinous Adenocarcinoma",
+      dxMucinousAdenocarcinomaDescription: "A predominantly solid unilateral mass may suggest a mucinous adenocarcinoma in this clinical context.",
+
+      dxAdultGranulosaSolidTitle: "Adult Granulosa Cell Tumor",
+      dxAdultGranulosaSolidDescription: "May suggest a predominantly solid variant of an adult granulosa cell tumor, although this tumor is more often solid and cystic.",
+
+      dxSertoliLeydigTitle: "Sertoli-Leydig Cell Tumor",
+      dxSertoliLeydigDescription: "May represent a Sertoli-Leydig cell tumor. It is classically associated clinically with androgen excess and virilization.",
+
+      dxMetastasisSolidBilateralTitle: "Metastases (Predominantly Solid)",
+      dxMetastasisSolidBilateralDescription: "Bilateral predominantly solid masses suggest metastases. Gastric and breast primary tumors often manifest with a predominantly solid pattern.",
+
+      dxOvarianLymphomaTitle: "Ovarian Lymphoma",
+      dxOvarianLymphomaDescription: "Ovarian involvement by lymphoma (usually secondary to systemic disease) may present as bilateral solid masses with a more homogeneous appearance than metastases or HGSC, typically with bulky adenopathy and no associated ascites.",
+
+      dxHGSCBilateralTitle: "High-Grade Serous Carcinoma (HGSC)",
+      dxHGSCBilateralDescription: "A bilateral solid pattern is suggestive of high-grade serous carcinoma (HGSC), which is more frequently bilateral.",
+
+      dxSerousCystadenomaTitle: "Serous Cystadenoma",
+      dxSerousCystadenomaDescription: "If unilocular without suspicious features, this pattern suggests a benign serous cystadenoma, though it may occasionally have a few thin septations.",
+
+      dxSerousBorderlineUnilocularTitle: "Borderline Serous / LGSC / HGSC",
+      dxSerousBorderlineUnilocularDescription: "The presence of suspicious wall features, solid components, or septations in a unilocular lesion suggests a borderline serous tumor, LGSC, or HGSC.",
+
+      dxMucinousMultilocularTitle: "Mucinous Neoplasms",
+      dxMucinousMultilocularDescription: "A multilocular unilateral pattern with varying signal, attenuation, or echogenicity (from mucin) suggests a mucinous neoplasm.",
+
+      dxSerousCystadenomaMultilocularTitle: "Serous Cystadenoma",
+      dxSerousCystadenomaMultilocularDescription: "A multilocular unilateral pattern with homogeneous cyst contents may correspond to a serous cystadenoma.",
+
+      dxSerousBorderlineBilateralMultilocularTitle: "Borderline Serous / LGSC / HGSC",
+      dxSerousBorderlineBilateralMultilocularDescription: "A bilateral multilocular cystic pattern suggests tumors in the serous spectrum (borderline, LGSC, or HGSC), which are more often bilateral.",
+
+      dxMetastasisCysticBilateralTitle: "Metastases (Cystic)",
+      dxMetastasisCysticBilateralDescription: "A bilateral multilocular cystic pattern requires ruling out secondary tumors. Appendiceal, colorectal, and pancreaticobiliary metastases are often cystic.",
+
+      stickyLabel: "Suggested differential",
+      stickyMultipleLabel: "See full differential above",
+
+      usage: [
+        "This calculator implements the algorithmic radiologic-pathologic correlation approach outlined by Taylor et al. (2021) for the differential diagnosis of an indeterminate ovarian neoplasm.",
+        "It provides a differential based purely on imaging patterns. It does not represent a management guideline or a malignancy risk score (for risk estimation, please refer to the O-RADS MRI calculator available in this app).",
+        "The mentioned tumor markers (LDH, b-hCG, AFP, CA-125, CEA) and clinical findings serve as orientation per the literature, and require strict correlation with the patient's actual laboratory results."
+      ]
     },
       thoracicglossary: {
       title: 'Fleischner Thoracic Glossary (2024)',
