@@ -173,6 +173,9 @@ export const REFERENCES = {
   ],
   ovarianNeoplasmDx: [
     'Taylor EC, Irshaid L, Mathur M. Multimodality Imaging Approach to Ovarian Neoplasms with Pathologic Correlation. RadioGraphics. 2021;41(1):289-315.',
+    'American College of Radiology. O-RADS MR Lexicon: Categories, Terms and Definitions. Revised October 2023.',
+    'Thomassin-Naggara I, Poncelet E, Jalaguier-Coudray A, et al. Ovarian-Adnexal Reporting Data System Magnetic Resonance Imaging (O-RADS MRI) score for risk stratification of sonographically indeterminate adnexal masses. JAMA Netw Open. 2020;3(1):e1919896.',
+    'Sadowski EA, Thomassin-Naggara I, Rockall A, et al. O-RADS MRI risk stratification system: guide for assessing adnexal lesions from the ACR O-RADS committee. Radiology. 2022;303(1):35-47.',
   ],
   ildClassifier: [
     'Podolanczuk AJ, Hunninghake GM, et al. Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement. Am J Respir Crit Care Med. 2025;211(7):1132-1155.',

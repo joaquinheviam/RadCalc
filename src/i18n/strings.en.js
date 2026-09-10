@@ -85,6 +85,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-10', text: 'Refined the Ovarian Neoplasm Differential calculator: added a note on the "dark T2/dark DWI" pattern (homogeneous, no diffusion restriction) that distinguishes a pure fibroma/fibrothecoma within the Brenner/fibroma group, per the O-RADS MRI score (Thomassin-Naggara 2020; Sadowski 2022); reprioritized the immature teratoma criterion to lead with a significant enhancing solid component (rather than the calcification pattern), per Taylor et al. 2021\'s own text; sharpened the solid-tissue and T2-signal questions using the official O-RADS MR Lexicon definitions (ACR, revised October 2023); and reformatted the age and laterality labels as a trailing parenthetical nuance ("(usually)") instead of "Typically"/"More often".' },
       { date: '2026-09-10', text: 'Added the Ovarian Neoplasm Imaging Pattern Differential calculator (Taylor Algorithm): a diagnostic differential aid based on radiologic-pathologic correlation for an indeterminate ovarian neoplasm, per Taylor et al., RadioGraphics 2021. It does not replace O-RADS MRI (which estimates malignancy risk); this tool is purely an imaging-pattern-based differential.' },
       { date: '2026-09-10', text: 'Added the Incidental Adnexal Lesion Management (CT/MRI) calculator: implements the ACR 2020 algorithm (Patel et al., JACR 2020) for triage of incidental adnexal masses, aligned with the SRU 2019 consensus (Levine et al., Radiology 2019) and the synthesis by Wang et al., RadioGraphics 2022. It is a TRIAGE tool for incidental findings, distinct from O-RADS MRI (which risk-stratifies a mass already under dedicated evaluation).' },
       { date: '2026-09-09', text: 'In the ccLS (Clear Cell Likelihood Score) calculator: Step 2 now specifies that the T2 signal is compared on a single-shot fast spin-echo (SSFSE) sequence, per the original algorithm. Added an optional "calculate if uncertain" tool for both the corticomedullary-phase (CMP) enhancement step and the ADER (arterial-to-delayed enhancement ratio) question — visual assessment remains the default, recommended approach, but you can now enter signal-intensity values to compute the relative enhancement percentage or the ADER value and apply the result with one tap.' },
@@ -2337,14 +2338,14 @@ export default {
 
       fatQ: "Does the mass contain macroscopic fat?",
       fatCalcCoarseLabel: "Yes, with coarsened, 'tooth-like' calcifications",
-      fatCalcIrregularLabel: "Yes, with irregular/smaller calcifications (larger size, younger patient)",
+      fatCalcIrregularLabel: "Yes, with a significant enhancing solid component and smaller/irregular calcifications (larger size, younger patient)",
       fatNoLabel: "No fat",
 
-      t2SolidQ: "Is there a solid component with T2-hypointense MRI signal?",
+      t2SolidQ: "Is there a solid component with T2-hypointense signal (equal to or lower than iliopsoas muscle) on MRI?",
 
       ageQ: "Patient Age",
-      ageUnder30Label: "Typically < 30 years old",
-      ageOver30Label: "Typically > 30 years old",
+      ageUnder30Label: "< 30 years old (usually)",
+      ageOver30Label: "> 30 years old (usually)",
 
       proportionQ: "Proportion of solid and cystic components",
       proportionSolidCysticLabel: "Solid and cystic",
@@ -2352,14 +2353,14 @@ export default {
       proportionMostlyCysticLabel: "Predominantly cystic",
 
       lateralityQ: "Laterality",
-      lateralityUnilateralLabel: "More often unilateral",
-      lateralityBilateralLabel: "More often bilateral",
+      lateralityUnilateralLabel: "Unilateral (usually)",
+      lateralityBilateralLabel: "Bilateral (usually)",
 
       unilocularQ: "Cystic architecture",
       unilocularLabel: "Unilocular",
       multilocularLabel: "Multilocular",
 
-      wallSepticQ: "Are there thickened septations, an irregular inner wall, or solid components (particularly when vascularized)?",
+      wallSepticQ: "Is there solid tissue per the O-RADS definition (papillary projection, mural nodule >3mm, irregular septation/wall, or a larger solid portion) that enhances, particularly if vascularized? (not solid tissue: clot, non-enhancing debris, fat, hair, calcification, or a Rokitansky nodule)",
 
       cystContentQ: "Cyst content characteristics",
       cystContentVariableLabel: "Varying signal/attenuation/echogenicity (from mucin)",
@@ -2369,10 +2370,10 @@ export default {
       dxMatureTeratomaDescription: "The pattern suggests a mature teratoma. It classically presents with macroscopic fat and coarsened or 'tooth-like' calcifications.",
 
       dxImmatureTeratomaTitle: "Immature Teratoma",
-      dxImmatureTeratomaDescription: "May correspond to an immature teratoma, especially suggested by smaller irregular calcifications, larger tumor size, and presentation in a younger patient.",
+      dxImmatureTeratomaDescription: "May correspond to an immature teratoma. Unlike mature teratoma, it tends to be more heterogeneous, with a significant enhancing solid component (the main feature to look for), smaller and irregular calcifications (rather than coarse/'tooth-like'), larger tumor size, and presentation in a younger patient; the cystic component is more likely to contain simple fluid rather than fat.",
 
       dxBrennerFibromaGroupTitle: "Brenner Tumor / (Cyst)adenofibroma / Fibroma-fibrothecoma",
-      dxBrennerFibromaGroupDescription: "The T2-hypointense solid component suggests a Brenner tumor, (cyst)adenofibroma, or fibroma-fibrothecoma. Look for calcifications and/or an associated cystic neoplasm. Fibrothecomas are associated with Meigs syndrome. Larger tumors may display cystic degeneration and slightly higher T2 signal.",
+      dxBrennerFibromaGroupDescription: "The T2-hypointense solid component suggests this group of fibrous tumors. A homogeneous pattern with no diffusion restriction (also low signal on high-b-value DWI, similar to urine/CSF) is characteristic of a pure fibroma/fibrothecoma and corresponds to the O-RADS MRI 'dark T2/dark DWI' pattern (category 2, near-zero malignancy risk); heterogeneity, diffusion restriction, or punctate calcifications point more toward a Brenner tumor or a cystadenofibroma/adenofibroma. Fibrothecomas are associated with Meigs syndrome. Fibromas/fibrothecomas tend to be larger (mean ~6.4 cm) than Brenner tumors (mean ~2.5 cm) and less often show calcifications; larger tumors (>6 cm) may display cystic degeneration and slightly higher T2 signal from edema.",
 
       dxJuvenileGranulosaTitle: "Juvenile Granulosa Cell Tumor",
       dxJuvenileGranulosaDescription: "May suggest a juvenile granulosa cell tumor. It is associated with estrogenic effects (look for endometrial hyperplasia) and Maffucci and Ollier syndromes.",

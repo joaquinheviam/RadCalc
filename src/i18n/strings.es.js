@@ -85,6 +85,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-10', text: 'Se refina la calculadora de Diferencial de Neoplasia Ovárica: se añade una nota sobre el patrón "T2 oscuro/DWI oscuro" (homogéneo, sin restricción en difusión) que distingue al fibroma/fibrotecoma puro dentro del grupo Brenner/fibroma, según el score O-RADS MRI (Thomassin-Naggara 2020; Sadowski 2022); se reprioriza el criterio de teratoma inmaduro para destacar el componente sólido/realzante significativo como hallazgo principal (antes que el patrón de calcificaciones), según el texto de Taylor et al. 2021; se precisan las preguntas sobre tejido sólido y señal T2 usando las definiciones oficiales del O-RADS MR Lexicon (ACR, revisado octubre 2023); y se reformulan las etiquetas de edad y lateralidad como matiz entre paréntesis ("(habitualmente)") en vez de "Típicamente"/"Más frecuentemente".' },
       { date: '2026-09-10', text: 'Se agrega la calculadora de Diferencial de Neoplasia Ovárica por Patrón de Imagen (Algoritmo de Taylor): ayuda de diagnóstico diferencial por correlación radiológico-patológica para una neoplasia ovárica indeterminada, según Taylor et al., RadioGraphics 2021. No reemplaza a O-RADS MRI (que estima riesgo de malignidad); esta calculadora es puramente un diferencial basado en el patrón de imagen.' },
       { date: '2026-09-10', text: 'Se agrega la calculadora de Manejo de Lesión Anexial Incidental (TC/RM): implementa el algoritmo del ACR 2020 (Patel et al., JACR 2020) para triage de masas anexiales incidentales, armonizado con el consenso SRU 2019 (Levine et al., Radiology 2019) y la síntesis de Wang et al., RadioGraphics 2022. Es una herramienta de TRIAGE para hallazgos incidentales, distinta de O-RADS MRI (que estratifica el riesgo de una masa ya en estudio dedicado).' },
       { date: '2026-09-09', text: 'En la calculadora ccLS (Clear Cell Likelihood Score): el Paso 2 ahora especifica que la señal en T2 se compara en una secuencia single-shot fast spin-echo (SSFSE), según el algoritmo original. Se agregó una herramienta opcional de "calcular si hay duda" tanto para el paso de realce en fase corticomedular (CMP) como para la pregunta de ADER (relación de realce arterial-a-tardío) — la evaluación visual sigue siendo la opción por defecto y recomendada, pero ahora se pueden ingresar valores de intensidad de señal para calcular el porcentaje de realce relativo o el valor de ADER, y aplicar el resultado con un toque.' },
@@ -2337,14 +2338,14 @@ export default {
 
       fatQ: "¿La masa contiene grasa macroscópica?",
       fatCalcCoarseLabel: "Sí, con calcificaciones groseras ('en diente')",
-      fatCalcIrregularLabel: "Sí, con calcificaciones irregulares y más pequeñas (mayor tamaño, paciente más joven)",
+      fatCalcIrregularLabel: "Sí, con componente sólido/realzante significativo y calcificaciones más pequeñas e irregulares (mayor tamaño, paciente más joven)",
       fatNoLabel: "No contiene grasa",
 
-      t2SolidQ: "¿Presenta un componente sólido con señal T2 hipointensa en RM?",
+      t2SolidQ: "¿Presenta un componente sólido con señal T2 hipointensa (igual o menor que el músculo psoas-ilíaco) en RM?",
 
       ageQ: "Edad de la paciente",
-      ageUnder30Label: "Típicamente < 30 años",
-      ageOver30Label: "Típicamente > 30 años",
+      ageUnder30Label: "< 30 años (habitualmente)",
+      ageOver30Label: "> 30 años (habitualmente)",
 
       proportionQ: "Proporción del componente sólido y quístico",
       proportionSolidCysticLabel: "Sólido y quístico",
@@ -2352,14 +2353,14 @@ export default {
       proportionMostlyCysticLabel: "Predominantemente quístico",
 
       lateralityQ: "Lateralidad",
-      lateralityUnilateralLabel: "Más frecuentemente unilateral",
-      lateralityBilateralLabel: "Más frecuentemente bilateral",
+      lateralityUnilateralLabel: "Unilateral (habitualmente)",
+      lateralityBilateralLabel: "Bilateral (habitualmente)",
 
       unilocularQ: "Arquitectura quística",
       unilocularLabel: "Unilocular",
       multilocularLabel: "Multilocular",
 
-      wallSepticQ: "¿Presenta septos engrosados, pared interna irregular o componentes sólidos (particularmente si vascularizados)?",
+      wallSepticQ: "¿Presenta tejido sólido según la definición O-RADS (proyección papilar, nódulo mural >3 mm, tabique/pared irregular, o un componente sólido mayor) que realza, particularmente si está vascularizado? (no cuentan como tejido sólido: coágulo, detritos no realzantes, grasa, pelo, calcificación ni nódulo de Rokitansky)",
 
       cystContentQ: "Características del contenido quístico",
       cystContentVariableLabel: "Señal/atenuación/ecogenicidad variable (por mucina)",
@@ -2369,10 +2370,10 @@ export default {
       dxMatureTeratomaDescription: "El patrón sugiere un teratoma maduro. Clásicamente presenta grasa y calcificaciones groseras o 'en diente'.",
 
       dxImmatureTeratomaTitle: "Teratoma inmaduro",
-      dxImmatureTeratomaDescription: "Puede corresponder a un teratoma inmaduro, especialmente sugerido por calcificaciones más pequeñas e irregulares, mayor tamaño tumoral y presentación en una paciente más joven.",
+      dxImmatureTeratomaDescription: "Puede corresponder a un teratoma inmaduro. A diferencia del teratoma maduro, suele ser más heterogéneo, con un componente sólido/realzante significativo (hallazgo principal a buscar), calcificaciones más pequeñas e irregulares (en vez de groseras/'en diente'), mayor tamaño tumoral y presentación en una paciente más joven; el componente quístico tiende a contener líquido simple más que grasa.",
 
       dxBrennerFibromaGroupTitle: "Tumor de Brenner / (Cisto)adenofibroma / Fibroma-fibrotecoma",
-      dxBrennerFibromaGroupDescription: "El componente sólido hipointenso en T2 sugiere lesiones de este grupo. Se recomienda buscar calcificaciones y/o neoplasia quística asociada (el fibrotecoma se asocia al síndrome de Meigs). Los tumores más grandes pueden mostrar degeneración quística y una señal T2 levemente más alta.",
+      dxBrennerFibromaGroupDescription: "El componente sólido hipointenso en T2 sugiere este grupo de tumores fibrosos. Un patrón homogéneo, sin restricción en difusión (señal baja también en DWI de b alto, similar a la orina/LCR) es característico de fibroma/fibrotecoma puro y equivale al patrón 'T2 oscuro/DWI oscuro' del score O-RADS MRI (categoría 2, riesgo casi nulo de malignidad); heterogeneidad, restricción en difusión, o calcificaciones puntiformes orientan más a un tumor de Brenner o a un cistoadenofibroma/adenofibroma. El fibrotecoma se asocia al síndrome de Meigs. Los fibromas/fibrotecomas suelen ser de mayor tamaño (promedio ~6,4 cm) que los tumores de Brenner (promedio ~2,5 cm) y con menor frecuencia presentan calcificaciones; los tumores más grandes (>6 cm) pueden mostrar degeneración quística y una señal T2 levemente más alta por edema.",
 
       dxJuvenileGranulosaTitle: "Tumor de células de la granulosa juvenil",
       dxJuvenileGranulosaDescription: "Puede sugerir un tumor de células de la granulosa juvenil. Se asocia a estrogenismo (hiperplasia endometrial) y a los síndromes de Maffucci y Ollier.",
