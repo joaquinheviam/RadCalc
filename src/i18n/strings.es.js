@@ -85,6 +85,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-10', text: 'Se amplía la calculadora de Diferencial de Neoplasia Ovárica con una nueva rama para lesiones hiperintensas en T1 sin grasa (contenido hemático): diferencia endometrioma, quiste hemorrágico funcional y malignización asociada a endometriosis, según Alexander, Nougaret et al., RadioGraphics 2026 ("Reference Handbook of Gynecologic Pelvic MRI"). También se enriquecen con hallazgos de imagen adicionales de esa misma fuente las entidades ya existentes: teratoma maduro (nódulo de Rokitansky, riesgo de transformación maligna), disgerminoma (septos fibrovasculares), tumor de Sertoli-Leydig (focos quísticos dispersos), tumores de células de la granulosa (correlación endometrial), grupo Brenner/fibroma (evaluación endometrial en fibroma, calcificaciones en Brenner, signo de la "esponja negra"), tumores borderline serosos (signo de la "anémona de mar") y neoplasias mucinosas/metástasis (patrón "en panal de abejas", tumor de Krukenberg).' },
       { date: '2026-09-10', text: 'Se refina la calculadora de Diferencial de Neoplasia Ovárica: se añade una nota sobre el patrón "T2 oscuro/DWI oscuro" (homogéneo, sin restricción en difusión) que distingue al fibroma/fibrotecoma puro dentro del grupo Brenner/fibroma, según el score O-RADS MRI (Thomassin-Naggara 2020; Sadowski 2022); se reprioriza el criterio de teratoma inmaduro para destacar el componente sólido/realzante significativo como hallazgo principal (antes que el patrón de calcificaciones), según el texto de Taylor et al. 2021; se precisan las preguntas sobre tejido sólido y señal T2 usando las definiciones oficiales del O-RADS MR Lexicon (ACR, revisado octubre 2023); y se reformulan las etiquetas de edad y lateralidad como matiz entre paréntesis ("(habitualmente)") en vez de "Típicamente"/"Más frecuentemente".' },
       { date: '2026-09-10', text: 'Se agrega la calculadora de Diferencial de Neoplasia Ovárica por Patrón de Imagen (Algoritmo de Taylor): ayuda de diagnóstico diferencial por correlación radiológico-patológica para una neoplasia ovárica indeterminada, según Taylor et al., RadioGraphics 2021. No reemplaza a O-RADS MRI (que estima riesgo de malignidad); esta calculadora es puramente un diferencial basado en el patrón de imagen.' },
       { date: '2026-09-10', text: 'Se agrega la calculadora de Manejo de Lesión Anexial Incidental (TC/RM): implementa el algoritmo del ACR 2020 (Patel et al., JACR 2020) para triage de masas anexiales incidentales, armonizado con el consenso SRU 2019 (Levine et al., Radiology 2019) y la síntesis de Wang et al., RadioGraphics 2022. Es una herramienta de TRIAGE para hallazgos incidentales, distinta de O-RADS MRI (que estratifica el riesgo de una masa ya en estudio dedicado).' },
@@ -2341,6 +2342,12 @@ export default {
       fatCalcIrregularLabel: "Sí, con componente sólido/realzante significativo y calcificaciones más pequeñas e irregulares (mayor tamaño, paciente más joven)",
       fatNoLabel: "No contiene grasa",
 
+      bloodQ: "¿Es hiperintensa en secuencias T1 (sin grasa), sugiriendo contenido hemático?",
+      bloodSolidQ: "¿Presenta tejido sólido realzante en las imágenes con sustracción?",
+      bloodPatternQ: "Características de la pared y de la señal T2",
+      bloodPatternEndometriomaLabel: "Borde engrosado hipointenso en T2 (fibrosis/hemosiderina) y/o focos puntiformes hipointensos en T2 ('T2-dark spots') por hemorragia crónica; con frecuencia multifocal/bilateral y persiste en controles seriados",
+      bloodPatternHemorrhagicLabel: "Sin borde engrosado ni focos oscuros en T2; unifocal y unilateral; habitualmente resuelve en 2-3 meses",
+
       t2SolidQ: "¿Presenta un componente sólido con señal T2 hipointensa (igual o menor que el músculo psoas-ilíaco) en RM?",
 
       ageQ: "Edad de la paciente",
@@ -2367,19 +2374,28 @@ export default {
       cystContentHomogeneousLabel: "Contenido homogéneo",
 
       dxMatureTeratomaTitle: "Teratoma maduro (dermoide)",
-      dxMatureTeratomaDescription: "El patrón sugiere un teratoma maduro. Clásicamente presenta grasa y calcificaciones groseras o 'en diente'.",
+      dxMatureTeratomaDescription: "El patrón sugiere un teratoma maduro (dermoide), el tumor de células germinales ovárico más frecuente; bilateral en ~10% de los casos. Clásicamente presenta grasa y calcificaciones groseras o 'en diente'. Puede mostrar un nódulo de Rokitansky realzante, lo cual no es signo de malignidad. La transformación maligna es infrecuente (0,2-2%, típicamente carcinoma escamoso, en mujeres de mayor edad) y debe sospecharse ante tejido sólido realzante de mayor tamaño, especialmente con extensión transmural.",
 
       dxImmatureTeratomaTitle: "Teratoma inmaduro",
-      dxImmatureTeratomaDescription: "Puede corresponder a un teratoma inmaduro. A diferencia del teratoma maduro, suele ser más heterogéneo, con un componente sólido/realzante significativo (hallazgo principal a buscar), calcificaciones más pequeñas e irregulares (en vez de groseras/'en diente'), mayor tamaño tumoral y presentación en una paciente más joven; el componente quístico tiende a contener líquido simple más que grasa.",
+      dxImmatureTeratomaDescription: "Puede corresponder a un teratoma inmaduro. A diferencia del teratoma maduro, suele ser más heterogéneo, con un componente sólido/realzante significativo (hallazgo principal a buscar), calcificaciones más pequeñas e irregulares (en vez de groseras/'en diente'), mayor tamaño tumoral y presentación en una paciente más joven; el componente quístico tiende a contener líquido simple más que grasa. Puede coexistir con un teratoma maduro (dermoide) ipsi- o contralateral, lo cual apoya el diagnóstico.",
+
+      dxEndometriomaTitle: "Endometrioma",
+      dxEndometriomaDescription: "El patrón sugiere un endometrioma, la manifestación más frecuente de endometriosis; suele ser multifocal, con frecuencia bilateral, y persiste en controles seriados. La sombra T2 (shading) difusa o graduada, el borde engrosado hipointenso en T2 por fibrosis/hemosiderina y los focos puntiformes hipointensos en T2 por coágulos crónicos aumentan la especificidad diagnóstica. Puede mostrar restricción en difusión por el contenido hemático/endometriósico, lo cual no indica malignidad por sí solo. Es esencial confirmar con sustracción la ausencia de tejido sólido realzante; si aparece, debe sospecharse malignización asociada a endometriosis.",
+
+      dxHemorrhagicCystTitle: "Quiste hemorrágico",
+      dxHemorrhagicCystDescription: "El patrón sugiere un quiste hemorrágico funcional. A diferencia del endometrioma, es típicamente unifocal y unilateral, sin el borde engrosado hipointenso en T2 ni los focos oscuros puntiformes; la señal en T1 y T2 varía según la antigüedad del sangrado. Habitualmente resuelve en 2-3 meses; si mide ≤3 cm en una paciente premenopáusica, se considera un hallazgo fisiológico. La sustracción no debe mostrar tejido sólido realzante más allá de un realce parietal liso.",
+
+      dxEndometriosisAssocMalignancyTitle: "Malignización asociada a endometriosis",
+      dxEndometriosisAssocMalignancyDescription: "La presencia de tejido sólido realzante en una lesión de aspecto hemático sugiere malignización asociada a endometriosis (ocurre en ~1% de las pacientes con endometriosis de larga data; ~75% se originan en un endometrioma). Los subtipos más frecuentes son el carcinoma endometrioide y el de células claras, además de tumores borderline. Un signo de alarma es la pérdida o disminución de la sombra T2 (shading) habitual del endometrioma, atribuible a hemodilución por secreciones tumorales. En el embarazo, un diagnóstico diferencial a considerar es el endometrioma decidualizado (por estimulación hormonal), que también puede mostrar tejido con realce sin ser maligno.",
 
       dxBrennerFibromaGroupTitle: "Tumor de Brenner / (Cisto)adenofibroma / Fibroma-fibrotecoma",
-      dxBrennerFibromaGroupDescription: "El componente sólido hipointenso en T2 sugiere este grupo de tumores fibrosos. Un patrón homogéneo, sin restricción en difusión (señal baja también en DWI de b alto, similar a la orina/LCR) es característico de fibroma/fibrotecoma puro y equivale al patrón 'T2 oscuro/DWI oscuro' del score O-RADS MRI (categoría 2, riesgo casi nulo de malignidad); heterogeneidad, restricción en difusión, o calcificaciones puntiformes orientan más a un tumor de Brenner o a un cistoadenofibroma/adenofibroma. El fibrotecoma se asocia al síndrome de Meigs. Los fibromas/fibrotecomas suelen ser de mayor tamaño (promedio ~6,4 cm) que los tumores de Brenner (promedio ~2,5 cm) y con menor frecuencia presentan calcificaciones; los tumores más grandes (>6 cm) pueden mostrar degeneración quística y una señal T2 levemente más alta por edema.",
+      dxBrennerFibromaGroupDescription: "El componente sólido hipointenso en T2 sugiere este grupo de tumores fibrosos. Un patrón homogéneo, sin restricción en difusión (señal baja también en DWI de b alto, similar a la orina/LCR) es característico de fibroma/fibrotecoma puro y equivale al patrón 'T2 oscuro/DWI oscuro' del score O-RADS MRI (categoría 2, riesgo casi nulo de malignidad); heterogeneidad, restricción en difusión, o calcificaciones puntiformes orientan más a un tumor de Brenner o a un cistoadenofibroma/adenofibroma. El fibrotecoma se asocia al síndrome de Meigs. Los fibromas/fibrotecomas suelen ser de mayor tamaño (promedio ~6,4 cm) que los tumores de Brenner (promedio ~2,5 cm) y con menor frecuencia presentan calcificaciones; los tumores más grandes (>6 cm) pueden mostrar degeneración quística y una señal T2 levemente más alta por edema. Dado que las células de la teca del fibroma/fibrotecoma pueden secretar estrógenos, se recomienda evaluar dirigidamente el endometrio en busca de hiperplasia o carcinoma concurrente. El tumor de Brenner suele medir menos de 5 cm, presenta calcificaciones en TC en ~50% de los casos y puede coexistir con un cistoadenoma mucinoso. En el cistoadenofibroma, la presencia de focos quísticos entremezclados con el tejido sólido oscuro (signo de la 'esponja negra') es un hallazgo inespecífico que también puede verse en otros tumores menos frecuentes.",
 
       dxJuvenileGranulosaTitle: "Tumor de células de la granulosa juvenil",
-      dxJuvenileGranulosaDescription: "Puede sugerir un tumor de células de la granulosa juvenil. Se asocia a estrogenismo (hiperplasia endometrial) y a los síndromes de Maffucci y Ollier.",
+      dxJuvenileGranulosaDescription: "Puede sugerir un tumor de células de la granulosa juvenil. Se asocia a estrogenismo (hiperplasia endometrial) y a los síndromes de Maffucci y Ollier. El hiperestrogenismo puede producir engrosamiento endometrial, pólipos, hiperplasia o carcinoma; se recomienda su evaluación dirigida.",
 
       dxDysgerminomaTitle: "Disgerminoma",
-      dxDysgerminomaDescription: "El patrón es compatible con disgerminoma, típicamente de aspecto predominantemente sólido con septos fibrovasculares. Puede asociarse a elevación de LDH y embarazo.",
+      dxDysgerminomaDescription: "El patrón es compatible con disgerminoma (homólogo ovárico del seminoma testicular), típicamente una lesión sólida unilateral dividida en lóbulos por septos fibrovasculares hipointensos en T2 que realzan ávidamente. Puede asociarse a elevación de LDH y embarazo; hasta un 10% son bilaterales.",
 
       dxChoriocarcinomaTitle: "Coriocarcinoma",
       dxChoriocarcinomaDescription: "Puede representar un coriocarcinoma, una neoplasia característicamente asociada a niveles elevados de b-hCG.",
@@ -2391,28 +2407,28 @@ export default {
       dxEmbryonalCarcinomaDescription: "Puede corresponder a un carcinoma embrionario, el cual forma parte del diferencial de tumores de células germinales en este grupo etario.",
 
       dxEndometrioidClearCellTitle: "Carcinoma endometrioide / Carcinoma de células claras",
-      dxEndometrioidClearCellDescription: "El patrón puede sugerir carcinoma endometrioide o de células claras. Suelen asociarse a endometriosis, y debe buscarse áreas de hemorragia y/o engrosamiento o carcinoma endometrial concurrente. Prestar especial atención a posibles fenómenos tromboembólicos e hipercalcemia.",
+      dxEndometrioidClearCellDescription: "El patrón puede sugerir carcinoma endometrioide o de células claras. Suelen asociarse a endometriosis, y debe buscarse áreas de hemorragia y/o engrosamiento o carcinoma endometrial concurrente. Prestar especial atención a posibles fenómenos tromboembólicos e hipercalcemia. Cuando se originan en un endometrioma, un signo de alarma es la pérdida o disminución de la sombra T2 (shading) habitual, por hemodilución debida a secreciones tumorales (ver también la rama de lesiones hemáticas T1-hiperintensas de esta calculadora).",
 
       dxAdultGranulosaBilateralTitle: "Tumor de células de la granulosa del adulto",
-      dxAdultGranulosaBilateralDescription: "Puede sugerir un tumor de células de la granulosa del adulto. Clásicamente presenta un patrón en 'queso suizo' y se asocia a hiperestrogenismo.",
+      dxAdultGranulosaBilateralDescription: "Puede sugerir un tumor de células de la granulosa del adulto. Clásicamente presenta un patrón en 'queso suizo' y se asocia a hiperestrogenismo; los componentes quísticos pueden contener hemorragia. El hiperestrogenismo puede producir engrosamiento endometrial, pólipos, hiperplasia o carcinoma; se recomienda su evaluación dirigida.",
 
       dxMucinousNeoplasmTitle: "Neoplasias mucinosas",
-      dxMucinousNeoplasmDescription: "Sugiere una neoplasia mucinosa. El aumento de tamaño, mayor cantidad de loculaciones internas y presencia de componentes sólidos pueden sugerir tumores mucinosos borderline o malignos, que suelen ser mayores a 13 cm en comparación con las metástasis.",
+      dxMucinousNeoplasmDescription: "Sugiere una neoplasia mucinosa. El aumento de tamaño, mayor cantidad de loculaciones internas y presencia de componentes sólidos pueden sugerir tumores mucinosos borderline o malignos, que suelen ser mayores a 13 cm en comparación con las metástasis. Puede presentar loculaciones pequeñas ('en panal de abejas'); la apariencia por imagen se superpone considerablemente entre cistoadenoma, tumor borderline y carcinoma mucinoso, por lo que el tamaño, la lateralidad y la presencia de tejido sólido son las claves diferenciadoras.",
 
       dxSerousBorderlineHGSCTitle: "Tumor seroso borderline / LGSC / HGSC",
-      dxSerousBorderlineHGSCDescription: "Puede corresponder a un tumor seroso borderline, carcinoma seroso de bajo grado (LGSC) o de alto grado (HGSC). Se recomienda evaluar la presencia de proyecciones papilares y niveles de CA-125.",
+      dxSerousBorderlineHGSCDescription: "Puede corresponder a un tumor seroso borderline, carcinoma seroso de bajo grado (LGSC) o de alto grado (HGSC). Se recomienda evaluar la presencia de proyecciones papilares y niveles de CA-125. Proyecciones papilares con arquitectura hiperintensa en T2 y ramificación interna hipointensa en T2 (patrón en 'anémona de mar') son prácticamente diagnósticas de tumor seroso borderline.",
 
       dxMetastasisGITitle: "Metástasis",
-      dxMetastasisGIDescription: "El patrón bilateral obliga a descartar secundarismo. Se recomienda buscar una neoplasia primaria (ej. gastrointestinal), carcinomatosis peritoneal y evaluar los niveles de CEA.",
+      dxMetastasisGIDescription: "El patrón bilateral obliga a descartar secundarismo. Se recomienda buscar una neoplasia primaria (ej. gastrointestinal), carcinomatosis peritoneal y evaluar los niveles de CEA. Las metástasis con componente mucinoso/células en anillo de sello (tumor de Krukenberg) representan ~50% de las metástasis ováricas y se originan con mayor frecuencia en el estómago, seguido del colon.",
 
       dxMucinousAdenocarcinomaTitle: "Adenocarcinoma mucinoso",
       dxMucinousAdenocarcinomaDescription: "Una masa predominantemente sólida y unilateral puede sugerir un adenocarcinoma mucinoso en este contexto clínico.",
 
       dxAdultGranulosaSolidTitle: "Tumor de células de la granulosa del adulto",
-      dxAdultGranulosaSolidDescription: "Puede sugerir la variante predominantemente sólida de un tumor de células de la granulosa del adulto, aunque son más frecuentemente de patrón sólido y quístico.",
+      dxAdultGranulosaSolidDescription: "Puede sugerir la variante predominantemente sólida de un tumor de células de la granulosa del adulto, aunque son más frecuentemente de patrón sólido y quístico. El hiperestrogenismo puede producir engrosamiento endometrial, pólipos, hiperplasia o carcinoma; se recomienda su evaluación dirigida.",
 
       dxSertoliLeydigTitle: "Tumor de Sertoli-Leydig",
-      dxSertoliLeydigDescription: "Puede representar un tumor de Sertoli-Leydig. Suele asociarse clínicamente a síndromes de exceso de andrógenos o virilización.",
+      dxSertoliLeydigDescription: "Puede representar un tumor de Sertoli-Leydig, el tumor ovárico más frecuentemente asociado a elevación de testosterona. Suele presentarse como una lesión sólida heterogénea con pequeños focos quísticos dispersos, y asociarse clínicamente a virilización, oligomenorrea o amenorrea.",
 
       dxMetastasisSolidBilateralTitle: "Metástasis (Predominio Sólido)",
       dxMetastasisSolidBilateralDescription: "Las masas sólidas bilaterales sugieren fuertemente secundarismo. Las metástasis de origen gástrico y de mama suelen presentarse con frecuencia de forma predominantemente sólida.",
@@ -2427,19 +2443,19 @@ export default {
       dxSerousCystadenomaDescription: "Si la lesión carece de características sospechosas, este patrón sugiere un cistoadenoma seroso, aunque puede llegar a presentar unos pocos septos finos.",
 
       dxSerousBorderlineUnilocularTitle: "Tumor seroso borderline / LGSC / HGSC",
-      dxSerousBorderlineUnilocularDescription: "La presencia de septos engrosados, paredes irregulares o nódulos sólidos en una lesión unilocular sugiere un tumor seroso borderline, LGSC o HGSC.",
+      dxSerousBorderlineUnilocularDescription: "La presencia de septos engrosados, paredes irregulares o nódulos sólidos en una lesión unilocular sugiere un tumor seroso borderline, LGSC o HGSC. El patrón en 'anémona de mar' (proyecciones papilares hiperintensas en T2 con ramificación interna hipointensa) es un hallazgo característico del tumor borderline seroso.",
 
       dxMucinousMultilocularTitle: "Neoplasias mucinosas",
-      dxMucinousMultilocularDescription: "El patrón multilocular unilateral con variabilidad en la señal, atenuación o ecogenicidad (por mucina) sugiere una neoplasia mucinosa.",
+      dxMucinousMultilocularDescription: "El patrón multilocular unilateral con variabilidad en la señal, atenuación o ecogenicidad (por mucina) sugiere una neoplasia mucinosa. Puede asociarse a un teratoma maduro o a un tumor de Brenner concurrente; si es bilateral y menor a 10 cm, deben considerarse metástasis ováricas.",
 
       dxSerousCystadenomaMultilocularTitle: "Cistoadenoma seroso",
       dxSerousCystadenomaMultilocularDescription: "Un patrón multilocular unilateral con contenido quístico homogéneo puede corresponder a un cistoadenoma seroso.",
 
       dxSerousBorderlineBilateralMultilocularTitle: "Tumor seroso borderline / LGSC / HGSC",
-      dxSerousBorderlineBilateralMultilocularDescription: "El patrón quístico multilocular bilateral sugiere tumores del espectro seroso (borderline, LGSC o HGSC), que suelen ser con mayor frecuencia bilaterales.",
+      dxSerousBorderlineBilateralMultilocularDescription: "El patrón quístico multilocular bilateral sugiere tumores del espectro seroso (borderline, LGSC o HGSC), que suelen ser con mayor frecuencia bilaterales. Hasta un tercio de los tumores borderline serosos son bilaterales y pueden asociarse a implantes peritoneales.",
 
       dxMetastasisCysticBilateralTitle: "Metástasis (Quísticas)",
-      dxMetastasisCysticBilateralDescription: "El patrón quístico multilocular bilateral sugiere metástasis. Las neoplasias primarias de apéndice, colorrectales y pancreatobiliares suelen generar secundarismos frecuentemente quísticos.",
+      dxMetastasisCysticBilateralDescription: "El patrón quístico multilocular bilateral sugiere metástasis. Las neoplasias primarias de apéndice, colorrectales y pancreatobiliares suelen generar secundarismos frecuentemente quísticos. El componente quístico en el tumor de Krukenberg corresponde a mucina secretada por las células tumorales.",
 
       stickyLabel: "Diagnóstico diferencial sugerido",
       stickyMultipleLabel: "Ver diferencial completo arriba",

@@ -85,6 +85,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-10', text: 'Expanded the Ovarian Neoplasm Differential calculator with a new branch for T1-hyperintense lesions without fat (hemorrhagic content): distinguishes endometrioma, functional hemorrhagic cyst, and endometriosis-associated malignancy, per Alexander, Nougaret et al., RadioGraphics 2026 ("Reference Handbook of Gynecologic Pelvic MRI"). Also enriched with additional imaging findings from that same source: mature teratoma (Rokitansky nodule, malignant transformation risk), dysgerminoma (fibrovascular septae), Sertoli-Leydig cell tumor (scattered cystic foci), granulosa cell tumors (endometrial correlation), the Brenner/fibroma group (endometrial evaluation in fibroma, Brenner calcifications, "black sponge" sign), serous borderline tumors ("sea anemone" sign), and mucinous neoplasms/metastases (honeycomb pattern, Krukenberg tumor).' },
       { date: '2026-09-10', text: 'Refined the Ovarian Neoplasm Differential calculator: added a note on the "dark T2/dark DWI" pattern (homogeneous, no diffusion restriction) that distinguishes a pure fibroma/fibrothecoma within the Brenner/fibroma group, per the O-RADS MRI score (Thomassin-Naggara 2020; Sadowski 2022); reprioritized the immature teratoma criterion to lead with a significant enhancing solid component (rather than the calcification pattern), per Taylor et al. 2021\'s own text; sharpened the solid-tissue and T2-signal questions using the official O-RADS MR Lexicon definitions (ACR, revised October 2023); and reformatted the age and laterality labels as a trailing parenthetical nuance ("(usually)") instead of "Typically"/"More often".' },
       { date: '2026-09-10', text: 'Added the Ovarian Neoplasm Imaging Pattern Differential calculator (Taylor Algorithm): a diagnostic differential aid based on radiologic-pathologic correlation for an indeterminate ovarian neoplasm, per Taylor et al., RadioGraphics 2021. It does not replace O-RADS MRI (which estimates malignancy risk); this tool is purely an imaging-pattern-based differential.' },
       { date: '2026-09-10', text: 'Added the Incidental Adnexal Lesion Management (CT/MRI) calculator: implements the ACR 2020 algorithm (Patel et al., JACR 2020) for triage of incidental adnexal masses, aligned with the SRU 2019 consensus (Levine et al., Radiology 2019) and the synthesis by Wang et al., RadioGraphics 2022. It is a TRIAGE tool for incidental findings, distinct from O-RADS MRI (which risk-stratifies a mass already under dedicated evaluation).' },
@@ -2341,6 +2342,12 @@ export default {
       fatCalcIrregularLabel: "Yes, with a significant enhancing solid component and smaller/irregular calcifications (larger size, younger patient)",
       fatNoLabel: "No fat",
 
+      bloodQ: "Is it T1-hyperintense (without fat), suggesting blood/hemorrhagic content?",
+      bloodSolidQ: "Is there enhancing solid tissue on subtraction images?",
+      bloodPatternQ: "Wall and T2-signal characteristics",
+      bloodPatternEndometriomaLabel: "Thickened T2-hypointense rim (fibrosis/hemosiderin) and/or punctate T2-hypointense foci ('T2-dark spots') from chronic hemorrhage; often multifocal/bilateral and persists on follow-up",
+      bloodPatternHemorrhagicLabel: "No thickened rim or T2-dark spots; unifocal and unilateral; usually resolves within 2-3 months",
+
       t2SolidQ: "Is there a solid component with T2-hypointense signal (equal to or lower than iliopsoas muscle) on MRI?",
 
       ageQ: "Patient Age",
@@ -2367,19 +2374,28 @@ export default {
       cystContentHomogeneousLabel: "Homogeneous cyst contents",
 
       dxMatureTeratomaTitle: "Mature Teratoma (Dermoid)",
-      dxMatureTeratomaDescription: "The pattern suggests a mature teratoma. It classically presents with macroscopic fat and coarsened or 'tooth-like' calcifications.",
+      dxMatureTeratomaDescription: "The pattern suggests a mature teratoma (dermoid), the most common ovarian germ cell tumor; bilateral in ~10% of cases. It classically presents with macroscopic fat and coarsened or 'tooth-like' calcifications. It may show an enhancing Rokitansky nodule, which is not a sign of malignancy. Malignant transformation is uncommon (0.2-2%, typically squamous cell carcinoma, in older women) and should be suspected with larger enhancing solid tissue, especially with transmural extension.",
 
       dxImmatureTeratomaTitle: "Immature Teratoma",
-      dxImmatureTeratomaDescription: "May correspond to an immature teratoma. Unlike mature teratoma, it tends to be more heterogeneous, with a significant enhancing solid component (the main feature to look for), smaller and irregular calcifications (rather than coarse/'tooth-like'), larger tumor size, and presentation in a younger patient; the cystic component is more likely to contain simple fluid rather than fat.",
+      dxImmatureTeratomaDescription: "May correspond to an immature teratoma. Unlike mature teratoma, it tends to be more heterogeneous, with a significant enhancing solid component (the main feature to look for), smaller and irregular calcifications (rather than coarse/'tooth-like'), larger tumor size, and presentation in a younger patient; the cystic component is more likely to contain simple fluid rather than fat. It may coexist with an ipsilateral or contralateral mature teratoma (dermoid), which supports the diagnosis.",
+
+      dxEndometriomaTitle: "Endometrioma",
+      dxEndometriomaDescription: "The pattern suggests an endometrioma, the most common manifestation of endometriosis; it tends to be multifocal, often bilateral, and persists on serial follow-up. Diffuse or graded T2 shading, a thickened T2-hypointense rim from fibrosis/hemosiderin, and punctate T2-hypointense foci from chronic clot all increase diagnostic specificity. It may show diffusion restriction from hemorrhagic/endometriotic content, which alone does not indicate malignancy. Subtraction imaging is essential to confirm the absence of enhancing solid tissue; if present, malignant transformation associated with endometriosis should be suspected.",
+
+      dxHemorrhagicCystTitle: "Hemorrhagic Cyst",
+      dxHemorrhagicCystDescription: "The pattern suggests a functional hemorrhagic cyst. Unlike an endometrioma, it is typically unifocal and unilateral, without a thickened T2-hypointense rim or punctate T2-dark foci; T1 and T2 signal vary with the age of the hemorrhage. It usually resolves within 2-3 months; if 3 cm or smaller in a premenopausal patient, it is considered a physiologic finding. Subtraction imaging should show no enhancing solid tissue beyond a smooth wall.",
+
+      dxEndometriosisAssocMalignancyTitle: "Endometriosis-Associated Malignancy",
+      dxEndometriosisAssocMalignancyDescription: "Enhancing solid tissue within a hemorrhagic-appearing lesion suggests malignant transformation associated with endometriosis (occurs in ~1% of patients with long-standing endometriosis; ~75% arise from an endometrioma). The most common subtypes are endometrioid and clear cell carcinoma, along with borderline tumors. A warning sign is loss or reduction of the endometrioma's usual T2 shading, attributable to hemodilution from tumor cell secretions. In pregnancy, a decidualized endometrioma (from hormonal stimulation) is a differential to consider, as it can also show enhancing tissue without being malignant.",
 
       dxBrennerFibromaGroupTitle: "Brenner Tumor / (Cyst)adenofibroma / Fibroma-fibrothecoma",
-      dxBrennerFibromaGroupDescription: "The T2-hypointense solid component suggests this group of fibrous tumors. A homogeneous pattern with no diffusion restriction (also low signal on high-b-value DWI, similar to urine/CSF) is characteristic of a pure fibroma/fibrothecoma and corresponds to the O-RADS MRI 'dark T2/dark DWI' pattern (category 2, near-zero malignancy risk); heterogeneity, diffusion restriction, or punctate calcifications point more toward a Brenner tumor or a cystadenofibroma/adenofibroma. Fibrothecomas are associated with Meigs syndrome. Fibromas/fibrothecomas tend to be larger (mean ~6.4 cm) than Brenner tumors (mean ~2.5 cm) and less often show calcifications; larger tumors (>6 cm) may display cystic degeneration and slightly higher T2 signal from edema.",
+      dxBrennerFibromaGroupDescription: "The T2-hypointense solid component suggests this group of fibrous tumors. A homogeneous pattern with no diffusion restriction (also low signal on high-b-value DWI, similar to urine/CSF) is characteristic of a pure fibroma/fibrothecoma and corresponds to the O-RADS MRI 'dark T2/dark DWI' pattern (category 2, near-zero malignancy risk); heterogeneity, diffusion restriction, or punctate calcifications point more toward a Brenner tumor or a cystadenofibroma/adenofibroma. Fibrothecomas are associated with Meigs syndrome. Fibromas/fibrothecomas tend to be larger (mean ~6.4 cm) than Brenner tumors (mean ~2.5 cm) and less often show calcifications; larger tumors (>6 cm) may display cystic degeneration and slightly higher T2 signal from edema. Because theca cells in a fibroma/fibrothecoma can secrete estrogen, targeted evaluation of the endometrium for concurrent hyperplasia or carcinoma is recommended. Brenner tumors are usually smaller than 5 cm, show calcifications on CT in ~50% of cases, and may coexist with a mucinous cystadenoma. In cystadenofibroma, interspersed tiny cystic foci within the dark solid tissue (the 'black sponge' sign) is a nonspecific finding that can also be seen in other, less common tumors.",
 
       dxJuvenileGranulosaTitle: "Juvenile Granulosa Cell Tumor",
-      dxJuvenileGranulosaDescription: "May suggest a juvenile granulosa cell tumor. It is associated with estrogenic effects (look for endometrial hyperplasia) and Maffucci and Ollier syndromes.",
+      dxJuvenileGranulosaDescription: "May suggest a juvenile granulosa cell tumor. It is associated with estrogenic effects (look for endometrial hyperplasia) and Maffucci and Ollier syndromes. Hyperestrogenism can cause endometrial thickening, polyps, hyperplasia, or carcinoma; targeted evaluation is recommended.",
 
       dxDysgerminomaTitle: "Dysgerminoma",
-      dxDysgerminomaDescription: "The pattern is compatible with dysgerminoma, typically predominantly solid with fibrovascular septae. It may be associated with elevated LDH levels and pregnancy.",
+      dxDysgerminomaDescription: "The pattern is compatible with dysgerminoma (the ovarian counterpart of testicular seminoma), typically a unilateral solid lesion divided into lobules by avidly enhancing, T2-hypointense fibrovascular septae. It may be associated with elevated LDH levels and pregnancy; up to 10% are bilateral.",
 
       dxChoriocarcinomaTitle: "Choriocarcinoma",
       dxChoriocarcinomaDescription: "May represent a choriocarcinoma, characteristically associated with elevated b-hCG levels.",
@@ -2391,28 +2407,28 @@ export default {
       dxEmbryonalCarcinomaDescription: "May correspond to embryonal carcinoma, which is part of the germ cell tumor differential in this age group.",
 
       dxEndometrioidClearCellTitle: "Endometrioid Carcinoma / Clear Cell Carcinoma",
-      dxEndometrioidClearCellDescription: "A solid and cystic pattern may suggest endometrioid or clear cell carcinoma. These are frequently associated with endometriosis, thromboembolic phenomena, and hypercalcemia. Areas of hemorrhage or concurrent endometrial thickening/carcinoma should be assessed.",
+      dxEndometrioidClearCellDescription: "A solid and cystic pattern may suggest endometrioid or clear cell carcinoma. These are frequently associated with endometriosis, thromboembolic phenomena, and hypercalcemia. Areas of hemorrhage or concurrent endometrial thickening/carcinoma should be assessed. When arising in an endometrioma, a warning sign is loss or reduction of the usual T2 shading, from hemodilution by tumor cell secretions (see also this calculator's T1-hyperintense/hemorrhagic branch).",
 
       dxAdultGranulosaBilateralTitle: "Adult Granulosa Cell Tumor",
-      dxAdultGranulosaBilateralDescription: "May suggest an adult granulosa cell tumor. It is associated with hyperestrogenism and classically demonstrates a 'Swiss-cheese' appearance.",
+      dxAdultGranulosaBilateralDescription: "May suggest an adult granulosa cell tumor. It is associated with hyperestrogenism and classically demonstrates a 'Swiss-cheese' appearance; cystic components may contain hemorrhage. Hyperestrogenism can cause endometrial thickening, polyps, hyperplasia, or carcinoma; targeted evaluation is recommended.",
 
       dxMucinousNeoplasmTitle: "Mucinous Neoplasms",
-      dxMucinousNeoplasmDescription: "Suggests a mucinous neoplasm. Increasing size, internal locules, and solid components suggest borderline and malignant variants, which are usually larger (>13 cm) compared to metastases.",
+      dxMucinousNeoplasmDescription: "Suggests a mucinous neoplasm. Increasing size, internal locules, and solid components suggest borderline and malignant variants, which are usually larger (>13 cm) compared to metastases. Small honeycomb-like locules may be present; imaging appearance overlaps considerably between cystadenoma, borderline tumor, and mucinous carcinoma, so size, laterality, and the presence of solid tissue are the key differentiators.",
 
       dxSerousBorderlineHGSCTitle: "Borderline Serous Tumor / LGSC / HGSC",
-      dxSerousBorderlineHGSCDescription: "May correspond to a borderline serous tumor, low-grade serous carcinoma (LGSC), or high-grade serous carcinoma (HGSC). Look for papillary projections and correlate with elevated CA-125 levels.",
+      dxSerousBorderlineHGSCDescription: "May correspond to a borderline serous tumor, low-grade serous carcinoma (LGSC), or high-grade serous carcinoma (HGSC). Look for papillary projections and correlate with elevated CA-125 levels. Papillary projections with T2-hyperintense architecture and T2-hypointense internal branching (a 'sea anemone' appearance) are virtually diagnostic of a borderline serous tumor.",
 
       dxMetastasisGITitle: "Metastases",
-      dxMetastasisGIDescription: "A bilateral pattern strongly suggests metastatic disease. Look for a primary neoplasm (e.g., gastrointestinal), peritoneal carcinomatosis, and elevated CEA levels.",
+      dxMetastasisGIDescription: "A bilateral pattern strongly suggests metastatic disease. Look for a primary neoplasm (e.g., gastrointestinal), peritoneal carcinomatosis, and elevated CEA levels. Metastases with a mucinous/signet-ring-cell component (Krukenberg tumors) account for ~50% of ovarian metastases and most often arise from the stomach, followed by the colon.",
 
       dxMucinousAdenocarcinomaTitle: "Mucinous Adenocarcinoma",
       dxMucinousAdenocarcinomaDescription: "A predominantly solid unilateral mass may suggest a mucinous adenocarcinoma in this clinical context.",
 
       dxAdultGranulosaSolidTitle: "Adult Granulosa Cell Tumor",
-      dxAdultGranulosaSolidDescription: "May suggest a predominantly solid variant of an adult granulosa cell tumor, although this tumor is more often solid and cystic.",
+      dxAdultGranulosaSolidDescription: "May suggest a predominantly solid variant of an adult granulosa cell tumor, although this tumor is more often solid and cystic. Hyperestrogenism can cause endometrial thickening, polyps, hyperplasia, or carcinoma; targeted evaluation is recommended.",
 
       dxSertoliLeydigTitle: "Sertoli-Leydig Cell Tumor",
-      dxSertoliLeydigDescription: "May represent a Sertoli-Leydig cell tumor. It is classically associated clinically with androgen excess and virilization.",
+      dxSertoliLeydigDescription: "May represent a Sertoli-Leydig cell tumor, the ovarian tumor most commonly associated with elevated testosterone. It typically presents as a heterogeneous solid lesion with small scattered cystic foci, and is classically associated clinically with virilization, oligomenorrhea, or amenorrhea.",
 
       dxMetastasisSolidBilateralTitle: "Metastases (Predominantly Solid)",
       dxMetastasisSolidBilateralDescription: "Bilateral predominantly solid masses suggest metastases. Gastric and breast primary tumors often manifest with a predominantly solid pattern.",
@@ -2427,19 +2443,19 @@ export default {
       dxSerousCystadenomaDescription: "If unilocular without suspicious features, this pattern suggests a benign serous cystadenoma, though it may occasionally have a few thin septations.",
 
       dxSerousBorderlineUnilocularTitle: "Borderline Serous / LGSC / HGSC",
-      dxSerousBorderlineUnilocularDescription: "The presence of suspicious wall features, solid components, or septations in a unilocular lesion suggests a borderline serous tumor, LGSC, or HGSC.",
+      dxSerousBorderlineUnilocularDescription: "The presence of suspicious wall features, solid components, or septations in a unilocular lesion suggests a borderline serous tumor, LGSC, or HGSC. A 'sea anemone' appearance (T2-hyperintense papillary projections with T2-hypointense internal branching) is a characteristic finding of borderline serous tumor.",
 
       dxMucinousMultilocularTitle: "Mucinous Neoplasms",
-      dxMucinousMultilocularDescription: "A multilocular unilateral pattern with varying signal, attenuation, or echogenicity (from mucin) suggests a mucinous neoplasm.",
+      dxMucinousMultilocularDescription: "A multilocular unilateral pattern with varying signal, attenuation, or echogenicity (from mucin) suggests a mucinous neoplasm. It may coexist with a mature teratoma or a Brenner tumor; if bilateral and smaller than 10 cm, ovarian metastases should be considered.",
 
       dxSerousCystadenomaMultilocularTitle: "Serous Cystadenoma",
       dxSerousCystadenomaMultilocularDescription: "A multilocular unilateral pattern with homogeneous cyst contents may correspond to a serous cystadenoma.",
 
       dxSerousBorderlineBilateralMultilocularTitle: "Borderline Serous / LGSC / HGSC",
-      dxSerousBorderlineBilateralMultilocularDescription: "A bilateral multilocular cystic pattern suggests tumors in the serous spectrum (borderline, LGSC, or HGSC), which are more often bilateral.",
+      dxSerousBorderlineBilateralMultilocularDescription: "A bilateral multilocular cystic pattern suggests tumors in the serous spectrum (borderline, LGSC, or HGSC), which are more often bilateral. Up to a third of borderline serous tumors are bilateral and may be associated with peritoneal implants.",
 
       dxMetastasisCysticBilateralTitle: "Metastases (Cystic)",
-      dxMetastasisCysticBilateralDescription: "A bilateral multilocular cystic pattern requires ruling out secondary tumors. Appendiceal, colorectal, and pancreaticobiliary metastases are often cystic.",
+      dxMetastasisCysticBilateralDescription: "A bilateral multilocular cystic pattern requires ruling out secondary tumors. Appendiceal, colorectal, and pancreaticobiliary metastases are often cystic. In Krukenberg tumors, the cystic component corresponds to mucin secreted by the tumor cells.",
 
       stickyLabel: "Suggested differential",
       stickyMultipleLabel: "See full differential above",

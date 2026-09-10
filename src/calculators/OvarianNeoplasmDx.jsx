@@ -42,6 +42,17 @@ function buildDifferential(s) {
   if (s.fat === 'irregular') return ['dxImmatureTeratoma'];
   if (s.fat !== 'none') return [];
 
+  if (s.blood === true) {
+    if (s.bloodSolid === true) return ['dxEndometriosisAssocMalignancy'];
+    if (s.bloodSolid === false) {
+      if (s.bloodPattern === 'endometrioma') return ['dxEndometrioma'];
+      if (s.bloodPattern === 'hemorrhagic') return ['dxHemorrhagicCyst'];
+      return [];
+    }
+    return [];
+  }
+  if (s.blood !== false) return [];
+
   if (s.t2Solid === true) return ['dxBrennerFibromaGroup'];
   if (s.t2Solid !== false) return [];
 
@@ -85,6 +96,9 @@ export default function OvarianNeoplasmDx() {
   const c = t.calc.ovarianNeoplasmDx;
 
   const [fat, setFat] = useState(null); // 'coarse' | 'irregular' | 'none'
+  const [blood, setBlood] = useState(null); // bool (T1-hyperintense without fat, suggesting hemorrhagic content)
+  const [bloodSolid, setBloodSolid] = useState(null); // bool (enhancing solid tissue on subtraction)
+  const [bloodPattern, setBloodPattern] = useState(null); // 'endometrioma' | 'hemorrhagic' (blood, no solid tissue branch)
   const [t2Solid, setT2Solid] = useState(null); // bool
   const [age, setAge] = useState(null); // 'under30' | 'over30'
   const [proportion, setProportion] = useState(null); // 'solidCystic' | 'mostlySolid' | 'mostlyCystic'
@@ -94,11 +108,13 @@ export default function OvarianNeoplasmDx() {
   const [multiLaterality, setMultiLaterality] = useState(null); // 'unilateral' | 'bilateral' (multilocular branch)
   const [cystContent, setCystContent] = useState(null); // 'variable' | 'homogeneous' (multilocular unilateral branch)
 
-  const state = { fat, t2Solid, age, proportion, laterality, unilocular, wallSeptic, multiLaterality, cystContent };
+  const state = { fat, blood, bloodSolid, bloodPattern, t2Solid, age, proportion, laterality, unilocular, wallSeptic, multiLaterality, cystContent };
   const differential = fat ? buildDifferential(state) : [];
 
   const DX_TITLE = {
     dxMatureTeratoma: c.dxMatureTeratomaTitle, dxImmatureTeratoma: c.dxImmatureTeratomaTitle,
+    dxEndometrioma: c.dxEndometriomaTitle, dxHemorrhagicCyst: c.dxHemorrhagicCystTitle,
+    dxEndometriosisAssocMalignancy: c.dxEndometriosisAssocMalignancyTitle,
     dxBrennerFibromaGroup: c.dxBrennerFibromaGroupTitle, dxJuvenileGranulosa: c.dxJuvenileGranulosaTitle,
     dxDysgerminoma: c.dxDysgerminomaTitle, dxChoriocarcinoma: c.dxChoriocarcinomaTitle, dxYolkSac: c.dxYolkSacTitle,
     dxEmbryonalCarcinoma: c.dxEmbryonalCarcinomaTitle, dxEndometrioidClearCell: c.dxEndometrioidClearCellTitle,
@@ -114,6 +130,8 @@ export default function OvarianNeoplasmDx() {
   };
   const DX_DESC = {
     dxMatureTeratoma: c.dxMatureTeratomaDescription, dxImmatureTeratoma: c.dxImmatureTeratomaDescription,
+    dxEndometrioma: c.dxEndometriomaDescription, dxHemorrhagicCyst: c.dxHemorrhagicCystDescription,
+    dxEndometriosisAssocMalignancy: c.dxEndometriosisAssocMalignancyDescription,
     dxBrennerFibromaGroup: c.dxBrennerFibromaGroupDescription, dxJuvenileGranulosa: c.dxJuvenileGranulosaDescription,
     dxDysgerminoma: c.dxDysgerminomaDescription, dxChoriocarcinoma: c.dxChoriocarcinomaDescription, dxYolkSac: c.dxYolkSacDescription,
     dxEmbryonalCarcinoma: c.dxEmbryonalCarcinomaDescription, dxEndometrioidClearCell: c.dxEndometrioidClearCellDescription,
@@ -128,8 +146,12 @@ export default function OvarianNeoplasmDx() {
     dxMetastasisCysticBilateral: c.dxMetastasisCysticBilateralDescription,
   };
 
-  const showT2Solid = fat === 'none';
-  const showAge = fat === 'none' && t2Solid === false;
+  const showBlood = fat === 'none';
+  const showBloodSolid = showBlood && blood === true;
+  const showBloodPattern = showBloodSolid && bloodSolid === false;
+
+  const showT2Solid = fat === 'none' && blood === false;
+  const showAge = showT2Solid && t2Solid === false;
   const showProportion = showAge && age === 'over30';
   const showLaterality = showProportion && (proportion === 'solidCystic' || proportion === 'mostlySolid');
   const showUnilocular = showProportion && proportion === 'mostlyCystic';
@@ -146,7 +168,8 @@ export default function OvarianNeoplasmDx() {
   };
 
   const resetAll = () => {
-    setFat(null); setT2Solid(null); setAge(null); setProportion(null); setLaterality(null);
+    setFat(null); setBlood(null); setBloodSolid(null); setBloodPattern(null);
+    setT2Solid(null); setAge(null); setProportion(null); setLaterality(null);
     setUnilocular(null); setWallSeptic(null); setMultiLaterality(null); setCystContent(null);
   };
 
@@ -165,9 +188,35 @@ export default function OvarianNeoplasmDx() {
             { key: 'none', label: c.fatNoLabel },
           ]}
           value={fat}
-          onChange={(v) => { setFat(v); setT2Solid(null); setAge(null); setProportion(null); setLaterality(null); setUnilocular(null); setWallSeptic(null); setMultiLaterality(null); setCystContent(null); }}
+          onChange={(v) => { setFat(v); setBlood(null); setBloodSolid(null); setBloodPattern(null); setT2Solid(null); setAge(null); setProportion(null); setLaterality(null); setUnilocular(null); setWallSeptic(null); setMultiLaterality(null); setCystContent(null); }}
         />
       </Card>
+
+      {showBlood && (
+        <Card className="space-y-4">
+          <YesNo label={c.bloodQ} value={blood} onChange={(v) => { setBlood(v); setBloodSolid(null); setBloodPattern(null); setT2Solid(null); setAge(null); setProportion(null); setLaterality(null); setUnilocular(null); setWallSeptic(null); setMultiLaterality(null); setCystContent(null); }} yesLabel={t.common.yes} noLabel={t.common.no} />
+        </Card>
+      )}
+
+      {showBloodSolid && (
+        <Card className="space-y-4">
+          <YesNo label={c.bloodSolidQ} value={bloodSolid} onChange={(v) => { setBloodSolid(v); setBloodPattern(null); }} yesLabel={t.common.yes} noLabel={t.common.no} />
+        </Card>
+      )}
+
+      {showBloodPattern && (
+        <Card className="space-y-4">
+          <OptionList
+            label={c.bloodPatternQ}
+            options={[
+              { key: 'endometrioma', label: c.bloodPatternEndometriomaLabel },
+              { key: 'hemorrhagic', label: c.bloodPatternHemorrhagicLabel },
+            ]}
+            value={bloodPattern}
+            onChange={setBloodPattern}
+          />
+        </Card>
+      )}
 
       {showT2Solid && (
         <Card className="space-y-4">
