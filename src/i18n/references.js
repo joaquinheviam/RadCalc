@@ -167,16 +167,16 @@ export const REFERENCES = {
     'Hindman NH, Kang F, Fournier L, et al. MRI Evaluation of Uterine Masses for Risk of Leiomyosarcoma: A Consensus Statement. Radiology. 2023;306(3):e211658.',
   ],
   adnexalIncidental: [
-    'Patel MD, Ascher SM, Horrow MM, Pickhardt PJ, Poder L, Goldman M, Berland LL, Pandharipande PV, Maturen KE. Management of Incidental Adnexal Findings on CT and MRI: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2020;17(2):248-254.',
-    'Levine D, Patel MD, Suh-Burgmann EJ, Andreotti RF, Benacerraf BR, Benson CB, Brewster WR, Coleman BG, Doubilet PM, Goldstein SR, Hamper UM, Hecht JL, Horrow MM, Hur HC, Marnach ML, Pavlik E, Platt LD, Puscheck E, Smith-Bindman R, Brown DL. Simple Adnexal Cysts: SRU Consensus Conference Update on Follow-up and Reporting. Radiology. 2019;293(2):359-371.',
-    'Wang PS, Schoeck OG, Horrow MM. Benign-appearing Incidental Adnexal Cysts at US, CT, and MRI: Putting the ACR, O-RADS, and SRU Guidelines All Together. RadioGraphics. 2022;42(2):609-624.',
+    { text: 'Patel MD, Ascher SM, Horrow MM, Pickhardt PJ, Poder L, Goldman M, Berland LL, Pandharipande PV, Maturen KE. Management of Incidental Adnexal Findings on CT and MRI: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2020;17(2):248-254.', doi: '10.1016/j.jacr.2019.10.008' },
+    { text: 'Levine D, Patel MD, Suh-Burgmann EJ, Andreotti RF, Benacerraf BR, Benson CB, Brewster WR, Coleman BG, Doubilet PM, Goldstein SR, Hamper UM, Hecht JL, Horrow MM, Hur HC, Marnach ML, Pavlik E, Platt LD, Puscheck E, Smith-Bindman R, Brown DL. Simple Adnexal Cysts: SRU Consensus Conference Update on Follow-up and Reporting. Radiology. 2019;293(2):359-371.', doi: '10.1148/radiol.2019191354' },
+    { text: 'Wang PS, Schoeck OG, Horrow MM. Benign-appearing Incidental Adnexal Cysts at US, CT, and MRI: Putting the ACR, O-RADS, and SRU Guidelines All Together. RadioGraphics. 2022;42(2):609-624.', doi: '10.1148/rg.210091' },
   ],
   ovarianNeoplasmDx: [
-    'Taylor EC, Irshaid L, Mathur M. Multimodality Imaging Approach to Ovarian Neoplasms with Pathologic Correlation. RadioGraphics. 2021;41(1):289-315.',
+    { text: 'Taylor EC, Irshaid L, Mathur M. Multimodality Imaging Approach to Ovarian Neoplasms with Pathologic Correlation. RadioGraphics. 2021;41(1):289-315.', doi: '10.1148/rg.2021200086' },
     'American College of Radiology. O-RADS MR Lexicon: Categories, Terms and Definitions. Revised October 2023.',
-    'Thomassin-Naggara I, Poncelet E, Jalaguier-Coudray A, et al. Ovarian-Adnexal Reporting Data System Magnetic Resonance Imaging (O-RADS MRI) score for risk stratification of sonographically indeterminate adnexal masses. JAMA Netw Open. 2020;3(1):e1919896.',
-    'Sadowski EA, Thomassin-Naggara I, Rockall A, et al. O-RADS MRI risk stratification system: guide for assessing adnexal lesions from the ACR O-RADS committee. Radiology. 2022;303(1):35-47.',
-    'Alexander LF, Nougaret S, Patel-Lippmann K, et al. Reference Handbook of Gynecologic Pelvic MRI. RadioGraphics. 2026;46(2):e250029.',
+    { text: 'Thomassin-Naggara I, Poncelet E, Jalaguier-Coudray A, et al. Ovarian-Adnexal Reporting Data System Magnetic Resonance Imaging (O-RADS MRI) score for risk stratification of sonographically indeterminate adnexal masses. JAMA Netw Open. 2020;3(1):e1919896.', doi: '10.1001/jamanetworkopen.2019.19896' },
+    { text: 'Sadowski EA, Thomassin-Naggara I, Rockall A, et al. O-RADS MRI risk stratification system: guide for assessing adnexal lesions from the ACR O-RADS committee. Radiology. 2022;303(1):35-47.', doi: '10.1148/radiol.204371' },
+    { text: 'Alexander LF, Nougaret S, Patel-Lippmann K, et al. Reference Handbook of Gynecologic Pelvic MRI. RadioGraphics. 2026;46(2):e250029.', doi: '10.1148/rg.250029' },
   ],
   ildClassifier: [
     'Podolanczuk AJ, Hunninghake GM, et al. Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement. Am J Respir Crit Care Med. 2025;211(7):1132-1155.',
