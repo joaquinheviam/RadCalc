@@ -22,6 +22,7 @@ export default {
     none: 'None',
     cutoff: 'Cutoff',
     howToUse: 'How it works & cutoffs',
+    viewFullAlgorithm: 'View full algorithm',
     copyEmail: 'Copy email',
     emailCopiedOk: 'Email copied to clipboard: drjoaquinhevia@gmail.com',
     yes: 'Yes',
@@ -85,7 +86,9 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
-      { date: '2026-09-10', text: 'In the "References" sections of the Ovarian Neoplasm Differential and Incidental Adnexal Lesion Management (CT/MRI) calculators, each citation now includes its DOI as a direct link to the original article (when the DOI is publicly available; the ACR\'s O-RADS MRI Lexicon has no DOI of its own).' },
+      { date: '2026-09-10', text: 'Added the "View full algorithm" section to ccLS v2, PI-RADS v2.1 (both zones), VI-RADS (algorithmic mode), and LI-RADS v2018 (LR-TIV/LR-M gate; the numeric size × APHE × feature-count matrix is shown as a single lookup result rather than broken down branch by branch, since it is a two-way table, not a sequential tree).' },
+      { date: '2026-09-10', text: 'Added a "View full algorithm" section (a collapsible schema with the full step-by-step decision tree) to the ACR O-RADS MRI, Bosniak Classification v2019, Cystic Lung Disease (Algorithm), and Lung-RADS v2022 calculators: lets you review the entire diagnostic tree at a glance without stepping through it question by question.' },
+      { date: '2026-09-10', text: 'In the "References" sections of the Ovarian Neoplasm Differential and Incidental Adnexal Lesion Management (CT/MRI) calculators, each citation now includes its DOI as a direct link to the original article (the ACR\'s O-RADS MRI Lexicon has no DOI of its own, so it remains unlinked).' },
       { date: '2026-09-10', text: 'Expanded the Ovarian Neoplasm Differential calculator with a new branch for T1-hyperintense lesions without fat (hemorrhagic content): distinguishes endometrioma, functional hemorrhagic cyst, and endometriosis-associated malignancy, per Alexander, Nougaret et al., RadioGraphics 2026 ("Reference Handbook of Gynecologic Pelvic MRI"). Also enriched with additional imaging findings from that same source: mature teratoma (Rokitansky nodule, malignant transformation risk), dysgerminoma (fibrovascular septae), Sertoli-Leydig cell tumor (scattered cystic foci), granulosa cell tumors (endometrial correlation), the Brenner/fibroma group (endometrial evaluation in fibroma, Brenner calcifications, "black sponge" sign), serous borderline tumors ("sea anemone" sign), and mucinous neoplasms/metastases (honeycomb pattern, Krukenberg tumor).' },
       { date: '2026-09-10', text: 'Refined the Ovarian Neoplasm Differential calculator: added a note on the "dark T2/dark DWI" pattern (homogeneous, no diffusion restriction) that distinguishes a pure fibroma/fibrothecoma within the Brenner/fibroma group, per the O-RADS MRI score (Thomassin-Naggara 2020; Sadowski 2022); reprioritized the immature teratoma criterion to lead with a significant enhancing solid component (rather than the calcification pattern), per Taylor et al. 2021\'s own text; sharpened the solid-tissue and T2-signal questions using the official O-RADS MR Lexicon definitions (ACR, revised October 2023); and reformatted the age and laterality labels as a trailing parenthetical nuance ("(usually)") instead of "Typically"/"More often".' },
       { date: '2026-09-10', text: 'Added the Ovarian Neoplasm Imaging Pattern Differential calculator (Taylor Algorithm): a diagnostic differential aid based on radiologic-pathologic correlation for an indeterminate ovarian neoplasm, per Taylor et al., RadioGraphics 2021. It does not replace O-RADS MRI (which estimates malignancy risk); this tool is purely an imaging-pattern-based differential.' },
@@ -563,6 +566,7 @@ export default {
       subtitle: 'Risk stratification of clinically significant prostate cancer using multiparametric MRI evaluated under PI-RADS v2.1.',
       pz: 'Peripheral Zone (PZ)',
       tz: 'Transition Zone (TZ)',
+      zoneQ: 'Location of the target lesion (peripheral vs. transition zone)',
       dwiDominant: '1. DWI/ADC Score (dominant sequence)',
       t2Dominant: '1. T2W Score (dominant sequence)',
       dceStep: '2. DCE (contrast)',
@@ -739,6 +743,7 @@ export default {
         'LR-M': 'Probably or definitely malignant, not HCC-specific',
         'LR-TIV': 'Tumor in vein (macrovascular tumor invasion)',
       },
+      algoMatrixNote: 'Apply the size × APHE × additional-feature-count matrix (see the interactive calculator above for the full table): result LR-1 to LR-5.',
       reportText: (size, aphe, feats, override, cat, afSummary) =>
         `LI-RADS v2018 (CT/MRI):\nSize: ${size}\nNonrim APHE: ${aphe}\nAdditional features: ${feats}\n${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Category: ${cat}`,
       usage: [

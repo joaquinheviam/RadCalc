@@ -2,8 +2,31 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { IconCheckCircle, IconGitBranch } from '../components/icons/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+
+// Mirrors the outer LR-TIV/LR-M gating verbatim. The size x APHE x feature-count
+// numeric matrix (computeLiRads) is a lookup table, not a sequential branch, so it
+// is intentionally collapsed into a single explanatory leaf rather than diagrammed
+// cell by cell (consistent with not forcing a flowchart onto pure lookup tables).
+function buildLiradsTree(c, t) {
+  const yes = t.common.yes, no = t.common.no;
+  const tivLeaf = (contPhrase) => `LR-TIV — ${c.categories['LR-TIV']}, ${contPhrase.charAt(0).toLowerCase() + contPhrase.slice(1)}`;
+  return {
+    q: c.lrTiv,
+    branches: [
+      { label: yes, node: { q: c.lrTivContinuityLabel, branches: [
+        { label: c.lrTivContinuity.lr5, leaf: tivLeaf(c.lrTivContinuity.lr5) },
+        { label: c.lrTivContinuity.lrM, leaf: tivLeaf(c.lrTivContinuity.lrM) },
+        { label: c.lrTivContinuity.unspecified, leaf: tivLeaf(c.lrTivContinuity.unspecified) },
+      ]}},
+      { label: no, node: { q: c.lrM, branches: [
+        { label: yes, leaf: `LR-M — ${c.categories['LR-M']}` },
+        { label: no, leaf: c.algoMatrixNote },
+      ]}},
+    ],
+  };
+}
 
 function computeLiRads(size, aphe, feats) {
   // size: 1 (<10mm) | 2 (10-19mm) | 3 (>=20mm)
@@ -43,6 +66,7 @@ function adjustLiRadsForAF(baseCat, hasMalignantAF, hasBenignAF) {
 export default function LIRADS() {
   const { t, lang } = useLang();
   const c = t.calc.lirads;
+  const algorithmTree = buildLiradsTree(c, t);
   const [size, setSize] = useState(0);
   const [aphe, setAphe] = useState(null);
   const [feats, setFeats] = useState({ washout: false, capsule: false, growth: false });
@@ -207,6 +231,9 @@ export default function LIRADS() {
         <InfoBox tone="amber">{afNote}</InfoBox>
       )}
       <UsageNotes paragraphs={c.usage} />
+      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+        <AlgorithmSchema tree={algorithmTree} />
+      </Accordion>
       <References items={REFERENCES.lirads} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

@@ -2,7 +2,32 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ScoreSelector5 } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ScoreSelector5, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { IconGitBranch } from '../components/icons/index.js';
+
+// Mirrors the algo-mode goToNextStep() branching verbatim (algoStep/preguntaGrasa/
+// preguntaTamano/preguntaTallo). The "classic" per-sequence mode is a dominance
+// lookup (DWI, else DCE, else T2W), not a branching tree, so it is intentionally
+// not represented here.
+function buildViradsAlgoTree(c) {
+  const leaf = (score) => `VI-RADS ${score} — ${c.categoryDesc[score - 1]}`;
+  return {
+    q: c.algoQ1,
+    branches: [
+      { label: c.algoQ1Yes, node: { q: c.algoQFat, branches: [
+        { label: c.algoQFatYes, leaf: leaf(5) },
+        { label: c.algoQFatNo, leaf: leaf(4) },
+      ]}},
+      { label: c.algoQ1No, node: { q: c.algoQSize, branches: [
+        { label: c.algoQSizeYes, leaf: leaf(1) },
+        { label: c.algoQSizeNo, node: { q: c.algoQStalk, branches: [
+          { label: c.algoQStalkYes, leaf: leaf(2) },
+          { label: c.algoQStalkNo, leaf: leaf(3) },
+        ]}},
+      ]}},
+    ],
+  };
+}
 
 // SVG nativo consistente con la línea de íconos del sistema
 const RefreshIcon = () => (
@@ -32,6 +57,7 @@ const LayersIcon = () => (
 export default function VIRADS() {
   const { t } = useLang();
   const c = t.calc.virads;
+  const algorithmTree = buildViradsAlgoTree(c);
 
   const [mode, setMode] = useState('algo');
 
@@ -228,6 +254,9 @@ export default function VIRADS() {
       )}
 
       <UsageNotes paragraphs={c.usage} />
+      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+        <AlgorithmSchema tree={algorithmTree} />
+      </Accordion>
       <References items={REFERENCES.virads} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

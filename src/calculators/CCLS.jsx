@@ -2,7 +2,101 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, AlgorithmSchema } from '../components/shared/index.js';
+import { IconGitBranch } from '../components/icons/index.js';
+
+// Mirrors cclsCompute()'s branching (and the showXxxQ gating below) verbatim, as a
+// static tree for the "view full algorithm" accordion. All labels/leaf text are
+// read live from c/t.common, never hardcoded, so ES/EN stay in sync automatically.
+function buildCclsTree(c, t) {
+  const yes = t.common.yes, no = t.common.no;
+  const t2Label = (k) => c.t2Options.find(o => o.key === k).label;
+  const cmpLabel = (k) => c.cmpOptions.find(o => o.key === k).label;
+  const leaf = (score, diffKey) => {
+    const base = `ccLS ${score}/5 — ${c.likert[score]}`;
+    return diffKey ? `${base} (${c[diffKey]})` : base;
+  };
+
+  const intenseFatNode = (seiYesDiffKey) => ({
+    q: c.fatQ,
+    branches: [
+      { label: yes, leaf: leaf(5, null) },
+      { label: no, node: { q: c.seiQ, branches: [
+        { label: no, leaf: leaf(4, null) },
+        { label: yes, leaf: leaf(3, seiYesDiffKey) },
+      ]}},
+    ],
+  });
+  const moderateFatNode = () => ({
+    q: c.fatQ,
+    branches: [
+      { label: yes, leaf: leaf(3, null) },
+      { label: no, node: { q: c.seiQ, branches: [
+        { label: no, leaf: leaf(3, 'diffChrrccOncocytoma') },
+        { label: yes, leaf: leaf(2, 'diffOncocytoma') },
+      ]}},
+    ],
+  });
+  const mildIsoFatNode = () => ({
+    q: c.fatQ,
+    branches: [
+      { label: yes, leaf: leaf(2, null) },
+      { label: no, node: { q: c.dwiQ, branches: [
+        { label: no, leaf: leaf(3, null) },
+        { label: yes, leaf: leaf(1, 'diffPrccFpaml') },
+      ]}},
+    ],
+  });
+  const mildHypoFatNode = () => ({
+    q: c.fatQ,
+    branches: [
+      { label: yes, leaf: leaf(3, null) },
+      { label: no, leaf: leaf(1, 'diffPrccFpaml') },
+    ],
+  });
+  const aderNode = () => ({
+    q: c.aderQ,
+    branches: [
+      { label: yes, leaf: leaf(2, 'diffFpaml') },
+      { label: no, node: { q: c.dwiQ, branches: [
+        { label: yes, leaf: leaf(2, 'diffFpaml') },
+        { label: no, node: { q: c.homogQ, branches: [
+          { label: yes, leaf: leaf(3, 'diffFpaml') },
+          { label: no, leaf: leaf(4, 'diffFpaml') },
+        ]}},
+      ]}},
+    ],
+  });
+
+  const hyperNode = { q: c.cmpLabel, branches: [
+    { label: cmpLabel('intense'), node: intenseFatNode('diffOncocytoma') },
+    { label: cmpLabel('moderate'), node: moderateFatNode() },
+    { label: cmpLabel('mild'), leaf: leaf(3, null) },
+  ]};
+  const isoNode = { q: c.cmpLabel, branches: [
+    { label: cmpLabel('intense'), node: intenseFatNode('diffChrrccOncocytoma') },
+    { label: cmpLabel('moderate'), node: moderateFatNode() },
+    { label: cmpLabel('mild'), node: mildIsoFatNode() },
+  ]};
+  const hypoNode = { q: c.cmpLabel, branches: [
+    { label: cmpLabel('intense'), node: aderNode() },
+    { label: cmpLabel('moderate'), node: aderNode() },
+    { label: cmpLabel('mild'), node: mildHypoFatNode() },
+  ]};
+
+  return {
+    q: c.gateQ,
+    branches: [
+      { label: c.gateFat, leaf: c.resultAmlTitle },
+      { label: c.gateCystic, leaf: c.resultBosniakTitle },
+      { label: c.gateProceed, node: { q: c.t2Label, branches: [
+        { label: t2Label('hyper'), node: hyperNode },
+        { label: t2Label('iso'), node: isoNode },
+        { label: t2Label('hypo'), node: hypoNode },
+      ]}},
+    ],
+  };
+}
 
 function cclsCompute(t2, cmp, ans) {
   const { fat, sei, ader, dwi, homog } = ans;
@@ -57,6 +151,7 @@ function cclsCompute(t2, cmp, ans) {
 export default function CCLS() {
   const { t } = useLang();
   const c = t.calc.ccls;
+  const algorithmTree = buildCclsTree(c, t);
   const [gate, setGate] = useState(null);
   const [t2, setT2] = useState(null);
   const [cmp, setCmp] = useState(null);
@@ -294,6 +389,9 @@ export default function CCLS() {
       )}
 
       <UsageNotes paragraphs={c.usage} />
+      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+        <AlgorithmSchema tree={algorithmTree} />
+      </Accordion>
       <References items={REFERENCES.ccls} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

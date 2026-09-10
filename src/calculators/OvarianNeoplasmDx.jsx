@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { IconGitBranch } from '../components/icons/index.js';
 
 function OptionList({ label, options, value, onChange }) {
   return (
@@ -144,6 +145,93 @@ export default function OvarianNeoplasmDx() {
     dxMucinousMultilocular: c.dxMucinousMultilocularDescription, dxSerousCystadenomaMultilocular: c.dxSerousCystadenomaMultilocularDescription,
     dxSerousBorderlineBilateralMultilocular: c.dxSerousBorderlineBilateralMultilocularDescription,
     dxMetastasisCysticBilateral: c.dxMetastasisCysticBilateralDescription,
+  };
+
+  // Árbol completo para el esquema visual "Ver algoritmo completo". Es una
+  // transcripción 1:1 de buildDifferential() de arriba (misma fuente, mismas
+  // ramas) — si cambia la lógica de clasificación, este árbol debe
+  // actualizarse junto con ella. Los textos vienen todos de `c`/DX_TITLE
+  // (idioma activo), nunca hardcodeados acá.
+  const algorithmTree = {
+    q: c.fatQ,
+    branches: [
+      { label: c.fatCalcCoarseLabel, leaf: DX_TITLE.dxMatureTeratoma },
+      { label: c.fatCalcIrregularLabel, leaf: DX_TITLE.dxImmatureTeratoma },
+      { label: c.fatNoLabel, node: {
+        q: c.bloodQ,
+        branches: [
+          { label: t.common.yes, node: {
+            q: c.bloodSolidQ,
+            branches: [
+              { label: t.common.yes, leaf: DX_TITLE.dxEndometriosisAssocMalignancy },
+              { label: t.common.no, node: {
+                q: c.bloodPatternQ,
+                branches: [
+                  { label: c.bloodPatternEndometriomaLabel, leaf: DX_TITLE.dxEndometrioma },
+                  { label: c.bloodPatternHemorrhagicLabel, leaf: DX_TITLE.dxHemorrhagicCyst },
+                ],
+              }},
+            ],
+          }},
+          { label: t.common.no, node: {
+            q: c.t2SolidQ,
+            branches: [
+              { label: t.common.yes, leaf: DX_TITLE.dxBrennerFibromaGroup },
+              { label: t.common.no, node: {
+                q: c.ageQ,
+                branches: [
+                  { label: c.ageUnder30Label, leaf: [DX_TITLE.dxJuvenileGranulosa, DX_TITLE.dxDysgerminoma, DX_TITLE.dxChoriocarcinoma, DX_TITLE.dxYolkSac, DX_TITLE.dxEmbryonalCarcinoma] },
+                  { label: c.ageOver30Label, node: {
+                    q: c.proportionQ,
+                    branches: [
+                      { label: c.proportionSolidCysticLabel, node: {
+                        q: c.lateralityQ,
+                        branches: [
+                          { label: c.lateralityUnilateralLabel, leaf: DX_TITLE.dxEndometrioidClearCell },
+                          { label: c.lateralityBilateralLabel, leaf: [DX_TITLE.dxAdultGranulosaBilateral, DX_TITLE.dxMucinousNeoplasm, DX_TITLE.dxSerousBorderlineHGSC, DX_TITLE.dxMetastasisGI] },
+                        ],
+                      }},
+                      { label: c.proportionMostlySolidLabel, node: {
+                        q: c.lateralityQ,
+                        branches: [
+                          { label: c.lateralityUnilateralLabel, leaf: [DX_TITLE.dxMucinousAdenocarcinoma, DX_TITLE.dxAdultGranulosaSolid, DX_TITLE.dxSertoliLeydig] },
+                          { label: c.lateralityBilateralLabel, leaf: [DX_TITLE.dxMetastasisSolidBilateral, DX_TITLE.dxHGSCBilateral, DX_TITLE.dxOvarianLymphoma] },
+                        ],
+                      }},
+                      { label: c.proportionMostlyCysticLabel, node: {
+                        q: c.unilocularQ,
+                        branches: [
+                          { label: c.unilocularLabel, node: {
+                            q: c.wallSepticQ,
+                            branches: [
+                              { label: t.common.no, leaf: DX_TITLE.dxSerousCystadenoma },
+                              { label: t.common.yes, leaf: DX_TITLE.dxSerousBorderlineUnilocular },
+                            ],
+                          }},
+                          { label: c.multilocularLabel, node: {
+                            q: c.lateralityQ,
+                            branches: [
+                              { label: c.lateralityUnilateralLabel, node: {
+                                q: c.cystContentQ,
+                                branches: [
+                                  { label: c.cystContentVariableLabel, leaf: DX_TITLE.dxMucinousMultilocular },
+                                  { label: c.cystContentHomogeneousLabel, leaf: DX_TITLE.dxSerousCystadenomaMultilocular },
+                                ],
+                              }},
+                              { label: c.lateralityBilateralLabel, leaf: [DX_TITLE.dxSerousBorderlineBilateralMultilocular, DX_TITLE.dxMetastasisCysticBilateral] },
+                            ],
+                          }},
+                        ],
+                      }},
+                    ],
+                  }},
+                ],
+              }},
+            ],
+          }},
+        ],
+      }},
+    ],
   };
 
   const showBlood = fat === 'none';
@@ -330,6 +418,9 @@ export default function OvarianNeoplasmDx() {
       )}
 
       <UsageNotes paragraphs={c.usage} />
+      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+        <AlgorithmSchema tree={algorithmTree} />
+      </Accordion>
       <References items={REFERENCES.ovarianNeoplasmDx} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

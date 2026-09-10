@@ -22,6 +22,7 @@ export default {
     none: 'Ninguno',
     cutoff: 'Corte',
     howToUse: 'Cómo se usa y puntos de corte',
+    viewFullAlgorithm: 'Ver algoritmo completo',
     copyEmail: 'Copiar correo',
     emailCopiedOk: 'Correo copiado al portapapeles: drjoaquinhevia@gmail.com',
     yes: 'Sí',
@@ -85,7 +86,9 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
-      { date: '2026-09-10', text: 'En las secciones de "Referencias" de las calculadoras de Diferencial de Neoplasia Ovárica y de Manejo de Lesión Anexial Incidental (TC/RM), cada cita ahora incluye su DOI como enlace directo al artículo original (cuando el DOI está públicamente disponible; el Lexicon O-RADS MRI del ACR no tiene DOI propio).' },
+      { date: '2026-09-10', text: 'Se agrega la sección "Ver algoritmo completo" a ccLS v2, PI-RADS v2.1 (ambas zonas), VI-RADS (modo algorítmico) y LI-RADS v2018 (compuerta LR-TIV/LR-M; la matriz numérica de tamaño × APHE × características se muestra como resultado único, no desglosada, por tratarse de una tabla de doble entrada y no de un árbol secuencial).' },
+      { date: '2026-09-10', text: 'Se agrega la sección "Ver algoritmo completo" (esquema plegable con el árbol de decisión paso a paso) a las calculadoras ACR O-RADS MRI, Clasificación de Bosniak v2019, Enfermedad Quística Pulmonar (Algoritmo) y Lung-RADS v2022: permite revisar de un vistazo todo el árbol diagnóstico sin tener que recorrerlo pregunta por pregunta.' },
+      { date: '2026-09-10', text: 'En las secciones de "Referencias" de las calculadoras de Diferencial de Neoplasia Ovárica y de Manejo de Lesión Anexial Incidental (TC/RM), cada cita ahora incluye su DOI como enlace directo al artículo original (el Lexicon O-RADS MRI del ACR no tiene DOI propio, por lo que queda sin enlace).' },
       { date: '2026-09-10', text: 'Se amplía la calculadora de Diferencial de Neoplasia Ovárica con una nueva rama para lesiones hiperintensas en T1 sin grasa (contenido hemático): diferencia endometrioma, quiste hemorrágico funcional y malignización asociada a endometriosis, según Alexander, Nougaret et al., RadioGraphics 2026 ("Reference Handbook of Gynecologic Pelvic MRI"). También se enriquecen con hallazgos de imagen adicionales de esa misma fuente las entidades ya existentes: teratoma maduro (nódulo de Rokitansky, riesgo de transformación maligna), disgerminoma (septos fibrovasculares), tumor de Sertoli-Leydig (focos quísticos dispersos), tumores de células de la granulosa (correlación endometrial), grupo Brenner/fibroma (evaluación endometrial en fibroma, calcificaciones en Brenner, signo de la "esponja negra"), tumores borderline serosos (signo de la "anémona de mar") y neoplasias mucinosas/metástasis (patrón "en panal de abejas", tumor de Krukenberg).' },
       { date: '2026-09-10', text: 'Se refina la calculadora de Diferencial de Neoplasia Ovárica: se añade una nota sobre el patrón "T2 oscuro/DWI oscuro" (homogéneo, sin restricción en difusión) que distingue al fibroma/fibrotecoma puro dentro del grupo Brenner/fibroma, según el score O-RADS MRI (Thomassin-Naggara 2020; Sadowski 2022); se reprioriza el criterio de teratoma inmaduro para destacar el componente sólido/realzante significativo como hallazgo principal (antes que el patrón de calcificaciones), según el texto de Taylor et al. 2021; se precisan las preguntas sobre tejido sólido y señal T2 usando las definiciones oficiales del O-RADS MR Lexicon (ACR, revisado octubre 2023); y se reformulan las etiquetas de edad y lateralidad como matiz entre paréntesis ("(habitualmente)") en vez de "Típicamente"/"Más frecuentemente".' },
       { date: '2026-09-10', text: 'Se agrega la calculadora de Diferencial de Neoplasia Ovárica por Patrón de Imagen (Algoritmo de Taylor): ayuda de diagnóstico diferencial por correlación radiológico-patológica para una neoplasia ovárica indeterminada, según Taylor et al., RadioGraphics 2021. No reemplaza a O-RADS MRI (que estima riesgo de malignidad); esta calculadora es puramente un diferencial basado en el patrón de imagen.' },
@@ -563,6 +566,7 @@ export default {
       subtitle: 'Estratificación de riesgo de cáncer de próstata clínicamente significativo mediante RM multiparamétrica según PI-RADS v2.1.',
       pz: 'Zona Periférica (PZ)',
       tz: 'Zona de Transición (TZ)',
+      zoneQ: 'Ubicación de la lesión diana (zona periférica vs. de transición)',
       dwiDominant: '1. Score DWI/ADC (secuencia dominante)',
       t2Dominant: '1. Score T2W (secuencia dominante)',
       dceStep: '2. DCE (contraste)',
@@ -739,6 +743,7 @@ export default {
         'LR-M': 'Probablemente o definitivamente maligno, no específico de CHC',
         'LR-TIV': 'Tumor en vena (invasión macrovascular tumoral)',
       },
+      algoMatrixNote: 'Se aplica la matriz de tamaño × APHE × número de características adicionales (ver la calculadora interactiva más arriba para la tabla completa): resultado LR-1 a LR-5.',
       reportText: (size, aphe, feats, override, cat, afSummary) =>
         `LI-RADS v2018 (TC/RM):\nTamaño: ${size}\nAPHE no periférico: ${aphe}\nCaracterísticas adicionales: ${feats}\n${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Categoría: ${cat}`,
       usage: [

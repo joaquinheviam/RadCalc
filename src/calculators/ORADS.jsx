@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { IconCopy, IconArrowRight } from '../components/icons/index.js';
-import { Card, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { IconCopy, IconArrowRight, IconGitBranch } from '../components/icons/index.js';
+import { Card, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { buildWizardTree } from '../utils/algorithmTree.js';
 
 export default function ORADS() {
   const { t, lang } = useLang();
   const c = t.calc.orads;
+  const algorithmTree = buildWizardTree(c, 'start', { leafText: (node) => `${node.cat} — ${node.risk}` });
   const [history, setHistory] = useState(['start']);
   const [selectedLabels, setSelectedLabels] = useState([]);
   const currentId = history[history.length - 1];
@@ -85,6 +87,9 @@ export default function ORADS() {
         </div>
       )}
       <UsageNotes paragraphs={c.usage} />
+      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+        <AlgorithmSchema tree={algorithmTree} />
+      </Accordion>
       <References items={REFERENCES.orads} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

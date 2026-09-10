@@ -2,11 +2,61 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { IconGitBranch } from '../components/icons/index.js';
+
+// Mirrors the finalScore logic below verbatim. Every branch reuses the same
+// dwiDefs/t2Defs option texts already shown in the interactive steps, so no
+// clinical wording is duplicated or hardcoded here.
+function buildPiradsTree(c) {
+  const pzNode = {
+    q: c.dwiDominant,
+    branches: [
+      { label: c.dwiDefs[0], leaf: 'PI-RADS 1' },
+      { label: c.dwiDefs[1], leaf: 'PI-RADS 2' },
+      { label: c.dwiDefs[2], node: { q: c.dceStep, branches: [
+        { label: c.dceNeg, leaf: 'PI-RADS 3' },
+        { label: c.dcePos, leaf: 'PI-RADS 4' },
+      ]}},
+      { label: c.dwiDefs[3], leaf: 'PI-RADS 4' },
+      { label: c.dwiDefs[4], leaf: 'PI-RADS 5' },
+    ],
+  };
+  const tzNode = {
+    q: c.t2Dominant,
+    branches: [
+      { label: c.t2Defs[0], leaf: 'PI-RADS 1' },
+      { label: c.t2Defs[1], node: { q: c.dwiStep, branches: [
+        { label: c.dwiDefs[0], leaf: 'PI-RADS 2' },
+        { label: c.dwiDefs[1], leaf: 'PI-RADS 2' },
+        { label: c.dwiDefs[2], leaf: 'PI-RADS 2' },
+        { label: c.dwiDefs[3], leaf: 'PI-RADS 3' },
+        { label: c.dwiDefs[4], leaf: 'PI-RADS 3' },
+      ]}},
+      { label: c.t2Defs[2], node: { q: c.dwiStep, branches: [
+        { label: c.dwiDefs[0], leaf: 'PI-RADS 3' },
+        { label: c.dwiDefs[1], leaf: 'PI-RADS 3' },
+        { label: c.dwiDefs[2], leaf: 'PI-RADS 3' },
+        { label: c.dwiDefs[3], leaf: 'PI-RADS 3' },
+        { label: c.dwiDefs[4], leaf: 'PI-RADS 4' },
+      ]}},
+      { label: c.t2Defs[3], leaf: 'PI-RADS 4' },
+      { label: c.t2Defs[4], leaf: 'PI-RADS 5' },
+    ],
+  };
+  return {
+    q: c.zoneQ,
+    branches: [
+      { label: c.pz, node: pzNode },
+      { label: c.tz, node: tzNode },
+    ],
+  };
+}
 
 export default function PIRADS() {
   const { t, lang } = useLang();
   const c = t.calc.pirads;
+  const algorithmTree = buildPiradsTree(c);
   const [zone, setZone] = useState('pz');
   const [dwi, setDwi] = useState(0);
   const [t2, setT2] = useState(0);
@@ -126,6 +176,9 @@ export default function PIRADS() {
         {epe && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.epeCaveat}</p>}
       </Card>
       <UsageNotes paragraphs={c.usage} />
+      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+        <AlgorithmSchema tree={algorithmTree} />
+      </Accordion>
       <References items={REFERENCES.pirads} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

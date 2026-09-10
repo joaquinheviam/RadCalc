@@ -20,8 +20,21 @@ const TEXT = {
 };
 
 function currentLang() {
+  // Fuente primaria: el segmento de idioma de la URL actual (/en/... o
+  // /es/...), que es lo que el usuario está viendo de verdad en pantalla.
   try {
-    const stored = localStorage.getItem('radiocalc:lang');
+    const path = window.location.pathname;
+    if (path.startsWith('/en')) return 'en';
+    if (path.startsWith('/es')) return 'es';
+  } catch {
+    // sigue al fallback de localStorage
+  }
+  // Fallback (ej. ruta raíz durante el redirect inicial): localStorage,
+  // leído con JSON.parse porque useLocalStorageState (App.jsx) guarda el
+  // valor serializado (p.ej. '"en"', con comillas) — leerlo como string
+  // plano aquí siempre fallaba la comparación y mostraba español.
+  try {
+    const stored = JSON.parse(localStorage.getItem('radiocalc:lang'));
     return stored === 'en' ? 'en' : 'es';
   } catch {
     return 'es';
