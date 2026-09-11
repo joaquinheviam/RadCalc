@@ -12,6 +12,12 @@ export const REFERENCES = {
   thoracicglossary: [
     'Bankier AA, MacMahon H, Colby T, Gevenois PA, Goo JM, Leung ANC, Lynch DA, Schaefer-Prokop CM, Tomiyama N, Travis WD, Verschakelen JA, White CS, Naidich DP. Fleischner Society: glossary of terms for thoracic imaging. Radiology. 2024;310(2):e232558.',
   ],
+  vdt: [
+    { text: 'Callister MEJ, Silvestri GA. Pulmonary Nodules. N Engl J Med. 2026;395(9):894-905.', doi: '10.1056/NEJMcp2515063' },
+    { text: 'Gould MK, Donington J, Lynch WR, Mazzone PJ, Midthun DE, Naidich DP, Wiener RS. Evaluation of individuals with pulmonary nodules: when is it lung cancer? Diagnosis and management of lung cancer, 3rd ed: American College of Chest Physicians evidence-based clinical practice guidelines. Chest. 2013;143(5)(Suppl):e93S-e120S.', doi: '10.1378/chest.12-2351' },
+    { text: 'Jiang B, Han D, van der Aalst CM, Lancaster HL, Vonder M, Gratama JC, Silva M, Field JK, de Koning HJ, Heuvelmans MA, Oudkerk M. Lung cancer volume doubling time by computed tomography: a systematic review and meta-analysis. Eur J Cancer. 2024;212:114339.', doi: '10.1016/j.ejca.2024.114339' },
+    { text: 'Prokop M, Schaefer-Prokop C, Jacobs C, Snoeckx A, Biederer J, Frauenfelder T, Gleeson F, Kauczor HU, Parkar AP, Vliegenthart R, Revel MP, Silva M, Prosch H. Aggressiveness-guided nodule management for lung cancer screening in Europe—justification for follow-up intervals and definition of growth. Eur Radiol. 2026;36:122-134.', doi: '10.1007/s00330-025-11647-5' },
+  ],
   splenicLesion: [
     'Heller MT, Harisinghani M, Neitlich JD, Yeghiayan P, Berland LL. Managing incidental findings on abdominal and pelvic CT and MRI, part 3: white paper of the ACR Incidental Findings Committee II on splenic and nodal findings. J Am Coll Radiol. 2013;10:833-839.',
     'Siewert B, Millo NZ, Sahi K, Sheiman RG, Brook OR, Sun MRM, Kane RA. The incidental splenic mass at CT: does it need further work-up? An observational study. Radiology. 2018;287:157-165.',

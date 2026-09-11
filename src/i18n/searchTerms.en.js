@@ -6,6 +6,7 @@ export default {
   ildClassifier: ['ild', 'ila', 'uip', 'pulmonary fibrosis', 'ipf', 'ats 2025', 'interstitial pneumonia', 'srif', 'bip', 'hypersensitivity pneumonitis', 'hp', 'nsip', 'cop', 'op', 'smoking', 'plch', 'amp', 'dip', 'straight edge sign', 'exuberant honeycombing'],
   epidExtent: ['ild', 'interstitial lung disease', 'pulmonary fibrosis', 'systemic sclerosis', 'goh', 'tschaler', 'tschalèr', 'lung extent', 'hrct', 'epid', 'goh score', 'ild extent', 'ipf', 'nsip', 'uip', 'hrct fibrosis'],
   lungNodule: ['lung nodule', 'pulmonary nodule', 'fleischner', 'nodule follow-up', 'incidental nodule', 'nccn', 'nodule', 'solid nodule', 'subsolid nodule', 'ground glass', 'ggn', 'nodule follow up'],
+  vdt: ['vdt', 'volume doubling time', 'doubling time', 'nodule growth rate', 'growth rate', 'gould', 'jiang', 'prokop', 'callister', 'esti', 'bts', 'nodule doubling'],
   lungRads: ['lung-rads', 'lungrads', 'lung cancer screening', 'low dose ct', 'lung rads', 'lungrads 2022', 'screening', 'lung screening', 'ldct'],
   lungScreening: ['lung cancer screening criteria', 'screening eligibility', 'nlst', 'nelson', 'smoker', 'eligibility', 'screening', 'nccn screening', 'ldct candidate', 'lung cancer screening', 'pack years', 'high risk smoker'],
   lungCysts: ['pulmonary cysts', 'cystic lung disease', 'lam', 'histiocytosis', 'birt-hogg-dube', 'cyst mimic', 'alveolar macrophage pneumonia', 'amp', 'dip', 'emphysema', 'cysts', 'cystic', 'cystic lung', 'lch', 'bip', 'bhds', 'ipf', 'lymphangioleiomyomatosis', 'hrct cysts'],

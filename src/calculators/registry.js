@@ -16,6 +16,7 @@ const ThymicFat = lazy(() => import('./ThymicFat.jsx'));
 const NTMBcdScore = lazy(() => import('./NTMBcdScore.jsx'));
 const PEQanadli = lazy(() => import('./PEQanadli.jsx'));
 const LungNodule = lazy(() => import('./LungNodule.jsx'));
+const VDT = lazy(() => import('./VDT.jsx'));
 const LungRADS = lazy(() => import('./LungRADS.jsx'));
 const LungScreening = lazy(() => import('./LungScreening.jsx'));
 const LungCysts = lazy(() => import('./LungCysts.jsx'));
@@ -57,6 +58,7 @@ export const calculators = [
   { id: 'ntmBcd', catKey: 'torax', component: NTMBcdScore },
   { id: 'peQanadli', catKey: 'torax', component: PEQanadli },
   { id: 'lungNodule', catKey: 'torax', component: LungNodule },
+  { id: 'vdt', catKey: 'torax', component: VDT },
   { id: 'lungRads', catKey: 'torax', component: LungRADS },
   { id: 'lungScreening', catKey: 'torax', component: LungScreening },
   { id: 'lungCysts', catKey: 'torax', component: LungCysts },
