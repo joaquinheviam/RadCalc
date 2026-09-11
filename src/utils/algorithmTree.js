@@ -1,3 +1,10 @@
+// Feature flag: temporarily hides the "view full algorithm" (AlgorithmSchema) accordion
+// across every calculator that has one. Turned off deliberately (2026-09) because the
+// full decision-tree view made it too easy for third parties to scrape/reconstruct the
+// site's clinical logic via AI. The tree-building code and AlgorithmSchema component are
+// left untouched — flip this back to true to restore the feature everywhere at once.
+export const SHOW_ALGORITHM_VIEW = false;
+
 // Shared helper for calculators whose logic already exists as a data-driven wizard
 // graph in the i18n strings files (the { start, nodes, results? } shape used by the
 // interactive step-by-step calculators). Converts that graph into the

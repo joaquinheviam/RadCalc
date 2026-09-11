@@ -4,6 +4,7 @@ import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle, IconGitBranch } from '../components/icons/index.js';
 import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
 // Mirrors the outer LR-TIV/LR-M gating verbatim. The size x APHE x feature-count
 // numeric matrix (computeLiRads) is a lookup table, not a sequential branch, so it
@@ -231,9 +232,11 @@ export default function LIRADS() {
         <InfoBox tone="amber">{afNote}</InfoBox>
       )}
       <UsageNotes paragraphs={c.usage} />
-      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
-        <AlgorithmSchema tree={algorithmTree} />
-      </Accordion>
+      {SHOW_ALGORITHM_VIEW && (
+        <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+          <AlgorithmSchema tree={algorithmTree} />
+        </Accordion>
+      )}
       <References items={REFERENCES.lirads} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

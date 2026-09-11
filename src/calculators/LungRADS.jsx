@@ -4,7 +4,7 @@ import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCopy, IconCheckCircle, IconArrowRight, IconGitBranch } from '../components/icons/index.js';
 import { Card, NumberField, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
-import { buildWizardTree } from '../utils/algorithmTree.js';
+import { buildWizardTree, SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
 function lungRadsCatColor(key) {
   if (key === '1' || key === '2') return 'text-emerald-500';
@@ -169,9 +169,11 @@ export default function LungRADS() {
         </div>
       )}
       <UsageNotes paragraphs={c.usage} />
-      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
-        <AlgorithmSchema tree={algorithmTree} />
-      </Accordion>
+      {SHOW_ALGORITHM_VIEW && (
+        <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+          <AlgorithmSchema tree={algorithmTree} />
+        </Accordion>
+      )}
       <References items={REFERENCES.lungRads} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />

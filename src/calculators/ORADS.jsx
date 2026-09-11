@@ -4,7 +4,7 @@ import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCopy, IconArrowRight, IconGitBranch } from '../components/icons/index.js';
 import { Card, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
-import { buildWizardTree } from '../utils/algorithmTree.js';
+import { buildWizardTree, SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
 export default function ORADS() {
   const { t, lang } = useLang();
@@ -87,9 +87,11 @@ export default function ORADS() {
         </div>
       )}
       <UsageNotes paragraphs={c.usage} />
-      <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
-        <AlgorithmSchema tree={algorithmTree} />
-      </Accordion>
+      {SHOW_ALGORITHM_VIEW && (
+        <Accordion icon={<IconGitBranch size={16} />} title={t.common.viewFullAlgorithm}>
+          <AlgorithmSchema tree={algorithmTree} />
+        </Accordion>
+      )}
       <References items={REFERENCES.orads} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
