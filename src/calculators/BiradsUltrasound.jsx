@@ -23,6 +23,46 @@ const catColor = (cat) => {
 
 const managementGroup = (cat) => (cat === '0' ? '0' : (cat === '1' || cat === '2') ? '12' : cat === '3' ? '3' : cat === '6' ? '6' : '45');
 
+// Mass suggestion logic: shape + margin + orientation. Margin is single-select, so the
+// margin-based rules below are mutually exclusive by construction — the only real
+// overlap is between a margin-based rule and the orientation-only floor, handled by
+// only applying the floor when no margin rule already fired. Type 'A' = the source
+// (ACR framework, or the ultrasound source's own text) literally supports this exact
+// combination; type 'B' = a reasonable generalization of the lexicon's qualitative
+// language, with no exact textual numbered example for this specific combination.
+function computeUsMassSuggestion(shape, margin, orientation, c) {
+  const benignShape = shape === 'oval' || shape === 'round' || shape === 'lobulated';
+  let result = null;
+
+  if (margin === 'circumscribed' && shape === 'irregular') {
+    result = { cat: '4', type: 'A', note: c.usMassSuggestCircumscribedIrregular('4') };
+  } else if (margin === 'circumscribed' && benignShape) {
+    result = { cat: '3', type: 'B', note: c.usMassSuggestCircumscribedBenign('3') };
+  } else if (margin === 'indistinct' || margin === 'microlobulated' || margin === 'angular') {
+    result = { cat: '4', type: 'B', note: c.usMassSuggestOtherMargin4('4') };
+  } else if (margin === 'spiculated' && orientation === 'nonparallel') {
+    result = { cat: '5', type: 'B', note: c.usMassSuggestSpiculatedNonparallel5('5') };
+  } else if (margin === 'spiculated') {
+    result = { cat: '4C', type: 'B', note: c.usMassSuggestSpiculatedOther4C('4C') };
+  }
+
+  if (!result && orientation === 'nonparallel') {
+    result = { cat: '4', type: 'B', note: c.usMassSuggestNonparallelFloor4('4') };
+  }
+
+  return result;
+}
+
+function SuggestionNote({ suggestion, c, tone = 'amber' }) {
+  if (!suggestion) return null;
+  const typeLabel = suggestion.type === 'A' ? c.suggestionTypeA : c.suggestionTypeB;
+  return (
+    <InfoBox tone={tone}>
+      {c.suggestedBadge(suggestion.cat)} — {typeLabel}: {suggestion.note}
+    </InfoBox>
+  );
+}
+
 function OptionButtons({ options, value, onChange }) {
   return (
     <div className="space-y-2">
@@ -93,18 +133,20 @@ export default function BiradsUltrasound() {
 
   const [finalCategory, setFinalCategory] = useState(null);
 
-  let suggestion = null; // { cat, note }
-  if (findingType === 'special' && specialCase) {
-    if (specialCase === 'simpleCyst') suggestion = { cat: '2', note: null };
+  let suggestion = null; // { cat, type: 'A'|'B', note }
+  if (findingType === 'mass') {
+    suggestion = computeUsMassSuggestion(shape, margin, orientation, c);
+  } else if (findingType === 'special' && specialCase) {
+    if (specialCase === 'simpleCyst') suggestion = { cat: '2', type: 'A', note: c.simpleCystSuggestNote('2') };
     else if (specialCase === 'clusteredMicrocysts') {
-      if (microcystsAbnormal === true) suggestion = { cat: '4', note: c.microcystsSuggest4('4') };
-      else if (microcystsAbnormal === false) suggestion = { cat: '2', note: c.microcystsSuggest2('2') };
+      if (microcystsAbnormal === true) suggestion = { cat: '4', type: 'A', note: c.microcystsSuggest4('4') };
+      else if (microcystsAbnormal === false) suggestion = { cat: '2', type: 'A', note: c.microcystsSuggest2('2') };
     } else if (specialCase === 'complicatedCyst' && complicatedCystConfirmed === true) {
-      suggestion = { cat: '2', note: c.complicatedCystSuggest2('2') };
+      suggestion = { cat: '2', type: 'A', note: c.complicatedCystSuggest2('2') };
     } else if (specialCase === 'fatNecrosis' && fatNecrosisConfirmed === true) {
-      suggestion = { cat: '2', note: c.fatNecrosisSuggest2('2') };
+      suggestion = { cat: '2', type: 'A', note: c.fatNecrosisSuggest2('2') };
     } else if ((specialCase === 'intramammaryNode' || specialCase === 'axillaryNode') && nodeNormal !== null) {
-      suggestion = nodeNormal ? { cat: '2', note: c.nodeSuggest2('2') } : { cat: '4', note: c.nodeSuggest4('4') };
+      suggestion = nodeNormal ? { cat: '2', type: 'A', note: c.nodeSuggest2('2') } : { cat: '4', type: 'A', note: c.nodeSuggest4('4') };
     }
   }
 
@@ -224,6 +266,7 @@ export default function BiradsUltrasound() {
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.posteriorCombinedRemovedNote}</p>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-snug">{c.posteriorRefractiveNote}</p>
           </div>
+          <SuggestionNote suggestion={suggestion} c={c} />
         </Card>
       )}
 
@@ -251,6 +294,8 @@ export default function BiradsUltrasound() {
             <OptionButtons options={c.specialOptions} value={specialCase} onChange={setSpecialCase} />
           </div>
 
+          {specialCase === 'simpleCyst' && <SuggestionNote suggestion={suggestion} c={c} />}
+
           {specialCase === 'clusteredMicrocysts' && (
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.microcystsToggleLabel}</label>
@@ -258,6 +303,7 @@ export default function BiradsUltrasound() {
                 <button onClick={() => setMicrocystsAbnormal(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${microcystsAbnormal === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
                 <button onClick={() => setMicrocystsAbnormal(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${microcystsAbnormal === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
+              {microcystsAbnormal !== null && <SuggestionNote suggestion={suggestion} c={c} />}
             </div>
           )}
 
@@ -268,6 +314,7 @@ export default function BiradsUltrasound() {
                 <button onClick={() => setComplicatedCystConfirmed(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${complicatedCystConfirmed === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
                 <button onClick={() => setComplicatedCystConfirmed(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${complicatedCystConfirmed === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
+              {complicatedCystConfirmed === true && <SuggestionNote suggestion={suggestion} c={c} />}
               {complicatedCystConfirmed === false && <InfoBox tone="amber">{c.complicatedCystIndeterminate}</InfoBox>}
             </div>
           )}
@@ -279,6 +326,7 @@ export default function BiradsUltrasound() {
                 <button onClick={() => setFatNecrosisConfirmed(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${fatNecrosisConfirmed === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
                 <button onClick={() => setFatNecrosisConfirmed(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${fatNecrosisConfirmed === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
+              {fatNecrosisConfirmed === true && <SuggestionNote suggestion={suggestion} c={c} />}
               {fatNecrosisConfirmed === false && <InfoBox tone="amber">{c.fatNecrosisIndeterminate}</InfoBox>}
             </div>
           )}
@@ -292,6 +340,7 @@ export default function BiradsUltrasound() {
                 <button onClick={() => setNodeNormal(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${nodeNormal === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
                 <button onClick={() => setNodeNormal(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${nodeNormal === false ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
+              {nodeNormal !== null && <SuggestionNote suggestion={suggestion} c={c} />}
             </div>
           )}
         </Card>
@@ -348,7 +397,7 @@ export default function BiradsUltrasound() {
 
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.finalCategoryLabel}</label>
-        {suggestion && (suggestion.note ? <InfoBox tone="amber">{c.suggestedBadge(suggestion.cat)} — {suggestion.note}</InfoBox> : <InfoBox tone="amber">{c.suggestedBadge(suggestion.cat)}</InfoBox>)}
+        <SuggestionNote suggestion={suggestion} c={c} />
         <div className="space-y-2">
           {c.finalCategoryOptions.map(opt => (
             <button
