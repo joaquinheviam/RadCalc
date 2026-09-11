@@ -1,4 +1,14 @@
 export const REFERENCES = {
+  biradsMammo: [
+    'D\'Orsi CJ, Sickles EA, Newell MS, et al. ACR BI-RADS Atlas, Breast Imaging Reporting and Data System, 6th edition. Reston, VA: American College of Radiology; 2025.',
+    { text: 'Minichetti P, Cereser L, Versienti E, Francioso F, Sparascio F, Girometti R, Zuiani C. BI-RADS v2025: Key Updates and Implications for Breast Imaging Practice. AJR Am J Roentgenol. 2026.', doi: '10.2214/AJR.26.35051' },
+    'Schijf L, Smithuis R. BI-RADS v2025 Manual - Mammography. The Radiology Assistant. Updated 2026-01-04. Available at: radiologyassistant.nl/breast/bi-rads.',
+  ],
+  biradsUs: [
+    'D\'Orsi CJ, Sickles EA, Newell MS, et al. ACR BI-RADS Atlas, Breast Imaging Reporting and Data System, 6th edition. Reston, VA: American College of Radiology; 2025.',
+    { text: 'Minichetti P, Cereser L, Versienti E, Francioso F, Sparascio F, Girometti R, Zuiani C. BI-RADS v2025: Key Updates and Implications for Breast Imaging Practice. AJR Am J Roentgenol. 2026.', doi: '10.2214/AJR.26.35051' },
+    'Schijf L, Smithuis R. BI-RADS v2025 Manual - Ultrasound. The Radiology Assistant. Updated 2026-08-04. Available at: radiologyassistant.nl/breast/bi-rads/BI-RADS-v2025-Ultrasound.',
+  ],
   thoracicglossary: [
     'Bankier AA, MacMahon H, Colby T, Gevenois PA, Goo JM, Leung ANC, Lynch DA, Schaefer-Prokop CM, Tomiyama N, Travis WD, Verschakelen JA, White CS, Naidich DP. Fleischner Society: glossary of terms for thoracic imaging. Radiology. 2024;310(2):e232558.',
   ],
@@ -26,7 +36,7 @@ export const REFERENCES = {
     { text: 'Blake MA, Kalra MK, Sweeney AT, Lucey BC, Maher MM, Sahani DV, Halpern EF, Mueller PR, Hahn PF, Boland GW. Distinguishing benign from malignant adrenal masses: multi-detector row CT protocol with 10-minute delay. Radiology. 2006;238(2):578-585.', doi: '10.1148/radiol.2382041514' },
     { text: 'Kamiyama T, Fukukura Y, Yoneyama T, Takumi K, Nakajo M. Distinguishing adrenal adenomas from nonadenomas: combined use of diagnostic parameters of unenhanced and short 5-minute dynamic enhanced CT protocol. Radiology. 2009;250(2):474-481.', doi: '10.1148/radiol.2502080302' },
     'Kumagae Y, Fukukura Y, Takumi K, Shindo T, Tateyama A, Kamiyama T, Nakajo M, Yoshiura T. Distinguishing adrenal adenomas from non-adenomas on dynamic enhanced CT: a comparison of 5 and 10 min delays after intravenous contrast medium injection. Clin Radiol. 2013;68(7):696-703.',
-    'Liu T, Sun H, Zhang H, Duan J, Hu Y, Xie S. Distinguishing adrenal adenomas from non-adenomas with multidetector CT: evaluation of percentage washout values at a short time delay triphasic enhanced CT. 2019.',
+    { text: 'Liu T, Sun H, Zhang H, Duan J, Hu Y, Xie S. Distinguishing adrenal adenomas from non-adenomas with multidetector CT: evaluation of percentage washout values at a short time delay triphasic enhanced CT. Br J Radiol. 2019;92(1094):20180429.', doi: '10.1259/bjr.20180429' },
     { text: 'Nandra G, Duxbury O, Patel P, Patel JH, Patel N, Vlahos I. Technical and interpretive pitfalls in adrenal imaging. Radiographics. 2020;40(4):1041-1060.', doi: '10.1148/rg.2020190080' },
     { text: 'Schieda N, Siegelman ES. Update on CT and MRI of adrenal nodules. AJR Am J Roentgenol. 2017;208(6):1206-1217.', doi: '10.2214/AJR.16.17758' },
     'O\'Brien A, Oyanedel R, Huete A, Cruz F, Menias C. Masas suprarrenales: evaluación por tomografía computada y resonancia magnética. Rev Chil Radiol. 2009;15(1):31-38.',
@@ -182,7 +192,7 @@ export const REFERENCES = {
     'Podolanczuk AJ, Hunninghake GM, et al. Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement. Am J Respir Crit Care Med. 2025;211(7):1132-1155.',
     'Ryerson CJ, Wells AU, Richeldi L, et al. A Consensus Nomenclature and Classification for Fibrotic and Inflammatory Interstitial Lung Diseases: An Official ERS/ATS Statement. Eur Respir J / Am J Respir Crit Care Med. 2025.',
     'Raghu G, Remy-Jardin M, Richeldi L, et al. Idiopathic Pulmonary Fibrosis (an Update) and Progressive Pulmonary Fibrosis in Adults: An Official ATS/ERS/JRS/ALAT Clinical Practice Guideline. Am J Respir Crit Care Med. 2022;205(9):e18-e47.',
-    'Dulcich M, et al. Smoking-related interstitial lung disease: imaging spectrum and diagnostic pitfalls. RadioGraphics.',
+    { text: 'Dulcich G, Mestas Núñez M, Bang TJ, Zuccarino F, Perez-Johnston R, Cool C, Vargas D. Imaging Findings of Smoking-related Pulmonary Parenchymal Disease. RadioGraphics. 2026;46(6):e250167.', doi: '10.1148/rg.250167' },
     'Chung JH, Cox CW, Montner SM, et al. CT Features of the Usual Interstitial Pneumonia Pattern: Differentiating Connective Tissue Disease-Associated Interstitial Lung Disease from Idiopathic Pulmonary Fibrosis. AJR Am J Roentgenol. 2018;210(2):307-313.',
     'Ahuja J, Arora D, Kanne JP, Henry TS, Godwin JD. Imaging of Pulmonary Manifestations of Connective Tissue Diseases. Radiol Clin North Am. 2016;54(6):1015-1031.',
     'Marinescu DC, Hague CJ, Muller NL, et al. Association of CT Features with Radiologic Patterns in Interstitial Lung Disease: Multinomial Analysis in CARE-PF. Radiology. 2026;318(3):e251944.',

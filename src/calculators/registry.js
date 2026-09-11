@@ -46,6 +46,8 @@ const ORADS = lazy(() => import('./ORADS.jsx'));
 const UterineFibroids = lazy(() => import('./UterineFibroids.jsx'));
 const AdnexalIncidental = lazy(() => import('./AdnexalIncidental.jsx'));
 const OvarianNeoplasmDx = lazy(() => import('./OvarianNeoplasmDx.jsx'));
+const BiradsMammography = lazy(() => import('./BiradsMammography.jsx'));
+const BiradsUltrasound = lazy(() => import('./BiradsUltrasound.jsx'));
 
 export const calculators = [
   // Cabeza y cuello
@@ -90,6 +92,9 @@ export const calculators = [
   { id: 'leiomyoma', catKey: 'gyn', component: UterineFibroids },
   { id: 'adnexalIncidental', catKey: 'gyn', component: AdnexalIncidental },
   { id: 'ovarianNeoplasmDx', catKey: 'gyn', component: OvarianNeoplasmDx },
+  // Mama
+  { id: 'biradsMammo', catKey: 'breast', component: BiradsMammography },
+  { id: 'biradsUs', catKey: 'breast', component: BiradsUltrasound },
 ];
 
-export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn'];
+export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast'];
