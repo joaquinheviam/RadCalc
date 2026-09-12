@@ -132,6 +132,27 @@ export default function VDT() {
   // ---- BTS (vía Callister/NEJM 2026, Tabla 2) ----
   const btsBand = isGrowth ? (vdtDays <= 400 ? 1 : vdtDays <= 600 ? 2 : 3) : null;
 
+  // ---- Frase-resumen de "temperatura clínica" (independiente del tipo de nódulo) ----
+  // Reutiliza los mismos umbrales ya verificados y usados arriba (20 días de classicSolidRapidNote,
+  // 400/600 de btsBand) en vez de introducir cifras nuevas — es solo una capa de lectura rápida,
+  // nunca reemplaza la lectura detallada por marco de más abajo.
+  const summaryBandKey = (isStable || isShrinkage)
+    ? 'stableOrRegressing'
+    : isGrowth
+      ? (vdtDays < 20 ? 'ultraFast' : vdtDays <= 400 ? 'suspicious' : vdtDays <= 600 ? 'indeterminate' : 'indolent')
+      : null;
+  const SUMMARY_TONE = { ultraFast: 'amber', suspicious: 'red', indeterminate: 'amber', indolent: 'emerald', stableOrRegressing: 'emerald' };
+  const SUMMARY_TONE_CLASS = { red: 'text-red-500', amber: 'text-amber-500', emerald: 'text-emerald-500' };
+  const summaryToneClass = summaryBandKey ? SUMMARY_TONE_CLASS[SUMMARY_TONE[summaryBandKey]] : '';
+  const SUMMARY_NOTE_KEY = {
+    ultraFast: 'summaryUltraFastNote',
+    suspicious: 'summarySuspiciousNote',
+    indeterminate: 'summaryIndeterminateNote',
+    indolent: 'summaryIndolentNote',
+    stableOrRegressing: 'summaryStableOrRegressingNote',
+  };
+  const summaryNote = summaryBandKey ? c[SUMMARY_NOTE_KEY[summaryBandKey]] : null;
+
   const showInterpretation = hasAllInputs;
   const showResult = hasAllInputs;
 
@@ -147,6 +168,7 @@ export default function VDT() {
     if (noduleType && jiangThresholdNote) lines.push(`${c.jiangFrameTitle}: ${jiangThresholdNote}`);
     if (estiBucket) lines.push(`${c.estiFrameTitle}: ${c[`esti${estiBucket}ThresholdNote`]}`);
     if (btsBand) lines.push(`${c.btsFrameTitle}: ${c[`btsBand${btsBand}Note`]}`);
+    if (summaryNote) lines.push(summaryNote);
     copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
   };
 
@@ -157,6 +179,8 @@ export default function VDT() {
 
   return (
     <div className={`space-y-4 animate-in fade-in ${showResult ? 'pb-56' : ''}`}>
+      <InfoBox tone="amber">{c.oncologicPatientCaveatNote}</InfoBox>
+
       <Card>
         <OptionList
           label={c.noduleTypeLabel}
@@ -216,19 +240,20 @@ export default function VDT() {
             {isGrowth && (
               <>
                 <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.resultVdtLabel}</span>
-                <span className="text-3xl font-black text-amber-500">{Math.round(vdtDays)} d</span>
+                <span className={`text-3xl font-black ${summaryToneClass}`}>{Math.round(vdtDays)} d</span>
               </>
             )}
             {isShrinkage && (
               <>
                 <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.resultShrinkageLabel}</span>
-                <span className="text-3xl font-black text-emerald-500">{Math.round(vhtDays)} d</span>
+                <span className={`text-3xl font-black ${summaryToneClass}`}>{Math.round(vhtDays)} d</span>
               </>
             )}
             {isStable && (
-              <span className="text-lg font-bold text-slate-500 dark:text-slate-400">{c.resultStableLabel}</span>
+              <span className={`text-lg font-bold ${summaryToneClass}`}>{c.resultStableLabel}</span>
             )}
-            <p className="text-xs text-slate-400 dark:text-slate-500 pt-2">{c.crossCheckNote(volumePercent.toFixed(1), diameterPercent.toFixed(1))}</p>
+            {summaryNote && <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 pt-2">{summaryNote}</p>}
+            <p className="text-xs text-slate-400 dark:text-slate-500 pt-1">{c.crossCheckNote(volumePercent.toFixed(1), diameterPercent.toFixed(1))}</p>
           </Card>
 
           {isGrowth && (
@@ -321,16 +346,17 @@ export default function VDT() {
             {isGrowth && (
               <>
                 <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultVdtLabel}</span>
-                <span className="text-3xl font-black text-amber-500 block mt-1">{Math.round(vdtDays)} d</span>
+                <span className={`text-3xl font-black block mt-1 ${summaryToneClass}`}>{Math.round(vdtDays)} d</span>
               </>
             )}
             {isShrinkage && (
               <>
                 <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultShrinkageLabel}</span>
-                <span className="text-3xl font-black text-emerald-500 block mt-1">{Math.round(vhtDays)} d</span>
+                <span className={`text-3xl font-black block mt-1 ${summaryToneClass}`}>{Math.round(vhtDays)} d</span>
               </>
             )}
-            {isStable && <span className="text-xl font-bold text-slate-500 dark:text-slate-400">{c.resultStableLabel}</span>}
+            {isStable && <span className={`text-xl font-bold ${summaryToneClass}`}>{c.resultStableLabel}</span>}
+            {summaryNote && <span className="text-sm font-semibold block mt-2 leading-snug text-slate-600 dark:text-slate-300">{summaryNote}</span>}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />
