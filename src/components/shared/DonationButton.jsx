@@ -104,9 +104,16 @@ function DonationMenu({ t }) {
 }
 
 function PaypalForm({ hostedButtonId, label, asMenuItem, onSubmitClick, subtitle }) {
+  // Importante: no cerrar el menú de forma síncrona en el mismo tick del
+  // submit. Si el <form> se desmonta antes de que el navegador procese el
+  // envío, éste lo cancela con "Form submission canceled because the form
+  // is not connected" y el click no hace nada (bug reportado por el
+  // usuario). Diferimos el cierre con setTimeout para que el navegador ya
+  // haya iniciado la navegación/apertura de pestaña antes de desmontar.
+  const handleSubmit = onSubmitClick ? () => setTimeout(onSubmitClick, 0) : undefined;
   if (asMenuItem) {
     return (
-      <form action="https://www.paypal.com/donate" method="post" target="_blank" rel="noopener" onSubmit={onSubmitClick}>
+      <form action="https://www.paypal.com/donate" method="post" target="_blank" rel="noopener" onSubmit={handleSubmit}>
         <input type="hidden" name="hosted_button_id" value={hostedButtonId} />
         <button
           type="submit"
