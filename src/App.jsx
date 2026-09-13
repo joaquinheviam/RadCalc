@@ -10,7 +10,8 @@ import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
 import { updateSeoHead } from './utils/seoHead.js';
 import { Logo, SiteFooter } from './components/shared/index.js';
-import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar } from './components/icons/index.js';
+import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail } from './components/icons/index.js';
+import { buildMailto } from './utils/mailto.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
 
 // Fila de una calculadora en el listado (favoritas, resultados de búsqueda o
@@ -283,9 +284,22 @@ function AppShell() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-center text-sm text-slate-400 dark:text-slate-500 py-6">
-                    {t.search.noResults} "{searchQuery}"
-                  </p>
+                  <div className="flex flex-col items-center gap-4 py-6">
+                    <p className="text-center text-sm text-slate-400 dark:text-slate-500">
+                      {t.search.noResults} "{searchQuery}"
+                    </p>
+                    <div className="max-w-sm w-full bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-4 text-center">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                        {t.search.requestHint}
+                      </p>
+                      <a
+                        href={buildMailto(searchQuery, lang, 'missingCalculator')}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                      >
+                        <IconMail size={14} /> {t.search.requestButton}
+                      </a>
+                    </div>
+                  </div>
                 )
               ) : (
                 <>
