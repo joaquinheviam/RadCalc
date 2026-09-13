@@ -1,6 +1,7 @@
 export default {
   appName: 'RadioCalc Clinical',
   tagline: 'Calculadoras radiológicas para la práctica clínica diaria',
+  metaDescription: 'Calculadoras radiológicas para la práctica clínica diaria, con algoritmos que integran las guías de las principales sociedades científicas, apoyo para el manejo de hallazgos incidentales, y todo basado en evidencia.',
   common: {
     copyReport: 'Copiar texto para informe',
     copy: 'Copiar',
@@ -14,6 +15,10 @@ export default {
     createdBy: 'Creado por',
     donateText: 'Ayúdame a mantener esta calculadora clínica gratis y sin publicidad',
     donateButton: 'Cómprame un café',
+    donateChooseMethod: 'Elige un método',
+    donateClp: 'Pesos chilenos (CLP)',
+    donateIntl: 'Internacional (USD/EUR, tarjeta)',
+    oldDomainNotice: 'Nos mudamos: esta calculadora ahora vive en',
     disclaimer: 'Esta herramienta es un apoyo de referencia rápida con fines educativos para el informe radiológico. El autor no garantiza la exactitud de la información aquí contenida, y esta no reemplaza el juicio clínico ni las guías vigentes de cada sociedad científica. Verifique siempre los criterios actualizados antes de tomar decisiones clínicas.',
     back: 'Volver',
     reset: 'Reiniciar',
@@ -87,6 +92,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-13', text: 'El sitio ahora vive en el dominio propio radiocalc.app (antes rad-calc.vercel.app): se actualizaron el canonical, el sitemap, las etiquetas Open Graph, los datos estructurados (schema.org) y la medición de Google Analytics. Quien llegue desde la dirección anterior ve un aviso indicando el nuevo dominio. También se agrega la opción de donar por PayPal (además de Mercado Pago), se corrige "Acinio" → "Acino" en el glosario torácico, y la descripción del sitio ahora menciona explícitamente los algoritmos de integración de guías de sociedades científicas y el manejo de hallazgos incidentales, además de que todo está basado en evidencia.' },
       { date: '2026-09-12', text: 'En la calculadora VDT: se agrega una nota de advertencia inicial que aclara que los cuatro marcos de referencia (Gould/ACCP 2013, Jiang 2024, ESTI/Prokop 2026, BTS/Callister 2026) se desarrollaron en nódulos incidentales o de tamizaje sin cáncer activo conocido, y que en pacientes con antecedente oncológico un nódulo nuevo o en crecimiento plantea una disyuntiva distinta (metástasis vs. segundo primario vs. causa no neoplásica) que no es directamente evaluable con estos umbrales. También se agrega, en el cuadro de resultado, una frase-resumen cualitativa de "temperatura clínica" (crecimiento ultrarrápido / sospechoso / indeterminado / indolente / estable-regresivo) con su propio color, que reutiliza los mismos umbrales numéricos ya usados en las secciones detalladas de cada marco, sin introducir cifras nuevas.' },
       { date: '2026-09-11', text: 'Se agrega la calculadora VDT (Tiempo de Duplicación de Volumen) para nódulos pulmonares, en la categoría "Tórax": calcula el tiempo de duplicación (o de reducción a la mitad, si el nódulo regresó) a partir de dos mediciones seriadas por volumen o diámetro, y compara la interpretación según cuatro marcos de referencia sin fusionarlos entre sí: el marco clásico de Gould et al./ACCP 2013 (rango 20-400 días para malignidad en sólidos, 2 años de estabilidad = benigno), el metaanálisis de Jiang et al. 2024 (promedios agrupados por tipo/histología y umbrales de derivación validados/propuestos), el marco de la Sociedad Europea de Imagen Torácica de Prokop et al. 2026 (umbrales de sospecha ajustados según el intervalo de seguimiento, para compensar el mayor margen de error de medición en intervalos cortos) y el esquema de 3 bandas de la British Thoracic Society (resumido en Callister & Silvestri, NEJM 2026), que también aporta el matiz de que los nódulos subsólidos requieren ≥ 4 años de estabilidad (no 2) para considerarse benignos. No se utilizó ningún contenido de las guías NCCN.' },
       { date: '2026-09-11', text: 'Se agregan las calculadoras BI-RADS Mamografía y BI-RADS Ecografía Mamaria (nueva categoría "Mama"), actualizadas a la revisión ACR BI-RADS Atlas v2025 (6ª edición): herramientas de descriptores estructurados y léxico BI-RADS, con sugerencia de categoría solo en los puntos donde la literatura da una regla explícita (calcificaciones sospechosas, asimetría focal sin correlato ecográfico, conducto dilatado solitario aislado y estable, y varios casos especiales en ecografía); la categoría final la asigna siempre el radiólogo. Basado en el ACR BI-RADS Atlas 6ª edición, la revisión de Minichetti et al. (AJR 2026) y los manuales BI-RADS v2025 de mamografía y ecografía de The Radiology Assistant.' },

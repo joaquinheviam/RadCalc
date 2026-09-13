@@ -6,7 +6,7 @@
 // aunque el sitio también se publique en GitHub Pages (VITE_BASE_PATH=/RadCalc/).
 // Así, la copia de GitHub Pages se autodeclara "canónica hacia Vercel" y no
 // compite por los mismos resultados de búsqueda (contenido duplicado).
-export const SEO_BASE_URL = 'https://rad-calc.vercel.app';
+export const SEO_BASE_URL = 'https://radiocalc.app';
 
 function setMetaByAttr(attrName, attrValue, content) {
   let el = document.head.querySelector(`meta[${attrName}="${attrValue}"]`);

@@ -1,5 +1,6 @@
 import InstallPromptIOS from './components/InstallPromptIOS';
 import InstallPromptAndroid from './components/InstallPromptAndroid';
+import OldDomainBanner from './components/OldDomainBanner';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import { LangContext } from './i18n/LangContext.js';
@@ -131,7 +132,7 @@ function AppShell() {
     } else {
       updateSeoHead({
         title: `${t.appName} — ${t.tagline}`,
-        description: t.tagline,
+        description: t.metaDescription,
         lang,
         pathSuffix: '',
       });
@@ -161,6 +162,7 @@ function AppShell() {
   return (
     <LangContext.Provider value={{ lang, t, toggleLang }}>
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-10">
+        <OldDomainBanner />
         <header className="sticky top-0 z-50 bg-blue-600 dark:bg-slate-800 text-white shadow-md px-4 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             {activeEntry ? (

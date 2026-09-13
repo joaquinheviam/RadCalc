@@ -19,3 +19,5 @@ export { default as IconCoffee } from './IconCoffee.jsx';
 export { default as IconStar } from './IconStar.jsx';
 export { default as IconClock } from './IconClock.jsx';
 export { default as IconGitBranch } from './IconGitBranch.jsx';
+export { default as IconExternalLink } from './IconExternalLink.jsx';
+export { default as IconGlobe } from './IconGlobe.jsx';

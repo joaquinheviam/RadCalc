@@ -9,7 +9,7 @@ import { dirname, join } from 'node:path';
 import { calculators } from '../src/calculators/registry.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BASE_URL = 'https://rad-calc.vercel.app';
+const BASE_URL = 'https://radiocalc.app';
 const LANGS = ['es', 'en'];
 
 const urls = [];

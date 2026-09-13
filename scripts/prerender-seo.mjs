@@ -25,7 +25,7 @@ import { STRINGS } from '../src/i18n/strings.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, '..', 'dist');
-const SEO_BASE_URL = 'https://rad-calc.vercel.app';
+const SEO_BASE_URL = 'https://radiocalc.app';
 const LANGS = ['es', 'en'];
 
 const template = readFileSync(join(distDir, 'index.html'), 'utf8');
@@ -75,7 +75,7 @@ for (const lang of LANGS) {
   writeRoute(lang, buildHead(template, {
     lang,
     title: `${t.appName} — ${t.tagline}`,
-    description: t.tagline,
+    description: t.metaDescription,
     pathSuffix: '',
   }));
   count++;

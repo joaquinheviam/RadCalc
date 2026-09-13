@@ -8,7 +8,7 @@
 export const FLEISCHNER_TERMS = [
   // --- Términos principales y descriptores ---
   { id: 'acinus', cat: 'anatomy',
-    es: { term: 'Acinio (Acinus)', def: 'Unidad estructural del pulmón distal al bronquiolo terminal suministrada por un bronquiolo respiratorio de primer orden (4-8 mm de diámetro). El lobulillo pulmonar secundario contiene entre 3 y 25 acinios.' },
+    es: { term: 'Acino (Acinus)', def: 'Unidad estructural del pulmón distal al bronquiolo terminal suministrada por un bronquiolo respiratorio de primer orden (4-8 mm de diámetro). El lobulillo pulmonar secundario contiene entre 3 y 25 acinos.' },
     en: { term: 'Acinus (pl. Acini)', def: 'A structural unit of the lung distal to the terminal bronchiole and supplied by a first-order respiratory bronchiole (4-8 mm diameter). The secondary pulmonary lobule contains 3 to 25 acini.' } },
   { id: 'air-bronchogram', cat: 'pathology',
     es: { term: 'Broncograma aéreo (Air Bronchogram)', def: 'Vías aéreas llenas de aire dentro de parénquima pulmonar parcial o completamente opacificado/sin aire. Implica permeabilidad de vías aéreas proximales y evacuación/reemplazo del aire alveolar por fluido, tejido o absorción.' },
@@ -104,7 +104,7 @@ export const FLEISCHNER_TERMS = [
     es: { term: 'Enfisema panlobulillar (Panlobular Emphysema)', def: 'Destrucción enfisematosa uniforme que involucra la totalidad del lobulillo secundario. Clásico de la deficiencia de alfa-1 antitripsina con predominio basal.' },
     en: { term: 'Panlobular Emphysema', def: 'Diffuse emphysematous destruction across the entire secondary pulmonary lobule, typical of alpha-1 antitrypsin deficiency with lower lobe predominance.' } },
   { id: 'emphysema-paraseptal', cat: 'pathology',
-    es: { term: 'Enfisema paraseptal (Paraseptal Emphysema)', def: 'Destrucción enfisematosa del acinio distal adyacente a la superficie pleural y septos interlobulillares. Puede predisponer a neumotórax espontáneo.' },
+    es: { term: 'Enfisema paraseptal (Paraseptal Emphysema)', def: 'Destrucción enfisematosa del acino distal adyacente a la superficie pleural y septos interlobulillares. Puede predisponer a neumotórax espontáneo.' },
     en: { term: 'Paraseptal Emphysema', def: 'Focal emphysematous destruction of distal acini adjacent to pleural surfaces and interlobular septa. Associated with spontaneous pneumothorax.' } },
   { id: 'empyema', cat: 'pathology',
     es: { term: 'Empiema (Empyema)', def: 'Acumulación purulenta en el espacio pleural. En TC muestra realce y engrosamiento de ambas hojas pleurales (signo de la pleura dividida).' },
@@ -179,7 +179,7 @@ export const FLEISCHNER_TERMS = [
     es: { term: 'Tráquea en vaina de sable (Saber-Sheath Trachea)', def: 'Deformidad traqueal intratorácica con marcado estrechamiento coronal (diámetro coronal ≤ 2/3 del sagital). Muy asociada a EPOC.' },
     en: { term: 'Saber-Sheath Trachea', def: 'Marked coronal narrowing of intrathoracic trachea with increased sagittal diameter (coronal diameter ≤ 2/3 sagittal). Strongly linked to COPD.' } },
   { id: 'secondary-pulmonary-lobule', cat: 'anatomy',
-    es: { term: 'Lobulillo pulmonar secundario (Secondary Pulmonary Lobule)', def: 'La unidad estructural más pequeña del parénquima pulmonar delimitada por septos conectivos (5-25 mm). Contiene entre 3 y 25 acinios y aloja arteriolas y bronquiolos centrales.' },
+    es: { term: 'Lobulillo pulmonar secundario (Secondary Pulmonary Lobule)', def: 'La unidad estructural más pequeña del parénquima pulmonar delimitada por septos conectivos (5-25 mm). Contiene entre 3 y 25 acinos y aloja arteriolas y bronquiolos centrales.' },
     en: { term: 'Secondary Pulmonary Lobule', def: 'Smallest anatomical lung unit bounded by connective tissue septa (5-25 mm). Contains 3-25 acini with central bronchovascular structures.' } },
   { id: 'signet-ring-sign', cat: 'pathology',
     es: { term: 'Signo del anillo de sello (Signet Ring Sign)', def: 'Estructura anular que representa un bronquio dilatado cortado transversalmente adyacente a su arteria pulmonar de menor tamaño. Característico de bronquiectasias.' },

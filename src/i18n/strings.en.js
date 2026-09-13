@@ -1,6 +1,7 @@
 export default {
   appName: 'RadioCalc Clinical',
   tagline: 'Radiology calculators for everyday clinical practice',
+  metaDescription: 'Radiology calculators for everyday clinical practice, with algorithms that integrate guidelines from major scientific societies, support for managing incidental findings, and everything grounded in evidence.',
   common: {
     copyReport: 'Copy text for report',
     copy: 'Copy',
@@ -14,6 +15,10 @@ export default {
     createdBy: 'Created by',
     donateText: 'Help me keep this clinical calculator free and ad-free',
     donateButton: 'Buy me a coffee',
+    donateChooseMethod: 'Choose a method',
+    donateClp: 'Chilean pesos (CLP)',
+    donateIntl: 'International (USD/EUR, card)',
+    oldDomainNotice: "We've moved: this calculator now lives at",
     disclaimer: 'This tool is a quick reference aid for radiology reporting, intended for educational purposes only. The author makes no claims as to the accuracy of the information contained herein, and it does not replace clinical judgment or the current guidelines of each scientific society. Always verify up-to-date criteria before making clinical decisions.',
     back: 'Back',
     reset: 'Reset',
@@ -87,6 +92,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-13', text: 'The site now lives on its own domain, radiocalc.app (previously rad-calc.vercel.app): the canonical URL, sitemap, Open Graph tags, structured data (schema.org), and Google Analytics tracking were all updated. Visitors arriving from the old address now see a notice pointing to the new domain. Also added a PayPal donation option (alongside Mercado Pago), fixed a "Acinio" → "Acino" typo in the Spanish chest glossary, and the site description now explicitly mentions the guideline-integration algorithms from scientific societies and incidental-findings management, in addition to being evidence-based.' },
       { date: '2026-09-12', text: 'In the VDT calculator: added an initial caveat clarifying that all four reference frameworks (Gould/ACCP 2013, Jiang 2024, ESTI/Prokop 2026, BTS/Callister 2026) were developed in incidental or screening-detected nodules without known active cancer, and that in patients with a history of malignancy, a new or growing nodule raises a different question (metastasis vs. second primary vs. non-neoplastic cause) that these thresholds do not directly address. Also added, in the result card, a qualitative "clinical temperature" summary phrase (ultra-fast / suspicious / indeterminate / indolent / stable-or-regressing growth) with its own color, which reuses the same numeric thresholds already used in each framework\'s detailed section, without introducing any new figures.' },
       { date: '2026-09-11', text: 'Added the VDT (Volume Doubling Time) calculator for pulmonary nodules, in the "Chest" category: calculates the doubling time (or halving time, for a regressing nodule) from two serial volume or diameter measurements, and compares the interpretation across four reference frameworks without merging them: the classic Gould et al./ACCP 2013 framework (20-400 day range for malignancy in solid nodules, 2-year stability = benign), the Jiang et al. 2024 meta-analysis (pooled means by type/histology and validated/proposed referral thresholds), the European Society of Thoracic Imaging framework by Prokop et al. 2026 (suspicion thresholds adjusted by follow-up interval, to compensate for the larger measurement-error margin at short intervals), and the British Thoracic Society\'s 3-band scheme (summarized in Callister & Silvestri, NEJM 2026), which also adds the nuance that subsolid nodules require ≥ 4 years of stability (not 2) to be considered benign. No NCCN guideline content was used.' },
       { date: '2026-09-11', text: 'Added the BI-RADS Mammography and BI-RADS Breast Ultrasound calculators (new "Breast" category), updated to the ACR BI-RADS Atlas v2025 revision (6th edition): structured descriptor and lexicon tools, with a category suggestion only at the points where the literature gives an explicit rule (suspicious calcifications, focal asymmetry without an ultrasound correlate, an isolated and stable solitary dilated duct, and several special cases in ultrasound); the final category is always assigned by the radiologist. Based on the ACR BI-RADS Atlas 6th edition, the Minichetti et al. (AJR 2026) review, and The Radiology Assistant\'s v2025-updated mammography and ultrasound manuals.' },
