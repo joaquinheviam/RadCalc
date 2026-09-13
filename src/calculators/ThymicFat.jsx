@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { IconGitBranch, IconArrowRight, IconChevronLeft, IconRefresh } from '../components/icons/index.js';
+import { IconGitBranch, IconArrowRight, IconChevronLeft, IconRefresh, IconInfo } from '../components/icons/index.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
 
 // Puntos de corte validados por Priola et al. (Radiology 2015): SII > 8.92%
@@ -19,7 +19,21 @@ const OPTION_BTN =
 
 function GreenishTriage({ g }) {
   const [step, setStep] = useState('q1'); // q1 | q2 | cyst | complex | proceed
-  const reset = () => setStep('q1');
+  const [showAdc, setShowAdc] = useState(false);
+  const [adcLesion, setAdcLesion] = useState('');
+  const [adcCsf, setAdcCsf] = useState('');
+  const aLesion = parseFloat(adcLesion);
+  const aCsf = parseFloat(adcCsf);
+  const hasAdc = !isNaN(aLesion) && !isNaN(aCsf) && aCsf !== 0;
+  const nadc = hasAdc ? aLesion / aCsf : null;
+  const nadcFavorsCyst = nadc !== null ? nadc > 0.63 : null;
+
+  const reset = () => {
+    setStep('q1');
+    setShowAdc(false);
+    setAdcLesion('');
+    setAdcCsf('');
+  };
 
   const resultMap = {
     cyst: { tone: 'emerald', title: g.resultSimpleCystTitle, text: g.resultSimpleCystText },
@@ -42,6 +56,41 @@ function GreenishTriage({ g }) {
             <span>{g.q1No}</span>
             <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
           </button>
+
+          <div className="pt-1">
+            <button
+              onClick={() => setShowAdc((v) => !v)}
+              className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1"
+            >
+              <IconInfo size={14} />
+              {showAdc ? g.adc.toggleHide : g.adc.toggleShow}
+            </button>
+            {showAdc && (
+              <div className="mt-2 p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                <p className="text-xs text-slate-500 dark:text-slate-400">{g.adc.intro}</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <NumberField small label={g.adc.lesionLabel} value={adcLesion} onChange={setAdcLesion} />
+                  <NumberField small label={g.adc.csfLabel} value={adcCsf} onChange={setAdcCsf} />
+                </div>
+                {hasAdc && (
+                  <div className="space-y-2">
+                    <div className="text-center">
+                      <span className="block text-xs text-slate-500 mb-1">{g.adc.resultLabel}</span>
+                      <span className={`text-xl font-bold ${nadcFavorsCyst ? 'text-emerald-500' : 'text-amber-500'}`}>
+                        {nadc.toFixed(2)}
+                      </span>
+                    </div>
+                    <InfoBox tone={nadcFavorsCyst ? 'emerald' : 'amber'}>
+                      <span className="block font-semibold mb-1">
+                        {nadcFavorsCyst ? g.adc.favorsCystTitle : g.adc.favorsSolidTitle}
+                      </span>
+                      {nadcFavorsCyst ? g.adc.favorsCystText : g.adc.favorsSolidText}
+                    </InfoBox>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

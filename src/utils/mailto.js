@@ -23,6 +23,10 @@ export const buildMailto = (calcTitle, lang, type = 'bug') => {
         subject: `RadioCalc Clinical - Sugerencia de nueva calculadora${calcTitle ? ' (busqué: ' + calcTitle + ')' : ''}`,
         body: `Hola Dr. Hevia,\n\nNo encontré la siguiente calculadora o algoritmo en RadioCalc y me gustaría sugerir su incorporación${calcTitle ? ` (busqué: "${calcTitle}")` : ''}.\n\n1. Nombre de la calculadora o algoritmo:\n- \n\n2. Evidencia bibliográfica o DOI que la respalde:\n- \n\nGracias.`,
       },
+      sponsor: {
+        subject: `RadioCalc Clinical - Aviso de donación para Agradecimientos`,
+        body: `Hola Dr. Hevia,\n\nRealicé una donación voluntaria a RadioCalc Clinical y me gustaría aparecer en la sección de Agradecimientos.\n\n1. Nombre a mostrar (persona o institución):\n- \n\n2. Monto aproximado donado:\n- \n\n3. ¿Adjunta comprobante de la donación?\n[ ] Sí, adjunto comprobante.\n\n4. ¿Es una donación institucional o de una empresa?\n[ ] Sí, represento a una institución o empresa.\n[ ] No, es una donación personal.\n\nGracias.`,
+      },
     },
     en: {
       bug: {
@@ -40,6 +44,10 @@ export const buildMailto = (calcTitle, lang, type = 'bug') => {
       missingCalculator: {
         subject: `RadioCalc Clinical - New calculator suggestion${calcTitle ? ' (I searched: ' + calcTitle + ')' : ''}`,
         body: `Hi Dr. Hevia,\n\nI couldn't find the following calculator or algorithm in RadioCalc and would like to suggest adding it${calcTitle ? ` (I searched: "${calcTitle}")` : ''}.\n\n1. Name of the calculator or algorithm:\n- \n\n2. Supporting literature or DOI:\n- \n\nThanks.`,
+      },
+      sponsor: {
+        subject: `RadioCalc Clinical - Donation notice for Acknowledgments`,
+        body: `Hi Dr. Hevia,\n\nI made a voluntary donation to RadioCalc Clinical and would like to appear in the Acknowledgments section.\n\n1. Name to display (person or institution):\n- \n\n2. Approximate amount donated:\n- \n\n3. Are you attaching proof of the donation?\n[ ] Yes, proof attached.\n\n4. Is this an institutional or company donation?\n[ ] Yes, I represent an institution or company.\n[ ] No, this is a personal donation.\n\nThanks.`,
       },
     },
   };

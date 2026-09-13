@@ -65,6 +65,8 @@ export const REFERENCES = {
     { text: 'Priola AM, Priola SM, Ciccone G, et al. Differentiation of rebound and lymphoid thymic hyperplasia from anterior mediastinal tumors with dual-echo chemical-shift MR imaging in adulthood: reliability of the chemical-shift ratio and signal intensity index. Radiology. 2015;274(1):238-249.', doi: '10.1148/radiol.14132665' },
     { text: 'Klug M, Strange CD, Truong MT, Kirshenboim Z, Ofek E, Konen E, Marom EM. Thymic imaging pitfalls and strategies for optimized diagnosis. RadioGraphics. 2024;44(5):e230091.', doi: '10.1148/rg.230091' },
     { text: 'Greenish D, Evans CJ, Khine CK, Rodrigues JCL. The thymus: what\'s normal and what\'s not? Problem-solving with MRI. Clin Radiol. 2023;78:885-894.', doi: '10.1016/j.crad.2023.08.015' },
+    { text: 'Hwang EJ, Paek MY, Yoon SH, Kim J, Lee HY, Goo JM, Kim H, Kim H, Ackman JB. Quantitative thoracic magnetic resonance criteria for the differentiation of cysts from solid masses in the anterior mediastinum. Korean J Radiol. 2019;20(5):854-861.', doi: '10.3348/kjr.2018.0699' },
+    { text: 'Ahn Y, Lee SM, Kim CH, Kim S, Choe J, Seo JB, Lee HY. Inter-reader agreement for diagnosing thymic cysts on chest MRI in two tertiary referral centers. Sci Rep. 2025;15:4295.', doi: '10.1038/s41598-025-88975-5' },
   ],
   tirads: [
     'Tessler FN, Middleton WD, Grant EG, et al. ACR Thyroid Imaging, Reporting and Data System (TI-RADS): white paper of the ACR TI-RADS Committee. J Am Coll Radiol. 2017;14(5):587-595.',
