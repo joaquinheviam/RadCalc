@@ -71,7 +71,7 @@ export default {
     placeholder: 'Buscar calculadora o concepto...',
     noResults: 'No se encontraron calculadoras para',
     resultsCount: 'resultado(s)',
-    requestHint: '¿Busca un algoritmo que no está? Indique qué calculadora necesita y la evidencia bibliográfica que la respalda.',
+    requestHint: '¿Busca un algoritmo que no está? Indique qué calculadora necesita (e idealmente) la evidencia bibliográfica que la respalda.',
     requestButton: 'Solicitar calculadora',
   },
   favorites: {

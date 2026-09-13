@@ -71,7 +71,7 @@ export default {
     placeholder: 'Search calculator or concept...',
     noResults: 'No calculators found for',
     resultsCount: 'result(s)',
-    requestHint: 'Looking for an algorithm that isn\'t here? Let us know which calculator you need and the supporting literature.',
+    requestHint: 'Looking for an algorithm that isn\'t here? Let us know which calculator you need and, ideally, the supporting literature.',
     requestButton: 'Request a calculator',
   },
   favorites: {
