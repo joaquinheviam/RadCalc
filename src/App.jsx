@@ -9,7 +9,7 @@ import { SEARCH_TERMS } from './i18n/searchTerms.js';
 import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
 import { updateSeoHead } from './utils/seoHead.js';
-import { Logo, SiteFooter } from './components/shared/index.js';
+import { Logo, SiteFooter, Sponsors, AboutInfo } from './components/shared/index.js';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail } from './components/icons/index.js';
 import { buildMailto } from './utils/mailto.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
@@ -70,6 +70,7 @@ function AppShell() {
   const [, setStoredLang] = useLocalStorageState('radiocalc:lang', 'es');
   const [favorites, setFavorites] = useLocalStorageState('radiocalc:favorites', []);
   const [searchQuery, setSearchQuery] = useState('');
+  const [topModal, setTopModal] = useState(null); // null | 'sponsors' | 'about'
 
   const isFavorite = (id) => favorites.includes(id);
   const toggleFavorite = (id) => {
@@ -223,12 +224,25 @@ function AppShell() {
                   </button>
                 )}
               </div>
-              {!searchResults && favoriteCalcs.length > 0 && (
+              {!searchResults && (
                 <div>
-                  <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1 flex items-center gap-1.5">
-                    <IconStar size={14} filled className="text-amber-400" />
-                    {t.favorites.title}
-                  </h2>
+                  <div className="flex items-center justify-between mb-3 px-1 gap-2">
+                    {favoriteCalcs.length > 0 ? (
+                      <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <IconStar size={14} filled className="text-amber-400" />
+                        {t.favorites.title}
+                      </h2>
+                    ) : (
+                      <span />
+                    )}
+                    <button
+                      onClick={() => setTopModal('sponsors')}
+                      className="text-xs font-medium text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0"
+                    >
+                      {t.common.sponsorsButton}
+                    </button>
+                  </div>
+                  {favoriteCalcs.length > 0 && (
                   <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
                     {favoriteCalcs.map((cc, i) => (
                       <CalcListRow
@@ -263,8 +277,13 @@ function AppShell() {
                       />
                     ))}
                   </div>
+                  )}
                 </div>
               )}
+              {topModal === 'sponsors' && (
+                <Sponsors onClose={() => setTopModal(null)} onOpenAbout={() => setTopModal('about')} />
+              )}
+              {topModal === 'about' && <AboutInfo onClose={() => setTopModal(null)} />}
               {searchResults ? (
                 searchResults.length > 0 ? (
                   <div>
