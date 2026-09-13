@@ -67,6 +67,10 @@ export const REFERENCES = {
     { text: 'Greenish D, Evans CJ, Khine CK, Rodrigues JCL. The thymus: what\'s normal and what\'s not? Problem-solving with MRI. Clin Radiol. 2023;78:885-894.', doi: '10.1016/j.crad.2023.08.015' },
     { text: 'Hwang EJ, Paek MY, Yoon SH, Kim J, Lee HY, Goo JM, Kim H, Kim H, Ackman JB. Quantitative thoracic magnetic resonance criteria for the differentiation of cysts from solid masses in the anterior mediastinum. Korean J Radiol. 2019;20(5):854-861.', doi: '10.3348/kjr.2018.0699' },
     { text: 'Ahn Y, Lee SM, Kim CH, Kim S, Choe J, Seo JB, Lee HY. Inter-reader agreement for diagnosing thymic cysts on chest MRI in two tertiary referral centers. Sci Rep. 2025;15:4295.', doi: '10.1038/s41598-025-88975-5' },
+    { text: 'Abdel Razek AAK, Khairy M, Nada N. Diffusion-weighted MR imaging in thymic epithelial tumors: correlation with World Health Organization classification and clinical staging. Radiology. 2014;273(1):268-275.', doi: '10.1148/radiol.14131643' },
+    { text: 'Shen J, Zhang W, Zhu JJ, Xue L, Yuan M, Xu H, Xu XQ, Yu TF, Wu FY. Multiparametric magnetic resonance imaging for assessing thymic epithelial tumors: correlation with pathological subtypes and clinical stages. J Magn Reson Imaging. 2022;56(5):1487-1496.', doi: '10.1002/jmri.28198' },
+    { text: 'Thuy TTM, Duc VT, Vy TT, Nam NH, Duc NM. The value of diffusion-weighted and dynamic contrast-enhanced imaging in the diagnosis of thymic epithelial tumors. Int J Med Sci. 2022;19(11):1638-1647.', doi: '10.7150/ijms.76179' },
+    { text: 'Lan JT, Liu CX, Zhang J, Ma YH, Xiao G, Wang SM, Yang G, Cui GB, Hu YC. Predicting the risk grades of thymic epithelial tumours using T1 mapping and diffusion-weighted MRI. Br J Radiol. 2025;98(1169):947-955.', doi: '10.1093/bjr/tqaf060' },
   ],
   tirads: [
     'Tessler FN, Middleton WD, Grant EG, et al. ACR Thyroid Imaging, Reporting and Data System (TI-RADS): white paper of the ACR TI-RADS Committee. J Am Coll Radiol. 2017;14(5):587-595.',

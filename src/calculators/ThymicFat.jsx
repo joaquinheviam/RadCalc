@@ -14,6 +14,24 @@ const SII_CUTOFF = 8.92;
 const CSR_CUTOFF = 0.849;
 const CSR_GREY_MAX = 0.896;
 
+// Corte nT2 (señal T2 lesión / señal T2 LCR) de Hwang et al. 2019, mismo
+// paper y misma cohorte que el nADC de más arriba. Ver src/i18n/strings.*.js
+// -> calc.thymic.greenish.adc.t2* para el detalle verificado contra el PDF.
+const NT2_CUTOFF = 0.39;
+
+// Cortes de ADC para la estimación de agresividad en lesión sólida (4
+// fuentes primarias independientes, leídas completas y verificadas contra
+// el texto original). No se fusionan en un único número porque los propios
+// estudios no coinciden entre sí — mismo criterio que los 4 marcos de VDT.
+// Ver src/i18n/strings.*.js -> calc.thymic.aggressive para el detalle.
+const RISK_ABDELRAZEK_CUTOFF = 1.22; // ADC medio, LRT vs HRT+TC (Abdel Razek 2014)
+const RISK_SHEN_CUTOFF = 1.193; // ADC medio, LRT vs HRT+TC (Shen 2022)
+const RISK_THUY_CUTOFF = 0.82; // ADC medio, LRT vs HRT+NT (Thuy 2022)
+const STAGE_SHEN_CUTOFF = 1.033; // ADC medio, temprano vs avanzado (Shen 2022)
+const STAGE_LAN_CUTOFF = 1.18; // ADCmin, temprano vs avanzado (Lan 2025)
+const THYMOMA_VS_TC_LAN_CUTOFF = 1.14; // ADCmin, timoma (cualquier riesgo) vs carcinoma (Lan 2025)
+const HRT_VS_TC_LAN_CUTOFF = 0.98; // ADCmin, timoma alto riesgo vs carcinoma (Lan 2025)
+
 const OPTION_BTN =
   'w-full text-left p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center';
 
@@ -22,17 +40,27 @@ function GreenishTriage({ g }) {
   const [showAdc, setShowAdc] = useState(false);
   const [adcLesion, setAdcLesion] = useState('');
   const [adcCsf, setAdcCsf] = useState('');
+  const [t2Lesion, setT2Lesion] = useState('');
+  const [t2Csf, setT2Csf] = useState('');
   const aLesion = parseFloat(adcLesion);
   const aCsf = parseFloat(adcCsf);
   const hasAdc = !isNaN(aLesion) && !isNaN(aCsf) && aCsf !== 0;
   const nadc = hasAdc ? aLesion / aCsf : null;
   const nadcFavorsCyst = nadc !== null ? nadc > 0.63 : null;
 
+  const tLesion = parseFloat(t2Lesion);
+  const tCsf = parseFloat(t2Csf);
+  const hasT2 = !isNaN(tLesion) && !isNaN(tCsf) && tCsf !== 0;
+  const nt2 = hasT2 ? tLesion / tCsf : null;
+  const nt2FavorsCyst = nt2 !== null ? nt2 > NT2_CUTOFF : null;
+
   const reset = () => {
     setStep('q1');
     setShowAdc(false);
     setAdcLesion('');
     setAdcCsf('');
+    setT2Lesion('');
+    setT2Csf('');
   };
 
   const resultMap = {
@@ -88,6 +116,27 @@ function GreenishTriage({ g }) {
                     </InfoBox>
                   </div>
                 )}
+
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-700 space-y-3">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{g.adc.t2Intro}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <NumberField small label={g.adc.t2LesionLabel} value={t2Lesion} onChange={setT2Lesion} />
+                    <NumberField small label={g.adc.t2CsfLabel} value={t2Csf} onChange={setT2Csf} />
+                  </div>
+                  {hasT2 && (
+                    <div className="space-y-2">
+                      <div className="text-center">
+                        <span className="block text-xs text-slate-500 mb-1">{g.adc.t2ResultLabel}</span>
+                        <span className={`text-xl font-bold ${nt2FavorsCyst ? 'text-emerald-500' : 'text-amber-500'}`}>
+                          {nt2.toFixed(2)}
+                        </span>
+                      </div>
+                      <InfoBox tone={nt2FavorsCyst ? 'emerald' : 'amber'}>
+                        {nt2FavorsCyst ? g.adc.t2FavorsCystText : g.adc.t2FavorsSolidText}
+                      </InfoBox>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -122,6 +171,74 @@ function GreenishTriage({ g }) {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function CutoffBox({ title, value, cutoff, belowText, aboveText }) {
+  const below = value < cutoff;
+  return (
+    <InfoBox tone={below ? 'amber' : 'emerald'}>
+      <span className="block font-semibold mb-1">{title}</span>
+      {below ? belowText : aboveText}
+    </InfoBox>
+  );
+}
+
+function AggressiveAdc({ a }) {
+  const [adcMean, setAdcMean] = useState('');
+  const [adcMin, setAdcMin] = useState('');
+  const mean = parseFloat(adcMean);
+  const min = parseFloat(adcMin);
+  const hasMean = !isNaN(mean);
+  const hasMin = !isNaN(min);
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-slate-600 dark:text-slate-400">{a.intro}</p>
+
+      <div className="grid grid-cols-2 gap-3">
+        <NumberField small label={a.adcMeanLabel} value={adcMean} onChange={setAdcMean} />
+        <NumberField small label={a.adcMinLabel} value={adcMin} onChange={setAdcMin} />
+      </div>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{a.adcMeanHint}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{a.adcMinHint}</p>
+
+      {!hasMean && !hasMin && (
+        <p className="text-xs italic text-slate-400 dark:text-slate-500">{a.emptyHint}</p>
+      )}
+
+      {hasMean && (
+        <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+          <h5 className="text-xs font-semibold text-slate-700 dark:text-slate-300">{a.axis1Title}</h5>
+          <CutoffBox title={a.abdelRazekTitle} value={mean} cutoff={RISK_ABDELRAZEK_CUTOFF} belowText={a.abdelRazekBelowText} aboveText={a.abdelRazekAboveText} />
+          <CutoffBox title={a.shenRiskTitle} value={mean} cutoff={RISK_SHEN_CUTOFF} belowText={a.shenRiskBelowText} aboveText={a.shenRiskAboveText} />
+          <CutoffBox title={a.thuyTitle} value={mean} cutoff={RISK_THUY_CUTOFF} belowText={a.thuyBelowText} aboveText={a.thuyAboveText} />
+        </div>
+      )}
+
+      {(hasMean || hasMin) && (
+        <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+          <h5 className="text-xs font-semibold text-slate-700 dark:text-slate-300">{a.axis2Title}</h5>
+          {hasMean && (
+            <CutoffBox title={a.shenStageTitle} value={mean} cutoff={STAGE_SHEN_CUTOFF} belowText={a.shenStageBelowText} aboveText={a.shenStageAboveText} />
+          )}
+          {hasMin && (
+            <CutoffBox title={a.lanStageTitle} value={min} cutoff={STAGE_LAN_CUTOFF} belowText={a.lanStageBelowText} aboveText={a.lanStageAboveText} />
+          )}
+        </div>
+      )}
+
+      {hasMin && (
+        <div className="p-3 rounded-xl border border-amber-200 dark:border-amber-900/60 space-y-2">
+          <h5 className="text-xs font-semibold text-slate-700 dark:text-slate-300">{a.axis3Title}</h5>
+          <p className="text-[11px] italic text-amber-600 dark:text-amber-400">{a.axis3SingleStudyWarning}</p>
+          <CutoffBox title={a.lanThymomaVsTcTitle} value={min} cutoff={THYMOMA_VS_TC_LAN_CUTOFF} belowText={a.lanThymomaVsTcBelowText} aboveText={a.lanThymomaVsTcAboveText} />
+          <CutoffBox title={a.lanHrtVsTcTitle} value={min} cutoff={HRT_VS_TC_LAN_CUTOFF} belowText={a.lanHrtVsTcBelowText} aboveText={a.lanHrtVsTcAboveText} />
+        </div>
+      )}
+
+      <InfoBox tone="slate">{a.generalCaveat}</InfoBox>
     </div>
   );
 }
@@ -171,6 +288,10 @@ export default function ThymicFat() {
     <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-56' : ''}`}>
       <Accordion icon={<IconGitBranch size={16} />} title={c.greenish.sectionTitle}>
         <GreenishTriage g={c.greenish} />
+      </Accordion>
+
+      <Accordion icon={<IconGitBranch size={16} />} title={c.aggressive.sectionTitle}>
+        <AggressiveAdc a={c.aggressive} />
       </Accordion>
 
       <Card className="space-y-5">
