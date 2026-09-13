@@ -10,7 +10,7 @@ export const REFERENCES = {
     'Schijf L, Smithuis R. BI-RADS v2025 Manual - Ultrasound. The Radiology Assistant. Updated 2026-08-04. Available at: radiologyassistant.nl/breast/bi-rads/BI-RADS-v2025-Ultrasound.',
   ],
   thoracicglossary: [
-    'Bankier AA, MacMahon H, Colby T, Gevenois PA, Goo JM, Leung ANC, Lynch DA, Schaefer-Prokop CM, Tomiyama N, Travis WD, Verschakelen JA, White CS, Naidich DP. Fleischner Society: glossary of terms for thoracic imaging. Radiology. 2024;310(2):e232558.',
+    { text: 'Bankier AA, MacMahon H, Colby T, Gevenois PA, Goo JM, Leung ANC, Lynch DA, Schaefer-Prokop CM, Tomiyama N, Travis WD, Verschakelen JA, White CS, Naidich DP. Fleischner Society: glossary of terms for thoracic imaging. Radiology. 2024;310(2):e232558.', doi: '10.1148/radiol.232558' },
   ],
   vdt: [
     { text: 'Callister MEJ, Silvestri GA. Pulmonary Nodules. N Engl J Med. 2026;395(9):894-905.', doi: '10.1056/NEJMcp2515063' },
@@ -28,11 +28,11 @@ export const REFERENCES = {
     'Terris MK, Stamey TA. Determination of prostate volume by transrectal ultrasound. J Urol. 1991;145(5):984-987.',
   ],
   mriFf: [
-    'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.',
-    'Ma X, Holalkere NS, Kambadakone RA, Mino-Kenudson M, Hahn PF, Sahani DV. Imaging-based quantification of hepatic fat: methods and clinical applications. RadioGraphics. 2009;29(5):1253-1277.',
+    { text: 'Dixon WT. Simple proton spectroscopic imaging. Radiology. 1984;153(1):189-194.', doi: '10.1148/radiology.153.1.6089263' },
+    { text: 'Ma X, Holalkere NS, Kambadakone RA, Mino-Kenudson M, Hahn PF, Sahani DV. Imaging-based quantification of hepatic fat: methods and clinical applications. RadioGraphics. 2009;29(5):1253-1277.', doi: '10.1148/rg.295085186' },
   ],
   epidExtent: [
-    'Goh NS, Desai SR, Veeraraghavan S, et al. Interstitial lung disease in systemic sclerosis: a simple staging system. Am J Respir Crit Care Med. 2008;177(11):1248-1254.',
+    { text: 'Goh NS, Desai SR, Veeraraghavan S, et al. Interstitial lung disease in systemic sclerosis: a simple staging system. Am J Respir Crit Care Med. 2008;177(11):1248-1254.', doi: '10.1164/rccm.200706-877OC' },
     'Tschalèr L, Jordan S, Aaløkken TM, et al. Validation of a semi-quantitative method to assess interstitial lung disease severity and progression in systemic sclerosis by standard and low-dose HRCT scans. RMD Open. 2025;11(1):e004938.',
   ],
   adrenalCt: [
@@ -73,26 +73,26 @@ export const REFERENCES = {
     { text: 'Lan JT, Liu CX, Zhang J, Ma YH, Xiao G, Wang SM, Yang G, Cui GB, Hu YC. Predicting the risk grades of thymic epithelial tumours using T1 mapping and diffusion-weighted MRI. Br J Radiol. 2025;98(1169):947-955.', doi: '10.1093/bjr/tqaf060' },
   ],
   tirads: [
-    'Tessler FN, Middleton WD, Grant EG, et al. ACR Thyroid Imaging, Reporting and Data System (TI-RADS): white paper of the ACR TI-RADS Committee. J Am Coll Radiol. 2017;14(5):587-595.',
+    { text: 'Tessler FN, Middleton WD, Grant EG, et al. ACR Thyroid Imaging, Reporting and Data System (TI-RADS): white paper of the ACR TI-RADS Committee. J Am Coll Radiol. 2017;14(5):587-595.', doi: '10.1016/j.jacr.2017.01.046' },
   ],
   orads: [
     { text: 'Thomassin-Naggara I, Poncelet E, Jalaguier-Coudray A, et al. Ovarian-Adnexal Reporting Data System Magnetic Resonance Imaging (O-RADS MRI) score for risk stratification of sonographically indeterminate adnexal masses. JAMA Netw Open. 2020;3(1):e1919896.', doi: '10.1001/jamanetworkopen.2019.19896' },
     { text: 'Sadowski EA, Thomassin-Naggara I, Rockall A, et al. O-RADS MRI risk stratification system: guide for assessing adnexal lesions from the ACR O-RADS committee. Radiology. 2022;303(1):35-47.', doi: '10.1148/radiol.204371' },
   ],
   pirads: [
-    'Turkbey B, Rosenkrantz AB, Haider MA, et al. Prostate Imaging Reporting and Data System Version 2.1: 2019 update of Prostate Imaging Reporting and Data System Version 2. Eur Urol. 2019;76(3):340-351.',
+    { text: 'Turkbey B, Rosenkrantz AB, Haider MA, et al. Prostate Imaging Reporting and Data System Version 2.1: 2019 update of Prostate Imaging Reporting and Data System Version 2. Eur Urol. 2019;76(3):340-351.', doi: '10.1016/j.eururo.2019.02.033' },
     { text: 'Mehralivand S, Shih JH, Harmon S, et al. A Grading System for the Assessment of Risk of Extraprostatic Extension of Prostate Cancer at Multiparametric MRI. Radiology. 2019;290(3):709-719.', doi: '10.1148/radiol.2018181278' },
     { text: 'Park KJ, Kim MH, Kim JK. Extraprostatic Tumor Extension: Comparison of Preoperative Multiparametric MRI Criteria and Histopathologic Correlation after Radical Prostatectomy. Radiology. 2020;296(1):87-95.', doi: '10.1148/radiol.2020192133' },
   ],
   virads: [
-    'Panebianco V, Narumi Y, Altun E, et al. Multiparametric magnetic resonance imaging for bladder cancer: development of VI-RADS (Vesical Imaging-Reporting And Data System). Eur Urol. 2018;74(3):294-306.',
+    { text: 'Panebianco V, Narumi Y, Altun E, et al. Multiparametric magnetic resonance imaging for bladder cancer: development of VI-RADS (Vesical Imaging-Reporting And Data System). Eur Urol. 2018;74(3):294-306.', doi: '10.1016/j.eururo.2018.04.029' },
     'Woo S, Panebianco V, Narumi Y, et al. Diagnostic performance of vesical imaging reporting and data system for the prediction of muscle-invasive bladder cancer: a systematic review and meta-analysis. Eur Urol Oncol. 2020;3(3):306-315.',
     'Luo C, Huang B, Wu Y, Chen J, Chen L. Use of vesical imaging-reporting and data system (VI-RADS) for detecting the muscle invasion of bladder cancer: a diagnostic meta-analysis. Eur Radiol. 2020;30(8):4606-4614.',
     { text: 'Séguier D, Puech P, Kool R, et al. Multiparametric magnetic resonance imaging for bladder cancer: a comprehensive systematic review of the Vesical Imaging-Reporting and Data System (VI-RADS) performance and potential clinical applications. Ther Adv Urol. 2021;13:17562872211039538.', doi: '10.1177/17562872211039583' },
     { text: 'Del Giudice F, Pecoraro M, Vargas HA, et al. Systematic review and meta-analysis of vesical imaging-reporting and data system (VI-RADS) inter-observer reliability: an added value for muscle invasive bladder cancer detection. Cancers (Basel). 2020;12(10):2994.', doi: '10.3390/cancers12102994' },
   ],
   lirads: [
-    'Chernyak V, Fowler KJ, Kamaya A, et al. Liver Imaging Reporting and Data System (LI-RADS) Version 2018: imaging of hepatocellular carcinoma in at-risk patients. Radiology. 2018;289(3):816-830.',
+    { text: 'Chernyak V, Fowler KJ, Kamaya A, et al. Liver Imaging Reporting and Data System (LI-RADS) Version 2018: imaging of hepatocellular carcinoma in at-risk patients. Radiology. 2018;289(3):816-830.', doi: '10.1148/radiol.2018181494' },
     'American College of Radiology. CT/MRI LI-RADS v2018 CORE (diagnostic table). ACR, 2018 (acr.org/LI-RADS).',
   ],
   liradsTr: [
@@ -100,13 +100,13 @@ export const REFERENCES = {
     'American College of Radiology. LI-RADS® CT/MRI Radiation Treatment Response Algorithm (TRA) v2024 Core. ACR, 2024 (acr.org/LI-RADS).',
   ],
   cadrads: [
-    'Cury RC, Leipsic J, Abbara S, et al. CAD-RADS™ 2.0 - 2022 Coronary Artery Disease - Reporting and Data System: an expert consensus document of SCCT, ACC, ACR, and NASCI. JACC Cardiovasc Imaging. 2022;15(11):1974-2001.',
+    { text: 'Cury RC, Leipsic J, Abbara S, et al. CAD-RADS™ 2.0 - 2022 Coronary Artery Disease - Reporting and Data System: an expert consensus document of SCCT, ACC, ACR, and NASCI. JACC Cardiovasc Imaging. 2022;15(11):1974-2001.', doi: '10.1016/j.jcmg.2022.07.002' },
   ],
   lungNodule: [
-    'MacMahon H, Naidich DP, Goo JM, et al. Guidelines for management of incidental pulmonary nodules detected on CT images: from the Fleischner Society 2017. Radiology. 2017;284(1):228-243.',
+    { text: 'MacMahon H, Naidich DP, Goo JM, et al. Guidelines for management of incidental pulmonary nodules detected on CT images: from the Fleischner Society 2017. Radiology. 2017;284(1):228-243.', doi: '10.1148/radiol.2017161659' },
     'National Comprehensive Cancer Network (NCCN). NCCN Clinical Practice Guidelines in Oncology: Non-Small Cell Lung Cancer. Version 6.2026 (Diagnostic Evaluation algorithm, pages DIAG-2/DIAG-3; NCCN.org).',
-    'Schreuder A, Jacobs C, Scholten ET, van Ginneken B, Schaefer-Prokop CM, Prokop M. Typical CT features of intrapulmonary lymph nodes: a review. Radiol Cardiothorac Imaging. 2020;2(4):e190159.',
-    'Bueno J, Landeras L, Chung JH. Updated Fleischner Society guidelines for managing incidental pulmonary nodules: common questions and challenging scenarios. RadioGraphics. 2018;38(5):1337-1350.',
+    { text: 'Schreuder A, Jacobs C, Scholten ET, van Ginneken B, Schaefer-Prokop CM, Prokop M. Typical CT features of intrapulmonary lymph nodes: a review. Radiol Cardiothorac Imaging. 2020;2(4):e190159.', doi: '10.1148/ryct.2020190159' },
+    { text: 'Bueno J, Landeras L, Chung JH. Updated Fleischner Society guidelines for managing incidental pulmonary nodules: common questions and challenging scenarios. RadioGraphics. 2018;38(5):1337-1350.', doi: '10.1148/rg.2018180017' },
   ],
   lungRads: [
     'American College of Radiology. Lung-RADS® Version 2022. Release date: November 2022 (acr.org/Clinical-Resources/Reporting-and-Data-Systems/Lung-Rads).',
@@ -117,14 +117,14 @@ export const REFERENCES = {
     'Potter AL, Xu NN, Senthil P, et al. Pack-year smoking history: an inadequate and biased measure to determine lung cancer screening eligibility. J Clin Oncol. 2024;42(17):2026-2037.',
   ],
   pancreasResect: [
-    'Khasawneh H, Dalla Pria HRF, Miranda J, et al. CT imaging assessment of pancreatic adenocarcinoma resectability after neoadjuvant therapy: current status and perspective on the use of radiomics. J Clin Med. 2023;12(21):6821.',
+    { text: 'Khasawneh H, Dalla Pria HRF, Miranda J, et al. CT imaging assessment of pancreatic adenocarcinoma resectability after neoadjuvant therapy: current status and perspective on the use of radiomics. J Clin Med. 2023;12(21):6821.', doi: '10.3390/jcm12216821' },
   ],
   liradsUs: [
     'American College of Radiology. CT/MRI LI-RADS v2018 and LI-RADS Ultrasound Surveillance v2024 Core. Reston, VA: American College of Radiology; 2024.',
-    'Singal AG, Llovet JM, Yarchoan M, et al. AASLD Practice Guidance on prevention, diagnosis, and treatment of hepatocellular carcinoma. Hepatology. 2023;78(6):1922-1965.',
+    { text: 'Singal AG, Llovet JM, Yarchoan M, et al. AASLD Practice Guidance on prevention, diagnosis, and treatment of hepatocellular carcinoma. Hepatology. 2023;78(6):1922-1965.', doi: '10.1097/hep.0000000000000466' },
   ],
   spleenSize: [
-    'Chow KU, Luxembourg B, Seifried E, Bonig H. Spleen Size Is Significantly Influenced by Body Height and Sex: Establishment of Normal Values for Spleen Size at US with a Cohort of 1200 Healthy Individuals. Radiology. 2016;279(1):306-313.',
+    { text: 'Chow KU, Luxembourg B, Seifried E, Bonig H. Spleen Size Is Significantly Influenced by Body Height and Sex: Establishment of Normal Values for Spleen Size at US with a Cohort of 1200 Healthy Individuals. Radiology. 2016;279(1):306-313.', doi: '10.1148/radiol.2015150887' },
   ],
   cholangiocarcinoma: [
     'Lee DH, Kim B, Lee ES, Kim HJ, Min JH, Lee JM, et al. Radiologic Evaluation and Structured Reporting Form for Extrahepatic Bile Duct Cancer: 2019 Consensus Recommendations from the Korean Society of Abdominal Radiology. Korean J Radiol. 2021;22(1):41-62.',
@@ -132,14 +132,14 @@ export const REFERENCES = {
   pancreaticCyst: [
     'Megibow AJ, Baker ME, Morgan DE, Kamel IR, Sahani DV, Newman E, Brugge WR, Berland LL, Pandharipande PV. Management of Incidental Pancreatic Cysts: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2017;14(7):911-923.',
     'Espino A, Vargas JI, Mancilla C, Muñoz P, Martínez W, Menéndez A, et al. Consenso chileno de diagnóstico y manejo de neoplasias quísticas pancreáticas. Club de Páncreas Chile-SCHGE. Rev Med Chile. 2021;149:1773-1786.',
-    'Tanaka M, Fernández-Del Castillo C, Kamisawa T, et al. Revisions of international consensus Fukuoka guidelines for the management of IPMN of the pancreas. Pancreatology. 2017;17(5):738-753.',
+    { text: 'Tanaka M, Fernández-Del Castillo C, Kamisawa T, et al. Revisions of international consensus Fukuoka guidelines for the management of IPMN of the pancreas. Pancreatology. 2017;17(5):738-753.', doi: '10.1016/j.pan.2017.07.007' },
     'Rahmatullah ZF, Yazdani Nia I, Afghani E, Zaheer A. Exploring the new Kyoto guidelines for managing pancreatic cysts: an overview and comparison with previous guidelines. Abdom Radiol. 2025;50:2660-2675.',
     'Hamada T, Oyama H, Tange S, Hakuta R, Ishigaki K, Kanai S, Kawaguchi Y, Noguchi K, Saito T, Sato T, Suzuki T, Takahara N, Tanaka M, Hasegawa K, Ushiku T, Nakai Y, Fujishiro M. The Revised Kyoto Criteria and Risk of Malignancy Among Patients With Intraductal Papillary Mucinous Neoplasms. Clin Gastroenterol Hepatol. 2024;22:2413-2423.',
   ],
   pancreaticCystDx: [
     'Hevia Morel J. Diagnóstico diferencial de lesiones quísticas del páncreas (clase, agradecimientos: Huete Á). Congreso de Gastroenterología (material docente no publicado).',
     'Kalb B, Sarmiento JM, Kooby DA, Adsay NV, Martin DR. MR Imaging of Cystic Lesions of the Pancreas. Radiographics. 2009;29(6):1749-1765.',
-    'Demos TC, Posniak HV, Harmath C, Olson MC, Aranha G. Cystic lesions of the pancreas. AJR Am J Roentgenol. 2002;179(6):1375-1388.',
+    { text: 'Demos TC, Posniak HV, Harmath C, Olson MC, Aranha G. Cystic lesions of the pancreas. AJR Am J Roentgenol. 2002;179(6):1375-1388.', doi: '10.2214/ajr.179.6.1791375' },
     'Cohen-Scali F, Vilgrain V, Brancatelli G, Hammel P, Vullierme MP, Sauvanet A, Menu Y. Discrimination of unilocular macrocystic serous cystadenoma from pancreatic pseudocyst and mucinous cystadenoma with CT: initial observations. Radiology. 2003;228(3):727-733.',
     'Lee JH, Kim JK, Kim TH, et al. MRI features of serous oligocystic adenoma of the pancreas: differentiation from mucinous cystic neoplasm of the pancreas. Br J Radiol. 2012;85(1013):571-576.',
     'Low G, Panu A, Millo N, Leen E. Multimodality Imaging of Neoplastic and Nonneoplastic Solid Lesions of the Pancreas. Radiographics. 2011;31(4):993-1015.',
@@ -183,12 +183,12 @@ export const REFERENCES = {
     'Vilaseca RM, Westphalen AC, Reis HF, Zogbi OS, Silva GE, Reis RB, Muglia VF. Reproducibility and interobserver agreement of the R.E.N.A.L. nephrometry score: focus on imaging features. Radiol Bras. 2017;50(1):7-12.',
   ],
   ccls: [
-    'Shetty AS, Fraum TJ, Ballard DH, et al. Renal Mass Imaging with MRI Clear Cell Likelihood Score: A User\'s Guide. Radiographics. 2023;43(7):e220209.',
+    { text: 'Shetty AS, Fraum TJ, Ballard DH, et al. Renal Mass Imaging with MRI Clear Cell Likelihood Score: A User\'s Guide. Radiographics. 2023;43(7):e220209.', doi: '10.1148/rg.220209' },
   ],
   leiomyoma: [
     'Munro MG, Critchley HOD, Broder MS, Fraser IS; FIGO Working Group on Menstrual Disorders. FIGO classification system (PALM-COEIN) for causes of abnormal uterine bleeding in nongravid women of reproductive age. Int J Gynaecol Obstet. 2011;113(1):3-13. (Leiomyoma subclassification revised by FIGO in 2018.)',
     'Zlotykamien-Taïeb E, Gherman D, Al Rouhban R, Florin M, Darai E, Haddad B, Dabi Y, Arbel S, Jha P, Thomassin-Naggara I. Novel approach to MRI based risk stratification of uterine myometrial lesions. Eur J Radiol. 2025;187:112126.',
-    'Hindman NH, Kang F, Fournier L, et al. MRI Evaluation of Uterine Masses for Risk of Leiomyosarcoma: A Consensus Statement. Radiology. 2023;306(3):e211658.',
+    { text: 'Hindman NH, Kang F, Fournier L, et al. MRI Evaluation of Uterine Masses for Risk of Leiomyosarcoma: A Consensus Statement. Radiology. 2023;306(2):e211658.', doi: '10.1148/radiol.211658' },
   ],
   adnexalIncidental: [
     { text: 'Patel MD, Ascher SM, Horrow MM, Pickhardt PJ, Poder L, Goldman M, Berland LL, Pandharipande PV, Maturen KE. Management of Incidental Adnexal Findings on CT and MRI: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2020;17(2):248-254.', doi: '10.1016/j.jacr.2019.10.008' },
