@@ -7,7 +7,7 @@ import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox,
 export default function HepaticSiderosis() {
   const { t, lang } = useLang();
   const c = t.calc.siderosis;
-  const [inputType, setInputType] = useState('t2star');
+  const [inputType, setInputType] = useState('r2star');
   const [val, setVal] = useState('');
   const numericVal = parseFloat(val);
   const isValid = !isNaN(numericVal) && numericVal > 0;
@@ -29,7 +29,7 @@ export default function HepaticSiderosis() {
     const text = c.reportText(t2star.toFixed(2), r2star.toFixed(2), lic.toFixed(2), category);
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
-  const resetAll = () => { setInputType('t2star'); setVal(''); };
+  const resetAll = () => { setInputType('r2star'); setVal(''); };
 
   return (
     <div className={`space-y-4 animate-in fade-in ${isValid ? 'pb-56' : ''}`}>

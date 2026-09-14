@@ -110,6 +110,8 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-14', text: 'En la calculadora ACR O-RADS MRI, debajo de la pregunta inicial se agrega la definición de "tejido sólido" según el O-RADS MR Lexicon del ACR (tejido que realza y presenta nódulos murales, proyecciones papilares, septos/paredes irregulares, o una porción sólida mayor; los septos o paredes lisos y finos, aunque realcen, no cuentan como tejido sólido), ya que de esa distinción depende directamente cuál rama del árbol seguir. Se agrega el Lexicon a las referencias de la calculadora.' },
+      { date: '2026-09-14', text: 'En la calculadora de Siderosis Hepática por RM: el modo predeterminado al abrir la calculadora pasa a ser "Ingresar R2* (Hz)" (antes era T2*), ya que muchos equipos de resonancia entregan directamente el R2*. El resultado ya mostraba T2* y R2* juntos (T2* = 1000 / R2*); solo cambia cuál campo aparece seleccionado al entrar.' },
       { date: '2026-09-14', text: 'Se agrega un botón "Copiar mensaje" junto a "Avisar donación por correo" (sección Agradecimientos) y "Solicitar calculadora" (buscador sin resultados): copia al portapapeles el destinatario, asunto y cuerpo del correo prellenado, para quienes usan un computador sin programa de correo instalado (ej. sin Outlook) y el enlace "mailto:" no les abre nada.' },
       { date: '2026-09-14', text: 'Se separa la medición de Google Analytics (GA4) según el dominio: radiocalc.app sigue usando la propiedad original, mientras que el alias antiguo de Vercel (rad-calc.vercel.app) y cualquier otro dominio pasan a usar una propiedad nueva. Antes ambos dominios compartían el mismo ID de medición.' },
       { date: '2026-09-13', text: 'Se agregan enlaces DOI directos a 19 citas bibliográficas que antes no los tenían (entre otras: el glosario torácico de Fleischner 2024, TI-RADS, LI-RADS v2018, VI-RADS, CAD-RADS 2.0, la guía Fleischner de nódulo pulmonar 2017, la guía Fukuoka de IPMN 2017 y la guía AASLD de hepatocarcinoma 2023), verificando cada una individualmente contra el registro CrossRef antes de incorporarla. También se corrige un número de volumen incorrecto en la cita de Hindman et al. 2023 (Radiology 306(2), no 306(3)).' },
@@ -637,7 +639,7 @@ export default {
       undo: 'Volver atrás',
       malignancyRisk: 'Riesgo de malignidad',
       recommendation: 'Recomendación',
-      start: { q: '¿Qué muestra la lesión anexial en la RM?', options: [
+      start: { q: '¿Qué muestra la lesión anexial en la RM?', hint: 'Tejido sólido = tejido que realza y presenta alguna de estas morfologías: nódulos murales, proyecciones papilares, septos o paredes irregulares, o una porción sólida de mayor tamaño. Los septos o paredes lisos y finos (aunque realcen) no corresponden a tejido sólido.', options: [
         { label: 'Ovario normal o hallazgo fisiológico (folículo, cuerpo lúteo, quiste hemorrágico ≤ 3 cm en premenopáusica)', next: 'orMri1' },
         { label: 'Ascitis y/o implantes/nodularidad peritoneal u omental', next: 'orMri5' },
         { label: 'Lesión quística (uni o multilocular) sin tejido sólido que realce', next: 'cysticNoSolid' },

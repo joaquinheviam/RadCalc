@@ -110,6 +110,8 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-14', text: 'In the ACR O-RADS MRI calculator, added the definition of "solid tissue" below the initial question, per the ACR O-RADS MR Lexicon (enhancing tissue with mural nodules, papillary projections, irregular septa/walls, or a larger solid portion; smooth, thin septa or walls, even if they enhance, do not count as solid tissue), since that distinction directly determines which branch of the tree to follow. Added the Lexicon to the calculator\'s references.' },
+      { date: '2026-09-14', text: 'In the MRI Hepatic Siderosis calculator: the default mode when opening the calculator is now "Enter R2* (Hz)" (previously T2*), since many MRI scanners report R2* directly. The result already showed both T2* and R2* together (T2* = 1000 / R2*); only which field is selected by default changes.' },
       { date: '2026-09-14', text: 'Added a "Copy message" button next to "Notify your donation by email" (Acknowledgments section) and "Request a calculator" (no-results search): copies the pre-filled email\'s recipient, subject, and body to the clipboard, for anyone on a computer with no email program installed (e.g. no Outlook) where the "mailto:" link doesn\'t open anything.' },
       { date: '2026-09-14', text: 'Split Google Analytics (GA4) tracking by domain: radiocalc.app keeps using the original property, while the old Vercel alias (rad-calc.vercel.app) and any other domain now use a new property. Previously both domains shared the same measurement ID.' },
       { date: '2026-09-13', text: 'Added direct DOI links to 19 references that previously lacked one (among others: the 2024 Fleischner Society thoracic glossary, TI-RADS, LI-RADS v2018, VI-RADS, CAD-RADS 2.0, the 2017 Fleischner pulmonary nodule guideline, the 2017 Fukuoka IPMN guideline, and the 2023 AASLD hepatocellular carcinoma guidance), each individually verified against the CrossRef registry before being added. Also corrected an incorrect volume number in the Hindman et al. 2023 citation (Radiology 306(2), not 306(3)).' },
@@ -637,7 +639,7 @@ export default {
       undo: 'Go back',
       malignancyRisk: 'Malignancy risk',
       recommendation: 'Recommendation',
-      start: { q: 'What does the adnexal lesion show on MRI?', options: [
+      start: { q: 'What does the adnexal lesion show on MRI?', hint: 'Solid tissue = enhancing tissue with any of the following morphologies: mural nodules, papillary projections, irregular septa/walls, or a larger solid portion. Smooth, thin septa or walls (even if they enhance) do not count as solid tissue.', options: [
         { label: 'Normal ovary or physiologic finding (follicle, corpus luteum, hemorrhagic cyst ≤ 3 cm in premenopausal patient)', next: 'orMri1' },
         { label: 'Ascites and/or peritoneal or omental implants/nodularity', next: 'orMri5' },
         { label: 'Cystic lesion (uni- or multilocular) with no enhancing solid tissue', next: 'cysticNoSolid' },

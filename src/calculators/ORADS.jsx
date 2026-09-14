@@ -53,6 +53,9 @@ export default function ORADS() {
       {!isResult ? (
         <Card>
           <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">{currentNode.q}</h3>
+          {currentNode.hint && (
+            <p className="text-xs text-slate-400 dark:text-slate-500 mb-3 leading-snug">{currentNode.hint}</p>
+          )}
           <div className="space-y-2">
             {currentNode.options.map((opt, i) => (
               <button

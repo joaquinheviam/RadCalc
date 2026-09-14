@@ -78,6 +78,7 @@ export const REFERENCES = {
   orads: [
     { text: 'Thomassin-Naggara I, Poncelet E, Jalaguier-Coudray A, et al. Ovarian-Adnexal Reporting Data System Magnetic Resonance Imaging (O-RADS MRI) score for risk stratification of sonographically indeterminate adnexal masses. JAMA Netw Open. 2020;3(1):e1919896.', doi: '10.1001/jamanetworkopen.2019.19896' },
     { text: 'Sadowski EA, Thomassin-Naggara I, Rockall A, et al. O-RADS MRI risk stratification system: guide for assessing adnexal lesions from the ACR O-RADS committee. Radiology. 2022;303(1):35-47.', doi: '10.1148/radiol.204371' },
+    'American College of Radiology. O-RADS MR Lexicon: Categories, Terms and Definitions. Revised October 2023.',
   ],
   pirads: [
     { text: 'Turkbey B, Rosenkrantz AB, Haider MA, et al. Prostate Imaging Reporting and Data System Version 2.1: 2019 update of Prostate Imaging Reporting and Data System Version 2. Eur Urol. 2019;76(3):340-351.', doi: '10.1016/j.eururo.2019.02.033' },
