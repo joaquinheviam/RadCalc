@@ -55,13 +55,22 @@
   }
   </script>
 
-  <!-- Google Analytics (GA4) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZH36H9W2N"></script>
+  <!-- Google Analytics (GA4) — ID por dominio: radiocalc.app usa la propiedad original; cualquier otro dominio (p.ej. el alias antiguo rad-calc.vercel.app) usa la propiedad nueva -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-RZH36H9W2N');
+    (function () {
+      var GA_ID = (window.location.hostname === 'radiocalc.app' || window.location.hostname === 'www.radiocalc.app')
+        ? 'G-RZH36H9W2N'
+        : 'G-MD512G0TZL';
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', GA_ID);
+    })();
   </script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 min-h-screen">
