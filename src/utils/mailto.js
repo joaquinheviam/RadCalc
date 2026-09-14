@@ -3,7 +3,8 @@ export const LINKEDIN_URL = 'https://www.linkedin.com/in/joaqu%C3%ADn-hevia-more
 
 // type: 'bug' (reportar error) | 'update' (sugerir actualización) | 'suggestion' (sugerencia general)
 //     | 'missingCalculator' (pedir un algoritmo/calculadora que no existe, desde el buscador)
-export const buildMailto = (calcTitle, lang, type = 'bug') => {
+//     | 'sponsor' (avisar una donación para la sección de Agradecimientos)
+const getTemplate = (calcTitle, lang, type) => {
   const page = calcTitle || (lang === 'es' ? '(general del sitio)' : '(general site issue)');
   const templates = {
     es: {
@@ -51,6 +52,21 @@ export const buildMailto = (calcTitle, lang, type = 'bug') => {
       },
     },
   };
-  const tpl = templates[lang][type] || templates[lang].bug;
+  return templates[lang][type] || templates[lang].bug;
+};
+
+export const buildMailto = (calcTitle, lang, type = 'bug') => {
+  const tpl = getTemplate(calcTitle, lang, type);
   return `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(tpl.subject)}&body=${encodeURIComponent(tpl.body)}`;
+};
+
+// Igual que buildMailto, pero devuelve el texto plano (destinatario + asunto + cuerpo)
+// para copiar al portapapeles. Sirve como respaldo cuando el dispositivo no tiene un
+// cliente de correo configurado (mailto: no abre nada) y la persona necesita pegar el
+// mensaje a mano en su correo web (Gmail, Outlook.com, etc.).
+export const buildMailTextForClipboard = (calcTitle, lang, type = 'bug') => {
+  const tpl = getTemplate(calcTitle, lang, type);
+  const toLabel = lang === 'es' ? 'Para' : 'To';
+  const subjectLabel = lang === 'es' ? 'Asunto' : 'Subject';
+  return `${toLabel}: ${REPORT_EMAIL}\n${subjectLabel}: ${tpl.subject}\n\n${tpl.body}`;
 };

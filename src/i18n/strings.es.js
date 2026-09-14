@@ -74,6 +74,8 @@ export default {
     resultsCount: 'resultado(s)',
     requestHint: '¿Busca un algoritmo que no está? Indique qué calculadora necesita (e idealmente) la evidencia bibliográfica que la respalda.',
     requestButton: 'Solicitar calculadora',
+    requestCopyButton: 'Copiar mensaje',
+    requestCopiedOk: 'Mensaje copiado al portapapeles. Si su computador no tiene un programa de correo configurado, péguelo en su correo web (Gmail, Outlook.com, etc.) y envíelo.',
   },
   favorites: {
     title: 'Favoritas',
@@ -97,6 +99,9 @@ export default {
     emptyState: 'Todavía no hay agradecimientos que mostrar. Sea el primero.',
     howToAppear: '¿Desea aparecer en esta lista? Con una donación (Mercado Pago o PayPal) desde USD 10 aparece aquí durante 12 meses; a mayor aporte, más arriba en el orden. Después de donar, avise por correo indicando el nombre que desea mostrar.',
     notifyLink: 'Avisar donación por correo',
+    copyMessage: 'Copiar mensaje',
+    messageCopiedOk: 'Mensaje copiado al portapapeles. Si su computador no tiene un programa de correo configurado, péguelo en su correo web (Gmail, Outlook.com, etc.) y envíelo.',
+    noMailAppHint: 'Si el botón "Avisar donación por correo" no le abre nada (por ejemplo, porque su computador no tiene Outlook u otro programa de correo instalado), use "Copiar mensaje" y péguelo en su correo web habitual.',
     institutionalNote: '¿Representa una empresa o institución y desea patrocinar el sitio? Escriba al mismo correo para coordinarlo.',
     disclaimer: 'Este es un espacio de agradecimiento voluntario, no un espacio publicitario: no se muestran logos ni enlaces, solo nombres. Las donaciones nunca influyen en el contenido clínico de las calculadoras.',
     aboutLink: 'Conozca más sobre el autor y el proyecto en "Acerca de"',
@@ -105,6 +110,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-14', text: 'Se agrega un botón "Copiar mensaje" junto a "Avisar donación por correo" (sección Agradecimientos) y "Solicitar calculadora" (buscador sin resultados): copia al portapapeles el destinatario, asunto y cuerpo del correo prellenado, para quienes usan un computador sin programa de correo instalado (ej. sin Outlook) y el enlace "mailto:" no les abre nada.' },
       { date: '2026-09-14', text: 'Se separa la medición de Google Analytics (GA4) según el dominio: radiocalc.app sigue usando la propiedad original, mientras que el alias antiguo de Vercel (rad-calc.vercel.app) y cualquier otro dominio pasan a usar una propiedad nueva. Antes ambos dominios compartían el mismo ID de medición.' },
       { date: '2026-09-13', text: 'Se agregan enlaces DOI directos a 19 citas bibliográficas que antes no los tenían (entre otras: el glosario torácico de Fleischner 2024, TI-RADS, LI-RADS v2018, VI-RADS, CAD-RADS 2.0, la guía Fleischner de nódulo pulmonar 2017, la guía Fukuoka de IPMN 2017 y la guía AASLD de hepatocarcinoma 2023), verificando cada una individualmente contra el registro CrossRef antes de incorporarla. También se corrige un número de volumen incorrecto en la cita de Hindman et al. 2023 (Radiology 306(2), no 306(3)).' },
       { date: '2026-09-13', text: 'Se refinan varios textos de la calculadora "Evaluación de Lesión Tímica" por claridad y consistencia, sin cambiar ningún umbral, cifra ni cita: se aclara que el SII se calcula solo con el ROI del timo por tener el mejor desempeño diagnóstico en la validación (el CSR queda como dato complementario si también se mide el músculo); se simplifica la introducción del nADC; se reformulan en una sola frase los cortes de ADCmin de Lan et al. 2025 para estadio tumoral, con el valor exacto y sus cifras de rendimiento; se reescribe de forma más clara y compacta la advertencia general sobre los cortes de agresividad ADC; y se ajusta el subtítulo de la calculadora.' },

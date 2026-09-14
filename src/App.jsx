@@ -10,8 +10,9 @@ import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
 import { updateSeoHead } from './utils/seoHead.js';
 import { Logo, SiteFooter, Sponsors, AboutInfo } from './components/shared/index.js';
-import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail } from './components/icons/index.js';
-import { buildMailto } from './utils/mailto.js';
+import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy } from './components/icons/index.js';
+import { buildMailto, buildMailTextForClipboard } from './utils/mailto.js';
+import { copyToClipboard } from './utils/clipboard.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
 
 // Fila de una calculadora en el listado (favoritas, resultados de búsqueda o
@@ -311,12 +312,20 @@ function AppShell() {
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
                         {t.search.requestHint}
                       </p>
-                      <a
-                        href={buildMailto(searchQuery, lang, 'missingCalculator')}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
-                      >
-                        <IconMail size={14} /> {t.search.requestButton}
-                      </a>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        <a
+                          href={buildMailto(searchQuery, lang, 'missingCalculator')}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                        >
+                          <IconMail size={14} /> {t.search.requestButton}
+                        </a>
+                        <button
+                          onClick={() => copyToClipboard(buildMailTextForClipboard(searchQuery, lang, 'missingCalculator'), t.search.requestCopiedOk, t.common.copiedErr)}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
+                        >
+                          <IconCopy size={14} /> {t.search.requestCopyButton}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )

@@ -1,9 +1,10 @@
 import { useLang } from '../../i18n/LangContext.js';
-import { buildMailto } from '../../utils/mailto.js';
+import { buildMailto, buildMailTextForClipboard } from '../../utils/mailto.js';
+import { copyToClipboard } from '../../utils/clipboard.js';
 import { SPONSORS } from '../../data/sponsors.js';
 import Modal from './Modal.jsx';
 import DonationButton from './DonationButton.jsx';
-import { IconMail, IconStar } from '../icons/index.js';
+import { IconMail, IconStar, IconCopy } from '../icons/index.js';
 
 const VALID_MONTHS = 12;
 const MS_PER_MONTH = 1000 * 60 * 60 * 24 * 30.44;
@@ -12,6 +13,11 @@ export default function Sponsors({ onClose, onOpenAbout }) {
   const { t, lang } = useLang();
   const s = t.sponsors;
   const now = Date.now();
+
+  const handleCopyMessage = (e) => {
+    e.preventDefault();
+    copyToClipboard(buildMailTextForClipboard(null, lang, 'sponsor'), s.messageCopiedOk, t.common.copiedErr);
+  };
 
   // Una donación queda listada 12 meses desde su fecha; pasado ese plazo
   // desaparece sola, sin tener que editar src/data/sponsors.js. Dentro del
@@ -49,7 +55,15 @@ export default function Sponsors({ onClose, onOpenAbout }) {
               <IconMail size={15} />
               {s.notifyLink}
             </a>
+            <button
+              onClick={handleCopyMessage}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              <IconCopy size={15} />
+              {s.copyMessage}
+            </button>
           </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{s.noMailAppHint}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">{s.institutionalNote}</p>
         </div>
 
