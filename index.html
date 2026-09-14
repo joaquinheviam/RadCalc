@@ -55,22 +55,13 @@
   }
   </script>
 
-  <!-- Google Analytics (GA4) — ID por dominio: radiocalc.app usa la propiedad original; cualquier otro dominio (p.ej. el alias antiguo rad-calc.vercel.app) usa la propiedad nueva -->
+  <!-- Google Analytics (GA4) — mismo ID en todos los dominios (radiocalc.app y el alias antiguo rad-calc.vercel.app) para que las visitas de ambos se consoliden en un solo reporte. Para que efectivamente aparezcan juntas hace falta además agregar ambos dominios en "Configure your domains" dentro de Admin > Data Streams > (este stream) > Configure tag settings, en la cuenta de Google Analytics. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZH36H9W2N"></script>
   <script>
-    (function () {
-      var GA_ID = (window.location.hostname === 'radiocalc.app' || window.location.hostname === 'www.radiocalc.app')
-        ? 'G-RZH36H9W2N'
-        : 'G-MD512G0TZL';
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-      document.head.appendChild(s);
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', GA_ID);
-    })();
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RZH36H9W2N');
   </script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 min-h-screen">
