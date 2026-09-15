@@ -24,6 +24,26 @@ const BASE_PATH = process.env.VITE_BASE_PATH || '/';
 
 export default defineConfig({
   base: BASE_PATH,
+  build: {
+    rollupOptions: {
+      output: {
+        // Separa las librerías de terceros (React, React Router) del código
+        // propio en archivos aparte. No reduce el peso total descargado en
+        // la primera visita (la PWA de todas formas precachea todo el build
+        // para funcionar offline), pero como esas librerías cambian mucho
+        // menos seguido que el código propio, el navegador puede reutilizar
+        // ese chunk en caché entre actualizaciones del sitio en vez de
+        // volver a descargarlo cada vez que se publica una nueva versión.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('react-dom')) return 'vendor-react-dom';
+          if (id.includes('react-router')) return 'vendor-router';
+          if (id.includes('/react/') || id.includes('scheduler')) return 'vendor-react';
+          return 'vendor';
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
