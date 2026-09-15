@@ -2,7 +2,7 @@ export default {
   boneRads: ['bone-rads', 'bone rads', 'boneRads', 'bone lesion', 'bone tumor', 'lodwick', 'lodwick-madewell', 'lesion margin', 'periosteal reaction', 'endosteal erosion', 'codman triangle', 'acr bone-rads', 'bone radiograph'],
   bactip: ['bactip', 'cartilaginous tumour', 'cartilaginous tumor', 'atypical cartilaginous tumour', 'enchondroma', 'chondrosarcoma', 'endosteal scalloping', 'birmingham protocol', 'central cartilage tumor'],
   mirels: ['mirels', "mirels' criteria", 'mirels score', 'pathologic fracture', 'bone metastasis', 'prophylactic fixation', 'fracture risk'],
-  aspects: ['aspects', 'alberta stroke', 'stroke score', 'ischemic stroke', 'non-contrast ct brain', 'thrombectomy', 'thrombolysis', 'ischemic core', 'middle cerebral artery', 'mca territory'],
+  aspects: ['aspects', 'alberta stroke', 'stroke score', 'ischemic stroke', 'non-contrast ct brain', 'thrombectomy', 'thrombolysis', 'ischemic core', 'middle cerebral artery', 'mca territory', 'pre score', 'pittsburgh', 'nihss'],
   tirads: ['thyroid', 'thyroid nodule', 'ti-rads', 'tirads', 'acr', 'fna', 'thyroid biopsy', 'ti rads', 'nodule', 'thyroid ultrasound', 'thyroid us', 'fna biopsy'],
   thymic: ['thymus', 'thymic fat', 'thymic hyperplasia', 'thymic mass', 'anterior mediastinum', 'thymoma', 'thymic', 'hyperplasia', 'fat', 'thymic rebound', 'dixon thymus', 'thymic attenuation'],
   ntmBcd: ['nontuberculous mycobacteria', 'ntm', 'bronchiectasis', 'bcd score', 'mac', 'mycobacterium avium', 'bcd', 'mycobacteria', 'non tuberculous', 'mabscessus', 'lung extent', 'bronchiectasis ct', 'bcd index'],

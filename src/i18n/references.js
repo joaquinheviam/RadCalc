@@ -14,6 +14,7 @@ export const REFERENCES = {
     'Barber PA, Demchuk AM, Zhang J, Buchan AM, for the ASPECTS Study Group. Validity and reliability of a quantitative computed tomography score in predicting outcome of hyperacute stroke before thrombolytic therapy. Lancet. 2000;355(9216):1670-1674.',
     'Pexman JH, Barber PA, Hill MD, Sevick RJ, Demchuk AM, Hudon ME, Hu WY, Buchan AM. Use of the Alberta Stroke Program Early CT Score (ASPECTS) for Assessing CT Scans in Patients with Acute Stroke. AJNR Am J Neuroradiol. 2001;22(8):1534-1542.',
     { text: '2026 Guideline for the Early Management of Patients With Acute Ischemic Stroke: A Guideline From the American Heart Association/American Stroke Association. Stroke. 2026.', doi: '10.1161/STR.0000000000000513' },
+    { text: 'Rangaraju S, Aghaebrahim A, Streib C, Sun CH, Ribo M, Muchada M, Nogueira R, Frankel M, Gupta R, Jadhav A, Jovin TG. Pittsburgh Response to Endovascular therapy (PRE) score: optimizing patient selection for endovascular therapy for large vessel occlusion strokes. J Neurointerv Surg. 2015;7(11):783-788.', doi: '10.1136/neurintsurg-2014-011351' },
   ],
   biradsMammo: [
     'D\'Orsi CJ, Sickles EA, Newell MS, et al. ACR BI-RADS Atlas, Breast Imaging Reporting and Data System, 6th edition. Reston, VA: American College of Radiology; 2025.',
