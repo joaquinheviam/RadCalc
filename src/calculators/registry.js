@@ -49,6 +49,10 @@ const AdnexalIncidental = lazy(() => import('./AdnexalIncidental.jsx'));
 const OvarianNeoplasmDx = lazy(() => import('./OvarianNeoplasmDx.jsx'));
 const BiradsMammography = lazy(() => import('./BiradsMammography.jsx'));
 const BiradsUltrasound = lazy(() => import('./BiradsUltrasound.jsx'));
+const BoneRADS = lazy(() => import('./BoneRADS.jsx'));
+const Mirels = lazy(() => import('./Mirels.jsx'));
+const BACTIP = lazy(() => import('./BACTIP.jsx'));
+const ASPECTS = lazy(() => import('./ASPECTS.jsx'));
 
 export const calculators = [
   // Cabeza y cuello
@@ -97,6 +101,12 @@ export const calculators = [
   // Mama
   { id: 'biradsMammo', catKey: 'breast', component: BiradsMammography },
   { id: 'biradsUs', catKey: 'breast', component: BiradsUltrasound },
+  // Musculoesquelética
+  { id: 'boneRads', catKey: 'msk', component: BoneRADS },
+  { id: 'mirels', catKey: 'msk', component: Mirels },
+  { id: 'bactip', catKey: 'msk', component: BACTIP },
+  // Neurorradiología
+  { id: 'aspects', catKey: 'neuro', component: ASPECTS },
 ];
 
-export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast'];
+export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro'];

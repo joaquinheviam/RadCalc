@@ -1,4 +1,20 @@
 export const REFERENCES = {
+  boneRads: [
+    'Caracciolo JT, Temple HT, Ross ED, Cassidy K, Nguyen K, Guenther KA, Colley B, Klika D, Erdemli A, Malandra M. Bone Tumor Risk Stratification and Management System: A Consensus Guideline from the ACR Bone Reporting and Data System Committee. J Am Coll Radiol. 2023;20(10):1046-1056.',
+  ],
+  bactip: [
+    { text: 'Davies AM, Patel A, Azzopardi C, James SL, Botchu R. Birmingham atypical cartilaginous tumour imaging protocol (BACTIP) revisited. Clin Radiol. 2025;83:106837.', doi: '10.1016/j.crad.2025.106837' },
+  ],
+  mirels: [
+    'Mirels H. Metastatic disease in long bones: a proposed scoring system for diagnosing impending pathologic fractures. Clin Orthop Relat Res. 1989;(249):256-264.',
+    { text: "Meschini C, El Motassime A, El Ezzo O, Ziranu A, Maccauro G, Vitiello R. Advancements in Assessing Pathological Fracture Risk: News on Mirels' Score. Cancers. 2025;17(6):973.", doi: '10.3390/cancers17060973' },
+    { text: "Desai VS, Amendola RL, Mann KA, Damron TA. Internal validation of modified Mirels' scoring system for pathologic femur fractures. BMC Musculoskelet Disord. 2024;25(1):719.", doi: '10.1186/s12891-024-07836-w' },
+  ],
+  aspects: [
+    'Barber PA, Demchuk AM, Zhang J, Buchan AM, for the ASPECTS Study Group. Validity and reliability of a quantitative computed tomography score in predicting outcome of hyperacute stroke before thrombolytic therapy. Lancet. 2000;355(9216):1670-1674.',
+    'Pexman JH, Barber PA, Hill MD, Sevick RJ, Demchuk AM, Hudon ME, Hu WY, Buchan AM. Use of the Alberta Stroke Program Early CT Score (ASPECTS) for Assessing CT Scans in Patients with Acute Stroke. AJNR Am J Neuroradiol. 2001;22(8):1534-1542.',
+    { text: '2026 Guideline for the Early Management of Patients With Acute Ischemic Stroke: A Guideline From the American Heart Association/American Stroke Association. Stroke. 2026.', doi: '10.1161/STR.0000000000000513' },
+  ],
   biradsMammo: [
     'D\'Orsi CJ, Sickles EA, Newell MS, et al. ACR BI-RADS Atlas, Breast Imaging Reporting and Data System, 6th edition. Reston, VA: American College of Radiology; 2025.',
     { text: 'Minichetti P, Cereser L, Versienti E, Francioso F, Sparascio F, Girometti R, Zuiani C. BI-RADS v2025: Key Updates and Implications for Breast Imaging Practice. AJR Am J Roentgenol. 2026.', doi: '10.2214/AJR.26.35051' },
