@@ -1,7 +1,7 @@
 export default {
   appName: 'RadioCalc Clinical',
-  tagline: 'Radiology calculators for everyday clinical practice',
-  metaDescription: 'Radiology calculators for everyday clinical practice, with algorithms that integrate guidelines from major scientific societies, support for managing incidental findings, and everything grounded in evidence.',
+  tagline: 'Radiology calculators, decision algorithms and scoring scales for everyday clinical practice',
+  metaDescription: 'Radiology calculators, decision algorithms and scoring scales for everyday clinical practice, integrating guidelines from major scientific societies, support for managing incidental findings, and everything grounded in evidence.',
   common: {
     copyReport: 'Copy text for report',
     copy: 'Copy',
@@ -112,6 +112,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-09-16', text: 'Updated the site description (tagline, meta description, Open Graph, and structured data) to explicitly mention "decision algorithms and scoring scales" alongside "calculators", and corrected the outdated "25+ calculators" claim to "40+". Text/SEO-only change, with no effect on any clinical logic.' },
       { date: '2026-09-15', text: 'Added the PRE (Pittsburgh Response to Endovascular therapy) Score as an optional extension within the ASPECTS calculator: once ASPECTS is calculated, a collapsible block lets you enter age and baseline NIHSS to estimate the expected benefit of reperfusion (PRE = Age + 2×NIHSS − 10×ASPECTS), with the original study\'s three interpretation bands (PRE ≤ -25, -24 to 49, and ≥ 50). Based on Rangaraju et al., J Neurointerv Surg 2015.' },
       { date: '2026-09-15', text: 'Added two new categories, "Musculoskeletal" and "Neuroradiology", with four calculators: Bone-RADS (malignancy risk stratification for a newly detected bone lesion, based on Caracciolo et al., JACR 2023), Mirels\' Criteria (pathologic fracture risk in long bone metastases, showing both the historical Mirels 1989 threshold and the modern Desai/Damron 2024 validation recommending a higher cutoff), BACTIP (management protocol for central cartilaginous tumors of the proximal humerus/distal femur/proximal tibia, per Davies et al., Clinical Radiology 2025), and ASPECTS (quantification of early ischemic changes in acute middle cerebral artery territory stroke, with the 2026 AHA/ASA guideline\'s large-core thrombectomy thresholds).' },
       { date: '2026-09-15', text: 'React, React DOM and React Router now build into their own separate files instead of being bundled together with the rest of the code. Nothing changes visibly and it doesn\'t reduce what\'s downloaded on a first visit, but since those libraries change far less often than the site\'s own code, the browser can reuse them from cache on future updates instead of re-downloading them every time.' },

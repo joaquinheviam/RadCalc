@@ -1,7 +1,7 @@
 export default {
   appName: 'RadioCalc Clinical',
-  tagline: 'Calculadoras radiológicas para la práctica clínica diaria',
-  metaDescription: 'Calculadoras radiológicas para la práctica clínica diaria, con algoritmos que integran las guías de las principales sociedades científicas, apoyo para el manejo de hallazgos incidentales, y todo basado en evidencia.',
+  tagline: 'Calculadoras radiológicas, algoritmos de decisión y escalas para la práctica clínica diaria',
+  metaDescription: 'Calculadoras radiológicas, algoritmos de decisión y escalas de puntuación para la práctica clínica diaria, con integración de las guías de las principales sociedades científicas, apoyo para el manejo de hallazgos incidentales, y todo basado en evidencia.',
   common: {
     copyReport: 'Copiar texto para informe',
     copy: 'Copiar',
@@ -112,6 +112,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-09-16', text: 'Se actualiza la descripción del sitio (tagline, meta description, Open Graph y datos estructurados) para mencionar explícitamente "algoritmos de decisión y escalas de puntuación", además de "calculadoras", y se corrige la cifra de "más de 25 calculadoras" a "más de 40" (ya desactualizada). Cambio solo de texto/SEO, sin efecto en ninguna lógica clínica.' },
       { date: '2026-09-15', text: 'Se agrega el Score PRE (Pittsburgh Response to Endovascular therapy) como una extensión opcional dentro de la calculadora ASPECTS: una vez calculado el ASPECTS, un bloque desplegable permite ingresar la edad y el NIHSS basal para estimar el beneficio esperado de la reperfusión (PRE = Edad + 2×NIHSS − 10×ASPECTS), con las tres bandas de interpretación del estudio original (PRE ≤ -25, -24 a 49, y ≥ 50). Basado en Rangaraju et al., J Neurointerv Surg 2015.' },
       { date: '2026-09-15', text: 'Se agregan dos categorías nuevas, "Musculoesquelética" y "Neurorradiología", con cuatro calculadoras: Bone-RADS (estratificación de riesgo de malignidad de una lesión ósea recién detectada, basada en Caracciolo et al., JACR 2023), Criterios de Mirels (riesgo de fractura patológica en metástasis de huesos largos, mostrando tanto el umbral histórico de Mirels 1989 como la validación moderna de Desai/Damron 2024 que recomienda un corte más alto), BACTIP (protocolo de manejo de tumores cartilaginosos centrales de húmero proximal/fémur distal/tibia proximal, según Davies et al., Clinical Radiology 2025) y ASPECTS (cuantificación de cambios isquémicos precoces en ACV agudo de territorio de arteria cerebral media, con los umbrales de trombectomía de la guía AHA/ASA 2026 para núcleo grande).' },
       { date: '2026-09-15', text: 'Se separan React, React DOM y React Router en archivos aparte del resto del código (antes iban todos mezclados en un solo archivo). No cambia nada visible ni reduce lo que se descarga la primera vez, pero como esas librerías cambian con mucha menos frecuencia que el código propio del sitio, el navegador puede reutilizarlas desde la caché en futuras actualizaciones en vez de descargarlas de nuevo cada vez.' },
