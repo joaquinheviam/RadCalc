@@ -12,6 +12,9 @@ import { lazy } from 'react';
 
 const ILDClassifier = lazy(() => import('./ILDClassifier.jsx'));
 const PectusHallerCI = lazy(() => import('./PectusHallerCI.jsx'));
+const ABC2Hematoma = lazy(() => import('./ABC2Hematoma.jsx'));
+const NASCETStenosis = lazy(() => import('./NASCETStenosis.jsx'));
+const FazekasScale = lazy(() => import('./FazekasScale.jsx'));
 const TIRADS = lazy(() => import('./TIRADS.jsx'));
 const ThymicFat = lazy(() => import('./ThymicFat.jsx'));
 const NTMBcdScore = lazy(() => import('./NTMBcdScore.jsx'));
@@ -111,6 +114,9 @@ export const calculators = [
   { id: 'bactip', catKey: 'msk', component: BACTIP },
   // Neurorradiología
   { id: 'aspects', catKey: 'neuro', component: ASPECTS },
+  { id: 'abc2Hematoma', catKey: 'neuro', component: ABC2Hematoma },
+  { id: 'nascetStenosis', catKey: 'neuro', component: NASCETStenosis },
+  { id: 'fazekasScale', catKey: 'neuro', component: FazekasScale },
 ];
 
 export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro'];

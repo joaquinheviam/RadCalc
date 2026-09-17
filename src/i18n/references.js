@@ -1,4 +1,13 @@
 export const REFERENCES = {
+  abc2Hematoma: [
+    { text: 'Kothari RU, Brott T, Broderick JP, Barsan WG, Sauerbeck LR, Zuccarello M, Khoury J. The ABCs of measuring intracerebral hemorrhage volumes. Stroke. 1996;27(8):1304-1305.', doi: '10.1161/01.str.27.8.1304' },
+  ],
+  nascetStenosis: [
+    { text: 'North American Symptomatic Carotid Endarterectomy Trial (NASCET) Steering Committee. North American Symptomatic Carotid Endarterectomy Trial. Methods, Patient Characteristics, and Progress. Stroke. 1991;22(6):711-720.', doi: '10.1161/01.STR.22.6.711' },
+  ],
+  fazekasScale: [
+    { text: 'Fazekas F, Chawluk JB, Alavi A, Hurtig HI, Zimmerman RA. MR signal abnormalities at 1.5 T in Alzheimer\'s dementia and normal aging. AJR Am J Roentgenol. 1987;149(2):351-356.', doi: '10.2214/ajr.149.2.351' },
+  ],
   boneRads: [
     'Caracciolo JT, Temple HT, Ross ED, Cassidy K, Nguyen K, Guenther KA, Colley B, Klika D, Erdemli A, Malandra M. Bone Tumor Risk Stratification and Management System: A Consensus Guideline from the ACR Bone Reporting and Data System Committee. J Am Coll Radiol. 2023;20(10):1046-1056.',
   ],
@@ -241,6 +250,6 @@ export const REFERENCES = {
   pectusHallerCI: [
     { text: 'Poston PM, Patel SS, Rajput M, Rossi NO, Ghanamah MS, Davis JE, Turek JW. The Correction Index: Setting the Standard for Recommending Operative Repair of Pectus Excavatum. Ann Thorac Surg. 2014;97:1176-1180.', doi: '10.1016/j.athoracsur.2013.12.050' },
     'Haller JA Jr, Kramer SS, Lietman SA. Use of CT scans in selection of patients for pectus excavatum surgery: a preliminary report. J Pediatr Surg. 1987;22:904-906.',
-    'St. Peter SD, Juang D, Garey CL, et al. A novel measure for pectus excavatum: the correction index. J Pediatr Surg. 2011;46:2270-2273.',
+    { text: 'St. Peter SD, Juang D, Garey CL, Laituri CA, Ostlie DJ, Sharp RJ, Snyder CL. A novel measure for pectus excavatum: the correction index. J Pediatr Surg. 2011;46:2270-2273.', doi: '10.1016/j.jpedsurg.2011.09.009' },
   ],
 };
