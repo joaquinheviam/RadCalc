@@ -10,6 +10,7 @@ import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
 import { updateSeoHead } from './utils/seoHead.js';
 import { Logo, SiteFooter, Sponsors, AboutInfo } from './components/shared/index.js';
+import DonationPrompt from './components/shared/DonationPrompt.jsx';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy } from './components/icons/index.js';
 import { buildMailto, buildMailTextForClipboard } from './utils/mailto.js';
 import { copyToClipboard } from './utils/clipboard.js';
@@ -362,6 +363,7 @@ function AppShell() {
       {/* Prompts y notificaciones PWA */}
       <InstallPromptIOS />
       <InstallPromptAndroid />
+      <DonationPrompt />
     </LangContext.Provider>
   );
 }
