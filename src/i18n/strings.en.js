@@ -2838,6 +2838,7 @@ export default {
       eshreCompositeLabel: 'Complete ESHRE/ESGE code (U,C,V)',
       cervixNotEvaluated: 'cervix not evaluated',
       vaginaNotEvaluated: 'vagina not evaluated',
+      cumeNA: 'n/a',
 
       usage: [
         'This calculator combines three classification frameworks verified against their primary source: the ASRM Müllerian Anomalies Classification 2021 (MAC2021, Pfeifer et al., Fertil Steril 2021;116(5):1238-52), the ESHRE/ESGE 2013 consensus (Grimbizis et al., Hum Reprod 2013;28(8):2032-44) and the CUME criteria (Ludwin et al., Ultrasound Obstet Gynecol 2018;51(1):101-109), together with the diagnostic-discrepancy comparison by Ludwin et al. (Ultrasound Obstet Gynecol 2019;54(6):800-814).',

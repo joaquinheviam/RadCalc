@@ -231,12 +231,19 @@ export default function MullerianAnomalies() {
 
   const hasAnyResult = !!(bodyReportStr || cervixReportStr || vaginaReportStr);
 
-  const stickyLabel = (() => {
-    if (agenesiaResult) return agenesiaHorn === 'yes' ? c.agenesiaWithCavity.asrm : c.agenesiaNoCavity.asrm;
-    if (unicorneResult) return unicorneResult.asrm;
-    if (bicorneResult) return bicorneResult.asrm;
-    if (tshapeResultActive) return c.tshapeResult.eshre;
-    if (showQuant && quantVerdicts.length > 0) return `${c.systemAsrmMac2021}: ${verdictLabel(asrmMac2021Verdict)}`;
+  // Resumen de 3 líneas (una por sistema) para el recuadro fijo inferior.
+  const stickyLines = (() => {
+    if (agenesiaResult) return [agenesiaResult.asrm, agenesiaResult.eshre, `${c.systemCume}: ${c.cumeNA}`];
+    if (unicorneResult) return [unicorneResult.asrm, unicorneResult.eshre, `${c.systemCume}: ${c.cumeNA}`];
+    if (bicorneResult) return [bicorneResult.asrm, bicorneResult.eshre, `${c.systemCume}: ${c.cumeNA}`];
+    if (tshapeResultActive) return [c.tshapeResult.asrmNote, c.tshapeResult.eshre, `${c.systemCume}: ${c.cumeNA}`];
+    if (showQuant && quantVerdicts.length > 0) {
+      return [
+        `${c.systemAsrmMac2021}: ${verdictLabel(asrmMac2021Verdict)}`,
+        `${c.systemEshre}: ${verdictLabel(eshreVerdict)}`,
+        `${c.systemCume}: ${verdictLabel(cumeVerdict)}`,
+      ];
+    }
     return null;
   })();
 
@@ -501,10 +508,18 @@ export default function MullerianAnomalies() {
       {hasAnyResult && (
         <StickyBar>
           <div className="min-w-0 w-full text-center">
-            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultLabel}</span>
-            <span className="text-lg font-black text-slate-800 dark:text-slate-100 block mt-1 leading-tight truncate">
-              {stickyLabel || c.reportTitle}
-            </span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.resultLabel}</span>
+            {stickyLines ? (
+              <div className="mt-1 space-y-0.5">
+                {stickyLines.map((line, i) => (
+                  <p key={i} className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug truncate">{line}</p>
+                ))}
+              </div>
+            ) : (
+              <span className="text-lg font-black text-slate-800 dark:text-slate-100 block mt-1 leading-tight truncate">
+                {c.reportTitle}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />
