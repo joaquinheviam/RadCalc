@@ -2674,6 +2674,166 @@ export default {
         "Los marcadores tumorales (LDH, b-hCG, AFP, CA-125, CEA) y hallazgos clínicos mencionados son orientativos de acuerdo a lo descrito en el artículo, y requieren de estricta correlación con el perfil de laboratorio real de la paciente."
       ]
     },
+    mullerianAnomalies: {
+      title: 'Anomalías Müllerianas: Clasificación Algorítmica',
+      subtitle: 'Árbol de decisión para clasificar anomalías congénitas del útero, cuello y vagina según ASRM MAC2021, el consenso ESHRE/ESGE 2013 y los criterios CUME (Ludwin), con comparación lado a lado en el diferencial normal/septado/bicorne.',
+      stepBack: 'Paso anterior',
+
+      bodySectionTitle: 'Cuerpo uterino',
+      resultLabel: 'Clasificación',
+
+      devQ: '¿Desarrollo del cuerpo uterino (cavidad endometrial) a cada lado?',
+      devOptions: [
+        { key: 'bilateral', label: 'Desarrollo bilateral presente (uno o dos hemiúteros formados)' },
+        { key: 'unicorne', label: 'Desarrollo unilateral — solo un lado formado' },
+        { key: 'agenesia', label: 'Ausente a ambos lados (agenesia/aplasia mülleriana)' },
+      ],
+
+      agenesiaHornQ: '¿Existe un cuerno rudimentario (uni o bilateral) con cavidad endometrial funcional?',
+      agenesiaHornYes: 'Sí — cuerno(s) rudimentario(s) con cavidad funcional',
+      agenesiaHornNo: 'No — sin cavidad funcional en el/los remanente(s), o aplasia completa',
+      agenesiaWithCavity: {
+        asrm: 'ASRM MAC2021 — Agenesia mülleriana, con cuerno(s) rudimentario(s) con endometrio funcional',
+        eshre: 'ESHRE/ESGE Clase U5a — Aplásico con cavidad rudimentaria (uni o bilateral)',
+        note: 'El cuerno rudimentario con endometrio funcional conlleva riesgo de hematometra, endometriosis por menstruación retrógrada y embarazo ectópico si no comunica con el tracto de salida; suele requerir resección quirúrgica.',
+      },
+      agenesiaNoCavity: {
+        asrm: 'ASRM MAC2021 — Agenesia mülleriana',
+        eshre: 'ESHRE/ESGE Clase U5b — Aplásico, sin cavidad rudimentaria',
+        note: 'Cuando se asocia a aplasia vaginal (síndrome de Mayer-Rokitansky-Küster-Hauser), evaluar sistemáticamente anomalías renales asociadas (hasta ~40% de incidencia).',
+      },
+
+      unicorneHornQ: '¿Hay un cuerno rudimentario contralateral?',
+      unicorneHornOptions: [
+        { key: 'none', label: 'No hay cuerno contralateral (aplasia contralateral completa)' },
+        { key: 'noCavity', label: 'Cuerno contralateral presente, sin cavidad endometrial' },
+        { key: 'communicating', label: 'Cuerno contralateral con cavidad funcional, comunicante con la cavidad principal' },
+        { key: 'nonCommunicating', label: 'Cuerno contralateral con cavidad funcional, NO comunicante' },
+      ],
+      unicorneResults: {
+        none: {
+          asrm: 'ASRM MAC2021 — Útero unicorne, sin remanente contralateral',
+          eshre: 'ESHRE/ESGE Clase U4b — Hemi-útero sin cavidad rudimentaria (sin cuerno)',
+          note: '',
+        },
+        noCavity: {
+          asrm: 'ASRM MAC2021 — Útero unicorne con remanente uterino atrófico contralateral (sin cavidad)',
+          eshre: 'ESHRE/ESGE Clase U4b — Hemi-útero sin cavidad rudimentaria funcional',
+          note: '',
+        },
+        communicating: {
+          asrm: 'ASRM MAC2021 — Útero unicorne con cuerno rudimentario comunicante con cavidad funcional',
+          eshre: 'ESHRE/ESGE Clase U4a — Hemi-útero con cavidad rudimentaria (comunicante)',
+          note: '',
+        },
+        nonCommunicating: {
+          asrm: 'ASRM MAC2021 — Útero unicorne con cuerno rudimentario NO comunicante y cavidad funcional (Robert’s-like / cuerno obstruido)',
+          eshre: 'ESHRE/ESGE Clase U4a — Hemi-útero con cavidad rudimentaria (no comunicante)',
+          note: 'Mayor riesgo de hematometra, endometriosis y embarazo ectópico en el cuerno rudimentario; la resección quirúrgica del cuerno suele estar indicada aunque el hallazgo sea incidental y la paciente esté asintomática.',
+        },
+      },
+
+      contourQ: '¿Contorno externo (seroso) del fondo uterino?',
+      contourOptions: [
+        { key: 'normal', label: 'Único — convexo, plano o mínimamente cóncavo' },
+        { key: 'cleft', label: 'Hendido/indentado — silueta en "corazón", dos cuernos divergentes' },
+      ],
+
+      extNumbersTitle: 'Mediciones de apoyo (opcionales)',
+      extDepthQ: 'Profundidad de la hendidura serosa externa (mm)',
+      wallThicknessQCleft: 'Grosor de la pared uterina, medido por encima de la línea intercornual (mm) — para calcular el índice ESHRE/ESGE',
+
+      cleftExtentQ: '¿La hendidura externa divide el cuerpo uterino completamente hasta el nivel del cuello (dos cuernos totalmente separados)?',
+      cleftExtentPartial: 'No — división parcial, por encima del nivel del cuello',
+      cleftExtentComplete: 'Sí — división completa hasta el nivel del cuello',
+      cervixCountQ: '¿Cuántos cuellos uterinos hay?',
+      cervixCountOne: 'Uno (cuello único o fusionado)',
+      cervixCountTwo: 'Dos (cuellos separados)',
+
+      bicorneResults: {
+        partialOne: { asrm: 'ASRM MAC2021 — Útero bicorne, parcial, unicollis', eshre: 'ESHRE/ESGE Clase U3a — Bicorporal parcial' },
+        completeOne: { asrm: 'ASRM MAC2021 — Útero bicorne, completo, unicollis', eshre: 'ESHRE/ESGE Clase U3b — Bicorporal completo' },
+        partialTwo: { asrm: 'ASRM MAC2021 — Anomalía compleja: bicorne bicollis parcial (dos cuellos, fusión incompleta)', eshre: 'ESHRE/ESGE Clase U3a/C2 — Bicorporal parcial con cuello doble' },
+        completeTwo: { asrm: 'ASRM MAC2021 — Útero didelfo (uterus didelphys)', eshre: 'ESHRE/ESGE Clase U3b/C2 — Bicorporal completo con cuello doble' },
+      },
+      cumeNotApplicableCleft: 'Los criterios CUME (Ludwin 2018) se derivaron y validaron exclusivamente para el diferencial normal/arcuato vs. septado; el estudio excluyó explícitamente los úteros bicornes/didelfos, por lo que no aporta un punto de corte validado para esta rama.',
+      extConfirmAsrm: (mm) => `Hendidura externa ${mm} mm ${parseFloat(mm) > 10 ? '(> 10 mm, compatible con bicorne por criterio ASRM)' : '(≤ 10 mm — verificar si el contorno realmente corresponde a bicorne/bicorporal en vez de septado)'}`,
+      extConfirmEshre: (ratio) => `Índice externo/pared ESHRE-ESGE: ${ratio}% ${ratio > 50 ? '(> 50%, compatible con Clase U3 bicorporal)' : '(≤ 50% — verificar si el contorno realmente corresponde a bicorne/bicorporal en vez de septado)'}`,
+
+      tshapeQ: '¿La cavidad endometrial tiene forma de "T" (paredes laterales engrosadas, cavidad estrecha, sin indentación fúndica significativa)?',
+      tshapeYes: 'Sí',
+      tshapeNo: 'No',
+      tshapeResult: {
+        eshre: 'ESHRE/ESGE Clase U1a — Dismórfico, tipo "T" (correlación cuerpo:cuello uterino invertida, ~1/3–2/3)',
+        asrmNote: 'ASRM MAC2021 no incluye una categoría dedicada al útero en "T" entre sus 9 categorías principales; suele quedar sin clasificar o encuadrarse dentro de "anomalías complejas".',
+      },
+
+      quantTitle: 'Diferencial normal/arcuato vs. septado — mediciones',
+      quantIntro: 'Las mediciones se toman en el plano coronal (ideal: ecografía 3D o RM). La línea de referencia interna es la línea intercornual (que une el punto más alto de la cavidad endometrial a cada lado).',
+      intDepthQ: 'Profundidad de la indentación fúndica interna (mm)',
+      intAngleQ: 'Ángulo de la indentación interna (°) — trazado desde el vértice hacia cada cuerno',
+      extDepthQNormal: 'Profundidad de la indentación fúndica externa/serosa (mm)',
+      wallThicknessQ: 'Grosor de la pared uterina por encima de la línea intercornual (mm)',
+      quantResultsTitle: 'Resultado por sistema',
+      verdictSeptate: 'Septado',
+      verdictNormal: 'Normal / arcuato',
+      verdictGrayZone: 'Zona gris (no clasificable)',
+      verdictBicorneWarning: 'Indentación externa compatible con bicorne — revisar la rama de contorno externo',
+      systemAsrmMac2021: 'ASRM MAC2021',
+      systemEshre: 'ESHRE/ESGE 2013',
+      systemCume: 'CUME (Ludwin 2018)',
+      cumeDepthLabel: 'Profundidad ≥ 10 mm',
+      cumeAngleLabel: (angle) => `Ángulo de indentación: ${angle}° (corte validado < 140° para septado)`,
+      cumeRatioLabel: (ratio) => `Índice I:WT: ${ratio}% (corte validado > 110% para septado)`,
+      cumeNote: 'CUME no es una fórmula combinada: son tres mediciones evaluadas de forma independiente contra el consenso de 15 expertos como referencia. El veredicto principal usa la profundidad (mejor confiabilidad interobservador, CCC 0,99); el ángulo y el índice I:WT se muestran como datos de apoyo con su propio punto de corte validado.',
+      discrepancyWarning: 'Hay discordancia entre sistemas para este mismo caso: los criterios ESHRE/ESGE diagnostican septado con mucha más frecuencia que ASRM y CUME (hasta 6-7 veces más en la cohorte de Ludwin et al. 2019), lo que se ha asociado a sobrediagnóstico y cirugía innecesaria. Considere esto antes de indicar metroplastia histeroscópica basándose en un solo sistema.',
+
+      cervixSectionTitle: 'Cuello uterino (independiente del cuerpo)',
+      cervixQ: 'Hallazgo cervical',
+      cervixOptions: [
+        { key: 'normal', label: 'Normal' },
+        { key: 'septate', label: 'Septado (cuello único, externamente normal, con tabique)' },
+        { key: 'double', label: 'Doble (dos cuellos, completa o parcialmente fusionados)' },
+        { key: 'unilateralAplasia', label: 'Aplasia unilateral' },
+        { key: 'aplasia', label: 'Aplasia (agenesia cervical)' },
+      ],
+      cervixResults: {
+        normal: 'ESHRE/ESGE C0 — Cuello normal',
+        septate: 'ESHRE/ESGE C1 — Cuello septado',
+        double: 'ESHRE/ESGE C2 — Cuello doble',
+        unilateralAplasia: 'ESHRE/ESGE C3 — Aplasia cervical unilateral',
+        aplasia: 'ESHRE/ESGE C4 — Aplasia cervical · ASRM MAC2021 — Agenesia cervical',
+      },
+
+      vaginaSectionTitle: 'Vagina (independiente del cuerpo)',
+      vaginaQ: 'Hallazgo vaginal',
+      vaginaOptions: [
+        { key: 'normal', label: 'Normal' },
+        { key: 'longNonObstructing', label: 'Tabique longitudinal, no obstructivo' },
+        { key: 'longObstructing', label: 'Tabique longitudinal, obstructivo' },
+        { key: 'transverseOrHymen', label: 'Tabique transverso o himen imperforado' },
+        { key: 'aplasia', label: 'Aplasia vaginal' },
+      ],
+      vaginaResults: {
+        normal: 'ESHRE/ESGE V0 — Vagina normal',
+        longNonObstructing: 'ESHRE/ESGE V1 — Tabique vaginal longitudinal no obstructivo · ASRM MAC2021 — Tabique vaginal longitudinal',
+        longObstructing: 'ESHRE/ESGE V2 — Tabique vaginal longitudinal obstructivo · ASRM MAC2021 — Tabique vaginal longitudinal (obstructivo)',
+        transverseOrHymen: 'ESHRE/ESGE V3 — Tabique transverso y/o himen imperforado · ASRM MAC2021 — Tabique vaginal transverso',
+        aplasia: 'ESHRE/ESGE V4 — Aplasia vaginal',
+      },
+
+      reportTitle: 'Clasificación algorítmica de anomalía mülleriana:',
+      copyAll: 'Copiar informe',
+
+      usage: [
+        'Esta calculadora combina tres marcos de clasificación verificados contra su fuente primaria: la clasificación ASRM Müllerian Anomalies Classification 2021 (MAC2021, Pfeifer et al., Fertil Steril 2021;116(5):1238-52), el consenso ESHRE/ESGE 2013 (Grimbizis et al., Hum Reprod 2013;28(8):2032-44) y los criterios CUME (Ludwin et al., Ultrasound Obstet Gynecol 2018;51(1):101-109), con el comparativo de discordancia diagnóstica de Ludwin et al. (Ultrasound Obstet Gynecol 2019;54(6):800-814).',
+        'El diferencial cuantitativo normal/arcuato vs. septado muestra tres sistemas en paralelo porque la literatura documenta diferencias clínicamente relevantes entre ellos: los criterios ESHRE/ESGE (índice indentación/grosor de pared > 50%) diagnostican septado en una proporción mucho mayor de mujeres que ASRM o CUME, lo que se asocia a sobrediagnóstico y a intervenciones quirúrgicas potencialmente innecesarias (Ludwin et al. 2019).',
+        'Los criterios CUME fueron validados específicamente para distinguir normal/arcuato de septado, en una población que excluyó a propósito los úteros con anomalías obvias no clasificables (agenesia, unicorne, bicorne, didelfo o septado completo); por eso esta calculadora no aplica el sistema CUME al diferencial bicorne/didelfo.',
+        'ASRM MAC2021 no incluye una categoría explícita para el útero dismórfico en "T", a diferencia de ESHRE/ESGE (Clase U1a); esta es una limitación reconocida de MAC2021 señalada en revisiones críticas posteriores.',
+        'El cuello uterino y la vagina se clasifican de forma independiente del cuerpo uterino en ambos sistemas modernos (ESHRE/ESGE mediante sub-clases C/V co-existentes; ASRM MAC2021 mediante categorías propias de agenesia cervical y tabique vaginal), por lo que pueden coexistir con cualquier hallazgo del cuerpo uterino.',
+        'Herramienta de apoyo diagnóstico basada en criterios morfométricos publicados; no reemplaza el juicio clínico ni la correlación con la historia reproductiva de la paciente. Ante discordancia entre sistemas, documente el hallazgo morfológico primario (medidas crudas) además de la etiqueta de cada sistema.',
+      ],
+    },
     biradsMammo: {
       title: 'BI-RADS Mamografía (ACR Atlas v2025)',
       subtitle: 'Herramienta de descriptores estructurados y léxico BI-RADS para mamografía, actualizada a la 6ª edición del ACR BI-RADS Atlas (revisión v2025). La categoría final de evaluación siempre la asigna el radiólogo.',

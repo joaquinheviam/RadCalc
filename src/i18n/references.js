@@ -220,6 +220,14 @@ export const REFERENCES = {
     { text: 'Sadowski EA, Thomassin-Naggara I, Rockall A, et al. O-RADS MRI risk stratification system: guide for assessing adnexal lesions from the ACR O-RADS committee. Radiology. 2022;303(1):35-47.', doi: '10.1148/radiol.204371' },
     { text: 'Alexander LF, Nougaret S, Patel-Lippmann K, et al. Reference Handbook of Gynecologic Pelvic MRI. RadioGraphics. 2026;46(2):e250029.', doi: '10.1148/rg.250029' },
   ],
+  mullerianAnomalies: [
+    { text: 'Pfeifer SM, Attaran M, Goldstein J, et al. ASRM Müllerian anomalies classification 2021. Fertil Steril. 2021;116(5):1238-1252.', doi: '10.1016/j.fertnstert.2021.09.025' },
+    { text: 'Grimbizis GF, Gordts S, Di Spiezio Sardo A, et al. The ESHRE/ESGE consensus on the classification of female genital tract congenital anomalies. Hum Reprod. 2013;28(8):2032-2044.', doi: '10.1093/humrep/det098' },
+    { text: 'Ludwin A, Ludwin I. Comparison of the ESHRE-ESGE and ASRM classifications of Müllerian duct anomalies in everyday practice. Hum Reprod. 2015;30(3):569-580.', doi: '10.1093/humrep/deu344' },
+    { text: 'Ludwin A, Martins WP, Nastri CO, et al. Congenital Uterine Malformation by Experts (CUME): better criteria for distinguishing between normal/arcuate and septate uterus? Ultrasound Obstet Gynecol. 2018;51(1):101-109.', doi: '10.1002/uog.18923' },
+    { text: 'Ludwin A, et al. Septate uterus according to ESHRE/ESGE, ASRM and CUME definitions: association with infertility and miscarriage, cost and warnings for women and healthcare systems. Ultrasound Obstet Gynecol. 2019;54(6):800-814.', doi: '10.1002/uog.20291' },
+    'Practice Committee of the American Society for Reproductive Medicine. Uterine septum: a guideline. Fertil Steril. 2016;106(3):530-540.',
+  ],
   ildClassifier: [
     'Podolanczuk AJ, Hunninghake GM, et al. Approach to the Evaluation and Management of Interstitial Lung Abnormalities: An Official American Thoracic Society Clinical Statement. Am J Respir Crit Care Med. 2025;211(7):1132-1155.',
     'Ryerson CJ, Wells AU, Richeldi L, et al. A Consensus Nomenclature and Classification for Fibrotic and Inflammatory Interstitial Lung Diseases: An Official ERS/ATS Statement. Eur Respir J / Am J Respir Crit Care Med. 2025.',
