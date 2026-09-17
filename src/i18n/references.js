@@ -1,12 +1,21 @@
 export const REFERENCES = {
   abc2Hematoma: [
     { text: 'Kothari RU, Brott T, Broderick JP, Barsan WG, Sauerbeck LR, Zuccarello M, Khoury J. The ABCs of measuring intracerebral hemorrhage volumes. Stroke. 1996;27(8):1304-1305.', doi: '10.1161/01.str.27.8.1304' },
+    { text: 'Chaisawasthomrong C, Boongird A. Determining the optimal hematoma volume-based thresholds for surgical and medical strategies in basal ganglia hemorrhage. Neurosurg Rev. 2025;48:255.', doi: '10.1007/s10143-025-03403-6' },
   ],
   nascetStenosis: [
     { text: 'North American Symptomatic Carotid Endarterectomy Trial (NASCET) Steering Committee. North American Symptomatic Carotid Endarterectomy Trial. Methods, Patient Characteristics, and Progress. Stroke. 1991;22(6):711-720.', doi: '10.1161/01.STR.22.6.711' },
   ],
   fazekasScale: [
     { text: 'Fazekas F, Chawluk JB, Alavi A, Hurtig HI, Zimmerman RA. MR signal abnormalities at 1.5 T in Alzheimer\'s dementia and normal aging. AJR Am J Roentgenol. 1987;149(2):351-356.', doi: '10.2214/ajr.149.2.351' },
+  ],
+  sahGrading: [
+    { text: 'Fisher CM, Kistler JP, Davis JM. Relation of cerebral vasospasm to subarachnoid hemorrhage visualized by computerized tomographic scanning. Neurosurgery. 1980;6(1):1-9.', doi: '10.1227/00006123-198001000-00001' },
+    { text: 'Claassen J, Bernardini GL, Kreiter K, Bates J, Du YE, Copeland D, Connolly ES, Mayer SA. Effect of cisternal and ventricular blood on risk of delayed cerebral ischemia after subarachnoid hemorrhage: the Fisher scale revisited. Stroke. 2001;32(9):2012-2020.', doi: '10.1161/hs0901.095677' },
+    { text: 'Hunt WE, Hess RM. Surgical risk as related to time of intervention in the repair of intracranial aneurysms. J Neurosurg. 1968;28(1):14-20.', doi: '10.3171/jns.1968.28.1.0014' },
+  ],
+  kellgrenLawrence: [
+    { text: 'Kellgren JH, Lawrence JS. Radiological assessment of osteo-arthrosis. Ann Rheum Dis. 1957;16(4):494-502.', doi: '10.1136/ard.16.4.494' },
   ],
   boneRads: [
     'Caracciolo JT, Temple HT, Ross ED, Cassidy K, Nguyen K, Guenther KA, Colley B, Klika D, Erdemli A, Malandra M. Bone Tumor Risk Stratification and Management System: A Consensus Guideline from the ACR Bone Reporting and Data System Committee. J Am Coll Radiol. 2023;20(10):1046-1056.',

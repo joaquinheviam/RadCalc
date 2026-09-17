@@ -15,6 +15,8 @@ const PectusHallerCI = lazy(() => import('./PectusHallerCI.jsx'));
 const ABC2Hematoma = lazy(() => import('./ABC2Hematoma.jsx'));
 const NASCETStenosis = lazy(() => import('./NASCETStenosis.jsx'));
 const FazekasScale = lazy(() => import('./FazekasScale.jsx'));
+const SAHGrading = lazy(() => import('./SAHGrading.jsx'));
+const KellgrenLawrence = lazy(() => import('./KellgrenLawrence.jsx'));
 const TIRADS = lazy(() => import('./TIRADS.jsx'));
 const ThymicFat = lazy(() => import('./ThymicFat.jsx'));
 const NTMBcdScore = lazy(() => import('./NTMBcdScore.jsx'));
@@ -112,11 +114,13 @@ export const calculators = [
   { id: 'boneRads', catKey: 'msk', component: BoneRADS },
   { id: 'mirels', catKey: 'msk', component: Mirels },
   { id: 'bactip', catKey: 'msk', component: BACTIP },
+  { id: 'kellgrenLawrence', catKey: 'msk', component: KellgrenLawrence },
   // Neurorradiología
   { id: 'aspects', catKey: 'neuro', component: ASPECTS },
   { id: 'abc2Hematoma', catKey: 'neuro', component: ABC2Hematoma },
   { id: 'nascetStenosis', catKey: 'neuro', component: NASCETStenosis },
   { id: 'fazekasScale', catKey: 'neuro', component: FazekasScale },
+  { id: 'sahGrading', catKey: 'neuro', component: SAHGrading },
 ];
 
 export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro'];
