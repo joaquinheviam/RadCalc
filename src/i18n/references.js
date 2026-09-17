@@ -5,9 +5,11 @@ export const REFERENCES = {
   ],
   nascetStenosis: [
     { text: 'North American Symptomatic Carotid Endarterectomy Trial (NASCET) Steering Committee. North American Symptomatic Carotid Endarterectomy Trial. Methods, Patient Characteristics, and Progress. Stroke. 1991;22(6):711-720.', doi: '10.1161/01.STR.22.6.711' },
+    { text: 'Joyner DA, Isikbay M, Lin DDM, Lasiecka ZM, Maloney JA, Narayanan S, et al. ACR-ASNR-SPR Practice Parameter for the Performance of Computed Tomography Angiography (CTA) of the Head and Neck. AJNR Am J Neuroradiol. 2026;47(3):567-577.', doi: '10.3174/ajnr.A9107' },
   ],
   fazekasScale: [
     { text: 'Fazekas F, Chawluk JB, Alavi A, Hurtig HI, Zimmerman RA. MR signal abnormalities at 1.5 T in Alzheimer\'s dementia and normal aging. AJR Am J Roentgenol. 1987;149(2):351-356.', doi: '10.2214/ajr.149.2.351' },
+    { text: 'Chung J, Park G, Ryu WS, Schellingerhout D, Kim HR, Gwak DS, et al. Distinct spatiotemporal patterns of white matter hyperintensity progression. Nat Commun. 2025;16(1):9360.', doi: '10.1038/s41467-025-64704-4' },
   ],
   sahGrading: [
     { text: 'Fisher CM, Kistler JP, Davis JM. Relation of cerebral vasospasm to subarachnoid hemorrhage visualized by computerized tomographic scanning. Neurosurgery. 1980;6(1):1-9.', doi: '10.1227/00006123-198001000-00001' },
@@ -16,6 +18,8 @@ export const REFERENCES = {
   ],
   kellgrenLawrence: [
     { text: 'Kellgren JH, Lawrence JS. Radiological assessment of osteo-arthrosis. Ann Rheum Dis. 1957;16(4):494-502.', doi: '10.1136/ard.16.4.494' },
+    { text: 'Macri EM, Runhaar J, Damen J, Oei EHG, Bierma-Zeinstra SMA. Kellgren/Lawrence Grading in Cohort Studies: Methodological Update and Implications Illustrated Using Data From a Dutch Hip and Knee Cohort. Arthritis Care Res (Hoboken). 2022;74(7):1179-1187.', doi: '10.1002/acr.24563' },
+    { text: 'Hunter CW, Deer TR, Jones MR, et al. Consensus Guidelines on Interventional Therapies for Knee Pain (STEP Guidelines) from the American Society of Pain and Neuroscience. J Pain Res. 2022;15:2683-2745.', doi: '10.2147/JPR.S370469' },
   ],
   boneRads: [
     'Caracciolo JT, Temple HT, Ross ED, Cassidy K, Nguyen K, Guenther KA, Colley B, Klika D, Erdemli A, Malandra M. Bone Tumor Risk Stratification and Management System: A Consensus Guideline from the ACR Bone Reporting and Data System Committee. J Am Coll Radiol. 2023;20(10):1046-1056.',

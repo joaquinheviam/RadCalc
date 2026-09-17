@@ -109,7 +109,9 @@ export default function NASCETStenosis() {
   const pctAnalysis = forced !== null ? forced : (M3 > 0 ? (1 - M1 / M3) * 100 : 0);
   const catAnalysis = getCategory(pctAnalysis);
 
-  const hasAny = showElig || showAnalysis;
+  const showResidual = !usingToggle && measure1 !== '' && M1 > 0;
+
+  const hasAny = showElig || showAnalysis || showResidual;
 
   const categoryLabel = (cat) => ({
     mild: c.catMild, moderate: c.catModerate, severe: c.catSevere, occlusion: c.catOcclusion,
@@ -119,9 +121,12 @@ export default function NASCETStenosis() {
     const lines = [];
     if (showElig) lines.push(`${c.eligLabel}: ${pctElig.toFixed(0)}% (${categoryLabel(catElig)})`);
     if (showAnalysis) lines.push(`${c.analysisLabel}: ${pctAnalysis.toFixed(0)}% (${categoryLabel(catAnalysis)})`);
+    if (showResidual) lines.push(`${c.residualLabel}: ${M1.toFixed(1)} mm`);
     if (flowRelated) lines.push(c.flowRelatedNote);
-    const cat = showAnalysis ? catAnalysis : catElig;
-    lines.push({ mild: c.resultMild, moderate: c.resultModerate, severe: c.resultSevere, occlusion: c.resultOcclusion }[cat]);
+    if (showElig || showAnalysis) {
+      const cat = showAnalysis ? catAnalysis : catElig;
+      lines.push({ mild: c.resultMild, moderate: c.resultModerate, severe: c.resultSevere, occlusion: c.resultOcclusion }[cat]);
+    }
     copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setMeasure1(''); setMeasure2(''); setMeasure3(''); setTotalOcclusion(false); setFlowRelated(false); };
@@ -152,6 +157,7 @@ export default function NASCETStenosis() {
             <NumberField label={c.measure1Label} placeholder={c.measurePh} value={measure1} onChange={setMeasure1} />
             <NumberField label={c.measure2Label} placeholder={c.measurePh} value={measure2} onChange={setMeasure2} />
             <NumberField label={c.measure3Label} placeholder={c.measurePh} value={measure3} onChange={setMeasure3} />
+            <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{c.denominatorPrecisionNote}</p>
           </div>
         )}
       </Card>
@@ -178,7 +184,15 @@ export default function NASCETStenosis() {
         </Card>
       )}
 
-      {hasAny && (
+      {showResidual && (
+        <Card className="text-center">
+          <span className="text-xs text-slate-500 block mb-1">{c.residualLabel}</span>
+          <span className="text-2xl font-black text-slate-700 dark:text-slate-200">{M1.toFixed(1)} mm</span>
+          <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1 leading-snug">{c.residualNote}</span>
+        </Card>
+      )}
+
+      {(showElig || showAnalysis) && (
         <Card>
           <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">
             {{ mild: c.resultMild, moderate: c.resultModerate, severe: c.resultSevere, occlusion: c.resultOcclusion }[showAnalysis ? catAnalysis : catElig]}
@@ -211,6 +225,12 @@ export default function NASCETStenosis() {
                   {catAnalysis === 'severe' ? <IconAlertTriangle size={24} /> : <IconCheckCircle size={24} />}
                   {pctAnalysis.toFixed(0)}%
                 </span>
+              </>
+            )}
+            {!showElig && !showAnalysis && showResidual && (
+              <>
+                <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.residualLabel}:</span>
+                <span className="text-3xl font-black leading-tight text-slate-700 dark:text-slate-200">{M1.toFixed(1)} mm</span>
               </>
             )}
           </div>
