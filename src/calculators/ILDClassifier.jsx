@@ -149,23 +149,37 @@ export default function ILDClassifier() {
   const isHPFibrotic = hasSmallAirwaySign && isFibroticFeature;
   const isFibroticNSIP = subpleuralSparing && !hasCTDSigns && isFibroticFeature;
   // Tabla 3 (ATS 2025), criterio de imagen "patrón fibrótico mayor": UIP/probable UIP, HP fibrótica o NSIP fibrótica.
-  // Bug corregido: este criterio de patrón SOLO cuenta como criterio de EPID
-  // si además alcanza ≥5% del volumen pulmonar TOTAL (volTotal === 'ge5'),
-  // no solo ≥5% de una zona (extentZone). Antes, elegir panal/bronquiectasias
-  // de tracción con la distribución subpleural-basal por defecto marcaba
-  // uipCategory como TYPICAL/PROBABLE y eso solo ya forzaba EPID sin mirar la
-  // extensión — así que un hallazgo focal (<5% del volumen total) que
-  // debería quedar como ILA subtipo "Subpleural Fibrótica" (alto riesgo de
-  // progresión, ver ilaSubFibrotic más abajo) terminaba clasificado como
-  // EPID franca. Con la extensión ≥5% de una zona pero <5% del volumen
-  // total, ahora sí puede quedar como ILA (siempre que no haya síntomas,
-  // progresión radiológica u otro criterio de Tabla 3 independiente).
-  const majorFibroticPattern = volTotal === 'ge5' && (uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' || isHPFibrotic || isFibroticNSIP);
+  // Corrección (revisión cruzada con el texto de la guía vía Gemini, sept. 2026): este criterio de
+  // patrón es INDEPENDIENTE del umbral de extensión de volumen total — NO debe exigir volTotal === 'ge5'.
+  // La Tabla 3 lista ambos ítems ("≥5% del volumen pulmonar total" y "patrón de ILD fibrótico mayor:
+  // UIP/probable UIP, HP fibrótica o NSIP fibrótica") como opciones independientes bajo el dominio de
+  // Imagen, unidas por OR — y el propio texto de la guía aclara explícitamente: "Aunque es inusual, es
+  // posible cumplir con los criterios de imagen para UIP [...] incluso si la extensión de las anomalías
+  // fibróticas es <5%". Es decir, un patrón típico o probable de UIP (o HP/NSIP fibrótica) es diagnóstico
+  // de EPID/ILD por reconocimiento de patrón, independientemente de cuánto volumen pulmonar comprometa.
+  // (Una versión anterior de este código exigía además volTotal === 'ge5' para este criterio, razonando
+  // que sin esa exigencia un hallazgo focal de panal/tracción quedaría sobre-clasificado como EPID en vez
+  // de ILA subtipo "Subpleural Fibrótica" — esa razón no está respaldada por el texto de la guía y se revirtió.)
+  const majorFibroticPattern = uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' || isHPFibrotic || isFibroticNSIP;
 
   // --- Etapa 1 (ATS 2025): ¿ILA, EPID franca, o ninguno? ---
   const isSymptomatic = symptoms === true || pftAbnormal === true; // Tabla 3: Síntomas O Fisiología
   const meetsZoneILA = extentZone === 'ge5'; // Tabla 1: ≥5% de al menos una zona pulmonar
-  const meetsImagingILDExtent = volTotal === 'ge5' && isFibroticFeature; // Tabla 3: ≥5% del volumen pulmonar total, con patrón fibrótico
+  // Tabla 3: ≥5% del volumen pulmonar total, con patrón fibrótico. El propio
+  // enunciado de volTotalLabel ya restringe la pregunta a "Compromiso FIBRÓTICO
+  // (panal y/o reticulación CON bronquiectasias de tracción)", así que responder
+  // "≥5%" aquí YA implica un patrón fibrótico — no depende de lo que el usuario
+  // haya elegido en el selector separado "feature" (Etapa 2, Sección 2), que
+  // describe la característica predominante de la TC para otros fines (categoría
+  // UIP, sospecha de diagnósticos alternativos, etc.), no la extensión.
+  // Bug corregido: antes se exigía además `isFibroticFeature` (feature ===
+  // 'traction' || 'honeycombing'), una condición redundante con lo que
+  // volTotalLabel ya pregunta. Si el usuario respondía "≥5%" aquí pero dejaba
+  // el selector "feature" en su valor por defecto ('ggo', vidrio esmerilado),
+  // el criterio fallaba silenciosamente y el caso quedaba clasificado como ILA
+  // en vez de EPID, a pesar de haber señalado compromiso fibrótico ≥5% del
+  // volumen pulmonar total.
+  const meetsImagingILDExtent = volTotal === 'ge5';
   const meetsProgression = progressionCT === true; // Tabla 3: progresión radiológica en TC seriada
   // Override de criterio clínico: permite EPID franca por magnitud/extensión aunque el patrón no sea
   // fibrótico (p. ej. vidrio esmerilado extenso/difuso), sin exigir el criterio de imagen de la Tabla 3
