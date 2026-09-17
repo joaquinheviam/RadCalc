@@ -2695,11 +2695,13 @@ export default {
       agenesiaWithCavity: {
         asrm: 'ASRM MAC2021 — Müllerian agenesis, with rudimentary horn(s) with functional endometrium',
         eshre: 'ESHRE/ESGE Class U5a — Aplastic with rudimentary cavity (uni- or bilateral)',
+        eshreCode: 'U5a',
         note: 'A rudimentary horn with functional endometrium carries a risk of hematometra, endometriosis from retrograde menstruation, and ectopic pregnancy if it does not communicate with the outflow tract; it usually requires surgical resection.',
       },
       agenesiaNoCavity: {
         asrm: 'ASRM MAC2021 — Müllerian agenesis',
         eshre: 'ESHRE/ESGE Class U5b — Aplastic, without rudimentary cavity',
+        eshreCode: 'U5b',
         note: 'When associated with vaginal aplasia (Mayer-Rokitansky-Küster-Hauser syndrome), systematically evaluate for associated renal anomalies (up to ~40% incidence).',
       },
 
@@ -2714,21 +2716,25 @@ export default {
         none: {
           asrm: 'ASRM MAC2021 — Unicornuate uterus, without contralateral remnant',
           eshre: 'ESHRE/ESGE Class U4b — Hemi-uterus without rudimentary cavity (no horn)',
+          eshreCode: 'U4b',
           note: '',
         },
         noCavity: {
           asrm: 'ASRM MAC2021 — Unicornuate uterus with atrophic contralateral uterine remnant (no cavity)',
           eshre: 'ESHRE/ESGE Class U4b — Hemi-uterus without functional rudimentary cavity',
+          eshreCode: 'U4b',
           note: '',
         },
         communicating: {
           asrm: 'ASRM MAC2021 — Unicornuate uterus with communicating rudimentary horn with functional cavity',
           eshre: 'ESHRE/ESGE Class U4a — Hemi-uterus with rudimentary cavity (communicating)',
+          eshreCode: 'U4a',
           note: '',
         },
         nonCommunicating: {
           asrm: 'ASRM MAC2021 — Unicornuate uterus with NON-communicating rudimentary horn and functional cavity (Robert’s-like / obstructed horn)',
           eshre: 'ESHRE/ESGE Class U4a — Hemi-uterus with rudimentary cavity (non-communicating)',
+          eshreCode: 'U4a',
           note: 'Higher risk of hematometra, endometriosis and ectopic pregnancy in the rudimentary horn; surgical resection of the horn is usually indicated even as an incidental, asymptomatic finding.',
         },
       },
@@ -2751,10 +2757,10 @@ export default {
       cervixCountTwo: 'Two (separate cervices)',
 
       bicorneResults: {
-        partialOne: { asrm: 'ASRM MAC2021 — Bicornuate uterus, partial, unicollis', eshre: 'ESHRE/ESGE Class U3a — Partial bicorporeal' },
-        completeOne: { asrm: 'ASRM MAC2021 — Bicornuate uterus, complete, unicollis', eshre: 'ESHRE/ESGE Class U3b — Complete bicorporeal' },
-        partialTwo: { asrm: 'ASRM MAC2021 — Complex anomaly: partial bicornuate bicollis (two cervices, incomplete fusion)', eshre: 'ESHRE/ESGE Class U3a/C2 — Partial bicorporeal with double cervix' },
-        completeTwo: { asrm: 'ASRM MAC2021 — Uterus didelphys', eshre: 'ESHRE/ESGE Class U3b/C2 — Complete bicorporeal with double cervix' },
+        partialOne: { asrm: 'ASRM MAC2021 — Bicornuate uterus, partial, unicollis', eshre: 'ESHRE/ESGE Class U3a — Partial bicorporeal', eshreCode: 'U3a' },
+        completeOne: { asrm: 'ASRM MAC2021 — Bicornuate uterus, complete, unicollis', eshre: 'ESHRE/ESGE Class U3b — Complete bicorporeal', eshreCode: 'U3b' },
+        partialTwo: { asrm: 'ASRM MAC2021 — Complex anomaly: partial bicornuate bicollis (two cervices, incomplete fusion)', eshre: 'ESHRE/ESGE Class U3a/C2 — Partial bicorporeal with double cervix', eshreCode: 'U3a' },
+        completeTwo: { asrm: 'ASRM MAC2021 — Uterus didelphys', eshre: 'ESHRE/ESGE Class U3b/C2 — Complete bicorporeal with double cervix', eshreCode: 'U3b' },
       },
       cumeNotApplicableCleft: 'CUME criteria (Ludwin 2018) were derived and validated exclusively for the normal/arcuate vs. septate differential; the study explicitly excluded bicornuate/didelphys uteri, so it does not provide a validated cut-off for this branch.',
       extConfirmAsrm: (mm) => `External cleft ${mm} mm ${parseFloat(mm) > 10 ? '(> 10 mm, consistent with bicornuate by ASRM criteria)' : '(≤ 10 mm — verify whether this contour truly corresponds to bicornuate/bicorporeal rather than septate)'}`,
@@ -2765,8 +2771,13 @@ export default {
       tshapeNo: 'No',
       tshapeResult: {
         eshre: 'ESHRE/ESGE Class U1a — Dysmorphic, T-shaped (inverted uterine body:cervix ratio, ~1/3–2/3)',
+        eshreCode: 'U1a',
         asrmNote: 'ASRM MAC2021 does not include a dedicated category for the T-shaped uterus among its 9 main categories; it is usually left unclassified or placed under "complex anomalies".',
       },
+
+      septumExtentQ: 'Does the septum extend down to the level of the internal cervical os?',
+      septumExtentPartial: 'No — partial septum, ends above the internal cervical os (Class U2a)',
+      septumExtentComplete: 'Yes — complete septum, down to the internal cervical os (Class U2b)',
 
       quantTitle: 'Normal/arcuate vs. septate differential — measurements',
       quantIntro: 'Measurements are taken on the coronal plane (ideally 3D ultrasound or MRI). The internal reference line is the interostial line (connecting the highest point of the endometrial cavity on each side).',
@@ -2824,6 +2835,9 @@ export default {
 
       reportTitle: 'Algorithmic classification of Müllerian anomaly:',
       copyAll: 'Copy report',
+      eshreCompositeLabel: 'Complete ESHRE/ESGE code (U,C,V)',
+      cervixNotEvaluated: 'cervix not evaluated',
+      vaginaNotEvaluated: 'vagina not evaluated',
 
       usage: [
         'This calculator combines three classification frameworks verified against their primary source: the ASRM Müllerian Anomalies Classification 2021 (MAC2021, Pfeifer et al., Fertil Steril 2021;116(5):1238-52), the ESHRE/ESGE 2013 consensus (Grimbizis et al., Hum Reprod 2013;28(8):2032-44) and the CUME criteria (Ludwin et al., Ultrasound Obstet Gynecol 2018;51(1):101-109), together with the diagnostic-discrepancy comparison by Ludwin et al. (Ultrasound Obstet Gynecol 2019;54(6):800-814).',

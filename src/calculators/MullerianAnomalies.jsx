@@ -12,6 +12,12 @@ const VERDICT_SEPTATE = 'septate';
 const VERDICT_NORMAL = 'normal';
 const VERDICT_GRAY = 'gray';
 
+// Mapeo de los hallazgos de cuello/vagina (secciones independientes) a los
+// códigos C0-C4 / V0-V4 del consenso ESHRE/ESGE 2013 (Grimbizis et al.),
+// para construir el código compuesto U#,C#,V#.
+const CERVIX_CODES = { normal: 'C0', septate: 'C1', double: 'C2', unilateralAplasia: 'C3', aplasia: 'C4' };
+const VAGINA_CODES = { normal: 'V0', longNonObstructing: 'V1', longObstructing: 'V2', transverseOrHymen: 'V3', aplasia: 'V4' };
+
 export default function MullerianAnomalies() {
   const { t } = useLang();
   const c = t.calc.mullerianAnomalies;
@@ -40,6 +46,7 @@ export default function MullerianAnomalies() {
   const [intAngle, setIntAngle] = useState('');
   const [extDepthNormal, setExtDepthNormal] = useState('');
   const [wallThickness, setWallThickness] = useState('');
+  const [septumExtent, setSeptumExtent] = useState(null); // null | 'partial' | 'complete' — distingue U2a/U2b (ESHRE/ESGE)
 
   const resetBody = () => {
     setDev(null);
@@ -47,22 +54,22 @@ export default function MullerianAnomalies() {
     setUnicorneHorn(null);
     setContour(null);
     setExtDepthCleft(''); setWallThicknessCleft(''); setCleftExtent(null); setCervixCount(null);
-    setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness('');
+    setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness(''); setSeptumExtent(null);
   };
   const handleDev = (key) => {
     setDev(key);
     setAgenesiaHorn(null); setUnicorneHorn(null); setContour(null);
     setExtDepthCleft(''); setWallThicknessCleft(''); setCleftExtent(null); setCervixCount(null);
-    setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness('');
+    setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness(''); setSeptumExtent(null);
   };
   const handleContour = (key) => {
     setContour(key);
     setExtDepthCleft(''); setWallThicknessCleft(''); setCleftExtent(null); setCervixCount(null);
-    setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness('');
+    setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness(''); setSeptumExtent(null);
   };
   const handleTshape = (key) => {
     setTshape(key);
-    setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness('');
+    setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness(''); setSeptumExtent(null);
   };
   const handleBodyBack = () => {
     if (dev === 'agenesia' && agenesiaHorn !== null) { setAgenesiaHorn(null); return; }
@@ -71,7 +78,7 @@ export default function MullerianAnomalies() {
       if (contour === 'cleft' && (cervixCount !== null || cleftExtent !== null)) {
         setCervixCount(null); setCleftExtent(null); return;
       }
-      if (contour === 'normal' && tshape !== null) { setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness(''); return; }
+      if (contour === 'normal' && tshape !== null) { setTshape(null); setIntDepth(''); setIntAngle(''); setExtDepthNormal(''); setWallThickness(''); setSeptumExtent(null); return; }
       if (contour !== null) { setContour(null); return; }
     }
     if (dev !== null) { setDev(null); return; }
@@ -149,32 +156,71 @@ export default function MullerianAnomalies() {
   /* ==================== Vagina (independiente) ==================== */
   const [vaginaFinding, setVaginaFinding] = useState(null);
 
+  /* ==================== Código compuesto ESHRE/ESGE (U#,C#,V#) ==================== */
+  // Código de cuello: prioriza la respuesta de la sección independiente; si no
+  // se ha respondido, usa lo ya inferido en la rama bicorne/didelfo (cervixCount).
+  const cCode = cervixFinding
+    ? CERVIX_CODES[cervixFinding]
+    : (dev === 'bilateral' && contour === 'cleft' && cervixCount ? (cervixCount === 'two' ? 'C2' : 'C0') : null);
+  const vCode = vaginaFinding ? VAGINA_CODES[vaginaFinding] : null;
+  const cervixShortLabel = cervixFinding ? (c.cervixOptions.find(o => o.key === cervixFinding)?.label ?? null) : null;
+  const vaginaShortLabel = vaginaFinding ? (c.vaginaOptions.find(o => o.key === vaginaFinding)?.label ?? null) : null;
+
+  // Código de cuerpo (clase U) según la rama activa.
+  const bodyEshreCode = (() => {
+    if (agenesiaResult) return agenesiaResult.eshreCode;
+    if (unicorneResult) return unicorneResult.eshreCode;
+    if (bicorneResult) return bicorneResult.eshreCode;
+    if (tshapeResultActive) return c.tshapeResult.eshreCode;
+    if (showQuant && eshreVerdict) {
+      if (eshreVerdict === VERDICT_NORMAL) return 'U0';
+      if (eshreVerdict === VERDICT_SEPTATE) {
+        if (septumExtent === 'complete') return 'U2b';
+        if (septumExtent === 'partial') return 'U2a';
+        return 'U2';
+      }
+    }
+    return null;
+  })();
+
+  const compositeCode = bodyEshreCode ? [bodyEshreCode, cCode, vCode].filter(Boolean).join(',') : null;
+
   /* ==================== Reporte combinado ==================== */
   const bodyReportStr = (() => {
     if (agenesiaResult) {
       const parts = [agenesiaResult.asrm, agenesiaResult.eshre];
+      if (compositeCode) parts.push(`${c.eshreCompositeLabel}: ${compositeCode}`);
+      parts.push(`${c.systemCume}: ${c.cumeNotApplicableCleft}`);
       if (agenesiaResult.note) parts.push(agenesiaResult.note);
       return parts.join(' · ');
     }
     if (unicorneResult) {
       const parts = [unicorneResult.asrm, unicorneResult.eshre];
+      if (compositeCode) parts.push(`${c.eshreCompositeLabel}: ${compositeCode}`);
+      parts.push(`${c.systemCume}: ${c.cumeNotApplicableCleft}`);
       if (unicorneResult.note) parts.push(unicorneResult.note);
       return parts.join(' · ');
     }
     if (bicorneResult) {
-      const parts = [bicorneResult.asrm, bicorneResult.eshre, c.cumeNotApplicableCleft];
+      const parts = [bicorneResult.asrm, bicorneResult.eshre];
+      if (compositeCode) parts.push(`${c.eshreCompositeLabel}: ${compositeCode}`);
+      parts.push(`${c.systemCume}: ${c.cumeNotApplicableCleft}`);
       if (extDepthCleftNum !== null) parts.push(c.extConfirmAsrm(extDepthCleft));
       if (extRatioCleft !== null) parts.push(c.extConfirmEshre(extRatioCleft));
       return parts.join(' · ');
     }
     if (tshapeResultActive) {
-      return `${c.tshapeResult.eshre} · ${c.tshapeResult.asrmNote}`;
+      const parts = [c.tshapeResult.eshre, c.tshapeResult.asrmNote];
+      if (compositeCode) parts.push(`${c.eshreCompositeLabel}: ${compositeCode}`);
+      parts.push(`${c.systemCume}: ${c.cumeNotApplicableCleft}`);
+      return parts.join(' · ');
     }
     if (showQuant && quantVerdicts.length > 0) {
       const parts = [];
       parts.push(`${c.systemAsrmMac2021}: ${verdictLabel(asrmMac2021Verdict)}`);
       parts.push(`${c.systemEshre}: ${verdictLabel(eshreVerdict)}`);
       parts.push(`${c.systemCume}: ${verdictLabel(cumeVerdict)}`);
+      if (compositeCode) parts.push(`${c.eshreCompositeLabel}: ${compositeCode}`);
       return parts.join(' · ');
     }
     return null;
@@ -203,6 +249,18 @@ export default function MullerianAnomalies() {
     if (parts.length === 0) return;
     copyToClipboard(`${c.reportTitle}\n${parts.join('\n')}`, t.common.copiedOk, t.common.copiedErr);
   };
+
+  // Bloque reutilizable: muestra el código compuesto ESHRE/ESGE (U#,C#,V#)
+  // dentro de la tarjeta de resultado de cada rama del cuerpo uterino.
+  const CompositeCodeBlock = () => !compositeCode ? null : (
+    <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{c.eshreCompositeLabel}</p>
+      <p className="text-base font-bold text-blue-600 dark:text-blue-400">{compositeCode}</p>
+      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+        {cervixShortLabel || c.cervixNotEvaluated} · {vaginaShortLabel || c.vaginaNotEvaluated}
+      </p>
+    </div>
+  );
 
   return (
     <div className={`space-y-4 animate-in fade-in ${hasAnyResult ? 'pb-56' : ''}`}>
@@ -242,7 +300,9 @@ export default function MullerianAnomalies() {
           <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{agenesiaResult.asrm}</p>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{agenesiaResult.eshre}</p>
+          <CompositeCodeBlock />
           {agenesiaResult.note && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{agenesiaResult.note}</p>}
+          <InfoBox tone="amber">{`${c.systemCume}: ${c.cumeNotApplicableCleft}`}</InfoBox>
         </Card>
       )}
 
@@ -262,7 +322,9 @@ export default function MullerianAnomalies() {
           <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{unicorneResult.asrm}</p>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{unicorneResult.eshre}</p>
+          <CompositeCodeBlock />
           {unicorneResult.note && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{unicorneResult.note}</p>}
+          <InfoBox tone="amber">{`${c.systemCume}: ${c.cumeNotApplicableCleft}`}</InfoBox>
         </Card>
       )}
 
@@ -309,9 +371,10 @@ export default function MullerianAnomalies() {
           <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{bicorneResult.asrm}</p>
           <p className="text-sm text-slate-600 dark:text-slate-300">{bicorneResult.eshre}</p>
+          <CompositeCodeBlock />
           {extDepthCleftNum !== null && <p className="text-xs text-slate-500 dark:text-slate-400">{c.extConfirmAsrm(extDepthCleft)}</p>}
           {extRatioCleft !== null && <p className="text-xs text-slate-500 dark:text-slate-400">{c.extConfirmEshre(extRatioCleft)}</p>}
-          <InfoBox tone="amber">{c.cumeNotApplicableCleft}</InfoBox>
+          <InfoBox tone="amber">{`${c.systemCume}: ${c.cumeNotApplicableCleft}`}</InfoBox>
         </Card>
       )}
 
@@ -329,7 +392,9 @@ export default function MullerianAnomalies() {
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{c.tshapeResult.eshre}</p>
+          <CompositeCodeBlock />
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.tshapeResult.asrmNote}</p>
+          <InfoBox tone="amber">{`${c.systemCume}: ${c.cumeNotApplicableCleft}`}</InfoBox>
         </Card>
       )}
 
@@ -355,9 +420,20 @@ export default function MullerianAnomalies() {
                 <span className="text-sm text-slate-600 dark:text-slate-300">{c.systemAsrmMac2021}</span>
                 <span className={`text-sm font-bold ${verdictColor(asrmMac2021Verdict)}`}>{verdictLabel(asrmMac2021Verdict)}</span>
               </div>
-              <div className="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700">
-                <span className="text-sm text-slate-600 dark:text-slate-300">{c.systemEshre}</span>
-                <span className={`text-sm font-bold ${verdictColor(eshreVerdict)}`}>{verdictLabel(eshreVerdict)}</span>
+              <div className="py-1.5 border-b border-slate-100 dark:border-slate-700">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-600 dark:text-slate-300">{c.systemEshre}</span>
+                  <span className={`text-sm font-bold ${verdictColor(eshreVerdict)}`}>{verdictLabel(eshreVerdict)}</span>
+                </div>
+                {eshreVerdict === VERDICT_SEPTATE && (
+                  <div className="mt-2">
+                    <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">{c.septumExtentQ}</label>
+                    <div className="flex gap-2">
+                      <button onClick={() => setSeptumExtent('partial')} className={`flex-1 p-2 rounded-lg border text-xs transition-all ${septumExtent === 'partial' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.septumExtentPartial}</button>
+                      <button onClick={() => setSeptumExtent('complete')} className={`flex-1 p-2 rounded-lg border text-xs transition-all ${septumExtent === 'complete' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.septumExtentComplete}</button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="py-1.5">
                 <div className="flex justify-between items-center">
@@ -369,6 +445,8 @@ export default function MullerianAnomalies() {
                 {cumeRatio !== null && <p className="text-xs text-slate-500 dark:text-slate-400">{c.cumeRatioLabel(cumeRatio)}</p>}
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.cumeNote}</p>
               </div>
+
+              <CompositeCodeBlock />
 
               {eshreExternalWarning && <InfoBox tone="amber">{c.verdictBicorneWarning}</InfoBox>}
               {quantDiscrepancy && <InfoBox tone="amber">{c.discrepancyWarning}</InfoBox>}

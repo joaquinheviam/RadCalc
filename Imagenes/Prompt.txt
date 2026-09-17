@@ -1,0 +1,12 @@
+You are creating an ORIGINAL educational medical illustration for a radiology teaching presentation. I am attaching a reference image from a published paper/atlas that depicts [FINDING NAME] on [MODALITY/VIEW].
+
+Do not copy or closely reproduce this reference image. Instead:
+1. Look at it only to understand the underlying anatomical/pathological concept — the structures involved, their spatial relationships, and the key finding it illustrates.
+2. Create a completely new, original schematic drawing of that same concept, redrawn from scratch in your own visual style — different composition, linework, color palette, and layout from the reference. Do not replicate its specific framing, colors, exact line placement, or any labels, text, watermark, or journal logo visible in it.
+3. The goal is a clean, simplified, textbook-style diagram that teaches the same concept — not a derivative or close copy of the source image's artistic execution.
+4. Add your own clear labels/callouts for the key structures (redrawn, not copied).
+5. Do not include any watermark, page furniture, or attribution text from the source.
+
+Key finding to depict accurately: [PASTE THE VERIFIED ITEM DESCRIPTION HERE]
+
+Style: clean, original medical-atlas-style schematic illustration, simplified and educational, no photographic textures, no text copied from the source image.

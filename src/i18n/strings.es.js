@@ -2695,11 +2695,13 @@ export default {
       agenesiaWithCavity: {
         asrm: 'ASRM MAC2021 — Agenesia mülleriana, con cuerno(s) rudimentario(s) con endometrio funcional',
         eshre: 'ESHRE/ESGE Clase U5a — Aplásico con cavidad rudimentaria (uni o bilateral)',
+        eshreCode: 'U5a',
         note: 'El cuerno rudimentario con endometrio funcional conlleva riesgo de hematometra, endometriosis por menstruación retrógrada y embarazo ectópico si no comunica con el tracto de salida; suele requerir resección quirúrgica.',
       },
       agenesiaNoCavity: {
         asrm: 'ASRM MAC2021 — Agenesia mülleriana',
         eshre: 'ESHRE/ESGE Clase U5b — Aplásico, sin cavidad rudimentaria',
+        eshreCode: 'U5b',
         note: 'Cuando se asocia a aplasia vaginal (síndrome de Mayer-Rokitansky-Küster-Hauser), evaluar sistemáticamente anomalías renales asociadas (hasta ~40% de incidencia).',
       },
 
@@ -2714,21 +2716,25 @@ export default {
         none: {
           asrm: 'ASRM MAC2021 — Útero unicorne, sin remanente contralateral',
           eshre: 'ESHRE/ESGE Clase U4b — Hemi-útero sin cavidad rudimentaria (sin cuerno)',
+          eshreCode: 'U4b',
           note: '',
         },
         noCavity: {
           asrm: 'ASRM MAC2021 — Útero unicorne con remanente uterino atrófico contralateral (sin cavidad)',
           eshre: 'ESHRE/ESGE Clase U4b — Hemi-útero sin cavidad rudimentaria funcional',
+          eshreCode: 'U4b',
           note: '',
         },
         communicating: {
           asrm: 'ASRM MAC2021 — Útero unicorne con cuerno rudimentario comunicante con cavidad funcional',
           eshre: 'ESHRE/ESGE Clase U4a — Hemi-útero con cavidad rudimentaria (comunicante)',
+          eshreCode: 'U4a',
           note: '',
         },
         nonCommunicating: {
           asrm: 'ASRM MAC2021 — Útero unicorne con cuerno rudimentario NO comunicante y cavidad funcional (Robert’s-like / cuerno obstruido)',
           eshre: 'ESHRE/ESGE Clase U4a — Hemi-útero con cavidad rudimentaria (no comunicante)',
+          eshreCode: 'U4a',
           note: 'Mayor riesgo de hematometra, endometriosis y embarazo ectópico en el cuerno rudimentario; la resección quirúrgica del cuerno suele estar indicada aunque el hallazgo sea incidental y la paciente esté asintomática.',
         },
       },
@@ -2751,10 +2757,10 @@ export default {
       cervixCountTwo: 'Dos (cuellos separados)',
 
       bicorneResults: {
-        partialOne: { asrm: 'ASRM MAC2021 — Útero bicorne, parcial, unicollis', eshre: 'ESHRE/ESGE Clase U3a — Bicorporal parcial' },
-        completeOne: { asrm: 'ASRM MAC2021 — Útero bicorne, completo, unicollis', eshre: 'ESHRE/ESGE Clase U3b — Bicorporal completo' },
-        partialTwo: { asrm: 'ASRM MAC2021 — Anomalía compleja: bicorne bicollis parcial (dos cuellos, fusión incompleta)', eshre: 'ESHRE/ESGE Clase U3a/C2 — Bicorporal parcial con cuello doble' },
-        completeTwo: { asrm: 'ASRM MAC2021 — Útero didelfo (uterus didelphys)', eshre: 'ESHRE/ESGE Clase U3b/C2 — Bicorporal completo con cuello doble' },
+        partialOne: { asrm: 'ASRM MAC2021 — Útero bicorne, parcial, unicollis', eshre: 'ESHRE/ESGE Clase U3a — Bicorporal parcial', eshreCode: 'U3a' },
+        completeOne: { asrm: 'ASRM MAC2021 — Útero bicorne, completo, unicollis', eshre: 'ESHRE/ESGE Clase U3b — Bicorporal completo', eshreCode: 'U3b' },
+        partialTwo: { asrm: 'ASRM MAC2021 — Anomalía compleja: bicorne bicollis parcial (dos cuellos, fusión incompleta)', eshre: 'ESHRE/ESGE Clase U3a/C2 — Bicorporal parcial con cuello doble', eshreCode: 'U3a' },
+        completeTwo: { asrm: 'ASRM MAC2021 — Útero didelfo (uterus didelphys)', eshre: 'ESHRE/ESGE Clase U3b/C2 — Bicorporal completo con cuello doble', eshreCode: 'U3b' },
       },
       cumeNotApplicableCleft: 'Los criterios CUME (Ludwin 2018) se derivaron y validaron exclusivamente para el diferencial normal/arcuato vs. septado; el estudio excluyó explícitamente los úteros bicornes/didelfos, por lo que no aporta un punto de corte validado para esta rama.',
       extConfirmAsrm: (mm) => `Hendidura externa ${mm} mm ${parseFloat(mm) > 10 ? '(> 10 mm, compatible con bicorne por criterio ASRM)' : '(≤ 10 mm — verificar si el contorno realmente corresponde a bicorne/bicorporal en vez de septado)'}`,
@@ -2765,8 +2771,13 @@ export default {
       tshapeNo: 'No',
       tshapeResult: {
         eshre: 'ESHRE/ESGE Clase U1a — Dismórfico, tipo "T" (correlación cuerpo:cuello uterino invertida, ~1/3–2/3)',
+        eshreCode: 'U1a',
         asrmNote: 'ASRM MAC2021 no incluye una categoría dedicada al útero en "T" entre sus 9 categorías principales; suele quedar sin clasificar o encuadrarse dentro de "anomalías complejas".',
       },
+
+      septumExtentQ: '¿El tabique se extiende hasta el nivel del orificio cervical interno?',
+      septumExtentPartial: 'No — tabique parcial, termina por encima del orificio cervical interno (Clase U2a)',
+      septumExtentComplete: 'Sí — tabique completo, hasta el orificio cervical interno (Clase U2b)',
 
       quantTitle: 'Diferencial normal/arcuato vs. septado — mediciones',
       quantIntro: 'Las mediciones se toman en el plano coronal (ideal: ecografía 3D o RM). La línea de referencia interna es la línea intercornual (que une el punto más alto de la cavidad endometrial a cada lado).',
@@ -2824,6 +2835,9 @@ export default {
 
       reportTitle: 'Clasificación algorítmica de anomalía mülleriana:',
       copyAll: 'Copiar informe',
+      eshreCompositeLabel: 'Código ESHRE/ESGE completo (U,C,V)',
+      cervixNotEvaluated: 'cuello no evaluado',
+      vaginaNotEvaluated: 'vagina no evaluada',
 
       usage: [
         'Esta calculadora combina tres marcos de clasificación verificados contra su fuente primaria: la clasificación ASRM Müllerian Anomalies Classification 2021 (MAC2021, Pfeifer et al., Fertil Steril 2021;116(5):1238-52), el consenso ESHRE/ESGE 2013 (Grimbizis et al., Hum Reprod 2013;28(8):2032-44) y los criterios CUME (Ludwin et al., Ultrasound Obstet Gynecol 2018;51(1):101-109), con el comparativo de discordancia diagnóstica de Ludwin et al. (Ultrasound Obstet Gynecol 2019;54(6):800-814).',
