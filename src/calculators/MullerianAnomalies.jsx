@@ -240,7 +240,7 @@ export default function MullerianAnomalies() {
     if (showQuant && quantVerdicts.length > 0) {
       return [
         `${c.systemAsrmMac2021}: ${verdictLabel(asrmMac2021Verdict)}`,
-        `${c.systemEshre}: ${verdictLabel(eshreVerdict)}`,
+        `${c.systemEshre}: ${verdictLabel(eshreVerdict)}${compositeCode ? ` (${compositeCode})` : ''}`,
         `${c.systemCume}: ${verdictLabel(cumeVerdict)}`,
       ];
     }
