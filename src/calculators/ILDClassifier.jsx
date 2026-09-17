@@ -113,6 +113,12 @@ export default function ILDClassifier() {
   // Antecedente de conectivopatía conocida (independiente de los signos morfológicos de Etapa 2)
   const [ctdKnown, setCtdKnown] = useState('none'); // 'none','sle','sjogren','ssc','ra','pmdm','mctd'
 
+  // Módulo BIP/HP (ATS/JRS/ALAT 2020): sospecha clínica de exposición/antígeno causal, y único
+  // hallazgo nuevo que faltaba capturar (atenuación en mosaico / atrapamiento aéreo) — ver bloque
+  // de cálculo más abajo, que reutiliza el resto de hallazgos ya presentes en el formulario.
+  const [suspectsHP, setSuspectsHP] = useState(null);
+  const [mosaicOrTrapping, setMosaicOrTrapping] = useState(false);
+
   // --- Cálculos auxiliares de Etapa 2 (patrón), necesarios también para saber
   // si hay un "patrón fibrótico mayor" (criterio de EPID de la Tabla 3) ---
   const isFibroticFeature = feature === 'traction' || feature === 'honeycombing';
@@ -162,6 +168,62 @@ export default function ILDClassifier() {
   // de ILA subtipo "Subpleural Fibrótica" — esa razón no está respaldada por el texto de la guía y se revirtió.)
   const majorFibroticPattern = uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' || isHPFibrotic || isFibroticNSIP;
 
+  /* ==================== Módulo BIP/HP (ATS/JRS/ALAT 2020) ==================== */
+  // Verificado directamente contra el texto de la guía (Tablas 5, 6 y Figura 6, sept. 2026) —
+  // a diferencia de hasSmallAirwaySign de arriba (usado solo para la sospecha rápida de BIP/HP
+  // en el titular/sugerencias), este bloque implementa la clasificación típico/compatible/
+  // indeterminado completa de las Tablas 5 (no fibrótica) y 6 (fibrótica), más el cruce con la
+  // exposición clínica (Figura 6, fila sin LAVB ni histopatología) para un nivel de confianza
+  // diagnóstica. Reutiliza hallazgos ya capturados en el formulario (nódulos centrilobulillares
+  // vía ggoCentrilobular en no fumador, patrón de tres densidades, patrón/distribución de
+  // fibrosis ya clasificados como uipCategory/isFibroticNSIP/hasOPSigns/extensiveGGO) y agrega
+  // un único hallazgo nuevo: atenuación en mosaico / atrapamiento aéreo (mosaicOrTrapping).
+  const centrilobularNodulesHP = ggoCentrilobular && !smokingHistory;
+  const smallAirwaySignsHP = centrilobularNodulesHP || threeDensity || mosaicOrTrapping;
+
+  // No fibrótica (Tabla 5, p. e46 ATS 2020): típico exige ≥1 hallazgo de infiltración
+  // parenquimatosa (GGO o atenuación en mosaico) Y ≥1 de vía aérea pequeña (nódulos
+  // centrilobulillares o atrapamiento aéreo), ambos en distribución difusa. Compatible: patrón/
+  // distribución variante (GGO sutil, consolidación o quistes; distribución difusa con variante
+  // basal o peribroncovascular), sin exigir vía aérea pequeña — la tabla no la pide para
+  // "compatible" en la forma no fibrótica. La tabla no define hallazgos positivos para
+  // "indeterminado" (columna N/A): se usa como categoría residual, igual que en la Figura 6.
+  const parenchymalSignHP = feature === 'ggo' || extensiveGGO;
+  const nonFibroticHPCategory = (() => {
+    if (distribution === 'diffuse' && parenchymalSignHP && smallAirwaySignsHP) return 'TYPICAL';
+    if ((distribution === 'diffuse' || distribution === 'subpleuralBasal' || distribution === 'peribronchovascular') && parenchymalSignHP) return 'COMPATIBLE';
+    return 'INDETERMINATE';
+  })();
+
+  // Fibrótica (Tabla 6, p. e48 ATS 2020): típico exige un patrón de fibrosis "genérico"
+  // (reticulación/distorsión, sin panal/tracción predominante) en distribución aleatoria, de
+  // predominio en zona media, o con respeto relativo de bases (es decir, NO el patrón/
+  // distribución clásico de UIP) MÁS ≥1 signo de vía aérea pequeña. Compatible: variantes de
+  // patrón (UIP, NSIP fibrótica, tipo OP, GGO extenso con fibrosis sutil sobreagregada) o de
+  // distribución (peribroncovascular/subpleural, o zonas superiores) — siempre acompañadas de
+  // signos de vía aérea pequeña. Indeterminado: cualquiera de esos patrones de forma AISLADA
+  // (sin signos de vía aérea pequeña acompañantes), o un patrón verdaderamente indeterminado.
+  const fibroticHPCategory = (() => {
+    if (!smallAirwaySignsHP) return 'INDETERMINATE';
+    if (uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE') return 'COMPATIBLE';
+    if (distribution === 'peribronchovascular' || distribution === 'upperMid') return 'COMPATIBLE';
+    if (isFibroticNSIP || hasOPSigns) return 'COMPATIBLE';
+    if (extensiveGGO) return 'COMPATIBLE';
+    return 'TYPICAL';
+  })();
+
+  const hpCategory = isFibroticFeature ? fibroticHPCategory : nonFibroticHPCategory;
+
+  // Nivel de confianza diagnóstica (Figura 6, p. e55 ATS 2020): fila sin LAVB ni histopatología,
+  // porque son las únicas dos variables (patrón de TC + exposición clínica) que esta calculadora
+  // conoce. Si además hay linfocitosis en LAVB y/o hallazgos histopatológicos, la guía permite
+  // subir de nivel — se indica como nota (hpConfidenceNote), no se calcula aquí.
+  const hpConfidence = (() => {
+    if (hpCategory === 'TYPICAL') return suspectsHP ? c.hpConfidenceModerate : c.hpConfidenceLow;
+    if (hpCategory === 'COMPATIBLE') return suspectsHP ? c.hpConfidenceLow : c.hpConfidenceNotExcluded;
+    return c.hpConfidenceNotExcluded;
+  })();
+
   // --- Etapa 1 (ATS 2025): ¿ILA, EPID franca, o ninguno? ---
   const isSymptomatic = symptoms === true || pftAbnormal === true; // Tabla 3: Síntomas O Fisiología
   const meetsZoneILA = extentZone === 'ge5'; // Tabla 1: ≥5% de al menos una zona pulmonar
@@ -203,6 +265,11 @@ export default function ILDClassifier() {
   } else {
     entityType = 'NORMAL_OR_MINIMAL';
   }
+
+  // El módulo BIP/HP se despliega si el usuario marcó sospecha clínica desde el inicio, O si el
+  // propio patrón de imagen ya sugirió BIP/HP como diagnóstico alternativo (hasSmallAirwaySign) —
+  // en cualquiera de los dos casos, solo tiene sentido si se alcanzó ILA o EPID franca.
+  const showHPModule = (entityType === 'EPID' || entityType === 'ILA') && (suspectsHP === true || (uipCategory === 'ALTERNATIVE' && hasSmallAirwaySign));
 
   // --- Etapa 2: Diagnósticos Alternativos Sugeridos (solo relevantes si entityType === 'EPID') ---
   let alternativeDetails = [];
@@ -320,7 +387,7 @@ export default function ILDClassifier() {
     straightEdge || exuberantHC || anteriorUpper || esophagus || axillaryLymph ||
     smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity ||
     consolidationOP || consolidationPeribronchovascular || consolidationPerilobular || subpleuralSparing ||
-    extensiveGGO || ctdKnown !== 'none';
+    extensiveGGO || ctdKnown !== 'none' || suspectsHP !== null || mosaicOrTrapping;
 
   const showResult = started;
 
@@ -349,6 +416,8 @@ export default function ILDClassifier() {
     setSubpleuralSparing(false);
     setExtensiveGGO(false);
     setCtdKnown('none');
+    setSuspectsHP(null);
+    setMosaicOrTrapping(false);
   };
 
   const entityLabel = entityType === 'EPID' ? c.resEPID : entityType === 'ILA' ? c.resILA : c.resNormal;
@@ -390,6 +459,11 @@ export default function ILDClassifier() {
       if (alternativeDetails.length > 0) {
         lines.push(`${c.reportAltLabel}\n- ${alternativeDetails.join('\n- ')}`);
       }
+      if (showHPModule) {
+        const hpTypeLabel = isFibroticFeature ? c.hpFibroticLabel : c.hpNonFibroticLabel;
+        const hpCategoryLabel = hpCategory === 'TYPICAL' ? c.hpCategoryTypical : hpCategory === 'COMPATIBLE' ? c.hpCategoryCompatible : c.hpCategoryIndeterminate;
+        lines.push(`${c.reportHpLabel} ${hpTypeLabel} — ${hpCategoryLabel} — ${c.hpConfidenceLabel}: ${hpConfidence}`);
+      }
     }
     lines.push(c.reportFooter);
     copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
@@ -426,6 +500,13 @@ export default function ILDClassifier() {
             label={c.majorInterstitialLabel}
             value={majorInterstitialDisease}
             onChange={setMajorInterstitialDisease}
+            yesLabel={t.common.yes}
+            noLabel={t.common.no}
+          />
+          <YesNo
+            label={c.suspectsHPLabel}
+            value={suspectsHP}
+            onChange={setSuspectsHP}
             yesLabel={t.common.yes}
             noLabel={t.common.no}
           />
@@ -620,6 +701,15 @@ export default function ILDClassifier() {
           <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
             <input
               type="checkbox"
+              checked={mosaicOrTrapping}
+              onChange={(e) => setMosaicOrTrapping(e.target.checked)}
+              className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.mosaicOrTrappingLabel}</span>
+          </label>
+          <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+            <input
+              type="checkbox"
               checked={consolidationOP}
               onChange={(e) => setConsolidationOP(e.target.checked)}
               className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
@@ -692,6 +782,30 @@ export default function ILDClassifier() {
                 </ul>
               </InfoBox>
             )}
+          </div>
+        </Card>
+      )}
+
+      {/* Módulo BIP/HP (ATS/JRS/ALAT 2020): clasificación típico/compatible/indeterminado
+          (Tablas 5/6) y nivel de confianza diagnóstica (Figura 6), condicionado a sospecha
+          clínica o a que el patrón principal ya sugiera BIP/HP. */}
+      {showHPModule && (
+        <Card className="border-blue-500/30 bg-blue-500/5">
+          <div className="space-y-3">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm">{c.hpModuleTitle}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{c.hpModuleIntro}</p>
+            <div className="pt-2 border-t border-blue-200/50 dark:border-blue-700/50 space-y-1">
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                {isFibroticFeature ? c.hpFibroticLabel : c.hpNonFibroticLabel}
+              </p>
+              <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                {hpCategory === 'TYPICAL' ? c.hpCategoryTypical : hpCategory === 'COMPATIBLE' ? c.hpCategoryCompatible : c.hpCategoryIndeterminate}
+              </p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                {c.hpConfidenceLabel}: <span className="font-semibold">{hpConfidence}</span>
+              </p>
+            </div>
+            <InfoBox tone="slate">{c.hpConfidenceNote}</InfoBox>
           </div>
         </Card>
       )}
