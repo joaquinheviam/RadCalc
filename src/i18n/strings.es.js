@@ -1,7 +1,7 @@
 export default {
   appName: 'RadioCalc Clinical',
   tagline: 'Calculadoras radiológicas, algoritmos de decisión y escalas para la práctica clínica diaria',
-  metaDescription: 'Calculadoras radiológicas, algoritmos de decisión y escalas de puntuación para la práctica clínica diaria, con integración de las guías de las principales sociedades científicas, apoyo para el manejo de hallazgos incidentales, y todo basado en evidencia.',
+  metaDescription: 'Calculadoras radiológicas basadas en evidencia para la práctica clínica diaria, con algoritmos según las guías de las principales sociedades científicas. Apoyo para el manejo de hallazgos incidentales. Gratis y sin publicidad.',
   common: {
     copyReport: 'Copiar texto para informe',
     copy: 'Copiar',

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0f172a">
-  <meta name="description" content="Calculadoras radiológicas, algoritmos de decisión y escalas de puntuación para la práctica clínica diaria, con integración de las guías de las principales sociedades científicas, apoyo para el manejo de hallazgos incidentales, y todo basado en evidencia. Gratis y sin publicidad: TI-RADS, PI-RADS, O-RADS, LI-RADS, VI-RADS, PSAD, fracción grasa por RM, lavado adrenal, siderosis hepática, ASPECTS, Bone-RADS, criterios de Mirels y más de 40 calculadoras.">
+  <meta name="description" content="Calculadoras radiológicas basadas en evidencia para la práctica clínica diaria, con algoritmos según las guías de las principales sociedades científicas. Apoyo para el manejo de hallazgos incidentales. Gratis y sin publicidad: TI-RADS, PI-RADS, O-RADS, LI-RADS, VI-RADS, PSAD, fracción grasa por RM, lavado adrenal, siderosis hepática, ASPECTS, Bone-RADS, criterios de Mirels y más de 40 calculadoras.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="RadioCalc">
@@ -17,12 +17,29 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://radiocalc.app/">
   <meta property="og:title" content="RadioCalc Clinical — Calculadora Radiológica">
-  <meta property="og:description" content="Calculadoras radiológicas, algoritmos de decisión y escalas de puntuación para la práctica clínica diaria, con integración de las guías de las principales sociedades científicas, apoyo para el manejo de hallazgos incidentales, y todo basado en evidencia.">
+  <meta property="og:description" content="Calculadoras radiológicas basadas en evidencia para la práctica clínica diaria, con algoritmos según las guías de las principales sociedades científicas. Apoyo para el manejo de hallazgos incidentales. Gratis y sin publicidad.">
   <meta property="og:image" content="https://radiocalc.app/icons/icon-512.png">
   <meta property="og:locale" content="es_CL">
+  <meta property="og:site_name" content="RadioCalc Clinical">
   <meta name="twitter:card" content="summary">
 
   <!-- Datos estructurados (schema.org) para buscadores -->
+  <!-- Bloque "WebSite" independiente del "WebApplication" de abajo: Google usa
+       específicamente el tipo WebSite (junto con og:site_name arriba) para
+       decidir el "Site Name" que muestra en los resultados de búsqueda junto
+       al favicon (antes de este cambio, al no encontrar ninguna señal
+       explícita, Google mostraba "Vercel" — la plataforma de hosting — en su
+       lugar). No reemplaza al bloque WebApplication, que describe la app en
+       sí (categoría, autor, precio, etc.) y se deja intacto. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "RadioCalc Clinical",
+    "alternateName": "RadioCalc",
+    "url": "https://radiocalc.app/"
+  }
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
