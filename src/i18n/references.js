@@ -238,4 +238,9 @@ export const REFERENCES = {
     'Marinescu DC, Hague CJ, Muller NL, et al. Association of CT Features with Radiologic Patterns in Interstitial Lung Disease: Multinomial Analysis in CARE-PF. Radiology. 2026;318(3):e251944.',
     'Raghu G, Remy-Jardin M, Ryerson CJ, et al. Diagnosis of Hypersensitivity Pneumonitis in Adults: An Official ATS/JRS/ALAT Clinical Practice Guideline. Am J Respir Crit Care Med. 2020;202(3):e36-e69.',
   ],
+  pectusHallerCI: [
+    { text: 'Poston PM, Patel SS, Rajput M, Rossi NO, Ghanamah MS, Davis JE, Turek JW. The Correction Index: Setting the Standard for Recommending Operative Repair of Pectus Excavatum. Ann Thorac Surg. 2014;97:1176-1180.', doi: '10.1016/j.athoracsur.2013.12.050' },
+    'Haller JA Jr, Kramer SS, Lietman SA. Use of CT scans in selection of patients for pectus excavatum surgery: a preliminary report. J Pediatr Surg. 1987;22:904-906.',
+    'St. Peter SD, Juang D, Garey CL, et al. A novel measure for pectus excavatum: the correction index. J Pediatr Surg. 2011;46:2270-2273.',
+  ],
 };

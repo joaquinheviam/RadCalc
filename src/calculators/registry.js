@@ -11,6 +11,7 @@
 import { lazy } from 'react';
 
 const ILDClassifier = lazy(() => import('./ILDClassifier.jsx'));
+const PectusHallerCI = lazy(() => import('./PectusHallerCI.jsx'));
 const TIRADS = lazy(() => import('./TIRADS.jsx'));
 const ThymicFat = lazy(() => import('./ThymicFat.jsx'));
 const NTMBcdScore = lazy(() => import('./NTMBcdScore.jsx'));
@@ -70,6 +71,7 @@ export const calculators = [
   { id: 'ildClassifier', catKey: 'torax', component: ILDClassifier },
   { id: 'epidExtent', catKey: 'torax', component: EPIDExtent },
   { id: 'thoracicglossary', catKey: 'torax', component: ThoracicGlossary },
+  { id: 'pectusHallerCI', catKey: 'torax', component: PectusHallerCI },
   // Cardiovascular
   { id: 'cadrads', catKey: 'cardio', component: CADRADS },
   // Abdomen (hepatobiliopancreático y suprarrenal)

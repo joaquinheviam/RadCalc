@@ -113,11 +113,15 @@ export default function ILDClassifier() {
   // Antecedente de conectivopatía conocida (independiente de los signos morfológicos de Etapa 2)
   const [ctdKnown, setCtdKnown] = useState('none'); // 'none','sle','sjogren','ssc','ra','pmdm','mctd'
 
-  // Módulo BIP/HP (ATS/JRS/ALAT 2020): sospecha clínica de exposición/antígeno causal, y único
-  // hallazgo nuevo que faltaba capturar (atenuación en mosaico / atrapamiento aéreo) — ver bloque
-  // de cálculo más abajo, que reutiliza el resto de hallazgos ya presentes en el formulario.
+  // Módulo BIP/HP (ATS/JRS/ALAT 2020): sospecha clínica de exposición/antígeno causal, y dos
+  // hallazgos que la Tabla 4 (ATS 2020) distingue EXPLÍCITAMENTE como no sinónimos ("Mosaic
+  // attenuation and air trapping are not synonymous and cannot be used interchangeably") — antes
+  // vivían fusionados en un solo checkbox, lo que impedía separar correctamente los criterios de
+  // infiltración parenquimatosa (Tabla 5) de los de vía aérea pequeña. Ver bloque de cálculo más
+  // abajo, que reutiliza el resto de hallazgos ya presentes en el formulario.
   const [suspectsHP, setSuspectsHP] = useState(null);
-  const [mosaicOrTrapping, setMosaicOrTrapping] = useState(false);
+  const [mosaicAttenuationHP, setMosaicAttenuationHP] = useState(false);
+  const [airTrappingHP, setAirTrappingHP] = useState(false);
 
   // --- Cálculos auxiliares de Etapa 2 (patrón), necesarios también para saber
   // si hay un "patrón fibrótico mayor" (criterio de EPID de la Tabla 3) ---
@@ -151,7 +155,7 @@ export default function ILDClassifier() {
   // parenquimatosa/fibrosis (siempre presente, ya que "feature" es obligatorio), sugieren BIP/HP. Los nódulos
   // centrilobulillares en vidrio deslustrado (ggoCentrilobular) SOLO cuentan aquí si el paciente NO fuma:
   // en fumadores, ese mismo hallazgo se atribuye primero a RB-ILD (ver más abajo).
-  const hasSmallAirwaySign = threeDensity || distribution === 'peribronchovascular' || (ggoCentrilobular && !smokingHistory);
+  const hasSmallAirwaySign = threeDensity || distribution === 'peribronchovascular' || (ggoCentrilobular && !smokingHistory) || mosaicAttenuationHP || airTrappingHP;
   const isHPFibrotic = hasSmallAirwaySign && isFibroticFeature;
   const isFibroticNSIP = subpleuralSparing && !hasCTDSigns && isFibroticFeature;
   // Tabla 3 (ATS 2025), criterio de imagen "patrón fibrótico mayor": UIP/probable UIP, HP fibrótica o NSIP fibrótica.
@@ -169,17 +173,37 @@ export default function ILDClassifier() {
   const majorFibroticPattern = uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' || isHPFibrotic || isFibroticNSIP;
 
   /* ==================== Módulo BIP/HP (ATS/JRS/ALAT 2020) ==================== */
-  // Verificado directamente contra el texto de la guía (Tablas 5, 6 y Figura 6, sept. 2026) —
+  // Verificado directamente contra el texto de la guía (Tablas 4, 5, 6 y Figura 6, sept. 2026) —
   // a diferencia de hasSmallAirwaySign de arriba (usado solo para la sospecha rápida de BIP/HP
   // en el titular/sugerencias), este bloque implementa la clasificación típico/compatible/
   // indeterminado completa de las Tablas 5 (no fibrótica) y 6 (fibrótica), más el cruce con la
   // exposición clínica (Figura 6, fila sin LAVB ni histopatología) para un nivel de confianza
-  // diagnóstica. Reutiliza hallazgos ya capturados en el formulario (nódulos centrilobulillares
-  // vía ggoCentrilobular en no fumador, patrón de tres densidades, patrón/distribución de
-  // fibrosis ya clasificados como uipCategory/isFibroticNSIP/hasOPSigns/extensiveGGO) y agrega
-  // un único hallazgo nuevo: atenuación en mosaico / atrapamiento aéreo (mosaicOrTrapping).
+  // diagnóstica.
+  //
+  // Corrección (sept. 2026, a pedido explícito del usuario tras revisar el módulo): la primera
+  // versión reutilizaba un único criterio "smallAirwaySignsHP" idéntico para ambas tablas, lo que
+  // conflaba hallazgos que la guía trata como DISTINTOS: 1) la Tabla 4 aclara textualmente que
+  // "Mosaic attenuation and air trapping are not synonymous and cannot be used interchangeably" —
+  // antes vivían fusionados en un solo checkbox (mosaicOrTrapping); 2) la atenuación en mosaico es
+  // un hallazgo de INFILTRACIÓN PARENQUIMATOSA en la Tabla 5 (junto al GGO), no solo de vía aérea
+  // pequeña — antes solo contaba para vía aérea pequeña, por lo que un caso con mosaico aislado
+  // (sin GGO explícito) podía quedar sub-clasificado como Indeterminado en vez de Típico; 3) el
+  // signo de las tres densidades (threeDensity) es EXCLUSIVO de la Tabla 6 (Tabla 4: "has not been
+  // shown to be specific for nonfibrotic HP") y antes también contaba para la forma no fibrótica.
+  // Se separan aquí los hallazgos de vía aérea pequeña por tabla en vez de una sola variable
+  // compartida.
   const centrilobularNodulesHP = ggoCentrilobular && !smokingHistory;
-  const smallAirwaySignsHP = centrilobularNodulesHP || threeDensity || mosaicOrTrapping;
+
+  // Tabla 5 (no fibrótica, p. e46): infiltración parenquimatosa = GGO O atenuación en mosaico;
+  // vía aérea pequeña = nódulos centrolobulillares mal definidos O atrapamiento aéreo (NO incluye
+  // el signo de tres densidades, ver nota arriba).
+  const parenchymalSignHP5 = feature === 'ggo' || extensiveGGO || mosaicAttenuationHP;
+  const smallAirwaySignHP5 = centrilobularNodulesHP || airTrappingHP;
+
+  // Tabla 6 (fibrótica, p. e48): vía aérea pequeña = nódulos centrolobulillares y/o GGO, O
+  // atenuación en mosaico, signo de tres densidades y/o atrapamiento aéreo — lista más amplia que
+  // la Tabla 5 (sí incluye tres densidades).
+  const smallAirwaySignHP6 = centrilobularNodulesHP || threeDensity || mosaicAttenuationHP || airTrappingHP;
 
   // No fibrótica (Tabla 5, p. e46 ATS 2020): típico exige ≥1 hallazgo de infiltración
   // parenquimatosa (GGO o atenuación en mosaico) Y ≥1 de vía aérea pequeña (nódulos
@@ -188,10 +212,9 @@ export default function ILDClassifier() {
   // basal o peribroncovascular), sin exigir vía aérea pequeña — la tabla no la pide para
   // "compatible" en la forma no fibrótica. La tabla no define hallazgos positivos para
   // "indeterminado" (columna N/A): se usa como categoría residual, igual que en la Figura 6.
-  const parenchymalSignHP = feature === 'ggo' || extensiveGGO;
   const nonFibroticHPCategory = (() => {
-    if (distribution === 'diffuse' && parenchymalSignHP && smallAirwaySignsHP) return 'TYPICAL';
-    if ((distribution === 'diffuse' || distribution === 'subpleuralBasal' || distribution === 'peribronchovascular') && parenchymalSignHP) return 'COMPATIBLE';
+    if (distribution === 'diffuse' && parenchymalSignHP5 && smallAirwaySignHP5) return 'TYPICAL';
+    if ((distribution === 'diffuse' || distribution === 'subpleuralBasal' || distribution === 'peribronchovascular') && parenchymalSignHP5) return 'COMPATIBLE';
     return 'INDETERMINATE';
   })();
 
@@ -203,16 +226,30 @@ export default function ILDClassifier() {
   // distribución (peribroncovascular/subpleural, o zonas superiores) — siempre acompañadas de
   // signos de vía aérea pequeña. Indeterminado: cualquiera de esos patrones de forma AISLADA
   // (sin signos de vía aérea pequeña acompañantes), o un patrón verdaderamente indeterminado.
+  const hasVariantFibroticPattern = uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE' ||
+    distribution === 'peribronchovascular' || distribution === 'upperMid' || isFibroticNSIP || hasOPSigns || extensiveGGO;
   const fibroticHPCategory = (() => {
-    if (!smallAirwaySignsHP) return 'INDETERMINATE';
-    if (uipCategory === 'TYPICAL' || uipCategory === 'PROBABLE') return 'COMPATIBLE';
-    if (distribution === 'peribronchovascular' || distribution === 'upperMid') return 'COMPATIBLE';
-    if (isFibroticNSIP || hasOPSigns) return 'COMPATIBLE';
-    if (extensiveGGO) return 'COMPATIBLE';
+    if (!smallAirwaySignHP6) return 'INDETERMINATE';
+    if (hasVariantFibroticPattern) return 'COMPATIBLE';
     return 'TYPICAL';
   })();
 
   const hpCategory = isFibroticFeature ? fibroticHPCategory : nonFibroticHPCategory;
+
+  // Desglose de criterios (solo para transparencia/auditoría visual en el módulo — no cambia el
+  // veredicto, que ya se calculó arriba). Permite al radiólogo ver EXACTAMENTE cuáles hallazgos
+  // de la Tabla 5/6 se cumplieron, en vez de solo el resultado final.
+  const hpCriteriaBreakdown = isFibroticFeature
+    ? [
+        { label: c.hpCriterionDistribution6, met: distribution === 'diffuse' },
+        { label: c.hpCriterionAirway6, met: smallAirwaySignHP6 },
+        { label: c.hpCriterionVariant6, met: hasVariantFibroticPattern },
+      ]
+    : [
+        { label: c.hpCriterionParenchymal5, met: parenchymalSignHP5 },
+        { label: c.hpCriterionAirway5, met: smallAirwaySignHP5 },
+        { label: c.hpCriterionDistribution5, met: distribution === 'diffuse' },
+      ];
 
   // Nivel de confianza diagnóstica (Figura 6, p. e55 ATS 2020): fila sin LAVB ni histopatología,
   // porque son las únicas dos variables (patrón de TC + exposición clínica) que esta calculadora
@@ -387,7 +424,7 @@ export default function ILDClassifier() {
     straightEdge || exuberantHC || anteriorUpper || esophagus || axillaryLymph ||
     smokingHistory || cystsSRIF || cystsPLCH || ggoCentrilobular || threeDensity ||
     consolidationOP || consolidationPeribronchovascular || consolidationPerilobular || subpleuralSparing ||
-    extensiveGGO || ctdKnown !== 'none' || suspectsHP !== null || mosaicOrTrapping;
+    extensiveGGO || ctdKnown !== 'none' || suspectsHP !== null || mosaicAttenuationHP || airTrappingHP;
 
   const showResult = started;
 
@@ -417,7 +454,8 @@ export default function ILDClassifier() {
     setExtensiveGGO(false);
     setCtdKnown('none');
     setSuspectsHP(null);
-    setMosaicOrTrapping(false);
+    setMosaicAttenuationHP(false);
+    setAirTrappingHP(false);
   };
 
   const entityLabel = entityType === 'EPID' ? c.resEPID : entityType === 'ILA' ? c.resILA : c.resNormal;
@@ -463,6 +501,10 @@ export default function ILDClassifier() {
         const hpTypeLabel = isFibroticFeature ? c.hpFibroticLabel : c.hpNonFibroticLabel;
         const hpCategoryLabel = hpCategory === 'TYPICAL' ? c.hpCategoryTypical : hpCategory === 'COMPATIBLE' ? c.hpCategoryCompatible : c.hpCategoryIndeterminate;
         lines.push(`${c.reportHpLabel} ${hpTypeLabel} — ${hpCategoryLabel} — ${c.hpConfidenceLabel}: ${hpConfidence}`);
+        const metCriteria = hpCriteriaBreakdown.filter((item) => item.met).map((item) => item.label);
+        if (metCriteria.length > 0) {
+          lines.push(`${c.hpCriteriaTitle} ${metCriteria.join('; ')}.`);
+        }
       }
     }
     lines.push(c.reportFooter);
@@ -701,11 +743,20 @@ export default function ILDClassifier() {
           <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
             <input
               type="checkbox"
-              checked={mosaicOrTrapping}
-              onChange={(e) => setMosaicOrTrapping(e.target.checked)}
+              checked={mosaicAttenuationHP}
+              onChange={(e) => setMosaicAttenuationHP(e.target.checked)}
               className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
             />
-            <span className="text-sm text-slate-700 dark:text-slate-300">{c.mosaicOrTrappingLabel}</span>
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.mosaicAttenuationHPLabel}</span>
+          </label>
+          <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={airTrappingHP}
+              onChange={(e) => setAirTrappingHP(e.target.checked)}
+              className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-300">{c.airTrappingHPLabel}</span>
           </label>
           <label className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
             <input
@@ -804,6 +855,21 @@ export default function ILDClassifier() {
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 {c.hpConfidenceLabel}: <span className="font-semibold">{hpConfidence}</span>
               </p>
+            </div>
+            <div className="pt-2 border-t border-blue-200/50 dark:border-blue-700/50 space-y-1.5">
+              <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">{c.hpCriteriaTitle}</p>
+              <ul className="space-y-1">
+                {hpCriteriaBreakdown.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-xs">
+                    <span className={item.met ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-400 dark:text-slate-600'}>
+                      {item.met ? '✓' : '—'}
+                    </span>
+                    <span className={item.met ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'}>
+                      {item.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
             <InfoBox tone="slate">{c.hpConfidenceNote}</InfoBox>
           </div>
