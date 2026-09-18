@@ -270,4 +270,11 @@ export const REFERENCES = {
     'Haller JA Jr, Kramer SS, Lietman SA. Use of CT scans in selection of patients for pectus excavatum surgery: a preliminary report. J Pediatr Surg. 1987;22:904-906.',
     { text: 'St. Peter SD, Juang D, Garey CL, Laituri CA, Ostlie DJ, Sharp RJ, Snyder CL. A novel measure for pectus excavatum: the correction index. J Pediatr Surg. 2011;46:2270-2273.', doi: '10.1016/j.jpedsurg.2011.09.009' },
   ],
+  tlics: [
+    { text: 'Vaccaro AR, Lehman RA Jr, Hurlbert RJ, et al. A new classification of thoracolumbar injuries: the importance of injury morphology, the integrity of the posterior ligamentous complex, and neurologic status. Spine (Phila Pa 1976). 2005;30(20):2325-2333.', doi: '10.1097/01.brs.0000182986.43345.cb' },
+    { text: 'Park CJ, Kim SK, Lee TM, Park ET. Clinical relevance and validity of TLICS system for thoracolumbar spine injury. Sci Rep. 2020;10:19494.', doi: '10.1038/s41598-020-76473-9' },
+  ],
+  sins: [
+    { text: 'Fisher CG, DiPaola CP, Ryken TC, et al. A novel classification system for spinal instability in neoplastic disease: an evidence-based approach and expert consensus from the Spine Oncology Study Group. Spine (Phila Pa 1976). 2010;35(22):E1221-E1229.', doi: '10.1097/BRS.0b013e3181e16ae2' },
+  ],
 };
