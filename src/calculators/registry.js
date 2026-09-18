@@ -60,6 +60,8 @@ const BoneRADS = lazy(() => import('./BoneRADS.jsx'));
 const Mirels = lazy(() => import('./Mirels.jsx'));
 const BACTIP = lazy(() => import('./BACTIP.jsx'));
 const ASPECTS = lazy(() => import('./ASPECTS.jsx'));
+const TLICS = lazy(() => import('./TLICS.jsx'));
+const SINS = lazy(() => import('./SINS.jsx'));
 
 export const calculators = [
   // Cabeza y cuello
@@ -115,12 +117,14 @@ export const calculators = [
   { id: 'mirels', catKey: 'msk', component: Mirels },
   { id: 'bactip', catKey: 'msk', component: BACTIP },
   { id: 'kellgrenLawrence', catKey: 'msk', component: KellgrenLawrence },
+  { id: 'tlics', catKey: 'msk', component: TLICS },
   // Neurorradiología
   { id: 'aspects', catKey: 'neuro', component: ASPECTS },
   { id: 'abc2Hematoma', catKey: 'neuro', component: ABC2Hematoma },
   { id: 'nascetStenosis', catKey: 'neuro', component: NASCETStenosis },
   { id: 'fazekasScale', catKey: 'neuro', component: FazekasScale },
   { id: 'sahGrading', catKey: 'neuro', component: SAHGrading },
+  { id: 'sins', catKey: 'neuro', component: SINS },
 ];
 
 export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro'];
