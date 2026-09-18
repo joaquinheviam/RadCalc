@@ -10,6 +10,7 @@ const ARTHROPLASTY_HR = {
   hip: { single: 24.4, paired: 7.7 },
 };
 const PREVALENCE_MULT = { knee: 2.4, hip: 2.9 };
+const MANAGE_TONE = ['emerald', 'amber', 'amber', 'amber', 'red'];
 
 export default function KellgrenLawrence() {
   const { t } = useLang();
@@ -35,11 +36,17 @@ export default function KellgrenLawrence() {
 
   const showNonKneeHipNote = !isKneeOrHip && (readingMethod !== null || roaDef !== null);
 
+  const showManagement = joint.key === 'knee' && grade !== null;
+
   const handleCopy = () => {
     const lines = [
       `${c.jointLabel}: ${joint.name} (${joint.projection})`,
       `${c.gradeLabel}: ${grade} — ${c.gradeDefs[grade]}`,
     ];
+    if (showManagement) {
+      lines.push(`${c.manageDiagLabel}: ${c.manageDiag[grade]}`);
+      lines.push(`${c.manageLabel}: ${c.manageText[grade]}`);
+    }
     if (showPrevalence) lines.push(c.prevalenceNote(prevalenceMult, joint.name));
     if (showArthroplasty) {
       lines.push(c.arthroplastyText(arthroplastyHR, joint.name, readingMethodLabel(readingMethod)));
@@ -90,6 +97,17 @@ export default function KellgrenLawrence() {
         {grade !== null && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.gradeDefs[grade]}</p>}
         <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.gradeDefsNote}</p>
       </Card>
+
+      {showManagement && (
+        <Card>
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">{c.manageTitle}</h3>
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">{c.manageDiagLabel}: {c.manageDiag[grade]}</p>
+          <InfoBox tone={MANAGE_TONE[grade]}>
+            <span className="font-semibold block mb-1">{c.manageLabel}:</span>
+            {c.manageText[grade]}
+          </InfoBox>
+        </Card>
+      )}
 
       <InfoBox tone="slate">{c.groupingNote}</InfoBox>
 

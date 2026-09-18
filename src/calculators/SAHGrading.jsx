@@ -26,6 +26,28 @@ function GradeSelector({ label, value, onChange, options, defs, labels }) {
   );
 }
 
+function YesNoRow({ label, value, onChange, yesLabel, noLabel }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="text-sm text-slate-600 dark:text-slate-300">{label}</span>
+      <div className="flex gap-1.5 shrink-0">
+        <button
+          onClick={() => onChange(false)}
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${value === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+        >
+          {noLabel}
+        </button>
+        <button
+          onClick={() => onChange(true)}
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${value === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+        >
+          {yesLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function SAHGrading() {
   const { t } = useLang();
   const c = t.calc.sahGrading;
@@ -33,25 +55,44 @@ export default function SAHGrading() {
   const [modFisher, setModFisher] = useState(null);
   const [huntHess, setHuntHess] = useState(null);
   const [huntHessModifier, setHuntHessModifier] = useState(false);
+  const [sebesRSulci, setSebesRSulci] = useState(null);
+  const [sebesRGw, setSebesRGw] = useState(null);
+  const [sebesLSulci, setSebesLSulci] = useState(null);
+  const [sebesLGw, setSebesLGw] = useState(null);
 
   const fisherResult = fisher === null ? null : fisher <= 2 ? c.fisherResultLow : fisher === 3 ? c.fisherResultHigh : c.fisherResultGroup4;
   const modFisherResult = modFisher === null ? null : c.modFisherRisk[modFisher];
+  const modFisherResultAlt = modFisher === null ? null : c.modFisherRiskAlt[modFisher];
 
   const huntHessEffective = huntHess === null ? null : Math.min(5, huntHess + (huntHessModifier ? 1 : 0));
   const huntHessResult = huntHessEffective === null ? null : huntHessEffective <= 2 ? c.huntHessResultLow : c.huntHessResultHigh;
 
-  const hasAny = fisher !== null || modFisher !== null || huntHess !== null;
+  const sebesComplete = sebesRSulci !== null && sebesRGw !== null && sebesLSulci !== null && sebesLGw !== null;
+  const sebesScore = sebesComplete ? [sebesRSulci, sebesRGw, sebesLSulci, sebesLGw].filter(Boolean).length : null;
+  const sebesResult = sebesScore === null ? null : sebesScore <= 2 ? c.sebesResultLow : c.sebesResultHigh;
+
+  const hasAny = fisher !== null || modFisher !== null || huntHess !== null || sebesComplete;
 
   const handleCopy = () => {
     const lines = [];
     if (fisher !== null) lines.push(`${c.fisherResultLabel}: ${fisher} — ${fisherResult}`);
-    if (modFisher !== null) lines.push(`${c.modFisherResultLabel}: ${modFisher} — ${modFisherResult}`);
+    if (modFisher !== null) {
+      lines.push(`${c.modFisherResultLabel}: ${modFisher} — ${modFisherResult}`);
+      if (modFisherResultAlt) lines.push(modFisherResultAlt);
+    }
     if (huntHess !== null) {
       lines.push(`${c.huntHessResultLabel}: ${HUNT_HESS_ROMAN[huntHess - 1]}${huntHessModifier ? ` → ${c.huntHessEffectiveLabel}: ${HUNT_HESS_ROMAN[huntHessEffective - 1]}` : ''} — ${huntHessResult}`);
     }
+    if (sebesComplete) {
+      lines.push(`${c.sebesResultLabel}: ${sebesScore} — ${sebesResult}`);
+      if (sebesScore >= 3) lines.push(c.sebesRiskFactorsNote);
+    }
     copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
   };
-  const resetAll = () => { setFisher(null); setModFisher(null); setHuntHess(null); setHuntHessModifier(false); };
+  const resetAll = () => {
+    setFisher(null); setModFisher(null); setHuntHess(null); setHuntHessModifier(false);
+    setSebesRSulci(null); setSebesRGw(null); setSebesLSulci(null); setSebesLGw(null);
+  };
 
   return (
     <div className={`space-y-4 animate-in fade-in ${hasAny ? 'pb-56' : ''}`}>
@@ -65,6 +106,7 @@ export default function SAHGrading() {
         <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{c.modFisherTitle}</p>
         <GradeSelector label={c.modFisherResultLabel} value={modFisher} onChange={setModFisher} options={[0, 1, 2, 3, 4]} defs={c.modFisherDefs} />
         {modFisherResult && <InfoBox tone={modFisher === 0 ? 'emerald' : modFisher === 4 ? 'red' : 'amber'}>{modFisherResult}</InfoBox>}
+        {modFisherResultAlt && <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{modFisherResultAlt}</p>}
       </Card>
 
       <Card>
@@ -83,6 +125,35 @@ export default function SAHGrading() {
         {huntHessResult && <InfoBox tone={huntHessEffective <= 2 ? 'emerald' : 'amber'}>{huntHessResult}</InfoBox>}
       </Card>
 
+      <Card className="space-y-3">
+        <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{c.sebesTitle}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{c.sebesCriteriaInfo}</p>
+
+        <div>
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.sebesRightTitle}</h3>
+          <div className="space-y-2">
+            <YesNoRow label={c.sebesLevel1Label} value={sebesRSulci} onChange={setSebesRSulci} yesLabel={c.sebesPresent} noLabel={c.sebesAbsent} />
+            <YesNoRow label={c.sebesLevel2Label} value={sebesRGw} onChange={setSebesRGw} yesLabel={c.sebesPresent} noLabel={c.sebesAbsent} />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.sebesLeftTitle}</h3>
+          <div className="space-y-2">
+            <YesNoRow label={c.sebesLevel1Label} value={sebesLSulci} onChange={setSebesLSulci} yesLabel={c.sebesPresent} noLabel={c.sebesAbsent} />
+            <YesNoRow label={c.sebesLevel2Label} value={sebesLGw} onChange={setSebesLGw} yesLabel={c.sebesPresent} noLabel={c.sebesAbsent} />
+          </div>
+        </div>
+
+        {sebesComplete && (
+          <>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{c.sebesResultLabel}: {sebesScore}</p>
+            <InfoBox tone={sebesScore <= 2 ? 'emerald' : 'red'}>{sebesResult}</InfoBox>
+            {sebesScore >= 3 && <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{c.sebesRiskFactorsNote}</p>}
+          </>
+        )}
+      </Card>
+
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.sahGrading} />
       <ReportBugLink calcTitle={c.title} />
@@ -99,6 +170,7 @@ export default function SAHGrading() {
                 Hunt-Hess {HUNT_HESS_ROMAN[huntHess - 1]}{huntHessModifier ? ` → ${HUNT_HESS_ROMAN[huntHessEffective - 1]}` : ''}
               </span>
             )}
+            {sebesComplete && <span className="block text-slate-700 dark:text-slate-200 font-bold">SEBES {sebesScore}</span>}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />
