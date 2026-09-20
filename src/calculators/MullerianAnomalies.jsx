@@ -2,10 +2,97 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { IconBookOpen } from '../components/icons/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
 
 const btnCls = (active) =>
   `w-full text-left p-2.5 rounded-lg border text-xs transition-all ${active ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`;
+
+// Diagrama de línea (mismo criterio visual que PectusScheme en
+// PectusHallerCI.jsx: silueta en currentColor para adaptarse a ambos temas,
+// badges de color fijo por cada medición, leyenda bilingüe fuera del SVG).
+// Muestra la anatomía relevante para diferenciar útero septado de
+// normal/arcuato: línea intercornual (referencia externa), profundidad de
+// indentación (d), grosor de pared en el fondo (w) y ángulo de indentación (α).
+function SeptateScheme() {
+  return (
+    <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
+      <svg viewBox="0 0 400 380" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        {/* Miometrio (contorno externo) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+          d="M 60,90 Q 200,20 340,90 Q 370,220 260,320 L 260,350 Q 260,365 245,365 L 155,365 Q 140,365 140,350 L 140,320 Q 30,220 60,90 Z"
+        />
+        {/* Cavidad endometrial (indentación en Y) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
+          className="text-slate-400 dark:text-slate-500"
+          d="M 100,110 L 200,230 L 300,110 M 200,230 L 200,340"
+        />
+        {/* Línea intercornual (referencia externa, discontinua) */}
+        <line x1="80" y1="110" x2="320" y2="110" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
+
+        {/* w: grosor de pared en el fondo */}
+        <g stroke="#059669" strokeWidth="3" strokeLinecap="round">
+          <line x1="200" y1="45" x2="200" y2="105" />
+          <line x1="190" y1="45" x2="210" y2="45" />
+          <line x1="190" y1="105" x2="210" y2="105" />
+        </g>
+        <rect x="216" y="60" width="26" height="26" rx="6" fill="#059669" />
+        <text x="229" y="78" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">w</text>
+
+        {/* d: profundidad de la indentación */}
+        <g stroke="#dc2626" strokeWidth="3" strokeLinecap="round">
+          <line x1="200" y1="115" x2="200" y2="225" />
+          <line x1="190" y1="115" x2="210" y2="115" />
+          <line x1="190" y1="225" x2="210" y2="225" />
+        </g>
+        <rect x="158" y="160" width="26" height="26" rx="6" fill="#dc2626" />
+        <text x="171" y="178" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">d</text>
+
+        {/* α: ángulo de la indentación */}
+        <path d="M 165,195 A 42,42 0 0 0 200,230" fill="none" stroke="#2563eb" strokeWidth="3" />
+        <rect x="150" y="205" width="26" height="26" rx="6" fill="#2563eb" />
+        <text x="163" y="223" fill="#ffffff" fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">α</text>
+      </svg>
+    </div>
+  );
+}
+
+// Comparación ASRM MAC2021 / ESHRE-ESGE / CUME, en Tailwind (no SVG) para que
+// el texto quede en español/inglés vía i18n y se adapte a ambos temas — la
+// ilustración de la usuaria usaba texto fijo dentro del SVG y los umbrales
+// ASRM del "Uterine septum: a guideline" 2016 (≥1.5 cm / zona gris 1.0-1.5
+// cm), que ya no son los que implementa esta calculadora; aquí se muestran
+// los umbrales ASRM MAC2021 (Pfeifer et al. 2021) para que coincidan
+// exactamente con el resultado que arroja más abajo.
+function CriteriaComparison({ c }) {
+  const rows = [
+    { title: c.criteriaAsrmTitle, septate: c.criteriaAsrmSeptate, normal: c.criteriaAsrmNormal, note: c.criteriaAsrmGray },
+    { title: c.criteriaEshreTitle, septate: c.criteriaEshreSeptate, normal: c.criteriaEshreNormal, note: null },
+    { title: c.criteriaCumeTitle, septate: c.criteriaCumeSeptate, normal: c.criteriaCumeNormal, note: c.criteriaCumeSupport },
+  ];
+  return (
+    <div className="space-y-2.5">
+      {rows.map((r) => (
+        <div key={r.title} className="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+          <p className="text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">{r.title}</p>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <span className="block font-semibold text-red-500 mb-0.5">{c.criteriaSeptateLabel}</span>
+              <span className="text-slate-600 dark:text-slate-300">{r.septate}</span>
+            </div>
+            <div>
+              <span className="block font-semibold text-emerald-500 mb-0.5">{c.criteriaNormalLabel}</span>
+              <span className="text-slate-600 dark:text-slate-300">{r.normal}</span>
+            </div>
+          </div>
+          {r.note && <p className="text-[11px] italic text-slate-500 dark:text-slate-400 mt-1.5">{r.note}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // Verdictos, en el mismo orden en que se muestran las columnas.
 const VERDICT_SEPTATE = 'septate';
@@ -408,6 +495,20 @@ export default function MullerianAnomalies() {
       {/* ---- Bilateral + normal + no T-shape: cuantitativo ---- */}
       {showQuant && (
         <>
+          <Accordion icon={<IconBookOpen size={16} />} title={c.diagramSectionTitle}>
+            <div className="space-y-4">
+              <p className="text-xs text-slate-500 dark:text-slate-400">{c.diagramIntro}</p>
+              <SeptateScheme />
+              <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center text-[11px] text-slate-500 dark:text-slate-400">
+                <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.schemeLegendW}</span>
+                <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-600 mr-1 align-[-1px]"></span>{c.schemeLegendD}</span>
+                <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-blue-600 mr-1 align-[-1px]"></span>{c.schemeLegendAlpha}</span>
+                <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-slate-400 mr-1 align-[-1px]"></span>{c.schemeLegendIntercornual}</span>
+              </div>
+              <CriteriaComparison c={c} />
+            </div>
+          </Accordion>
+
           <Card className="space-y-3">
             <h4 className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">{c.quantTitle}</h4>
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.quantIntro}</p>

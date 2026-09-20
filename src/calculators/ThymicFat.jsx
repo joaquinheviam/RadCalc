@@ -5,14 +5,17 @@ import { REFERENCES } from '../i18n/references.js';
 import { IconGitBranch, IconArrowRight, IconChevronLeft, IconRefresh, IconInfo } from '../components/icons/index.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
 
-// Puntos de corte validados por Priola et al. (Radiology 2015): SII > 8.92%
-// y CSR <= 0.849 son compatibles con hiperplasia tímica / timo normal.
-// Zona gris de CSR descrita entre 0.849 y 0.896 (superposición solo en
-// adultos jóvenes). Ver src/i18n/strings.*.js -> calc.thymic.usage para el
-// detalle completo verificado contra las 4 fuentes primarias.
+// SII > 8.92% (Priola et al., Radiology 2015): 100% sensibilidad/especificidad
+// para hiperplasia tímica / timo normal; no requiere tejido de referencia y no
+// se ve afectado por edad/IMC. Por eso el SII es la métrica que prevalece.
+// CSR < 0.70 / > 1.00 (Inaoka et al., Radiology 2007): puntos de corte
+// clásicos para hiperplasia/timo normal vs. neoplasia; el rango 0.70-1.00 se
+// trata como zona indeterminada, ya que la señal del músculo paraespinal de
+// referencia varía con la edad y el IMC del paciente (Priola et al. 2015).
+// Ver src/i18n/strings.*.js -> calc.thymic.usage para el detalle completo.
 const SII_CUTOFF = 8.92;
-const CSR_CUTOFF = 0.849;
-const CSR_GREY_MAX = 0.896;
+const CSR_LOW = 0.70;
+const CSR_HIGH = 1.00;
 
 // Corte nT2 (señal T2 lesión / señal T2 LCR) de Hwang et al. 2019, mismo
 // paper y misma cohorte que el nADC de más arriba. Ver src/i18n/strings.*.js
@@ -265,12 +268,44 @@ export default function ThymicFat() {
   const sii = isThymusValid ? ((tIn - tOut) / tIn) * 100 : 0;
   const csr = isThymusValid && hasMuscle ? (tOut / tIn) / (mOut / mIn) : null;
 
-  const siiFatty = sii > SII_CUTOFF;
-  const csrFatty = csr !== null ? csr <= CSR_CUTOFF : null;
-  const csrGreyZone = csr !== null && csr > CSR_CUTOFF && csr <= CSR_GREY_MAX;
-  const isFatty = siiFatty || csrFatty === true;
+  const siiBenign = sii > SII_CUTOFF;
+
+  // CSR de 3 zonas (Inaoka 2007) solo se evalúa si hay ROI de músculo. El SII
+  // siempre prevalece cuando hay discordancia (Priola 2015) — ver constantes
+  // más arriba y calc.thymic.usage para el detalle de cada escenario.
+  let csrZone = null; // 'benign' | 'indet' | 'malignant'
+  if (csr !== null) {
+    if (csr < CSR_LOW) csrZone = 'benign';
+    else if (csr <= CSR_HIGH) csrZone = 'indet';
+    else csrZone = 'malignant';
+  }
+
+  // Escenario final: 1-5 según la tabla de decisión (SII x CSR), o 'siiOnly'
+  // cuando no hay ROI de músculo disponible.
+  let scenario = 'siiOnly';
+  if (csrZone !== null) {
+    if (siiBenign) {
+      scenario = csrZone === 'benign' ? 1 : csrZone === 'indet' ? 2 : 3;
+    } else {
+      scenario = csrZone === 'malignant' ? 4 : 5;
+    }
+  }
+
+  const scenarioMap = isThymusValid ? {
+    1: { tone: 'emerald', title: c.scenario1Title, text: c.scenario1Text, note: null },
+    2: { tone: 'emerald', title: c.scenario2Title, text: c.scenario2Text, note: c.scenario2Note },
+    3: { tone: 'amber', title: c.scenario3Title, text: c.scenario3Text, note: c.scenario3Note },
+    4: { tone: 'red', title: c.scenario4Title, text: c.scenario4Text, note: null },
+    5: { tone: 'red', title: c.scenario5Title, text: c.scenario5Text, note: c.scenario5Note },
+    siiOnly: siiBenign
+      ? { tone: 'emerald', title: c.scenarioSiiOnlyBenignTitle, text: c.conclFatty, note: null }
+      : { tone: 'amber', title: c.scenarioSiiOnlyMalignantTitle, text: c.conclNotFatty, note: null },
+  } : null;
+
+  const result = scenarioMap ? scenarioMap[scenario] : null;
 
   const handleCopy = () => {
+    if (!result) return;
     const text = c.reportText(
       thymusIn,
       thymusOut,
@@ -278,7 +313,7 @@ export default function ThymicFat() {
       muscleOut,
       csr !== null ? csr.toFixed(3) : null,
       sii.toFixed(1),
-      isFatty ? c.conclFatty : c.conclNotFatty
+      result.title
     );
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
@@ -312,31 +347,28 @@ export default function ThymicFat() {
         </div>
       </Card>
 
-      {isValid && (
+      {isValid && result && (
         <Card>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <span className="block text-xs text-slate-500 mb-1">{c.ratioCsr}</span>
               {csr !== null ? (
-                <span className={`text-2xl font-bold ${csrFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{csr.toFixed(2)}</span>
+                <span className={`text-2xl font-bold ${csrZone === 'benign' ? 'text-emerald-500' : csrZone === 'indet' ? 'text-amber-500' : 'text-red-500'}`}>{csr.toFixed(2)}</span>
               ) : (
                 <span className="block text-xs text-slate-400 dark:text-slate-500 italic pt-2">{c.csrPending}</span>
               )}
             </div>
             <div className="text-center">
               <span className="block text-xs text-slate-500 mb-1">{c.indexSii}</span>
-              <span className={`text-2xl font-bold ${siiFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{sii.toFixed(1)}%</span>
+              <span className={`text-2xl font-bold ${siiBenign ? 'text-emerald-500' : 'text-red-500'}`}>{sii.toFixed(1)}%</span>
             </div>
           </div>
-          {csrGreyZone && !siiFatty && (
-            <div className="mt-3">
-              <InfoBox tone="amber">{c.greyZoneWarning}</InfoBox>
-            </div>
-          )}
-          <div className="mt-3">
-            <InfoBox tone={isFatty ? 'emerald' : 'amber'}>
-              {isFatty ? c.fattyConcl : c.notFattyConcl}
+          <div className="mt-3 space-y-2">
+            <InfoBox tone={result.tone}>
+              <span className="block font-semibold mb-1">{result.title}</span>
+              {result.text}
             </InfoBox>
+            {result.note && <InfoBox tone="slate">{result.note}</InfoBox>}
           </div>
         </Card>
       )}
@@ -347,12 +379,12 @@ export default function ThymicFat() {
       <DonationButton />
       <CalcDisclaimer />
 
-      {isValid && (
+      {isValid && result && (
         <StickyBar>
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.indexSii}</span>
-            <span className={`text-4xl font-black block ${siiFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{sii.toFixed(1)}%</span>
-            <span className={`text-base font-semibold block mt-1 ${isFatty ? 'text-emerald-500' : 'text-amber-500'}`}>{isFatty ? c.fattyConcl : c.notFattyConcl}</span>
+            <span className={`text-4xl font-black block ${siiBenign ? 'text-emerald-500' : 'text-red-500'}`}>{sii.toFixed(1)}%</span>
+            <span className={`text-base font-semibold block mt-1 ${result.tone === 'red' ? 'text-red-500' : result.tone === 'amber' ? 'text-amber-500' : 'text-emerald-500'}`}>{result.title}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />
