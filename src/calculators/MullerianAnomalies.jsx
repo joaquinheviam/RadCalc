@@ -23,11 +23,13 @@ function SeptateScheme() {
           fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
           d="M 60,90 Q 200,20 340,90 Q 370,220 260,320 L 260,350 Q 260,365 245,365 L 155,365 Q 140,365 140,350 L 140,320 Q 30,220 60,90 Z"
         />
-        {/* Cavidad endometrial (indentación en Y) */}
+        {/* Cavidad endometrial: solo el tramo bajo el vértice (istmo/canal), en
+            gris — los dos brazos de la "V" se dibujan más abajo en azul, como
+            parte de la medición del ángulo, para no duplicar la línea. */}
         <path
           fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
           className="text-slate-400 dark:text-slate-500"
-          d="M 100,110 L 200,230 L 300,110 M 200,230 L 200,340"
+          d="M 200,230 L 200,340"
         />
         {/* Línea intercornual (referencia externa, discontinua) */}
         <line x1="80" y1="110" x2="320" y2="110" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
@@ -41,19 +43,21 @@ function SeptateScheme() {
         <rect x="216" y="60" width="26" height="26" rx="6" fill="#059669" />
         <text x="229" y="78" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">w</text>
 
-        {/* d: profundidad de la indentación */}
+        {/* d: profundidad de la indentación (línea intercornual al vértice) */}
         <g stroke="#dc2626" strokeWidth="3" strokeLinecap="round">
-          <line x1="200" y1="115" x2="200" y2="225" />
+          <line x1="200" y1="115" x2="200" y2="212" />
           <line x1="190" y1="115" x2="210" y2="115" />
-          <line x1="190" y1="225" x2="210" y2="225" />
         </g>
-        <rect x="158" y="160" width="26" height="26" rx="6" fill="#dc2626" />
-        <text x="171" y="178" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">d</text>
+        <rect x="216" y="150" width="26" height="26" rx="6" fill="#dc2626" />
+        <text x="229" y="168" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">d</text>
 
-        {/* α: ángulo de la indentación */}
-        <path d="M 165,195 A 42,42 0 0 0 200,230" fill="none" stroke="#2563eb" strokeWidth="3" />
-        <rect x="150" y="205" width="26" height="26" rx="6" fill="#2563eb" />
-        <text x="163" y="223" fill="#ffffff" fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">α</text>
+        {/* α: ángulo de indentación — todo el ángulo del vértice de la "V", entre
+            los dos brazos que van hacia cada cuerno (línea intercornual). */}
+        <line x1="200" y1="230" x2="100" y2="110" stroke="#2563eb" strokeWidth="3.5" strokeLinecap="round" />
+        <line x1="200" y1="230" x2="300" y2="110" stroke="#2563eb" strokeWidth="3.5" strokeLinecap="round" />
+        <path d="M 174.4,199.3 A 40,40 0 0 1 225.6,199.3" fill="none" stroke="#2563eb" strokeWidth="3" />
+        <rect x="187" y="217" width="26" height="26" rx="6" fill="#2563eb" />
+        <text x="200" y="235" fill="#ffffff" fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">α</text>
       </svg>
     </div>
   );
