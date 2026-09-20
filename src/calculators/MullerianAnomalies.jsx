@@ -98,6 +98,128 @@ function CriteriaComparison({ c }) {
   );
 }
 
+// Diagrama de línea: desarrollo bilateral vs. unilateral (hemiútero), para la
+// primera pregunta del cuerpo uterino. Deliberadamente esquemático — solo
+// ilustra la diferencia bilateral/unilateral, sin adelantar la sub-pregunta
+// de cuerno rudimentario (U4a/U4b), que se pregunta después.
+function DevelopmentScheme() {
+  return (
+    <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
+      <svg viewBox="0 0 440 260" className="h-auto w-full max-w-sm text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        {/* Panel A: bilateral (simétrico) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+          d="M 50,90 Q 110,40 170,90 Q 185,160 140,210 L 140,225 Q 140,235 130,235 L 90,235 Q 80,235 80,225 L 80,210 Q 35,160 50,90 Z"
+        />
+        <path
+          fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          className="text-slate-400 dark:text-slate-500"
+          d="M 82,100 L 110,150 L 138,100 M 110,150 L 110,220"
+        />
+
+        {/* Panel B: unilateral / hemiútero — silueta ausente del lado contrario
+            (discontinua y tenue) para contrastar con la mitad desarrollada. */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          strokeDasharray="5 6"
+          className="text-slate-300 dark:text-slate-700"
+          d="M 300,90 Q 260,50 305,90 Q 315,150 300,200 L 300,220 Q 300,230 310,230"
+        />
+        <path
+          fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+          d="M 305,90 Q 385,70 385,150 Q 388,200 350,225 L 340,236 Q 335,242 328,236 L 316,224 Q 300,198 300,150 Q 297,115 305,90 Z"
+        />
+        <path
+          fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          className="text-slate-400 dark:text-slate-500"
+          d="M 340,105 Q 366,150 344,212"
+        />
+
+        {/* Divisor sutil entre paneles */}
+        <line x1="220" y1="30" x2="220" y2="240" stroke="currentColor" strokeWidth="1" strokeDasharray="3 6" className="text-slate-200 dark:text-slate-700" />
+      </svg>
+    </div>
+  );
+}
+
+// Diagrama de línea: contorno externo único vs. hendido (bicorne/didelfo), con
+// la técnica de medición externa (Grimbizis et al. 2013 / criterio ASRM): una
+// línea que conecta los dos ápices externos, y la profundidad de la hendidura
+// serosa (D) trazada perpendicular a esa línea hasta su punto más bajo — la
+// misma técnica que ya usan extDepthQ/wallThicknessQCleft más abajo.
+function BicorneScheme() {
+  return (
+    <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
+      <svg viewBox="0 0 400 380" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        {/* Miometrio (contorno externo hendido) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+          d="M 70,160 Q 60,80 140,50 Q 175,90 200,130 Q 225,90 260,50 Q 340,80 330,160 Q 360,240 260,320 L 260,350 Q 260,365 245,365 L 155,365 Q 140,365 140,350 L 140,320 Q 40,240 70,160 Z"
+        />
+        {/* Cavidades endometriales (dos cuernos convergiendo hacia el istmo) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
+          className="text-slate-400 dark:text-slate-500"
+          d="M 140,90 Q 150,200 197,276 M 260,90 Q 250,200 203,276 M 200,278 L 200,340"
+        />
+        {/* Línea entre los ápices externos (referencia, discontinua) */}
+        <line x1="140" y1="50" x2="260" y2="50" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
+        <circle cx="140" cy="50" r="4" fill="currentColor" className="text-slate-400 dark:text-slate-500" />
+        <circle cx="260" cy="50" r="4" fill="currentColor" className="text-slate-400 dark:text-slate-500" />
+
+        {/* w: grosor de pared a nivel del cuerno (ápice externo a la cavidad) */}
+        <g stroke="#059669" strokeWidth="3" strokeLinecap="round">
+          <line x1="140" y1="55" x2="140" y2="85" />
+          <line x1="130" y1="55" x2="150" y2="55" />
+          <line x1="130" y1="85" x2="150" y2="85" />
+        </g>
+        <rect x="97" y="55" width="26" height="26" rx="6" fill="#059669" />
+        <text x="110" y="73" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">w</text>
+
+        {/* D: profundidad de la hendidura serosa externa (perpendicular a la
+            línea entre ápices, hasta el nadir de la hendidura) */}
+        <g stroke="#dc2626" strokeWidth="3" strokeLinecap="round">
+          <line x1="200" y1="50" x2="200" y2="122" />
+          <line x1="190" y1="50" x2="210" y2="50" />
+        </g>
+        <rect x="216" y="80" width="30" height="26" rx="6" fill="#dc2626" />
+        <text x="231" y="98" fill="#ffffff" fontSize="14" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">D</text>
+      </svg>
+    </div>
+  );
+}
+
+// Diagrama de línea: cavidad en "T" — canal central estrecho por engrosamiento
+// de las paredes laterales, con ramas cornuales cortas y rectas, y contorno
+// externo del fondo plano o mínimamente convexo (a diferencia del contorno
+// convexo con indentación interna del útero septado).
+function TshapeScheme() {
+  return (
+    <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
+      <svg viewBox="0 0 400 380" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        {/* Miometrio (contorno externo del fondo plano/mínimamente convexo) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+          d="M 70,110 Q 70,90 100,80 L 300,80 Q 330,90 330,110 Q 350,220 260,310 L 260,340 Q 260,355 245,355 L 155,355 Q 140,355 140,340 L 140,310 Q 50,220 70,110 Z"
+        />
+        {/* Cavidad endometrial en "T": canal central estrecho + ramas cornuales
+            cortas y rectas */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
+          className="text-slate-400 dark:text-slate-500"
+          d="M 130,115 L 270,115 M 200,115 L 200,300"
+        />
+        {/* Paredes laterales engrosadas (llaves indicando el grosor a cada lado
+            del canal) */}
+        <g stroke="#059669" strokeWidth="2.5" strokeLinecap="round" className="opacity-90">
+          <path d="M 155,105 L 145,105 L 145,125 L 155,125" fill="none" />
+          <path d="M 245,105 L 255,105 L 255,125 L 245,125" fill="none" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
 // Verdictos, en el mismo orden en que se muestran las columnas.
 const VERDICT_SEPTATE = 'septate';
 const VERDICT_NORMAL = 'normal';
@@ -383,6 +505,17 @@ export default function MullerianAnomalies() {
         </div>
       </Card>
 
+      <Accordion icon={<IconBookOpen size={16} />} title={c.devDiagramTitle}>
+        <div className="space-y-3">
+          <p className="text-xs text-slate-500 dark:text-slate-400">{c.devDiagramIntro}</p>
+          <DevelopmentScheme />
+          <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center">
+            <p>{c.devDiagramBilateralCaption}</p>
+            <p>{c.devDiagramUnicorneCaption}</p>
+          </div>
+        </div>
+      </Accordion>
+
       {/* ---- Agenesia ---- */}
       {dev === 'agenesia' && (
         <Card>
@@ -441,6 +574,22 @@ export default function MullerianAnomalies() {
       {/* ---- Bilateral + cleft: bicorne/didelfo ---- */}
       {dev === 'bilateral' && contour === 'cleft' && (
         <>
+          <Accordion icon={<IconBookOpen size={16} />} title={c.bicorneDiagramTitle}>
+            <div className="space-y-3">
+              <p className="text-xs text-slate-500 dark:text-slate-400">{c.bicorneDiagramIntro}</p>
+              <BicorneScheme />
+              <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center text-[11px] text-slate-500 dark:text-slate-400">
+                <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.bicorneLegendW}</span>
+                <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-600 mr-1 align-[-1px]"></span>{c.bicorneLegendD}</span>
+                <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-slate-400 mr-1 align-[-1px]"></span>{c.bicorneLegendApex}</span>
+              </div>
+              <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-1.5 text-xs">
+                <p><span className="font-semibold text-slate-700 dark:text-slate-200">{c.systemAsrmMac2021}: </span><span className="text-slate-600 dark:text-slate-300">{c.bicorneCriteriaAsrm}</span></p>
+                <p><span className="font-semibold text-slate-700 dark:text-slate-200">{c.systemEshre}: </span><span className="text-slate-600 dark:text-slate-300">{c.bicorneCriteriaEshre}</span></p>
+              </div>
+            </div>
+          </Accordion>
+
           <Card className="space-y-3">
             <h4 className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">{c.extNumbersTitle}</h4>
             <div className="grid grid-cols-2 gap-3">
@@ -477,6 +626,14 @@ export default function MullerianAnomalies() {
       )}
 
       {/* ---- Bilateral + normal: T-shape ---- */}
+      {dev === 'bilateral' && contour === 'normal' && (
+        <Accordion icon={<IconBookOpen size={16} />} title={c.tshapeDiagramTitle}>
+          <div className="space-y-3">
+            <p className="text-xs text-slate-500 dark:text-slate-400">{c.tshapeDiagramIntro}</p>
+            <TshapeScheme />
+          </div>
+        </Accordion>
+      )}
       {dev === 'bilateral' && contour === 'normal' && (
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.tshapeQ}</label>
