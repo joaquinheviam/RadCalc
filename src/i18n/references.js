@@ -277,4 +277,22 @@ export const REFERENCES = {
   sins: [
     { text: 'Fisher CG, DiPaola CP, Ryken TC, et al. A novel classification system for spinal instability in neoplastic disease: an evidence-based approach and expert consensus from the Spine Oncology Study Group. Spine (Phila Pa 1976). 2010;35(22):E1221-E1229.', doi: '10.1097/BRS.0b013e3181e16ae2' },
   ],
+  pecarn: [
+    { text: 'Kuppermann N, Holmes JF, Dayan PS, et al. Identification of children at very low risk of clinically-important brain injuries after head trauma: a prospective cohort study. Lancet. 2009;374(9696):1160-1170.', doi: '10.1016/S0140-6736(09)61558-0' },
+    { text: 'Ryan ME, Pruthi S, Desai NK, et al. ACR Appropriateness Criteria® Head Trauma-Child. J Am Coll Radiol. 2020;17(5S):S125-S137.', doi: '10.1016/j.jacr.2020.01.026' },
+  ],
+  aast2018: [
+    { text: 'Kozar RA, Crandall M, Shanmuganathan K, Zarzaur BL, Coburn M, Cribari C, Kaups K, Schuster K, Tominaga GT; AAST Patient Assessment Committee. Organ injury scaling 2018 update: Spleen, liver, and kidney. J Trauma Acute Care Surg. 2018;85(6):1119-1122.', doi: '10.1097/TA.0000000000002058' },
+  ],
+  crads2023: [
+    { text: 'Yee J, Dachman AH, Kim DH, Kobi M, Laghi A, McFarland EG, Moreno C, Park SH, Pickhardt PJ, Plumb AA, Pooler BD, Zalis M, Chang KJ. CT Colonography Reporting and Data System (C-RADS): Version 2023 Update. Radiology. 2024;310(1):e232007.', doi: '10.1148/radiol.232007' },
+  ],
+  rectalCancer: [
+    { text: 'Alarcón R, Besa C. Magnetic resonance imaging in rectal cancer: usefulness in staging and restaging after treatment. Austral J Imaging. 2024;30(4):223-239.', doi: '10.24875/AJI.23000084' },
+    { text: 'Kaur H, Choi H, You YN, Rauch GM, Jensen CT, Hou P, Chang GJ, Skibber JM, Ernst RD. MR Imaging for Preoperative Evaluation of Primary Rectal Cancer: Practical Considerations. RadioGraphics. 2012;32(2):389-409.', doi: '10.1148/rg.322115122' },
+    { text: 'Lee S, Kassam Z, Baheti AD, Hope TA, Chang KJ, Korngold EK, Taggart MW, Horvat N. Rectal cancer lexicon 2023 revised and updated consensus statement from the Society of Abdominal Radiology Colorectal and Anal Cancer Disease-Focused Panel. Abdom Radiol (NY). 2023;48(9):2792-2806.', doi: '10.1007/s00261-023-03893-2' },
+    { text: 'Beets-Tan RGH, Lambregts DMJ, Maas M, Bipat S, Barbaro B, Curvo-Semedo L, Fenlon HM, Gollub MJ, Gourtsoyianni S, Halligan S, Hoeffel C, Kim SH, Laghi A, Maier A, Rafaelsen SR, Stoker J, Taylor SA, Torkzad MR, Blomqvist L. Magnetic resonance imaging for clinical management of rectal cancer: Updated recommendations from the 2016 European Society of Gastrointestinal and Abdominal Radiology (ESGAR) consensus meeting. Eur Radiol. 2018;28(4):1465-1475.', doi: '10.1007/s00330-017-5026-2' },
+    { text: 'Lee MH, Kim DH. Low Rectal Cancers at Initial Staging MRI. RadioGraphics. 2023;43(11):e230080.', doi: '10.1148/rg.230080' },
+    { text: 'Awiwi MO, Kaur H, Ernst R, Rauch GM, Morani AC, Stanietzky N, Palmquist SM, Salem UI. Restaging MRI of Rectal Adenocarcinoma after Neoadjuvant Chemoradiotherapy: Imaging Findings and Potential Pitfalls. RadioGraphics. 2023;43(4):e220135.', doi: '10.1148/rg.220135' },
+  ],
 };

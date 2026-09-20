@@ -62,6 +62,10 @@ const BACTIP = lazy(() => import('./BACTIP.jsx'));
 const ASPECTS = lazy(() => import('./ASPECTS.jsx'));
 const TLICS = lazy(() => import('./TLICS.jsx'));
 const SINS = lazy(() => import('./SINS.jsx'));
+const Pecarn = lazy(() => import('./Pecarn.jsx'));
+const AAST2018 = lazy(() => import('./AAST2018.jsx'));
+const CRADS2023 = lazy(() => import('./CRADS2023.jsx'));
+const RectalCancerMRI = lazy(() => import('./RectalCancerMRI.jsx'));
 
 export const calculators = [
   // Cabeza y cuello
@@ -96,6 +100,9 @@ export const calculators = [
   { id: 'splenicLesion', catKey: 'abdomen', component: SplenicLesion },
   { id: 'adrenalCt', catKey: 'abdomen', component: AdrenalWashout },
   { id: 'adrenalMri', catKey: 'abdomen', component: AdrenalCSI },
+  { id: 'aast2018', catKey: 'abdomen', component: AAST2018 },
+  { id: 'crads2023', catKey: 'abdomen', component: CRADS2023 },
+  { id: 'rectalCancer', catKey: 'abdomen', component: RectalCancerMRI },
   // Genitourinario (próstata, riñón, vejiga)
   { id: 'psad', catKey: 'gu', component: PSADCalculator },
   { id: 'pirads', catKey: 'gu', component: PIRADS },
@@ -125,6 +132,7 @@ export const calculators = [
   { id: 'fazekasScale', catKey: 'neuro', component: FazekasScale },
   { id: 'sahGrading', catKey: 'neuro', component: SAHGrading },
   { id: 'sins', catKey: 'neuro', component: SINS },
+  { id: 'pecarn', catKey: 'neuro', component: Pecarn },
 ];
 
 export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro'];
