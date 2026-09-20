@@ -3079,6 +3079,10 @@ export default {
         note: 'Cuando se asocia a aplasia vaginal (síndrome de Mayer-Rokitansky-Küster-Hauser), evaluar sistemáticamente anomalías renales asociadas (hasta ~40% de incidencia).',
       },
 
+      hemiuterusDiagramTitle: 'Guía didáctica: cuerno rudimentario con vs. sin cavidad',
+      hemiuterusDiagramIntro: 'El cuerno desarrollado (izquierda) forma el hemi-útero funcional, con cérvix único. La sub-clasificación U4a/U4b depende únicamente de si el cuerno rudimentario contralateral tiene endometrio funcional (cavidad) o no — la comunicación o no con la cavidad principal no cambia el código ESHRE/ESGE, pero sí el riesgo de hematometra/endometriosis.',
+      hemiuterusDiagramCavityCaption: 'Cuerno rudimentario CON cavidad (U4a) — comunicante o no comunicante',
+      hemiuterusDiagramNoCavityCaption: 'Cuerno rudimentario SIN cavidad, o ausente (U4b)',
       unicorneHornQ: '¿Hay un cuerno rudimentario contralateral?',
       unicorneHornOptions: [
         { key: 'none', label: 'No hay cuerno contralateral (aplasia contralateral completa)' },
@@ -4114,6 +4118,10 @@ export default {
         { key: 'iss', label: 'Invade IS y se extiende al espacio interesfinteriano (ISS)' },
         { key: 'es', label: 'Invade IS + ISS y se extiende hacia o a través del esfínter externo (ES)' },
       ],
+      sphincterDiagramTitle: 'Ver esquema del complejo esfinteriano (corte coronal)',
+      sphincterLegend1: 'Tumor 1: invade IS + ISS, respeta el ES',
+      sphincterLegend2: 'Tumor 2: invade IS + ISS + ES',
+      sphincterDiagramNote: 'IS (esfínter interno) es la continuación directa de la muscular propia rectal; ISS (espacio interesfinteriano) es el plano graso entre ambos esfínteres; ES (esfínter externo/elevador del ano) es la capa muscular estriada más externa. El grado de invasión (IS → IS+ISS → IS+ISS+ES) determina la resecabilidad con preservación esfinteriana.',
       mrfQ: 'Fascia mesorrectal (MRF)',
       mrfLbl: 'MRF',
       mrfOpts: [
@@ -4124,6 +4132,15 @@ export default {
       emviQ: 'Invasión vascular extramural (EMVI)',
       yes: 'Sí',
       no: 'No',
+      nodalDiagramTitle: 'Ver esquema de distribución ganglionar (N vs. M según ubicación)',
+      nodalDiagramIntro: 'Las estaciones ganglionares mesorrectal/presacra, ilíaca interna/obturatriz e ilíaca común no cambian de categoría según la ubicación del tumor. Los ganglios inguinales e ilíacos externos, en cambio, son la excepción: cuentan como enfermedad regional (N) solo cuando el tumor invade el canal anal bajo la línea dentada; en cualquier otro caso corresponden a metástasis a distancia (M1).',
+      nodalDiagramPanelA: 'A: recto medio/alto, sin invasión del canal anal — inguinales/ilíacos externos = M1',
+      nodalDiagramPanelB: 'B: recto inferior con invasión del canal anal bajo la línea dentada — inguinales/ilíacos externos = N',
+      nodalLegendStar: 'Mesorrectales, rectales superiores, presacros y mesentéricos inferiores → siempre N.',
+      nodalLegendPlus: 'Ilíacos internos y obturatrices → siempre N.',
+      nodalLegendAmp: 'Ilíacos comunes y retroperitoneo → siempre M1.',
+      nodalLegendInguinalN: 'Inguinales / ilíacos externos, CON invasión del canal anal → N (regional).',
+      nodalLegendInguinalM: 'Inguinales / ilíacos externos, SIN invasión del canal anal → M1 (a distancia).',
       nodesQ: 'Ganglios linfáticos mesorrectales/rectales superiores',
       nodesLbl: 'Ganglios',
       nodesPrimaryOpts: {

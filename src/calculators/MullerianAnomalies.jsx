@@ -220,6 +220,60 @@ function TshapeScheme() {
   );
 }
 
+// Diagrama de línea: hemi-útero (unicorne), con el cuerno desarrollado a la
+// izquierda y, a la derecha, dos paneles pequeños en paralelo comparando el
+// cuerno rudimentario contralateral CON cavidad endometrial (U4a) vs SIN
+// cavidad/ausente (U4b) — la distinción que decide la sub-clasificación
+// ESHRE/ESGE tras la pregunta unicorneHornQ.
+function HemiuterusScheme() {
+  return (
+    <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
+      <svg viewBox="0 0 460 260" className="h-auto w-full max-w-sm text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        {/* Cuerno desarrollado (hemi-útero funcional) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+          d="M 95,35 Q 175,15 175,95 Q 178,145 140,170 L 130,181 Q 125,187 118,181 L 106,169 Q 90,143 90,95 Q 87,60 95,35 Z"
+        />
+        <path
+          fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          className="text-slate-400 dark:text-slate-500"
+          d="M 130,50 Q 156,95 134,157"
+        />
+        {/* Cérvix único, continuando el cuerno desarrollado */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
+          d="M 118,181 L 112,225 Q 112,238 124,238 L 130,238 Q 142,238 142,225 L 140,182"
+        />
+
+        {/* Divisor sutil */}
+        <line x1="235" y1="20" x2="235" y2="248" stroke="currentColor" strokeWidth="1" strokeDasharray="3 6" className="text-slate-200 dark:text-slate-700" />
+
+        {/* Panel derecho superior: cuerno rudimentario CON cavidad (U4a) */}
+        <path
+          fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
+          d="M 310,35 Q 355,28 353,68 Q 352,90 330,100 L 326,105 Q 322,110 317,105 L 313,99 Q 300,85 302,65 Q 300,48 310,35 Z"
+        />
+        <path
+          fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          className="text-slate-400 dark:text-slate-500"
+          d="M 322,45 Q 338,68 324,97"
+        />
+        {/* Línea discontinua tenue: la cavidad puede comunicar o no con la
+            principal, distinción que no cambia el esquema (se resuelve por
+            texto) */}
+        <line x1="290" y1="70" x2="235" y2="130" stroke="currentColor" strokeWidth="2" strokeDasharray="4 5" className="text-slate-300 dark:text-slate-700" />
+
+        {/* Panel derecho inferior: cuerno rudimentario SIN cavidad / ausente (U4b) */}
+        <path
+          fill="currentColor" className="text-slate-300 dark:text-slate-700"
+          stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
+          d="M 308,155 Q 350,149 348,187 Q 347,207 327,216 L 323,220 Q 319,225 315,220 L 311,215 Q 299,202 301,184 Q 299,168 308,155 Z"
+        />
+      </svg>
+    </div>
+  );
+}
+
 // Verdictos, en el mismo orden en que se muestran las columnas.
 const VERDICT_SEPTATE = 'septate';
 const VERDICT_NORMAL = 'normal';
@@ -505,7 +559,7 @@ export default function MullerianAnomalies() {
         </div>
       </Card>
 
-      <Accordion icon={<IconBookOpen size={16} />} title={c.devDiagramTitle}>
+      <Accordion icon={<IconBookOpen size={16} />} title={c.devDiagramTitle} defaultOpen>
         <div className="space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400">{c.devDiagramIntro}</p>
           <DevelopmentScheme />
@@ -538,6 +592,18 @@ export default function MullerianAnomalies() {
       )}
 
       {/* ---- Unicorne ---- */}
+      {dev === 'unicorne' && (
+        <Accordion icon={<IconBookOpen size={16} />} title={c.hemiuterusDiagramTitle} defaultOpen>
+          <div className="space-y-3">
+            <p className="text-xs text-slate-500 dark:text-slate-400">{c.hemiuterusDiagramIntro}</p>
+            <HemiuterusScheme />
+            <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center">
+              <p>{c.hemiuterusDiagramCavityCaption}</p>
+              <p>{c.hemiuterusDiagramNoCavityCaption}</p>
+            </div>
+          </div>
+        </Accordion>
+      )}
       {dev === 'unicorne' && (
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.unicorneHornQ}</label>
@@ -574,7 +640,7 @@ export default function MullerianAnomalies() {
       {/* ---- Bilateral + cleft: bicorne/didelfo ---- */}
       {dev === 'bilateral' && contour === 'cleft' && (
         <>
-          <Accordion icon={<IconBookOpen size={16} />} title={c.bicorneDiagramTitle}>
+          <Accordion icon={<IconBookOpen size={16} />} title={c.bicorneDiagramTitle} defaultOpen>
             <div className="space-y-3">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.bicorneDiagramIntro}</p>
               <BicorneScheme />
@@ -627,7 +693,7 @@ export default function MullerianAnomalies() {
 
       {/* ---- Bilateral + normal: T-shape ---- */}
       {dev === 'bilateral' && contour === 'normal' && (
-        <Accordion icon={<IconBookOpen size={16} />} title={c.tshapeDiagramTitle}>
+        <Accordion icon={<IconBookOpen size={16} />} title={c.tshapeDiagramTitle} defaultOpen>
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.tshapeDiagramIntro}</p>
             <TshapeScheme />
@@ -656,7 +722,7 @@ export default function MullerianAnomalies() {
       {/* ---- Bilateral + normal + no T-shape: cuantitativo ---- */}
       {showQuant && (
         <>
-          <Accordion icon={<IconBookOpen size={16} />} title={c.diagramSectionTitle}>
+          <Accordion icon={<IconBookOpen size={16} />} title={c.diagramSectionTitle} defaultOpen>
             <div className="space-y-4">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.diagramIntro}</p>
               <SeptateScheme />

@@ -3079,6 +3079,10 @@ export default {
         note: 'When associated with vaginal aplasia (Mayer-Rokitansky-Küster-Hauser syndrome), systematically evaluate for associated renal anomalies (up to ~40% incidence).',
       },
 
+      hemiuterusDiagramTitle: 'Teaching guide: rudimentary horn with vs. without cavity',
+      hemiuterusDiagramIntro: 'The developed horn (left) forms the functional hemi-uterus, with a single cervix. The U4a/U4b sub-classification depends only on whether the contralateral rudimentary horn has functional endometrium (cavity) or not — communication or lack thereof with the main cavity does not change the ESHRE/ESGE code, but does change the risk of hematometra/endometriosis.',
+      hemiuterusDiagramCavityCaption: 'Rudimentary horn WITH cavity (U4a) — communicating or non-communicating',
+      hemiuterusDiagramNoCavityCaption: 'Rudimentary horn WITHOUT cavity, or absent (U4b)',
       unicorneHornQ: 'Is there a contralateral rudimentary horn?',
       unicorneHornOptions: [
         { key: 'none', label: 'No contralateral horn (complete contralateral aplasia)' },
@@ -4112,6 +4116,10 @@ export default {
         { key: 'iss', label: 'Invades IS and extends into intersphincteric space (ISS)' },
         { key: 'es', label: 'Invades IS + ISS and extends into or through external sphincter (ES)' },
       ],
+      sphincterDiagramTitle: 'View sphincter complex schematic (coronal plane)',
+      sphincterLegend1: 'Tumor 1: invades IS + ISS, spares the ES',
+      sphincterLegend2: 'Tumor 2: invades IS + ISS + ES',
+      sphincterDiagramNote: 'IS (internal sphincter) is the direct continuation of the rectal muscularis propria; ISS (intersphincteric space) is the fat plane between both sphincters; ES (external sphincter/levator ani) is the outermost striated muscle layer. The degree of invasion (IS → IS+ISS → IS+ISS+ES) determines resectability with sphincter preservation.',
       mrfQ: 'Mesorectal fascia (MRF)',
       mrfLbl: 'MRF',
       mrfOpts: [
@@ -4122,6 +4130,15 @@ export default {
       emviQ: 'Extramural vascular invasion (EMVI)',
       yes: 'Yes',
       no: 'No',
+      nodalDiagramTitle: 'View nodal distribution schematic (N vs. M by tumor location)',
+      nodalDiagramIntro: 'Mesorectal/presacral, internal iliac/obturator, and common iliac nodal stations do not change category based on tumor location. Inguinal and external iliac nodes are the exception: they count as regional disease (N) only when the tumor invades the anal canal below the dentate line; otherwise they represent distant metastasis (M1).',
+      nodalDiagramPanelA: 'A: mid/upper rectal tumor, no anal canal invasion — inguinal/external iliac = M1',
+      nodalDiagramPanelB: 'B: low rectal tumor invading the anal canal below the dentate line — inguinal/external iliac = N',
+      nodalLegendStar: 'Mesorectal, superior rectal, presacral, and inferior mesenteric → always N.',
+      nodalLegendPlus: 'Internal iliac and obturator → always N.',
+      nodalLegendAmp: 'Common iliac and retroperitoneal → always M1.',
+      nodalLegendInguinalN: 'Inguinal / external iliac, WITH anal canal invasion → N (regional).',
+      nodalLegendInguinalM: 'Inguinal / external iliac, WITHOUT anal canal invasion → M1 (distant).',
       nodesQ: 'Mesorectal / superior rectal lymph nodes',
       nodesLbl: 'Nodes',
       nodesPrimaryOpts: {
