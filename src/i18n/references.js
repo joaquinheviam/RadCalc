@@ -295,4 +295,8 @@ export const REFERENCES = {
     { text: 'Lee MH, Kim DH. Low Rectal Cancers at Initial Staging MRI. RadioGraphics. 2023;43(11):e230080.', doi: '10.1148/rg.230080' },
     { text: 'Awiwi MO, Kaur H, Ernst R, Rauch GM, Morani AC, Stanietzky N, Palmquist SM, Salem UI. Restaging MRI of Rectal Adenocarcinoma after Neoadjuvant Chemoradiotherapy: Imaging Findings and Potential Pitfalls. RadioGraphics. 2023;43(4):e220135.', doi: '10.1148/rg.220135' },
   ],
+  adnexalRisk: [
+    { text: 'Strachowski LM, Froyman W, Reinhold C, Jha P, Glanc P, Suh-Burgmann EJ, Timmerman D, Andreotti RF, Phillips CH, Porter MMB, Guo Y, Patel MD. O-RADS US v2022: An Update from the American College of Radiology’s Ovarian-Adnexal Reporting and Data System US Committee. Radiology. 2023;308(3):e230685.', doi: '10.1148/radiol.230685' },
+    { text: 'Timmerman D, Planchamp F, Bourne T, Landolfo C, du Bois A, Chiva L, Cibula D, Concin N, Fischerova D, Froyman W, Gallardo G, Lemley B, Loft A, Mereu L, Morice P, Querleu D, Testa AC, Vergote I, Vandecaveye V, Scambia G, Fotopoulou C. ESGO/ISUOG/IOTA/ESGE Consensus Statement on preoperative diagnosis of ovarian tumors. Ultrasound Obstet Gynecol. 2021;58(1):148-168.', doi: '10.1002/uog.23635' },
+  ],
 };

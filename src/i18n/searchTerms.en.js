@@ -55,4 +55,5 @@ export default {
   aast2018: ['aast', 'aast 2018', 'organ injury scale', 'organ injury scaling', 'splenic trauma', 'liver trauma', 'kidney trauma', 'renal trauma', 'splenic injury grade', 'liver injury grade', 'kidney injury grade', 'kozar', 'blunt abdominal trauma', 'splenic laceration', 'liver laceration', 'renal laceration'],
   crads2023: ['c-rads', 'crads', 'c rads', 'ct colonography', 'virtual colonoscopy', 'ctc', 'colonic polyp', 'colorectal screening', 'extracolonic finding', 'c-rads 2023', 'c2b category', 'yee dachman', 'colonography reporting and data system'],
   rectalCancer: ['rectal cancer', 'rectal cancer staging', 'rectal mri', 'mrf', 'mesorectal fascia', 'emvi', 'mrtrg', 'esgar rectal', 'watch and wait', 'rectal cancer restaging', 'nCRT', 'total neoadjuvant therapy', 'tnt rectal', 'larc', 'locally advanced rectal cancer', 'rectal adenocarcinoma', 'anal sphincter tumor'],
+  adnexalRisk: ['o-rads us', 'orads us', 'o-rads ultrasound', 'iota simple rules', 'iota adnex', 'adnexal mass ultrasound', 'ovarian cyst ultrasound', 'color score ovary', 'papillary projections', 'adnexal lesion ultrasound'],
 };
