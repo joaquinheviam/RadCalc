@@ -2888,8 +2888,8 @@ export default {
         red: 'Infarto hemorrágico por trombosis venosa periférica, típico del embarazo o del uso de anticonceptivos orales; hiperintensa en T1 (periférica o difusa) y sin realce tras el contraste.',
         lipoleiomyoma: 'Contiene tejido adiposo maduro, reconocible por la pérdida de señal en secuencias con supresión grasa. Comportamiento clínico benigno.',
         calcific: 'Calcificación distrófica densa; vacío de señal en todas las secuencias y sin realce.',
-        cellular: 'Mayor celularidad; puede mostrar restricción verdadera a la difusión y realce marcado, solapándose en imágenes con el leiomiosarcoma y el STUMP. Suele comportarse de forma benigna, pero el solapamiento con estas entidades hace que el diagnóstico definitivo requiera confirmación histológica.',
-        indeterminate: 'Combinación de hallazgos (señal T2 alta, T1 hipo/isointensa, realce marcado) que no encaja con un patrón de variante clásico. No modifica el resultado de la escala de riesgo, pero amerita correlación clínica.',
+        cellular: 'Mayor celularidad; señal T2 difusamente alta con realce marcado, sin restricción difusional relevante (que ya fue descartada por el algoritmo de riesgo). Puede solapar en imágenes con el leiomiosarcoma y el STUMP, pero la ausencia de restricción hace más probable esta variante benigna.',
+        indeterminate: 'Combinación de hallazgos (señal T2 alta, T1 hipo/isointensa, realce marcado) con restricción difusional ya identificada por el algoritmo de riesgo (Score 3). No encaja con un patrón de variante clásico y, aunque la mayoría de los casos en esta categoría son benignos, amerita correlación clínica antes de asumir un leiomioma celular.',
       },
       usage: [
         'Este modelo de 5 categorías (Zlotykamien-Taïeb et al., Eur J Radiol 2025) es una modificación, validada en una cohorte biocéntrica retrospectiva de 455 mujeres con tumores mesenquimales uterinos (437 leiomiomas, 2 STUMP, 16 malignos), de un algoritmo de consenso multidisciplinario previo (Hindman et al., "BETTER check", Radiology 2023) para diferenciar leiomioma benigno de leiomiosarcoma/STUMP maligno por RM.',

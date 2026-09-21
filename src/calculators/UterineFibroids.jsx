@@ -277,7 +277,13 @@ export default function UterineFibroids() {
       } else if (t2 === 'highInt') {
         if (enhancement === 'none_minimal') variant = 'cystic';
         else if (enhancement === 'progressive') variant = 'myxoid';
-        else if (enhancement === 'marked') variant = resultKey === 'score3' ? 'cellular' : 'indeterminate';
+        // Leiomioma celular (DeMulder & Ascher, AJR 2018, Tabla 2): T1 variable, T2 difusamente
+        // hiperintenso, realce marcado. Se etiqueta como "celular" solo cuando el propio algoritmo
+        // de riesgo ya descartó restricción difusional relevante (Score 2); si el ADC sí está
+        // restringido (Score 3), se mantiene como "indeterminado/atípico" en vez de asumir
+        // benignidad, dado que la restricción es uno de los criterios que el algoritmo de riesgo
+        // usa para escalar sospecha de STUMP/leiomiosarcoma.
+        else if (enhancement === 'marked') variant = resultKey === 'score2' ? 'cellular' : 'indeterminate';
       }
     }
   }

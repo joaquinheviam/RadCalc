@@ -2888,8 +2888,8 @@ export default {
         red: 'Hemorrhagic infarction from peripheral venous thrombosis, typical of pregnancy or oral contraceptive use; T1-hyperintense (peripheral or diffuse) and without post-contrast enhancement.',
         lipoleiomyoma: 'Contains mature adipose tissue, recognizable by signal loss on fat-suppressed sequences. Benign clinical behavior.',
         calcific: 'Dense dystrophic calcification; signal void on all sequences and no enhancement.',
-        cellular: 'Increased cellularity; may show true diffusion restriction and marked enhancement, overlapping on imaging with leiomyosarcoma and STUMP. Usually behaves benignly, but the overlap with these entities means a definitive diagnosis requires histologic confirmation.',
-        indeterminate: 'A combination of findings (high T2 signal, hypo/isointense T1, marked enhancement) that does not fit a classic variant pattern. Does not change the risk score result, but warrants clinical correlation.',
+        cellular: 'Increased cellularity; diffusely high T2 signal with marked enhancement, without relevant diffusion restriction (already excluded by the risk algorithm). May overlap on imaging with leiomyosarcoma and STUMP, but the absence of restriction makes this benign variant more likely.',
+        indeterminate: 'A combination of findings (high T2 signal, hypo/isointense T1, marked enhancement) with diffusion restriction already identified by the risk algorithm (Score 3). Does not fit a classic variant pattern, and although most cases in this category are benign, it warrants clinical correlation before assuming a cellular leiomyoma.',
       },
       usage: [
         'This 5-category model (Zlotykamien-Taïeb et al., Eur J Radiol 2025) is a modification, validated in a retrospective bicentric cohort of 455 women with uterine mesenchymal tumors (437 leiomyomas, 2 STUMPs, 16 malignant), of an earlier multidisciplinary consensus algorithm (Hindman et al., "BETTER check", Radiology 2023) for differentiating benign leiomyoma from malignant leiomyosarcoma/STUMP on MRI.',
