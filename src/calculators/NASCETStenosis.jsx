@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
 function getCategory(pct) {
   if (pct >= 99.5) return 'occlusion';
@@ -135,9 +135,11 @@ export default function NASCETStenosis() {
     <div className={`space-y-4 animate-in fade-in ${hasAny ? 'pb-56' : ''}`}>
       <Card>
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 text-center">{c.schemeTitle}</p>
-        <div className="flex justify-center rounded-xl bg-slate-50 p-3">
-          <NascetDiagram />
-        </div>
+        <ZoomableDiagram title={c.schemeTitle} labels={t.common.diagramZoom}>
+          <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
+            <NascetDiagram />
+          </div>
+        </ZoomableDiagram>
       </Card>
 
       <Card>

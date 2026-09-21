@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
 function PectusScheme() {
   return (
@@ -103,7 +103,9 @@ export default function PectusHallerCI() {
     <div className={`space-y-4 animate-in fade-in ${hasAny ? 'pb-56' : ''}`}>
       <Card>
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 text-center">{c.schemeTitle}</p>
-        <PectusScheme />
+        <ZoomableDiagram title={c.schemeTitle} labels={t.common.diagramZoom}>
+          <PectusScheme />
+        </ZoomableDiagram>
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
           <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-sky-500 mr-1 align-[-1px]"></span>{c.schemeLegendA}</span>
           <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-rose-600 mr-1 align-[-1px]"></span>{c.schemeLegendB}</span>

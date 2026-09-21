@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconBookOpen, IconCheckCircle } from '../components/icons/index.js';
-import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
 function OptionButtons({ options, value, onChange }) {
   return (
@@ -783,7 +783,9 @@ export default function LungCancerTNM9() {
       {!isTis && (
         <Accordion icon={<IconBookOpen size={16} />} title={c.nodalMapTitle}>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.nodalMapIntro}</p>
-          <IaslcNodalMap labels={c.nodalMapLabels} />
+          <ZoomableDiagram title={c.nodalMapTitle} labels={t.common.diagramZoom}>
+            <IaslcNodalMap labels={c.nodalMapLabels} />
+          </ZoomableDiagram>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.nodalMapNote}</p>
         </Accordion>
       )}
@@ -791,7 +793,9 @@ export default function LungCancerTNM9() {
       {!isTis && (
         <Accordion icon={<IconBookOpen size={16} />} title={c.axialMapTitle}>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.axialMapIntro}</p>
-          <AxialNodalStations labels={c.axialMapLabels} />
+          <ZoomableDiagram title={c.axialMapTitle} labels={t.common.diagramZoom}>
+            <AxialNodalStations labels={c.axialMapLabels} />
+          </ZoomableDiagram>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.axialMapNote}</p>
         </Accordion>
       )}
@@ -799,7 +803,9 @@ export default function LungCancerTNM9() {
       {!isTis && (
         <Accordion icon={<IconBookOpen size={16} />} title={c.nonRegionalMapTitle}>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.nonRegionalMapIntro}</p>
-          <NonRegionalNodes labels={c.nonRegionalMapLabels} />
+          <ZoomableDiagram title={c.nonRegionalMapTitle} labels={t.common.diagramZoom}>
+            <NonRegionalNodes labels={c.nonRegionalMapLabels} />
+          </ZoomableDiagram>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.nonRegionalMapNote}</p>
         </Accordion>
       )}

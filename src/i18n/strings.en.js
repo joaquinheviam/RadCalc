@@ -3,6 +3,12 @@ export default {
   tagline: 'Radiology calculators, decision algorithms and scoring scales for everyday clinical practice',
   metaDescription: 'Evidence-based radiology calculators for everyday clinical practice, with algorithms following major scientific society guidelines. Support for managing incidental findings. Free and ad-free.',
   common: {
+    diagramZoom: {
+      expand: 'Expand diagram',
+      close: 'Close',
+      reset: 'Reset zoom',
+      hint: 'Pinch with two fingers to zoom, or drag to pan. Double-tap to quickly zoom in or out.',
+    },
     copyReport: 'Copy text for report',
     copy: 'Copy',
     copiedOk: 'Text copied to clipboard',

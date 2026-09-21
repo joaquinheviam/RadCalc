@@ -20,3 +20,4 @@ export { default as Modal } from './Modal.jsx';
 export { default as Changelog } from './Changelog.jsx';
 export { default as AboutInfo } from './AboutInfo.jsx';
 export { default as Sponsors } from './Sponsors.jsx';
+export { default as ZoomableDiagram } from './ZoomableDiagram.jsx';

@@ -3,6 +3,12 @@ export default {
   tagline: 'Calculadoras radiológicas, algoritmos de decisión y escalas para la práctica clínica diaria',
   metaDescription: 'Calculadoras radiológicas basadas en evidencia para la práctica clínica diaria, con algoritmos según las guías de las principales sociedades científicas. Apoyo para el manejo de hallazgos incidentales. Gratis y sin publicidad.',
   common: {
+    diagramZoom: {
+      expand: 'Ampliar esquema',
+      close: 'Cerrar',
+      reset: 'Restablecer zoom',
+      hint: 'Pellizca con dos dedos para acercar, o arrastra para mover. Doble toque para acercar o alejar rápido.',
+    },
     copyReport: 'Copiar texto para informe',
     copy: 'Copiar',
     copiedOk: 'Texto copiado al portapapeles',

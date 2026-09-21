@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconBookOpen } from '../components/icons/index.js';
-import { Card, Accordion, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, Accordion, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
 const btnCls = (active) =>
   `w-full text-left p-2.5 rounded-lg border text-xs transition-all ${active ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`;
@@ -487,7 +487,9 @@ export default function RectalCancerMRI() {
       )}
 
       <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
-        <RectalTScheme labels={c.tSchemeLabels} activeT={tStage} />
+        <ZoomableDiagram title={c.diagramTitle} labels={t.common.diagramZoom}>
+          <RectalTScheme labels={c.tSchemeLabels} activeT={tStage} />
+        </ZoomableDiagram>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.diagramNote}</p>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">{c.diagramPrognosisNote}</p>
       </Accordion>
@@ -500,7 +502,9 @@ export default function RectalCancerMRI() {
       {mode === 'primary' && location === 'lower' && (
         <>
           <Accordion icon={<IconBookOpen size={16} />} title={c.sphincterDiagramTitle}>
-            <SphincterComplexScheme />
+            <ZoomableDiagram title={c.sphincterDiagramTitle} labels={t.common.diagramZoom}>
+              <SphincterComplexScheme />
+            </ZoomableDiagram>
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-2">
               <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#1d4ed8] mr-1 align-[-1px]"></span>{c.sphincterLegend1}</span>
               <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#451a03] mr-1 align-[-1px]"></span>{c.sphincterLegend2}</span>

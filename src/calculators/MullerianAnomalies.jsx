@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconBookOpen } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, ZoomableDiagram } from '../components/shared/index.js';
 
 const btnCls = (active) =>
   `w-full text-left p-2.5 rounded-lg border text-xs transition-all ${active ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`;
@@ -562,7 +562,9 @@ export default function MullerianAnomalies() {
       <Accordion icon={<IconBookOpen size={16} />} title={c.devDiagramTitle}>
         <div className="space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400">{c.devDiagramIntro}</p>
-          <DevelopmentScheme />
+          <ZoomableDiagram title={c.devDiagramTitle} labels={t.common.diagramZoom}>
+            <DevelopmentScheme />
+          </ZoomableDiagram>
           <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center">
             <p>{c.devDiagramBilateralCaption}</p>
             <p>{c.devDiagramUnicorneCaption}</p>
@@ -596,7 +598,9 @@ export default function MullerianAnomalies() {
         <Accordion icon={<IconBookOpen size={16} />} title={c.hemiuterusDiagramTitle}>
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.hemiuterusDiagramIntro}</p>
-            <HemiuterusScheme />
+            <ZoomableDiagram title={c.hemiuterusDiagramTitle} labels={t.common.diagramZoom}>
+              <HemiuterusScheme />
+            </ZoomableDiagram>
             <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center">
               <p>{c.hemiuterusDiagramCavityCaption}</p>
               <p>{c.hemiuterusDiagramNoCavityCaption}</p>
@@ -643,7 +647,9 @@ export default function MullerianAnomalies() {
           <Accordion icon={<IconBookOpen size={16} />} title={c.bicorneDiagramTitle}>
             <div className="space-y-3">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.bicorneDiagramIntro}</p>
-              <BicorneScheme />
+              <ZoomableDiagram title={c.bicorneDiagramTitle} labels={t.common.diagramZoom}>
+                <BicorneScheme />
+              </ZoomableDiagram>
               <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center text-[11px] text-slate-500 dark:text-slate-400">
                 <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.bicorneLegendW}</span>
                 <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-600 mr-1 align-[-1px]"></span>{c.bicorneLegendD}</span>
@@ -696,7 +702,9 @@ export default function MullerianAnomalies() {
         <Accordion icon={<IconBookOpen size={16} />} title={c.tshapeDiagramTitle}>
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.tshapeDiagramIntro}</p>
-            <TshapeScheme />
+            <ZoomableDiagram title={c.tshapeDiagramTitle} labels={t.common.diagramZoom}>
+              <TshapeScheme />
+            </ZoomableDiagram>
           </div>
         </Accordion>
       )}
@@ -725,7 +733,9 @@ export default function MullerianAnomalies() {
           <Accordion icon={<IconBookOpen size={16} />} title={c.diagramSectionTitle}>
             <div className="space-y-4">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.diagramIntro}</p>
-              <SeptateScheme />
+              <ZoomableDiagram title={c.diagramSectionTitle} labels={t.common.diagramZoom}>
+                <SeptateScheme />
+              </ZoomableDiagram>
               <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center text-[11px] text-slate-500 dark:text-slate-400">
                 <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.schemeLegendW}</span>
                 <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-600 mr-1 align-[-1px]"></span>{c.schemeLegendD}</span>
