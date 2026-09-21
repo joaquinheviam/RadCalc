@@ -22,106 +22,121 @@ function OptionButtons({ options, value, onChange }) {
 }
 
 // Diagrama didáctico de la subclasificación T3 (a-d) y T4 (a/b), en corte
-// transversal simplificado de la pared rectal (mismo criterio visual que
-// PectusScheme/SeptateScheme: contornos en currentColor adaptables a ambos
-// temas, badges de color fijo para cada hito, leyenda bilingüe fuera del SVG).
-// T3a/b (buen pronóstico) en verde, T3c/d (mayor riesgo de recurrencia local)
-// en rojo — distinción tomada literalmente de la fuente ("T3 a/b good
-// prognosis... T3 c/d higher risk of local recurrence").
-// Corte axial esquemático (el plano en que realmente se lee el T en RM de
-// recto): luz central, muscular propia como anillo, grasa perirrectal entre
-// la muscular y la fascia mesorrectal (MRF, anillo discontinuo externo), y
-// la reflexión peritoneal como arco discontinuo únicamente en la porción
-// antero-superior (solo el recto superior está peritonealizado). Cada
-// categoría T se dibuja como una lesión propia en un punto distinto del
-// anillo, con su profundidad de invasión a escala relativa entre la
-// muscular y la MRF — igual criterio visual que el resto de la app
-// (currentColor para la anatomía, badges de color fijo por hallazgo).
-function RectalTScheme() {
+// transversal simplificado de la pared rectal. Geometría, colores fijos y
+// disposición tomados literalmente del esquema que Gemini preparó a pedido
+// de la usuaria (no se modifican formas ni posiciones); solo se adaptó a las
+// convenciones técnicas del proyecto: contornos/anotaciones anatómicas con
+// clases Tailwind `fill-*`/`stroke-*` + `dark:` (en vez del `<rect>` de fondo
+// blanco fijo de la versión original, que no se integraba con el tema oscuro
+// de la app), texto vía prop `labels` (i18n) en vez de hardcodeado, sombra
+// con `<filter>` de id único, y resaltado interactivo (`activeT`) según la
+// categoría T que la usuaria ya seleccionó en la calculadora. A diferencia
+// del esquema anterior, todos los T3 (a-d) comparten un mismo color (azul) —
+// ya no se distingue T3a/b de T3c/d por buen/mal pronóstico; ese matiz queda
+// solo en la nota de texto de más abajo.
+function RectalTScheme({ labels, activeT }) {
+  // Atenúa (opacidad 0.3) los tumores que no corresponden a la categoría T
+  // activa; si no hay ninguna seleccionada aún, se muestran todos a opacidad
+  // plena. matchKeys usa las mismas claves de estado que el resto de la
+  // calculadora (T_STAGE_KEYS): 't1t2' | 't3a' | 't3b' | 't3c' | 't3d' | 't4a' | 't4b'.
+  const getOp = (matchKeys) => (!activeT ? 1 : matchKeys.includes(activeT) ? 1 : 0.3);
+  const T3_SUBKEYS = ['t3a', 't3b', 't3c', 't3d'];
+
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 760 650" className="h-auto w-full max-w-lg text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 850 600" className="h-auto w-full max-w-2xl font-sans" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id="rectTTumorShadow" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="2" dy="4" stdDeviation="3" floodOpacity="0.35" />
+          <filter id="shadowRectalT" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="2" dy="4" stdDeviation="4" floodOpacity="0.3" />
           </filter>
+          <marker id="arrowRectalT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" className="fill-slate-500 dark:fill-slate-400" />
+          </marker>
         </defs>
-        {/* Fascia mesorrectal (MRF): borde sólido (límite quirúrgico real que se
-            mide en la RM), más grueso que la muscular propia para que ambos
-            anillos se lean como capas distintas */}
-        <circle cx="280" cy="310" r="185" fill="none" stroke="currentColor" strokeWidth="5" className="text-slate-500 dark:text-slate-400" />
-        {/* Muscular propia: disco relleno (representa la pared + submucosa),
-            con la luz recortada encima */}
-        <circle cx="280" cy="310" r="110" fill="currentColor" className="text-slate-200 dark:text-slate-700/70" stroke="currentColor" strokeWidth="4.5" />
-        {/* Luz rectal, forma irregular */}
-        <path
-          fill="currentColor" className="text-slate-300 dark:text-slate-800"
-          d="M 258,268 C 280,260 292,278 305,276 C 322,272 316,296 326,306 C 340,312 328,328 334,344 C 320,362 302,350 288,364 C 272,380 254,364 238,372 C 222,364 234,344 222,332 C 208,322 224,306 232,292 C 226,272 246,272 258,268 Z"
-        />
-        {/* Reflexión peritoneal (solo recto superior, arco antero-superior) */}
-        <path d="M 161.2,226.8 A 145,145 0 0 1 398.8,226.8" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="5 5" strokeLinecap="round" />
 
-        {/* T1/T2: confinado a la pared, no cruza la muscular propia */}
-        <ellipse cx="205" cy="310" rx="40" ry="25" fill="currentColor" opacity="0.22" stroke="currentColor" strokeWidth="2.5" />
-        <text x="205" y="315" fill="currentColor" className="text-slate-700 dark:text-slate-200" fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T1/T2</text>
+        {/* Fascia mesorrectal (MRF) — círculo exterior */}
+        <circle cx="350" cy="350" r="190" className="fill-transparent stroke-slate-500 dark:stroke-slate-400" strokeWidth="5" />
 
-        {/* T3a (<1mm) y T3b (1-5mm) más allá de la muscular: buen pronóstico, verde */}
-        <ellipse cx="195.2" cy="225.2" rx="30" ry="30" fill="#059669" stroke="#047857" strokeWidth="2" filter="url(#rectTTumorShadow)" />
-        <text x="195.2" y="231" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">a</text>
-
-        <ellipse cx="184.6" cy="405.4" rx="32" ry="32" fill="#059669" stroke="#047857" strokeWidth="2" filter="url(#rectTTumorShadow)" />
-        <text x="184.6" y="411.5" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">b</text>
-
-        {/* T3c (5-15mm) y T3d (>15mm), acercándose a la MRF: mayor riesgo, rojo */}
-        <ellipse cx="389.6" cy="419.6" rx="33" ry="33" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
-        <text x="389.6" y="425.5" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">c</text>
-
-        <ellipse cx="391.7" cy="198.3" rx="32" ry="32" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
-        <text x="391.7" y="204" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">d</text>
-
-        {/* T3 con MRF+ (margen circunferencial <1mm): toca la fascia */}
-        <ellipse cx="445" cy="310" rx="46" ry="30" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
-        <text x="445" y="315.5" fill="#ffffff" fontSize="12.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">MRF+</text>
-
-        {/* T4a: perfora a través de la reflexión peritoneal, se extiende más allá de la MRF */}
-        <ellipse cx="280" cy="158" rx="27" ry="95" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
-        <text x="280" y="163" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4a</text>
-
-        {/* T4b: atraviesa la MRF hacia un órgano/estructura adyacente */}
-        <ellipse cx="280" cy="500" rx="27" ry="95" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
-        <text x="280" y="505" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4b</text>
+        {/* Línea de la cavidad peritoneal (solo recto superior) */}
+        <path d="M 160 350 Q 140 220 200 130 Q 230 80 300 110 Q 360 140 440 100" fill="none" className="stroke-slate-800 dark:stroke-slate-300" strokeWidth="3" />
 
         {/* Órgano/estructura adyacente (acento fijo naranja, no depende del tema) */}
-        <g transform="translate(280,592)">
-          <circle cx="0" cy="0" r="34" fill="#ea580c" filter="url(#rectTTumorShadow)" />
-          <circle cx="-10" cy="-10" r="15" fill="#f97316" opacity="0.6" />
-          <text x="0" y="5" fill="#ffffff" fontSize="11" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">ÓRGANO</text>
+        <g transform="translate(485, 100)">
+          <circle cx="0" cy="0" r="45" fill="#ea580c" filter="url(#shadowRectalT)" />
+          <circle cx="-12" cy="-12" r="20" fill="#f97316" opacity="0.6" />
+          <text x="0" y="6" textAnchor="middle" fill="#ffffff" fontWeight="800" fontSize="18px">{labels.organ}</text>
         </g>
 
-        {/* Etiquetas anatómicas con línea guía, en el margen derecho */}
-        <g className="text-slate-500 dark:text-slate-400" fontSize="12.5" fontWeight="600" fontFamily="system-ui, sans-serif" fill="currentColor">
-          <path d="M 490,180 L 405,222" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <text x="495" y="165">REFLEXIÓN</text>
-          <text x="495" y="181">PERITONEAL</text>
+        {/* Muscular propia — círculo interior (relleno = submucosa) */}
+        <circle cx="350" cy="350" r="110" className="fill-slate-100 stroke-slate-400 dark:fill-slate-800/50 dark:stroke-slate-500" strokeWidth="4" />
 
-          <path d="M 490,255 L 388,272" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <text x="495" y="250">MUSCULAR</text>
-          <text x="495" y="266">PROPIA</text>
+        {/* Luz rectal, forma irregular */}
+        <path
+          d="M 330 250 C 370 240, 370 280, 390 280 C 430 270, 410 310, 420 330 C 450 340, 420 360, 430 390 C 400 420, 380 380, 360 410 C 340 440, 320 400, 300 420 C 270 410, 290 380, 270 360 C 240 350, 270 320, 280 300 C 260 270, 300 280, 330 250 Z"
+          className="fill-slate-800 dark:fill-slate-950"
+        />
+        <text x="350" y="355" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="16px">{labels.lumen}</text>
 
-          <path d="M 490,310 L 465,310" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <text x="495" y="315">MRF</text>
-
-          <path d="M 490,405 L 335,340" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <text x="495" y="400">LUZ</text>
-          <text x="495" y="416">RECTAL</text>
+        {/* T1/T2: confinado a la pared */}
+        <g transform="translate(295, 305) rotate(-45)" style={{ opacity: getOp(['t1t2']), transition: 'opacity 0.3s' }}>
+          <ellipse cx="0" cy="0" rx="15" ry="25" fill="#3b82f6" filter="url(#shadowRectalT)" />
+          <text x="0" y="5" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T1</text>
         </g>
+        <g transform="translate(285, 410) rotate(-30)" style={{ opacity: getOp(['t1t2']), transition: 'opacity 0.3s' }}>
+          <ellipse cx="0" cy="0" rx="20" ry="35" fill="#3b82f6" filter="url(#shadowRectalT)" />
+          <text x="0" y="5" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T2</text>
+        </g>
+
+        {/* T3 (a, b, c, d) */}
+        <g transform="translate(370, 450) rotate(20)" style={{ opacity: getOp(T3_SUBKEYS), transition: 'opacity 0.3s' }}>
+          <ellipse cx="0" cy="0" rx="30" ry="65" fill="#3b82f6" filter="url(#shadowRectalT)" />
+          <text x="0" y="-15" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T3</text>
+          <text x="0" y="5" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">a, b,</text>
+          <text x="0" y="25" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">c, d</text>
+        </g>
+
+        {/* T3 con MRF+ (margen circunferencial <1mm) */}
+        <g transform="translate(480, 360) rotate(80)" style={{ opacity: getOp(T3_SUBKEYS), transition: 'opacity 0.3s' }}>
+          <ellipse cx="0" cy="0" rx="30" ry="75" fill="#3b82f6" filter="url(#shadowRectalT)" />
+        </g>
+        <text x="485" y="350" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px" style={{ opacity: getOp(T3_SUBKEYS) }}>T3 MRF+</text>
+        <text x="485" y="370" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px" style={{ opacity: getOp(T3_SUBKEYS) }}>(&lt;1mm)</text>
+
+        {/* T4a: perfora la reflexión peritoneal */}
+        <g transform="translate(230, 190) rotate(-40)" style={{ opacity: getOp(['t4a']), transition: 'opacity 0.3s' }}>
+          <ellipse cx="0" cy="0" rx="35" ry="110" fill="#3b82f6" filter="url(#shadowRectalT)" />
+          <text x="0" y="20" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T4a</text>
+        </g>
+
+        {/* T4b: atraviesa la MRF hacia un órgano/estructura adyacente */}
+        <g transform="translate(430, 200) rotate(25)" style={{ opacity: getOp(['t4b']), transition: 'opacity 0.3s' }}>
+          <ellipse cx="0" cy="0" rx="35" ry="110" fill="#3b82f6" filter="url(#shadowRectalT)" />
+          <text x="0" y="10" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T4b</text>
+        </g>
+
+        {/* Etiquetas y punteros anatómicos */}
+        <text x="180" y="70" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.peritonealCavity}</text>
+        <path d="M 230 80 L 250 110" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" />
+        <path d="M 330 80 L 310 110" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" />
+
+        <text x="230" y="460" transform="rotate(45 230 460)" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.mesorectum}</text>
+
+        <text x="560" y="270" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.muscularisPropriaL1}</text>
+        <text x="560" y="290" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.muscularisPropriaL2}</text>
+        <path d="M 550 280 L 440 285" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" markerEnd="url(#arrowRectalT)" />
+
+        <text x="560" y="455" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.mrf}</text>
+        <path d="M 550 450 L 510 450" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" markerEnd="url(#arrowRectalT)" />
+
+        <text x="560" y="405" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.submucosa}</text>
+        <path d="M 550 400 L 415 390" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" markerEnd="url(#arrowRectalT)" />
 
         {/* Leyenda embebida de subcategorías T3 (a-d) */}
-        <g transform="translate(495,460)" className="text-slate-500 dark:text-slate-400" fontSize="12.5" fontWeight="600" fontFamily="system-ui, sans-serif" fill="currentColor">
-          <text x="0" y="0">a: &lt;1 mm</text>
-          <text x="0" y="20">b: 1-5 mm</text>
-          <text x="0" y="40">c: 5-15 mm</text>
-          <text x="0" y="60">d: &gt;15 mm</text>
+        <g transform="translate(560, 490)" className="fill-slate-800 dark:fill-slate-200" fontWeight="700" fontSize="14px">
+          <text x="0" y="0">{labels.legendA}</text>
+          <text x="0" y="25">{labels.legendB}</text>
+          <text x="0" y="50">{labels.legendC}</text>
+          <text x="0" y="75">{labels.legendD}</text>
         </g>
       </svg>
     </div>
@@ -472,12 +487,9 @@ export default function RectalCancerMRI() {
       )}
 
       <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
-        <RectalTScheme />
-        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-2">
-          <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.legendGoodPrognosis}</span>
-          <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-600 mr-1 align-[-1px]"></span>{c.legendHigherRisk}</span>
-        </div>
+        <RectalTScheme labels={c.tSchemeLabels} activeT={tStage} />
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.diagramNote}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">{c.diagramPrognosisNote}</p>
       </Accordion>
 
       <Card>
@@ -487,7 +499,7 @@ export default function RectalCancerMRI() {
 
       {mode === 'primary' && location === 'lower' && (
         <>
-          <Accordion icon={<IconBookOpen size={16} />} title={c.sphincterDiagramTitle} defaultOpen>
+          <Accordion icon={<IconBookOpen size={16} />} title={c.sphincterDiagramTitle}>
             <SphincterComplexScheme />
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-2">
               <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#1d4ed8] mr-1 align-[-1px]"></span>{c.sphincterLegend1}</span>
