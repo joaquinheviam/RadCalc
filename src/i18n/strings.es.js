@@ -4421,9 +4421,9 @@ export default {
       sphincterLegend2: 'Tumor 2: invade IS + ISS + ES',
       sphincterDiagramNote: 'IS (esfínter interno) es la continuación directa de la muscular propia rectal; ISS (espacio interesfinteriano) es el plano graso entre ambos esfínteres; ES (esfínter externo/elevador del ano) es la capa muscular estriada más externa. El grado de invasión (IS → IS+ISS → IS+ISS+ES) determina la resecabilidad con preservación esfinteriana.',
       sphincterIspNote: 'Extensión al espacio interesfinteriano (ISS) sin compromiso del esfínter externo: el grupo ISOG-ISR (International Standardization and Optimization Group for Intersphincteric Resection) propone anotar este hallazgo con el sufijo "-isp" para identificar a los pacientes en el límite de la resección interesfinteriana.',
-      sphincterEasNote: 'Por consenso internacional de expertos, la invasión del esfínter externo (músculo estriado) se clasifica como enfermedad T4b, independiente de la profundidad de invasión de la pared rectal. Verifica que la categoría T informada sea consistente con este hallazgo.',
-      sphincterEasSummaryTag: 'EAS+ (T4b)',
-      sphincterIspSummaryTag: 'ISS (-isp)',
+      sphincterEasNote: 'Por consenso internacional de expertos, la invasión del esfínter externo (músculo estriado) se clasifica como enfermedad T4b, independiente de la profundidad de invasión de la pared rectal.',
+      sphincterEasSummaryReason: 'esfínter externo',
+      radSummaryFootnoteSphincter: 'En cáncer de recto inferior, más que asignar únicamente una categoría T, es preferible explicitar el compromiso o no del complejo esfinteriano y del elevador del ano.',
       mrfQ: 'Fascia mesorrectal (MRF)',
       mrfLbl: 'MRF',
       mrfOpts: [

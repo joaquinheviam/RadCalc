@@ -373,15 +373,30 @@ export default function RectalCancerMRI() {
   const isLowRectalSphincterCase = mode === 'primary' && location === 'lower';
   const radiologicalSummary = () => {
     const parts = [];
-    if (tStage) parts.push(`${mode === 'restaging' ? 'y' : ''}${COMPACT_T[tStage]}`);
+    if (tStage) {
+      if (isLowRectalSphincterCase && sphincter === 'es') {
+        // Reclasificación por consenso (Khasawneh et al., AJR 2025): la invasión
+        // del esfínter externo es T4b independiente del T basado en profundidad;
+        // se informa directamente T4b en vez de anexar una etiqueta aparte.
+        parts.push(`T4b* (${c.sphincterEasSummaryReason})`);
+      } else if (isLowRectalSphincterCase && sphincter === 'iss') {
+        // Sufijo "-isp" del grupo ISOG-ISR: se agrega directamente al T ya
+        // seleccionado (no cambia la categoría, solo la anota).
+        parts.push(`${COMPACT_T[tStage]}-isp*`);
+      } else {
+        parts.push(`${mode === 'restaging' ? 'y' : ''}${COMPACT_T[tStage]}`);
+      }
+    }
     if (nodesAnswered) parts.push(nodesPositive ? 'N+' : 'N-');
     if (emvi) parts.push(emvi === 'yes' ? 'EMVI+' : 'EMVI-');
     if (mrf) parts.push(mrf === 'clear' ? 'MRF-' : mrf === 'involved' ? 'MRF+' : 'MRF~');
-    if (isLowRectalSphincterCase && sphincter === 'es') parts.push(c.sphincterEasSummaryTag);
-    else if (isLowRectalSphincterCase && sphincter === 'iss') parts.push(c.sphincterIspSummaryTag);
     return parts.length ? parts.join(', ') : null;
   };
   const radSummary = radiologicalSummary();
+  // El asterisco remite a una nota general sobre cómo reportar recto inferior
+  // (más allá de la sola categoría T) — se muestra junto al resumen cuando
+  // aplica cualquiera de las dos reclasificaciones esfinterianas.
+  const radSummaryHasSphincterFootnote = isLowRectalSphincterCase && (sphincter === 'es' || sphincter === 'iss');
 
   const buildReport = () => {
     const lines = [mode === 'primary' ? c.primaryStaging : c.restaging];
@@ -401,6 +416,7 @@ export default function RectalCancerMRI() {
     if (mode === 'restaging' && restagingSystem === 'mrtrg' && mrTrg) lines.push(`mrTRG: ${c.trgOpts[mrTrg]}`);
     if (mode === 'restaging' && restagingSystem === 'simplified' && simplifiedResponse) lines.push(`${c.simplifiedResponseQ}: ${c.simplifiedOpts.find((o) => o.key === simplifiedResponse)?.label}`);
     if (radSummary) lines.push(`\n${c.radSummaryLabel}: ${radSummary}`);
+    if (radSummary && radSummaryHasSphincterFootnote) lines.push(`* ${c.radSummaryFootnoteSphincter}`);
     if (verdict) lines.push(`${c.conclusion}: ${verdict.text}`);
     return lines.join('\n');
   };
@@ -570,6 +586,9 @@ export default function RectalCancerMRI() {
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.radSummaryLabel}</span>
           <p className="text-2xl font-black text-slate-800 dark:text-slate-100">{radSummary}</p>
+          {radSummaryHasSphincterFootnote && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug text-left">* {c.radSummaryFootnoteSphincter}</p>
+          )}
           {verdict && (
             <div className="mt-3 text-left">
               <InfoBox tone={verdict.tone}>{verdict.text}</InfoBox>
