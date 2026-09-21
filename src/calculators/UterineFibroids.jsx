@@ -3,11 +3,156 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
+
+const FIGO_SUBMUCOSAL_TYPES = ['0', '1', '2'];
+const FIGO_OTHER_TYPES = ['3', '4', '5', '6', '7', '8'];
+
+/**
+ * Esquema FIGO de topografía de miomas uterinos.
+ * `onSelectType` es opcional: si se entrega, cada tipo se vuelve clickeable/enfocable
+ * (mouse, touch y teclado) y refleja la selección activa vía `highlightType`.
+ * El nodo "2-5" es solo un ejemplo ilustrativo del concepto de mioma híbrido
+ * (la app permite combinaciones arbitrarias vía las preguntas guiadas), por lo
+ * que no es seleccionable directamente.
+ */
+function FigoFibroidDiagram({ labels, typeLabels, highlightType = null, onSelectType = null }) {
+  const [hoveredType, setHoveredType] = useState(null);
+
+  const COLOR_SUBMUCOSAL = '#f59e0b';
+  const COLOR_INTRAMURAL = '#14b8a6';
+  const COLOR_SUBSEROSAL = '#3b82f6';
+  const COLOR_HYBRID = '#8b5cf6';
+  const COLOR_HIGHLIGHT = '#ef4444';
+
+  const getColor = (type, defaultHex) => (highlightType === type ? COLOR_HIGHLIGHT : defaultHex);
+  const getOpacity = (type) => {
+    if (hoveredType === type) return 1;
+    if (!highlightType) return 1;
+    return highlightType === type ? 1 : 0.35;
+  };
+
+  const nodeProps = (type) => {
+    const base = { style: { opacity: getOpacity(type) }, filter: 'url(#figoFibroidShadow)', className: 'transition-opacity duration-200' };
+    if (!onSelectType) return base;
+    return {
+      ...base,
+      className: `${base.className} cursor-pointer`,
+      role: 'button',
+      tabIndex: 0,
+      'aria-label': typeLabels?.[type] || `FIGO ${type}`,
+      onClick: () => onSelectType(type),
+      onMouseEnter: () => setHoveredType(type),
+      onMouseLeave: () => setHoveredType(null),
+      onKeyDown: (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectType(type); }
+      },
+    };
+  };
+
+  const node = (type, defaultHex, children) => (
+    <g {...nodeProps(type)}>
+      {onSelectType && <title>{typeLabels?.[type] || `FIGO ${type}`}</title>}
+      {children(getColor(type, defaultHex))}
+    </g>
+  );
+
+  return (
+    <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
+      <svg viewBox="0 0 720 540" className="h-auto w-full max-w-lg select-none" xmlns="http://www.w3.org/2000/svg">
+        <title>{labels?.title || 'FIGO'}</title>
+        <defs>
+          <filter id="figoFibroidShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" floodOpacity="0.35" />
+          </filter>
+        </defs>
+
+        {/* Miometrio / silueta uterina */}
+        <path
+          d="M 120,280 C 100,100 280,60 480,120 C 600,160 620,260 560,330 C 500,400 380,430 250,410 C 160,395 130,340 120,280 Z"
+          className="fill-slate-200 stroke-slate-400 dark:fill-slate-800/80 dark:stroke-slate-600" strokeWidth="3"
+        />
+        {/* Borde seroso (auxiliar, punteado) */}
+        <path
+          d="M 125,280 C 105,105 282,65 478,123 C 595,162 615,258 555,327 C 495,395 378,425 252,405"
+          fill="none" className="stroke-slate-400/50 dark:stroke-slate-500/50" strokeWidth="1.5" strokeDasharray="4 4"
+        />
+        {/* Cavidad endometrial */}
+        <path
+          d="M 240,240 C 260,180 380,160 530,220 C 560,232 540,270 480,270 C 360,270 280,310 240,240 Z"
+          className="fill-slate-300 stroke-slate-400 dark:fill-slate-900 dark:stroke-slate-700" strokeWidth="2"
+        />
+        {/* Zona de unión (auxiliar, punteada) */}
+        <path
+          d="M 230,240 C 250,170 385,150 535,210"
+          fill="none" className="stroke-slate-500/60 dark:stroke-slate-400/60" strokeWidth="1.5" strokeDasharray="3 3"
+        />
+
+        {/* TIPO 0: intracavitario puro, pediculado */}
+        {node('0', COLOR_SUBMUCOSAL, (fill) => (<>
+          <rect x="296" y="200" width="8" height="20" rx="2" fill={fill} />
+          <circle cx="300" cy="225" r="20" fill={fill} />
+          <text x="300" y="230" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">0</text>
+        </>))}
+        {/* TIPO 1: <50% intramural — centro dentro de la cavidad endometrial */}
+        {node('1', COLOR_SUBMUCOSAL, (fill) => (<>
+          <circle cx="345" cy="275" r="23" fill={fill} />
+          <text x="345" y="280" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">1</text>
+        </>))}
+        {/* TIPO 2: ≥50% intramural — centro dentro del miometrio, asoma poco a la cavidad */}
+        {node('2', COLOR_SUBMUCOSAL, (fill) => (<>
+          <circle cx="430" cy="290" r="24" fill={fill} />
+          <text x="430" y="295" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">2</text>
+        </>))}
+        {/* TIPO 3: 100% intramural, borde apenas toca la cavidad endometrial (contacto sin protruir) */}
+        {node('3', COLOR_INTRAMURAL, (fill) => (<>
+          <circle cx="410" cy="152" r="24" fill={fill} />
+          <text x="410" y="157" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">3</text>
+        </>))}
+        {/* TIPO 4: 100% intramural, sin contacto con cavidad ni serosa */}
+        {node('4', COLOR_INTRAMURAL, (fill) => (<>
+          <circle cx="340" cy="120" r="24" fill={fill} />
+          <text x="340" y="125" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">4</text>
+        </>))}
+        {/* TIPO 5: subseroso ≥50% intramural — centro dentro del miometrio, asoma poco a la serosa */}
+        {node('5', COLOR_SUBSEROSAL, (fill) => (<>
+          <circle cx="230" cy="105" r="24" fill={fill} />
+          <text x="230" y="110" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">5</text>
+        </>))}
+        {/* TIPO 6: subseroso <50% intramural — centro fuera del miometrio, flotando sobre la serosa */}
+        {node('6', COLOR_SUBSEROSAL, (fill) => (<>
+          <circle cx="170" cy="405" r="24" fill={fill} />
+          <text x="170" y="410" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">6</text>
+        </>))}
+        {/* TIPO 7: subseroso pediculado, totalmente externo */}
+        {node('7', COLOR_SUBSEROSAL, (fill) => (<>
+          <rect x="306" y="415" width="8" height="20" rx="2" fill={fill} />
+          <circle cx="310" cy="450" r="22" fill={fill} />
+          <text x="310" y="455" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">7</text>
+        </>))}
+        {/* Híbrido 2-5: ejemplo ilustrativo, no seleccionable directamente */}
+        <g style={{ opacity: getOpacity('2-5') }} filter="url(#figoFibroidShadow)" className="transition-opacity duration-200">
+          <title>{`${labels?.hybrid || 'Híbrido'} 2-5`}</title>
+          <circle cx="510" cy="340" r="55" fill={COLOR_HYBRID} />
+          <text x="510" y="345" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="15">2-5</text>
+        </g>
+
+        <g className="fill-slate-700 dark:fill-slate-300" fontSize="12" fontWeight="600" fontFamily="system-ui, sans-serif">
+          <text x="230" y="60" textAnchor="middle">{labels?.subserosal || 'Subserosal'}</text>
+          <text x="440" y="70" textAnchor="middle">{labels?.intramural || 'Intramural'}</text>
+          <text x="180" y="240" textAnchor="middle">{labels?.submucosal || 'Submucosal'}</text>
+        </g>
+      </svg>
+    </div>
+  );
+}
 
 export default function UterineFibroids() {
   const { t } = useLang();
   const c = t.calc.leiomyoma;
+
+  const figoDiagramTypeLabels = {};
+  Object.values(c.figoTypes).forEach((v) => { figoDiagramTypeLabels[v.code] = v.label; });
 
   /* ---------- Sección 1: Clasificación FIGO ---------- */
   const [figoQ1, setFigoQ1] = useState(null); // null | 'type0' | 'type1' | 'type2' | 'noCavity'
@@ -24,8 +169,19 @@ export default function UterineFibroids() {
     if (figoQ2 !== null) { setFigoQ2(null); return; }
     if (figoQ1 !== null) { setFigoQ1(null); return; }
   };
+  // Selección directa desde el esquema FIGO: reproduce la respuesta a las preguntas
+  // guiadas que llevaría a ese mismo tipo, para no duplicar la lógica del árbol.
+  const handleDiagramSelect = (type) => {
+    if (FIGO_SUBMUCOSAL_TYPES.includes(type)) {
+      handleFigoQ1(`type${type}`);
+    } else if (FIGO_OTHER_TYPES.includes(type)) {
+      handleFigoQ1('noCavity');
+      handleFigoQ2(`type${type}`);
+    }
+  };
 
   const figoPrimaryKey = figoQ1 && figoQ1 !== 'noCavity' ? figoQ1 : figoQ2;
+  const figoDiagramHighlight = figoPrimaryKey ? figoPrimaryKey.replace('type', '') : null;
   const figoTypeObj = figoPrimaryKey ? c.figoTypes[figoPrimaryKey] : null;
   const canHybridSubmucosal = ['type1', 'type2', 'type3'].includes(figoPrimaryKey);
   const canHybridSubserosal = ['type5', 'type6'].includes(figoPrimaryKey);
@@ -121,6 +277,25 @@ export default function UterineFibroids() {
     <div className={`space-y-4 animate-in fade-in ${hasAnyResult ? 'pb-56' : ''}`}>
       <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wide">{c.figoSectionTitle}</h3>
       <InfoBox tone="amber">{c.figoIntro}</InfoBox>
+
+      <Card>
+        <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 text-center">{c.figoDiagramTitle}</p>
+        <ZoomableDiagram title={c.figoDiagramTitle} labels={t.common.diagramZoom}>
+          <FigoFibroidDiagram
+            labels={c.figoDiagramLabels}
+            typeLabels={figoDiagramTypeLabels}
+            highlightType={figoDiagramHighlight}
+            onSelectType={handleDiagramSelect}
+          />
+        </ZoomableDiagram>
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-2">
+          <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#f59e0b] mr-1 align-[-1px]"></span>{c.figoDiagramLabels.submucosal} (0-2)</span>
+          <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#14b8a6] mr-1 align-[-1px]"></span>{c.figoDiagramLabels.intramural} (3-4)</span>
+          <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#3b82f6] mr-1 align-[-1px]"></span>{c.figoDiagramLabels.subserosal} (5-7)</span>
+          <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#8b5cf6] mr-1 align-[-1px]"></span>{c.figoDiagramLabels.hybrid}</span>
+        </div>
+        <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 mt-1">{c.figoDiagramHint}</p>
+      </Card>
 
       {figoQ1 !== null && (
         <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400 flex justify-between items-center">

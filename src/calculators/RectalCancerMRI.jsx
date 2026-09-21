@@ -544,7 +544,9 @@ export default function RectalCancerMRI() {
 
       <Accordion icon={<IconBookOpen size={16} />} title={c.nodalDiagramTitle}>
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.nodalDiagramIntro}</p>
-        <NodalDistributionScheme />
+        <ZoomableDiagram title={c.nodalDiagramTitle} labels={t.common.diagramZoom}>
+          <NodalDistributionScheme />
+        </ZoomableDiagram>
         <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center mt-2">
           <p>{c.nodalDiagramPanelA}</p>
           <p>{c.nodalDiagramPanelB}</p>

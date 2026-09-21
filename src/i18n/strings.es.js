@@ -2766,6 +2766,15 @@ export default {
       stepBack: 'Paso anterior',
       figoSectionTitle: 'Sección 1: Clasificación FIGO del mioma',
       figoIntro: 'Clasifica la localización del mioma según su relación con el endometrio y la serosa uterina (sistema FIGO/PALM-COEIN, Munro et al. 2011, revisado por FIGO en 2018).',
+      figoDiagramTitle: 'Esquema de clasificación FIGO',
+      figoDiagramHint: 'Toca un tipo en el esquema para seleccionarlo directamente, o usa las preguntas guiadas.',
+      figoDiagramLabels: {
+        title: 'Esquema de clasificación FIGO de miomas uterinos',
+        submucosal: 'Submucoso',
+        intramural: 'Intramural',
+        subserosal: 'Subseroso',
+        hybrid: 'Híbrido',
+      },
       figoQ1: '¿El mioma tiene componente intracavitario (protruye hacia la cavidad endometrial)?',
       figoQ1Options: [
         { key: 'type0', label: 'Sí — pediculado, ≈100% intracavitario, sin extensión miometrial significativa' },

@@ -2766,6 +2766,15 @@ export default {
       stepBack: 'Previous step',
       figoSectionTitle: 'Section 1: FIGO classification of the fibroid',
       figoIntro: 'Classifies the fibroid\'s location by its relationship to the endometrium and uterine serosa (FIGO/PALM-COEIN system, Munro et al. 2011, revised by FIGO in 2018).',
+      figoDiagramTitle: 'FIGO classification diagram',
+      figoDiagramHint: 'Tap a type on the diagram to select it directly, or use the guided questions.',
+      figoDiagramLabels: {
+        title: 'FIGO classification diagram of uterine fibroids',
+        submucosal: 'Submucosal',
+        intramural: 'Intramural',
+        subserosal: 'Subserosal',
+        hybrid: 'Hybrid',
+      },
       figoQ1: 'Does the fibroid have an intracavitary component (does it protrude into the endometrial cavity)?',
       figoQ1Options: [
         { key: 'type0', label: 'Yes — pedunculated, ≈100% intracavitary, no significant myometrial extension' },
