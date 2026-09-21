@@ -58,6 +58,28 @@ function buildHead(html, { lang, title, description, pathSuffix }) {
     `  <link rel="alternate" href="${escapeAttr(urlEs)}" hreflang="x-default">\n`;
   out = out.replace('</head>', `\n${hreflangTags}</head>`);
 
+  // Enlaces reales (<a href>) a la portada y a todas las calculadoras del
+  // idioma de esta página, dentro de <noscript>. El <body> servido es, si
+  // no, solo `<div id="root"></div>` — React recién arma la navegación real
+  // al hidratar en el cliente. Un rastreador que lea el HTML tal cual llega
+  // del servidor (sin ejecutar JS, o en su primera pasada antes de la
+  // segunda pasada de renderizado) no encuentra ningún enlace interno entre
+  // páginas, aunque el sitemap ya las liste todas — probablemente reduce la
+  // prioridad de rastreo que Google les asigna. <noscript> es la forma
+  // estándar de exponer una versión sin JS sin que además quede visible por
+  // duplicado para usuarios reales (los navegadores nunca la muestran si JS
+  // está activo) ni interfiera con la hidratación (React solo toca #root).
+  const navItems = [
+    `<a href="${escapeAttr(`${SEO_BASE_URL}/${lang}/`)}">${escapeAttr(STRINGS[lang].appName)}</a>`,
+  ];
+  for (const cc of calculators) {
+    const entry = STRINGS[lang].calc[cc.id];
+    const url = `${SEO_BASE_URL}/${lang}/calc/${cc.id}/`;
+    navItems.push(`<a href="${escapeAttr(url)}">${escapeAttr(entry.title)}</a>`);
+  }
+  const noscriptNav = `\n  <noscript>\n    <nav>\n      ${navItems.join('\n      ')}\n    </nav>\n  </noscript>\n`;
+  out = out.replace('<div id="root"></div>', `<div id="root"></div>${noscriptNav}`);
+
   return out;
 }
 

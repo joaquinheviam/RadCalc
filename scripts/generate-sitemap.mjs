@@ -12,6 +12,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const BASE_URL = 'https://radiocalc.app';
 const LANGS = ['es', 'en'];
 
+// Fecha de esta build, en formato YYYY-MM-DD, usada como <lastmod> de todas
+// las URLs. No refleja cuándo cambió cada calculadora puntual (el checkout
+// de git en el entorno de build pisa los mtimes reales de los archivos, así
+// que no son confiables como fuente de esa fecha por página), pero sí le da
+// a Google una señal de frescura real: cada vez que se publica una build
+// nueva, el sitemap completo queda con la fecha de esa publicación en vez de
+// quedar sin ninguna fecha (como estaba antes), que es lo que le impedía a
+// Google priorizar qué tan reciente es el contenido.
+const BUILD_DATE = new Date().toISOString().slice(0, 10);
+
 const urls = [];
 for (const lang of LANGS) {
   urls.push(`${BASE_URL}/${lang}/`);
@@ -23,7 +33,7 @@ for (const lang of LANGS) {
 }
 
 const body = urls
-  .map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <changefreq>monthly</changefreq>\n  </url>`)
+  .map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${BUILD_DATE}</lastmod>\n    <changefreq>monthly</changefreq>\n  </url>`)
   .join('\n');
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
