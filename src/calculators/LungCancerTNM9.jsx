@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { IconBookOpen } from '../components/icons/index.js';
-import { Card, Accordion, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { IconBookOpen, IconCheckCircle } from '../components/icons/index.js';
+import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function OptionButtons({ options, value, onChange }) {
   return (
@@ -27,6 +27,94 @@ function OptionButtons({ options, value, onChange }) {
       ))}
     </div>
   );
+}
+
+// Toggle de dos botones sí/no, mismo lenguaje visual que OptionButtons pero en
+// una fila compacta — usado en el carril guiado del T.
+function YesNoButtons({ value, onChange, yesLabel, noLabel }) {
+  return (
+    <div className="flex gap-2">
+      {[['yes', yesLabel], ['no', noLabel]].map(([key, label]) => (
+        <button
+          key={key}
+          onClick={() => onChange(key)}
+          className={`flex-1 p-3 rounded-xl border text-sm font-semibold transition-all ${
+            value === key
+              ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300'
+              : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Selección múltiple (checkboxes) para las estructuras invadidas — varias
+// pueden aplicar a la vez, el cálculo del T guiado se queda con la de mayor
+// categoría.
+function CheckButtons({ options, values, onToggle }) {
+  return (
+    <div className="space-y-1.5">
+      {options.map((opt) => (
+        <button
+          key={opt.key}
+          onClick={() => onToggle(opt.key)}
+          className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-start gap-2 ${
+            values[opt.key]
+              ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300'
+              : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+          }`}
+        >
+          {values[opt.key] ? <IconCheckCircle size={15} className="shrink-0 mt-0.5" /> : <span className="w-[15px] shrink-0" />}
+          <span>{opt.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Selector de dos carriles para determinar el T: "guiado" (por defecto, arma
+// el T a partir de hallazgos radiológicos) o "conozco el T" (selección
+// directa de la categoría, comportamiento previo de la calculadora).
+function ModeToggle({ value, onChange, guidedLabel, knownLabel }) {
+  return (
+    <div className="flex gap-1.5 mb-4 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
+      {[['guided', guidedLabel], ['known', knownLabel]].map(([key, label]) => (
+        <button
+          key={key}
+          onClick={() => onChange(key)}
+          className={`flex-1 py-2 px-2 rounded-lg text-xs font-semibold transition-all ${
+            value === key
+              ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 shadow-sm'
+              : 'text-slate-500 dark:text-slate-400'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Orden de severidad de las categorías T, usado para tomar el máximo entre
+// el T por tamaño y los distintos hallazgos cualitativos (invasión,
+// atelectasia, nódulos separados) en el carril guiado.
+const T_RANK = { T1a: 1, T1b: 2, T1c: 3, T2a: 4, T2b: 5, T3: 6, T4: 7 };
+
+// Tamaño (mm, diámetro mayor) → categoría T por tamaño, por Tabla 3 de
+// Detterbeck et al., Chest 2024;166(4):882-895 (9ª edición IASLC).
+function sizeToT(sizeMm) {
+  const v = parseFloat(String(sizeMm).replace(',', '.'));
+  if (!sizeMm || Number.isNaN(v) || v <= 0) return null;
+  if (v <= 10) return 'T1a';
+  if (v <= 20) return 'T1b';
+  if (v <= 30) return 'T1c';
+  if (v <= 40) return 'T2a';
+  if (v <= 50) return 'T2b';
+  if (v <= 70) return 'T3';
+  return 'T4';
 }
 
 // Simplified schematic of the main IASLC regional lymph node stations relevant
@@ -386,12 +474,34 @@ export default function LungCancerTNM9() {
   const { t } = useLang();
   const c = t.calc.lungCancerTNM9;
 
-  const [tVal, setTVal] = useState(null);
+  // Carril de determinación del T: 'guided' (por defecto, arma el T a partir
+  // de hallazgos) o 'known' (selección directa de la categoría T, el
+  // comportamiento original de esta calculadora).
+  const [tMode, setTMode] = useState('guided');
+  const [tKnownVal, setTKnownVal] = useState(null);
+
+  // Estado del carril guiado.
+  const [guidedGate, setGuidedGate] = useState(null); // 'lesion' | 'Tx' | 'T0' | 'Tis'
+  const [sizeMm, setSizeMm] = useState('');
+  const [t1miFlag, setT1miFlag] = useState(null); // 'yes' | 'no'
+  const [hasInvasion, setHasInvasion] = useState(null); // 'yes' | 'no'
+  const [invasionStructures, setInvasionStructures] = useState({});
+  const [hasAtelectasis, setHasAtelectasis] = useState(null); // 'yes' | 'no'
+  const [noduleStatus, setNoduleStatus] = useState(null); // 'none' | 'sameLobe' | 'diffLobe' | 'contralateral'
+
   const [nVal, setNVal] = useState(null);
   const [mVal, setMVal] = useState(null);
 
   const resetAll = () => {
-    setTVal(null);
+    setTMode('guided');
+    setTKnownVal(null);
+    setGuidedGate(null);
+    setSizeMm('');
+    setT1miFlag(null);
+    setHasInvasion(null);
+    setInvasionStructures({});
+    setHasAtelectasis(null);
+    setNoduleStatus(null);
     setNVal(null);
     setMVal(null);
   };
@@ -409,6 +519,91 @@ export default function LungCancerTNM9() {
     { key: 'T3', badge: 'T3', label: c.optT3Label, desc: c.optT3Desc },
     { key: 'T4', badge: 'T4', label: c.optT4Label, desc: c.optT4Desc },
   ];
+
+  // Estructuras de invasión del carril guiado, agrupadas por la categoría T
+  // a la que elevan el estadio (Tabla 3, Detterbeck et al., Chest 2024).
+  const t2aStructureOptions = [
+    { key: 'visceralPleura', label: c.structVisceralPleura },
+    { key: 'mainBronchus', label: c.structMainBronchus },
+    { key: 'adjacentLobe', label: c.structAdjacentLobe },
+  ];
+  const t3StructureOptions = [
+    { key: 'parietalPleuraChestWall', label: c.structParietalPleuraChestWall },
+    { key: 'thoracicNerveRootsGanglion', label: c.structThoracicNerveRootsGanglion },
+    { key: 'pericardium', label: c.structPericardium },
+    { key: 'phrenicNerve', label: c.structPhrenicNerve },
+    { key: 'azygosVein', label: c.structAzygosVein },
+  ];
+  const t4StructureOptions = [
+    { key: 'vertebraSpinal', label: c.structVertebraSpinal },
+    { key: 'subclavianBrachial', label: c.structSubclavianBrachial },
+    { key: 'thymus', label: c.structThymus },
+    { key: 'trachea', label: c.structTrachea },
+    { key: 'carina', label: c.structCarina },
+    { key: 'recurrentLaryngeal', label: c.structRecurrentLaryngeal },
+    { key: 'esophagus', label: c.structEsophagus },
+    { key: 'diaphragm', label: c.structDiaphragm },
+    { key: 'heartGreatVessels', label: c.structHeartGreatVessels },
+  ];
+  const allStructureOptions = [...t2aStructureOptions, ...t3StructureOptions, ...t4StructureOptions];
+  const structureRank = {};
+  t2aStructureOptions.forEach((o) => { structureRank[o.key] = 'T2a'; });
+  t3StructureOptions.forEach((o) => { structureRank[o.key] = 'T3'; });
+  t4StructureOptions.forEach((o) => { structureRank[o.key] = 'T4'; });
+
+  // ---- Derivación del T guiado a partir de los hallazgos ----
+  const sizeT = sizeToT(sizeMm);
+  const sizeIsValid = sizeMm !== '' && !Number.isNaN(parseFloat(String(sizeMm).replace(',', '.')));
+  const selectedStructureKeys = Object.keys(invasionStructures).filter((k) => invasionStructures[k]);
+  let invasionT = null;
+  if (hasInvasion === 'yes' && selectedStructureKeys.length) {
+    invasionT = selectedStructureKeys.reduce((best, k) => {
+      const cat = structureRank[k];
+      return !best || T_RANK[cat] > T_RANK[best] ? cat : best;
+    }, null);
+  }
+  const atelectasisT = hasAtelectasis === 'yes' ? 'T2a' : null;
+  const noduleT = noduleStatus === 'sameLobe' ? 'T3' : noduleStatus === 'diffLobe' ? 'T4' : null;
+  const qualitativeFindingPresent = !!(invasionT || atelectasisT || noduleT);
+  // T1mi solo aplica si no hay ningún hallazgo cualitativo que por definición
+  // lo contradiga, y el tamaño (si se ingresó) es compatible (≤3 cm).
+  const t1miEligible = t1miFlag === 'yes' && !qualitativeFindingPresent && (!sizeIsValid || T_RANK[sizeT] <= T_RANK.T1c);
+
+  let guidedT = null;
+  if (guidedGate === 'Tx' || guidedGate === 'T0' || guidedGate === 'Tis') {
+    guidedT = guidedGate;
+  } else if (guidedGate === 'lesion') {
+    if (t1miEligible) {
+      guidedT = 'T1mi';
+    } else {
+      guidedT = [sizeT, invasionT, atelectasisT, noduleT].reduce((best, cur) => {
+        if (!cur) return best;
+        return !best || T_RANK[cur] > T_RANK[best] ? cur : best;
+      }, null);
+    }
+  }
+
+  const guidedWinningRank = guidedT && guidedT !== 'T1mi' ? T_RANK[guidedT] : null;
+  const guidedReasons = [];
+  if (guidedT === 'T1mi') {
+    guidedReasons.push(c.reasonT1mi);
+  } else if (guidedWinningRank) {
+    if (sizeT && T_RANK[sizeT] === guidedWinningRank) guidedReasons.push(c.reasonSize);
+    if (invasionT && T_RANK[invasionT] === guidedWinningRank) {
+      const names = selectedStructureKeys
+        .filter((k) => T_RANK[structureRank[k]] === guidedWinningRank)
+        .map((k) => allStructureOptions.find((o) => o.key === k)?.label)
+        .filter(Boolean)
+        .join(', ');
+      guidedReasons.push(`${c.reasonInvasionPrefix} ${names}`);
+    }
+    if (atelectasisT && T_RANK[atelectasisT] === guidedWinningRank) guidedReasons.push(c.reasonAtelectasis);
+    if (noduleT && T_RANK[noduleT] === guidedWinningRank) {
+      guidedReasons.push(noduleStatus === 'sameLobe' ? c.reasonNoduleSame : c.reasonNoduleDiff);
+    }
+  }
+
+  const tVal = tMode === 'known' ? tKnownVal : guidedT;
 
   const nOptions = [
     { key: 'Nx', badge: 'Nx', label: c.optNxLabel, desc: c.optNxDesc },
@@ -452,6 +647,9 @@ export default function LungCancerTNM9() {
       c.reportTitle,
       `T: ${tVal} — ${tOptions.find((o) => o.key === tVal)?.label}`,
     ];
+    if (tMode === 'guided' && guidedGate === 'lesion' && guidedReasons.length) {
+      lines.push(`${c.reportFindingsLabel}: ${guidedReasons.join('; ')}`);
+    }
     if (!isTis && nVal) lines.push(`N: ${nVal} — ${nOptions.find((o) => o.key === nVal)?.label}`);
     lines.push(`M: ${mVal} — ${mOptions.find((o) => o.key === mVal)?.label}`);
     lines.push(`${c.resultLabel}: ${stage ? `${c.stageLabel} ${stage}` : c.stageNA}`);
@@ -462,7 +660,115 @@ export default function LungCancerTNM9() {
     <div className={`space-y-4 animate-in fade-in ${isComplete ? 'pb-32' : ''}`}>
       <Card>
         <h3 className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400 mb-3">{c.qT}</h3>
-        <OptionButtons options={tOptions} value={tVal} onChange={setTVal} />
+        <ModeToggle value={tMode} onChange={setTMode} guidedLabel={c.tModeGuided} knownLabel={c.tModeKnown} />
+
+        {tMode === 'known' && (
+          <OptionButtons options={tOptions} value={tKnownVal} onChange={setTKnownVal} />
+        )}
+
+        {tMode === 'guided' && (
+          <div className="space-y-4">
+            <OptionButtons
+              options={[
+                { key: 'lesion', label: c.gateLesionLabel, desc: c.gateLesionDesc },
+                { key: 'Tx', badge: 'Tx', label: c.optTxLabel, desc: c.optTxDesc },
+                { key: 'T0', badge: 'T0', label: c.optT0Label, desc: c.optT0Desc },
+                { key: 'Tis', badge: 'Tis', label: c.optTisLabel, desc: c.optTisDesc },
+              ]}
+              value={guidedGate}
+              onChange={setGuidedGate}
+            />
+
+            {guidedGate === 'lesion' && (
+              <div className="space-y-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div>
+                  <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1.5">{c.sizeLabel}</label>
+                  <NumberField value={sizeMm} onChange={setSizeMm} placeholder="25" />
+                </div>
+
+                {(!sizeIsValid || T_RANK[sizeT] <= T_RANK.T1c) && (
+                  <div>
+                    <h4 className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{c.t1miQ}</h4>
+                    <YesNoButtons value={t1miFlag} onChange={setT1miFlag} yesLabel={t.common.yes} noLabel={t.common.no} />
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.t1miHint}</p>
+                  </div>
+                )}
+
+                <div>
+                  <h4 className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{c.invasionQ}</h4>
+                  <YesNoButtons
+                    value={hasInvasion}
+                    onChange={(v) => { setHasInvasion(v); if (v === 'no') setInvasionStructures({}); }}
+                    yesLabel={t.common.yes}
+                    noLabel={t.common.no}
+                  />
+                </div>
+
+                {hasInvasion === 'yes' && (
+                  <div className="space-y-3 pl-3 border-l-2 border-blue-200 dark:border-blue-900">
+                    <div>
+                      <h5 className="text-[11px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-1.5">{c.structGroupT2a}</h5>
+                      <CheckButtons
+                        options={t2aStructureOptions}
+                        values={invasionStructures}
+                        onToggle={(k) => setInvasionStructures((s) => ({ ...s, [k]: !s[k] }))}
+                      />
+                    </div>
+                    <div>
+                      <h5 className="text-[11px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-1.5">{c.structGroupT3}</h5>
+                      <CheckButtons
+                        options={t3StructureOptions}
+                        values={invasionStructures}
+                        onToggle={(k) => setInvasionStructures((s) => ({ ...s, [k]: !s[k] }))}
+                      />
+                    </div>
+                    <div>
+                      <h5 className="text-[11px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-1.5">{c.structGroupT4}</h5>
+                      <CheckButtons
+                        options={t4StructureOptions}
+                        values={invasionStructures}
+                        onToggle={(k) => setInvasionStructures((s) => ({ ...s, [k]: !s[k] }))}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <h4 className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{c.atelectasisQ}</h4>
+                  <YesNoButtons value={hasAtelectasis} onChange={setHasAtelectasis} yesLabel={t.common.yes} noLabel={t.common.no} />
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.atelectasisHint}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{c.noduleQ}</h4>
+                  <OptionButtons
+                    options={[
+                      { key: 'none', label: c.noduleNoneLabel },
+                      { key: 'sameLobe', badge: 'T3', label: c.noduleSameLobeLabel },
+                      { key: 'diffLobe', badge: 'T4', label: c.noduleDiffLobeLabel },
+                      { key: 'contralateral', badge: 'M1a', label: c.noduleContralateralLabel },
+                    ]}
+                    value={noduleStatus}
+                    onChange={setNoduleStatus}
+                  />
+                  {noduleStatus === 'contralateral' && (
+                    <div className="mt-2"><InfoBox tone="slate">{c.noduleContralateralNote}</InfoBox></div>
+                  )}
+                </div>
+
+                {guidedT && (
+                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-900">
+                    <span className="text-xs text-blue-600 dark:text-blue-300 block mb-0.5">{c.computedTLabel}</span>
+                    <span className="text-xl font-black text-blue-700 dark:text-blue-300">{guidedT}</span>
+                    {guidedReasons.length > 0 && (
+                      <p className="text-xs text-blue-600/80 dark:text-blue-300/80 mt-1">{c.determinedByPrefix} {guidedReasons.join(' + ')}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </Card>
 
       {isTis && <InfoBox tone="slate">{c.tisNote}</InfoBox>}
