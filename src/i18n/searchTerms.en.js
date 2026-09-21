@@ -19,6 +19,7 @@ export default {
   lungNodule: ['lung nodule', 'pulmonary nodule', 'fleischner', 'nodule follow-up', 'incidental nodule', 'nccn', 'nodule', 'solid nodule', 'subsolid nodule', 'ground glass', 'ggn', 'nodule follow up'],
   vdt: ['vdt', 'volume doubling time', 'doubling time', 'nodule growth rate', 'growth rate', 'gould', 'jiang', 'prokop', 'callister', 'esti', 'bts', 'nodule doubling'],
   lungRads: ['lung-rads', 'lungrads', 'lung cancer screening', 'low dose ct', 'lung rads', 'lungrads 2022', 'screening', 'lung screening', 'ldct'],
+  lungCancerTNM9: ['lung cancer tnm', 'tnm staging lung', 'ninth edition tnm', '9th edition lung cancer', 'iaslc staging', 'lung cancer stage', 'nsclc staging', 'sclc staging', 'lung cancer classification', 'n2a n2b', 'm1c1 m1c2', 'lung cancer stage groups'],
   lungScreening: ['lung cancer screening criteria', 'screening eligibility', 'nlst', 'nelson', 'smoker', 'eligibility', 'screening', 'nccn screening', 'ldct candidate', 'lung cancer screening', 'pack years', 'high risk smoker'],
   lungCysts: ['pulmonary cysts', 'cystic lung disease', 'lam', 'histiocytosis', 'birt-hogg-dube', 'cyst mimic', 'alveolar macrophage pneumonia', 'amp', 'dip', 'emphysema', 'cysts', 'cystic', 'cystic lung', 'lch', 'bip', 'bhds', 'ipf', 'lymphangioleiomyomatosis', 'hrct cysts'],
   cadrads: ['ca-rads', 'cadrads', 'coronary', 'coronary calcium', 'coronary ct angiography', 'coronary stenosis', 'coronary plaque', 'cad rads', 'cad-rads', 'cadrads 2.0', 'coronary cta', 'coronary artery', 'plaque burden', 'calcium score', 'ccta'],

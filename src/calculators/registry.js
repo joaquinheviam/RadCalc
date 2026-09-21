@@ -12,6 +12,7 @@ import { lazy } from 'react';
 
 const ILDClassifier = lazy(() => import('./ILDClassifier.jsx'));
 const PectusHallerCI = lazy(() => import('./PectusHallerCI.jsx'));
+const LungCancerTNM9 = lazy(() => import('./LungCancerTNM9.jsx'));
 const ABC2Hematoma = lazy(() => import('./ABC2Hematoma.jsx'));
 const NASCETStenosis = lazy(() => import('./NASCETStenosis.jsx'));
 const FazekasScale = lazy(() => import('./FazekasScale.jsx'));
@@ -84,6 +85,7 @@ export const calculators = [
   { id: 'epidExtent', catKey: 'torax', component: EPIDExtent },
   { id: 'thoracicglossary', catKey: 'torax', component: ThoracicGlossary },
   { id: 'pectusHallerCI', catKey: 'torax', component: PectusHallerCI },
+  { id: 'lungCancerTNM9', catKey: 'torax', component: LungCancerTNM9 },
   // Cardiovascular
   { id: 'cadrads', catKey: 'cardio', component: CADRADS },
   // Abdomen (hepatobiliopancreático y suprarrenal)

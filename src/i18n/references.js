@@ -287,6 +287,12 @@ export const REFERENCES = {
   crads2023: [
     { text: 'Yee J, Dachman AH, Kim DH, Kobi M, Laghi A, McFarland EG, Moreno C, Park SH, Pickhardt PJ, Plumb AA, Pooler BD, Zalis M, Chang KJ. CT Colonography Reporting and Data System (C-RADS): Version 2023 Update. Radiology. 2024;310(1):e232007.', doi: '10.1148/radiol.232007' },
   ],
+  lungCancerTNM9: [
+    { text: 'Klug M, Kirshenboim Z, Truong MT, Sorin V, Ofek E, Agrawal R, Marom EM. Proposed Ninth Edition TNM Staging System for Lung Cancer: Guide for Radiologists. RadioGraphics. 2024;44(12):e240057.', doi: '10.1148/rg.240057' },
+    { text: 'Detterbeck FC, Woodard GA, Bader AS, Dacic S, Grant MJ, Park HS, Tanoue LT. The Proposed Ninth Edition TNM Classification of Lung Cancer. Chest. 2024;166(4):882-895.', doi: '10.1016/j.chest.2024.05.026' },
+    { text: 'Rami-Porta R, Nishimura KK, Giroux DJ, Detterbeck F, Cardillo G, Edwards JG, Fong KM, Giuliani M, Huang J, Kernstine KH Sr, Marom EM, Nicholson AG, Van Schil PE, Travis WD, Tsao MS, Watanabe SI, Rusch VW, Asamura H. The IASLC Lung Cancer Staging Project: Proposals for Revision of the TNM Stage Groups in the Forthcoming (Ninth) Edition of the TNM Classification for Lung Cancer. J Thorac Oncol. 2024;19(7):1007-1027.', doi: '10.1016/j.jtho.2024.02.011' },
+    { text: 'Rusch VW, Asamura H, Watanabe H, Giroux DJ, Rami-Porta R, Goldstraw P; Members of IASLC Staging Committee. The IASLC Lung Cancer Staging Project: A Proposal for a New International Lymph Node Map in the Forthcoming Seventh Edition of the TNM Classification for Lung Cancer. J Thorac Oncol. 2009;4(5):568-577.', doi: '10.1097/JTO.0b013e3181a0d82e' },
+  ],
   rectalCancer: [
     { text: 'Alarcón R, Besa C. Magnetic resonance imaging in rectal cancer: usefulness in staging and restaging after treatment. Austral J Imaging. 2024;30(4):223-239.', doi: '10.24875/AJI.23000084' },
     { text: 'Kaur H, Choi H, You YN, Rauch GM, Jensen CT, Hou P, Chang GJ, Skibber JM, Ernst RD. MR Imaging for Preoperative Evaluation of Primary Rectal Cancer: Practical Considerations. RadioGraphics. 2012;32(2):389-409.', doi: '10.1148/rg.322115122' },
@@ -298,5 +304,6 @@ export const REFERENCES = {
   adnexalRisk: [
     { text: 'Strachowski LM, Froyman W, Reinhold C, Jha P, Glanc P, Suh-Burgmann EJ, Timmerman D, Andreotti RF, Phillips CH, Porter MMB, Guo Y, Patel MD. O-RADS US v2022: An Update from the American College of Radiology’s Ovarian-Adnexal Reporting and Data System US Committee. Radiology. 2023;308(3):e230685.', doi: '10.1148/radiol.230685' },
     { text: 'Timmerman D, Planchamp F, Bourne T, Landolfo C, du Bois A, Chiva L, Cibula D, Concin N, Fischerova D, Froyman W, Gallardo G, Lemley B, Loft A, Mereu L, Morice P, Querleu D, Testa AC, Vergote I, Vandecaveye V, Scambia G, Fotopoulou C. ESGO/ISUOG/IOTA/ESGE Consensus Statement on preoperative diagnosis of ovarian tumors. Ultrasound Obstet Gynecol. 2021;58(1):148-168.', doi: '10.1002/uog.23635' },
+    { text: 'Van Calster B, Van Hoorde K, Valentin L, Testa AC, Fischerova D, Van Holsbeke C, Savelli L, Franchi D, Epstein E, Kaijser J, Van Belle V, Czekierdowski A, Guerriero S, Fruscio R, Lanzani C, Scala F, Bourne T, Timmerman D; International Ovarian Tumour Analysis (IOTA) group. Evaluating the risk of ovarian cancer before surgery using the ADNEX model to differentiate between benign, borderline, early and advanced stage invasive, and secondary metastatic tumours: prospective multicentre diagnostic study. BMJ. 2014;349:g5920.', doi: '10.1136/bmj.g5920' },
   ],
 };

@@ -40,65 +40,81 @@ function OptionButtons({ options, value, onChange }) {
 function RectalTScheme() {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 520 580" className="h-auto w-full max-w-sm text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
-        {/* Fascia mesorrectal (MRF) */}
-        <circle cx="260" cy="260" r="185" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" className="text-slate-400 dark:text-slate-500" />
-        {/* Muscular propia */}
-        <circle cx="260" cy="260" r="110" fill="none" stroke="currentColor" strokeWidth="4.5" />
-        {/* Luz (mucosa/submucosa), forma irregular */}
+      <svg viewBox="0 0 760 650" className="h-auto w-full max-w-lg text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        {/* Fascia mesorrectal (MRF): plano fascial, por eso discontinuo */}
+        <circle cx="280" cy="310" r="185" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" className="text-slate-400 dark:text-slate-500" />
+        {/* Muscular propia: pared sólida real */}
+        <circle cx="280" cy="310" r="110" fill="none" stroke="currentColor" strokeWidth="4.5" />
+        {/* Luz rectal, forma irregular */}
         <path
           fill="currentColor" className="text-slate-300 dark:text-slate-700"
-          d="M 240,220 C 262,214 270,232 285,232 C 305,226 296,248 302,262 C 316,270 300,282 306,300 C 288,316 278,296 262,310 C 246,326 232,304 216,314 C 200,308 214,286 202,272 C 188,262 206,244 214,228 C 208,208 228,216 240,220 Z"
+          d="M 258,268 C 280,260 292,278 305,276 C 322,272 316,296 326,306 C 340,312 328,328 334,344 C 320,362 302,350 288,364 C 272,380 254,364 238,372 C 222,364 234,344 222,332 C 208,322 224,306 232,292 C 226,272 246,272 258,268 Z"
         />
         {/* Reflexión peritoneal (solo recto superior, arco antero-superior) */}
-        <path d="M 141.2,176.8 A 145,145 0 0 1 378.8,176.8" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="5 5" strokeLinecap="round" />
+        <path d="M 161.2,226.8 A 145,145 0 0 1 398.8,226.8" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="5 5" strokeLinecap="round" />
 
         {/* T1/T2: confinado a la pared, no cruza la muscular propia */}
-        <ellipse cx="185" cy="260" rx="30" ry="19" fill="currentColor" opacity="0.22" stroke="currentColor" strokeWidth="2.5" />
-        <rect x="82" y="250" width="46" height="20" rx="5" fill="#64748b" />
-        <text x="105" y="264" fill="#ffffff" fontSize="10.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T1/T2</text>
+        <ellipse cx="205" cy="310" rx="40" ry="25" fill="currentColor" opacity="0.22" stroke="currentColor" strokeWidth="2.5" />
+        <text x="205" y="315" fill="currentColor" className="text-slate-700 dark:text-slate-200" fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T1/T2</text>
 
-        {/* T3a (<1mm) y T3b (1-5mm) más allá de la muscular: verde */}
-        <ellipse cx="175.2" cy="175.2" rx="19" ry="19" fill="#059669" opacity="0.3" stroke="#059669" strokeWidth="2.5" />
-        <rect x="122" y="122" width="24" height="20" rx="5" fill="#059669" />
-        <text x="134" y="136" fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">a</text>
+        {/* T3a (<1mm) y T3b (1-5mm) más allá de la muscular: buen pronóstico, verde */}
+        <ellipse cx="195.2" cy="225.2" rx="30" ry="30" fill="#059669" opacity="0.85" stroke="#059669" strokeWidth="2.5" />
+        <text x="195.2" y="231" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">a</text>
 
-        <ellipse cx="164.6" cy="355.4" rx="22" ry="22" fill="#059669" opacity="0.3" stroke="#059669" strokeWidth="2.5" />
-        <rect x="108" y="382" width="24" height="20" rx="5" fill="#059669" />
-        <text x="120" y="396" fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">b</text>
+        <ellipse cx="184.6" cy="405.4" rx="32" ry="32" fill="#059669" opacity="0.85" stroke="#059669" strokeWidth="2.5" />
+        <text x="184.6" y="411.5" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">b</text>
 
-        {/* T3c (5-15mm) y T3d (>15mm), acercándose a la MRF: rojo */}
-        <ellipse cx="369.6" cy="369.6" rx="25" ry="25" fill="#dc2626" opacity="0.28" stroke="#dc2626" strokeWidth="2.5" />
-        <rect x="396" y="400" width="24" height="20" rx="5" fill="#dc2626" />
-        <text x="408" y="414" fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">c</text>
+        {/* T3c (5-15mm) y T3d (>15mm), acercándose a la MRF: mayor riesgo, rojo */}
+        <ellipse cx="389.6" cy="419.6" rx="33" ry="33" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <text x="389.6" y="425.5" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">c</text>
 
-        <ellipse cx="371.7" cy="148.3" rx="23" ry="23" fill="#dc2626" opacity="0.28" stroke="#dc2626" strokeWidth="2.5" />
-        <rect x="398" y="115" width="24" height="20" rx="5" fill="#dc2626" />
-        <text x="410" y="129" fill="#ffffff" fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">d</text>
+        <ellipse cx="391.7" cy="198.3" rx="32" ry="32" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <text x="391.7" y="204" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">d</text>
 
         {/* T3 con MRF+ (margen circunferencial <1mm): toca la fascia */}
-        <ellipse cx="425" cy="260" rx="40" ry="19" fill="#dc2626" opacity="0.32" stroke="#dc2626" strokeWidth="2.5" />
-        <rect x="447" y="288" width="58" height="20" rx="5" fill="#dc2626" />
-        <text x="476" y="302" fill="#ffffff" fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">MRF+</text>
+        <ellipse cx="445" cy="310" rx="46" ry="30" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <text x="445" y="315.5" fill="#ffffff" fontSize="12.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">MRF+</text>
 
-        {/* T4a: perfora a través de la reflexión peritoneal */}
-        <ellipse cx="260" cy="108" rx="19" ry="42" fill="#dc2626" opacity="0.32" stroke="#dc2626" strokeWidth="2.5" />
-        <line x1="260" y1="66" x2="260" y2="30" stroke="#dc2626" strokeWidth="3.5" strokeLinecap="round" markerEnd="url(#rcArrow)" />
-        <rect x="228" y="8" width="64" height="20" rx="5" fill="#dc2626" />
-        <text x="260" y="22" fill="#ffffff" fontSize="10.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4a</text>
+        {/* T4a: perfora a través de la reflexión peritoneal, se extiende más allá de la MRF */}
+        <ellipse cx="280" cy="158" rx="27" ry="95" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <text x="280" y="163" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4a</text>
 
         {/* T4b: atraviesa la MRF hacia un órgano/estructura adyacente */}
-        <ellipse cx="260" cy="450" rx="19" ry="42" fill="#dc2626" opacity="0.32" stroke="#dc2626" strokeWidth="2.5" />
-        <line x1="260" y1="492" x2="260" y2="508" stroke="#dc2626" strokeWidth="3.5" strokeLinecap="round" markerEnd="url(#rcArrow)" />
-        <circle cx="260" cy="540" r="30" fill="currentColor" className="text-slate-300 dark:text-slate-700" stroke="currentColor" strokeWidth="2" />
-        <rect x="228" y="565" width="64" height="20" rx="5" fill="#dc2626" />
-        <text x="260" y="579" fill="#ffffff" fontSize="10.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4b</text>
+        <ellipse cx="280" cy="500" rx="27" ry="95" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <text x="280" y="505" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4b</text>
 
-        <defs>
-          <marker id="rcArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#dc2626" />
-          </marker>
-        </defs>
+        {/* Órgano/estructura adyacente (acento fijo naranja, no depende del tema) */}
+        <g transform="translate(280,592)">
+          <circle cx="0" cy="0" r="34" fill="#ea580c" />
+          <circle cx="-10" cy="-10" r="15" fill="#f97316" opacity="0.6" />
+          <text x="0" y="5" fill="#ffffff" fontSize="11" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">ÓRGANO</text>
+        </g>
+
+        {/* Etiquetas anatómicas con línea guía, en el margen derecho */}
+        <g className="text-slate-500 dark:text-slate-400" fontSize="12.5" fontWeight="600" fontFamily="system-ui, sans-serif" fill="currentColor">
+          <path d="M 490,180 L 405,222" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="495" y="165">REFLEXIÓN</text>
+          <text x="495" y="181">PERITONEAL</text>
+
+          <path d="M 490,255 L 388,272" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="495" y="250">MUSCULAR</text>
+          <text x="495" y="266">PROPIA</text>
+
+          <path d="M 490,310 L 465,310" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="495" y="315">MRF</text>
+
+          <path d="M 490,405 L 335,340" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <text x="495" y="400">LUZ</text>
+          <text x="495" y="416">RECTAL</text>
+        </g>
+
+        {/* Leyenda embebida de subcategorías T3 (a-d) */}
+        <g transform="translate(495,460)" className="text-slate-500 dark:text-slate-400" fontSize="12.5" fontWeight="600" fontFamily="system-ui, sans-serif" fill="currentColor">
+          <text x="0" y="0">a: &lt;1 mm</text>
+          <text x="0" y="20">b: 1-5 mm</text>
+          <text x="0" y="40">c: 5-15 mm</text>
+          <text x="0" y="60">d: &gt;15 mm</text>
+        </g>
       </svg>
     </div>
   );
@@ -164,51 +180,63 @@ function SphincterComplexScheme() {
 // internos/obturatrices = "+"; ilíacos comunes/retroperitoneo = "&") no
 // cambian con la localización del tumor.
 function NodalDistributionScheme() {
+  // Contenido de un panel (recto + eje vascular + estaciones ganglionares),
+  // reutilizado en espejo para A y B. `inguinalTone` decide si el paquete
+  // inguinal/ilíaco externo se pinta como N (azul) o M1 (rojo); `tumorLow`
+  // extiende el tumor hacia el canal anal (Panel B).
+  function PanelContent({ inguinalTone, tumorLow }) {
+    const inguinalFill = inguinalTone === 'n' ? '#1d4ed8' : '#dc2626';
+    return (
+      <>
+        {/* Eje vascular: aorta distal → bifurcación ilíaca común → ilíaca
+            externa (lateral, trazo grueso) e ilíaca interna (medial, trazo
+            fino, rama propia) */}
+        <path d="M 130,8 L 130,55 L 58,165 L 28,275 M 130,55 L 202,165 L 232,275" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 dark:text-slate-500" />
+        <path d="M 88,115 L 100,205 M 172,115 L 160,205" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
+
+        {/* Recto esquemático */}
+        <path d="M 110,170 Q 130,183 150,170 L 145,250 Q 130,236 115,250 Z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
+        {/* Tumor: confinado al recto (Panel A) o extendido al canal anal (Panel B) */}
+        <ellipse cx="130" cy={tumorLow ? 245 : 205} rx={tumorLow ? 18 : 16} ry={tumorLow ? 26 : 22} fill="#451a03" opacity="0.75" />
+
+        {/* Mesorrectales/rectales superiores/presacros/mesentéricos inferiores (*): siempre N */}
+        <ellipse cx="130" cy="205" rx="24" ry="68" fill="#1d4ed8" opacity="0.32" />
+        <text x="130" y="148" fontSize="13" fontWeight="700" textAnchor="middle" fill="#1d4ed8" fontFamily="system-ui, sans-serif">*</text>
+
+        {/* Ilíacos internos/obturatrices (+): siempre N, sobre la rama medial */}
+        <ellipse cx="93" cy="160" rx="14" ry="40" fill="#1d4ed8" opacity="0.4" transform="rotate(18 93 160)" />
+        <text x="93" y="160" fontSize="13" fontWeight="700" textAnchor="middle" fill="#1d4ed8" fontFamily="system-ui, sans-serif">+</text>
+        <ellipse cx="167" cy="160" rx="14" ry="40" fill="#1d4ed8" opacity="0.4" transform="rotate(-18 167 160)" />
+        <text x="167" y="160" fontSize="13" fontWeight="700" textAnchor="middle" fill="#1d4ed8" fontFamily="system-ui, sans-serif">+</text>
+
+        {/* Ilíacos comunes/retroperitoneo (&amp;): siempre M1, sobre el tramo común */}
+        <ellipse cx="95" cy="108" rx="15" ry="32" fill="#dc2626" opacity="0.45" transform="rotate(32 95 108)" />
+        <text x="95" y="108" fontSize="13" fontWeight="700" textAnchor="middle" fill="#dc2626" fontFamily="system-ui, sans-serif">&amp;</text>
+        <ellipse cx="165" cy="108" rx="15" ry="32" fill="#dc2626" opacity="0.45" transform="rotate(-32 165 108)" />
+        <text x="165" y="108" fontSize="13" fontWeight="700" textAnchor="middle" fill="#dc2626" fontFamily="system-ui, sans-serif">&amp;</text>
+
+        {/* Inguinales/ilíacos externos: N o M1 según invasión del canal anal, sobre la rama lateral */}
+        <ellipse cx="43" cy="225" rx="16" ry="56" fill={inguinalFill} opacity="0.4" transform="rotate(22 43 225)" />
+        <text x="43" y="225" fontSize="15" fontWeight="700" textAnchor="middle" fill={inguinalFill} fontFamily="system-ui, sans-serif">{'{'}</text>
+        <ellipse cx="217" cy="225" rx="16" ry="56" fill={inguinalFill} opacity="0.4" transform="rotate(-22 217 225)" />
+        <text x="217" y="225" fontSize="15" fontWeight="700" textAnchor="middle" fill={inguinalFill} fontFamily="system-ui, sans-serif">{'}'}</text>
+      </>
+    );
+  }
+
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 420 260" className="h-auto w-full max-w-md text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
-        {/* Eje vascular esquemático (aorta distal + ilíacas), común a ambos paneles */}
-        {[0, 220].map((ox) => (
-          <g key={ox} transform={`translate(${ox},0)`}>
-            <path d="M 100,10 L 100,50 L 55,140 L 35,220 M 100,50 L 145,140 L 165,220" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
-            {/* Recto esquemático */}
-            <path d="M 78,95 Q 100,108 122,95 L 116,175 Q 100,160 84,175 Z" fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
-          </g>
-        ))}
-
-        {/* Panel A (izquierda, x 0-200): recto medio/alto, sin invasión anal
-            — inguinales/ilíacos externos son M (rojo) */}
-        <ellipse cx="45" cy="30" rx="12" ry="20" fill="#dc2626" opacity="0.55" transform="rotate(25 45 30)" />
-        <ellipse cx="155" cy="30" rx="12" ry="20" fill="#dc2626" opacity="0.55" transform="rotate(-25 155 30)" />
-        <text x="100" y="16" fontSize="10" fontWeight="700" textAnchor="middle" fill="#dc2626" fontFamily="system-ui, sans-serif">&amp;</text>
-
-        <ellipse cx="100" cy="115" rx="16" ry="42" fill="#1d4ed8" opacity="0.4" />
-        <ellipse cx="62" cy="115" rx="11" ry="28" fill="#1d4ed8" opacity="0.4" transform="rotate(12 62 115)" />
-        <ellipse cx="138" cy="115" rx="11" ry="28" fill="#1d4ed8" opacity="0.4" transform="rotate(-12 138 115)" />
-
-        <ellipse cx="30" cy="200" rx="13" ry="42" fill="#dc2626" opacity="0.5" transform="rotate(18 30 200)" />
-        <ellipse cx="170" cy="200" rx="13" ry="42" fill="#dc2626" opacity="0.5" transform="rotate(-18 170 200)" />
-
-        {/* Panel B (derecha, offset +220): recto bajo con invasión del canal
-            anal — inguinales/ilíacos externos pasan a ser N (azul) */}
-        <g transform="translate(220,0)">
-          <ellipse cx="45" cy="30" rx="12" ry="20" fill="#dc2626" opacity="0.55" transform="rotate(25 45 30)" />
-          <ellipse cx="155" cy="30" rx="12" ry="20" fill="#dc2626" opacity="0.55" transform="rotate(-25 155 30)" />
-          <text x="100" y="16" fontSize="10" fontWeight="700" textAnchor="middle" fill="#dc2626" fontFamily="system-ui, sans-serif">&amp;</text>
-
-          <ellipse cx="100" cy="115" rx="16" ry="42" fill="#1d4ed8" opacity="0.4" />
-          <ellipse cx="62" cy="115" rx="11" ry="28" fill="#1d4ed8" opacity="0.4" transform="rotate(12 62 115)" />
-          <ellipse cx="138" cy="115" rx="11" ry="28" fill="#1d4ed8" opacity="0.4" transform="rotate(-12 138 115)" />
-
-          {/* tumor extendido al canal anal */}
-          <ellipse cx="100" cy="168" rx="14" ry="18" fill="#451a03" opacity="0.7" />
-
-          <ellipse cx="30" cy="200" rx="13" ry="42" fill="#1d4ed8" opacity="0.4" transform="rotate(18 30 200)" />
-          <ellipse cx="170" cy="200" rx="13" ry="42" fill="#1d4ed8" opacity="0.4" transform="rotate(-18 170 200)" />
+      <svg viewBox="0 0 560 300" className="h-auto w-full max-w-xl text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        {/* Panel A: recto medio/alto, sin invasión del canal anal */}
+        <g transform="translate(20,10)">
+          <PanelContent inguinalTone="m" tumorLow={false} />
         </g>
-
+        {/* Panel B: recto inferior con invasión del canal anal bajo la línea dentada */}
+        <g transform="translate(300,10)">
+          <PanelContent inguinalTone="n" tumorLow />
+        </g>
         {/* Divisor entre paneles */}
-        <line x1="205" y1="5" x2="205" y2="235" stroke="currentColor" strokeWidth="1" strokeDasharray="3 6" className="text-slate-200 dark:text-slate-700" />
+        <line x1="285" y1="5" x2="285" y2="290" stroke="currentColor" strokeWidth="1" strokeDasharray="3 6" className="text-slate-200 dark:text-slate-700" />
       </svg>
     </div>
   );
@@ -232,7 +260,9 @@ export default function RectalCancerMRI() {
   const [emvi, setEmvi] = useState(null);
   const [nodesPrimary, setNodesPrimary] = useState(null); // 'n0'|'n_ge9'|'n_5to9'|'n_lt5'
   const [nodesRestaging, setNodesRestaging] = useState(null); // 'negative'|'positive'
+  const [restagingSystem, setRestagingSystem] = useState('mrtrg'); // 'mrtrg'|'simplified'
   const [mrTrg, setMrTrg] = useState(null);
+  const [simplifiedResponse, setSimplifiedResponse] = useState(null); // 'casiCompleta'|'parcial'|'pobre'
 
   const switchMode = (m) => {
     setMode(m);
@@ -241,7 +271,9 @@ export default function RectalCancerMRI() {
     setEmvi(null);
     setNodesPrimary(null);
     setNodesRestaging(null);
+    setRestagingSystem('mrtrg');
     setMrTrg(null);
+    setSimplifiedResponse(null);
   };
 
   const resetAll = () => {
@@ -254,7 +286,9 @@ export default function RectalCancerMRI() {
 
   const tOptions = T_STAGE_KEYS.map((key) => ({ key, label: c.tOpts[key] }));
   const nodesPrimaryOptions = ['n0', 'n_ge9', 'n_5to9', 'n_lt5'].map((key) => ({ key, label: c.nodesPrimaryOpts[key] }));
-  const trgOptions = ['1', '2', '3', '4', '5'].map((key) => ({ key, label: c.trgOpts[key], desc: key === '1' ? c.trg1Desc : null }));
+  const trgDescs = { 1: c.trg1Desc, 2: c.trg2Desc, 3: c.trg3Desc, 4: c.trg4Desc, 5: c.trg5Desc };
+  const trgOptions = ['1', '2', '3', '4', '5'].map((key) => ({ key, label: c.trgOpts[key], desc: trgDescs[key] }));
+  const responseAnswered = restagingSystem === 'mrtrg' ? mrTrg !== null : simplifiedResponse !== null;
 
   const nodesPositive = mode === 'primary' ? nodesPrimary && nodesPrimary !== 'n0' : nodesRestaging === 'positive';
   const nodesAnswered = mode === 'primary' ? nodesPrimary !== null : nodesRestaging !== null;
@@ -281,36 +315,72 @@ export default function RectalCancerMRI() {
     }
   }
 
-  // --- Reetapificación: mrTRG + estado ganglionar orientan Watch & Wait vs cirugía.
+  // --- Reetapificación: respuesta al tratamiento + estado ganglionar orientan
+  // Watch & Wait vs cirugía. El radiólogo puede graduar la respuesta con el
+  // sistema mrTRG (5 niveles, Awiwi et al. 2023) o con el sistema simplificado
+  // de 3 niveles de Alarcón y Besa (2024); este último agrupa mrTRG 1-2 en una
+  // sola categoría ("casi completa o completa") sin distinguir cuál de los dos,
+  // por lo que su veredicto usa un texto combinado en vez de los textos
+  // separados verdictComplete/verdictNearComplete del sistema mrTRG.
   let restagingVerdict = null;
-  if (mode === 'restaging' && mrTrg && nodesAnswered) {
-    if (mrTrg === '1' && !nodesPositive) {
-      restagingVerdict = { key: 'complete', tone: 'emerald', text: c.verdictComplete };
-    } else if (mrTrg === '2' && !nodesPositive) {
-      restagingVerdict = { key: 'nearComplete', tone: 'emerald', text: c.verdictNearComplete };
-    } else if (nodesPositive && (mrTrg === '1' || mrTrg === '2')) {
-      restagingVerdict = { key: 'goodTumorNodePos', tone: 'amber', text: c.verdictGoodTumorNodePos };
+  if (mode === 'restaging' && nodesAnswered && responseAnswered) {
+    if (restagingSystem === 'mrtrg') {
+      if (mrTrg === '1' && !nodesPositive) {
+        restagingVerdict = { key: 'complete', tone: 'emerald', text: c.verdictComplete };
+      } else if (mrTrg === '2' && !nodesPositive) {
+        restagingVerdict = { key: 'nearComplete', tone: 'emerald', text: c.verdictNearComplete };
+      } else if (nodesPositive && (mrTrg === '1' || mrTrg === '2')) {
+        restagingVerdict = { key: 'goodTumorNodePos', tone: 'amber', text: c.verdictGoodTumorNodePos };
+      } else {
+        restagingVerdict = { key: 'incomplete', tone: 'red', text: c.verdictIncomplete };
+      }
     } else {
-      restagingVerdict = { key: 'incomplete', tone: 'red', text: c.verdictIncomplete };
+      if (simplifiedResponse === 'casiCompleta' && !nodesPositive) {
+        restagingVerdict = { key: 'casiCompletaSimplified', tone: 'emerald', text: c.verdictCasiCompletaSimplified };
+      } else if (nodesPositive && simplifiedResponse === 'casiCompleta') {
+        restagingVerdict = { key: 'goodTumorNodePos', tone: 'amber', text: c.verdictGoodTumorNodePos };
+      } else if (simplifiedResponse === 'parcial') {
+        restagingVerdict = { key: 'partialSimplified', tone: 'amber', text: c.verdictPartialSimplified };
+      } else {
+        restagingVerdict = { key: 'incomplete', tone: 'red', text: c.verdictIncomplete };
+      }
     }
   }
 
   const verdict = mode === 'primary' ? primaryVerdict : restagingVerdict;
-  const hasInteracted = !!(location || tStage || mrTrg);
+  const hasInteracted = !!(location || tStage || mrTrg || simplifiedResponse);
+
+  // Resumen radiológico compacto (p. ej. "T3a, N+, EMVI-, MRF-"): describe los
+  // hallazgos tal como los reportaría el radiólogo, independiente del veredicto
+  // clínico/terapéutico (LARC, Watch & Wait, etc.), que se muestra aparte como
+  // contexto. En reetapificación el T se antepone con "y" (yT), como en el resto
+  // de la calculadora.
+  const COMPACT_T = { t1t2: 'T1-T2', t3a: 'T3a', t3b: 'T3b', t3c: 'T3c', t3d: 'T3d', t4a: 'T4a', t4b: 'T4b' };
+  const radiologicalSummary = () => {
+    const parts = [];
+    if (tStage) parts.push(`${mode === 'restaging' ? 'y' : ''}${COMPACT_T[tStage]}`);
+    if (nodesAnswered) parts.push(nodesPositive ? 'N+' : 'N-');
+    if (emvi) parts.push(emvi === 'yes' ? 'EMVI+' : 'EMVI-');
+    if (mrf) parts.push(mrf === 'clear' ? 'MRF-' : mrf === 'involved' ? 'MRF+' : 'MRF~');
+    return parts.length ? parts.join(', ') : null;
+  };
+  const radSummary = radiologicalSummary();
 
   const buildReport = () => {
     const lines = [mode === 'primary' ? c.primaryStaging : c.restaging];
-    if (location) lines.push(`${c.locationLbl}: ${c.locOpts.find((o) => o.key === location)?.label}`);
-    if (morphology) lines.push(`${c.morphologyLbl}: ${c.morphOpts.find((o) => o.key === morphology)?.label}`);
-    if (mucin) lines.push(`${c.mucinLbl}: ${c.mucinOpts.find((o) => o.key === mucin)?.label}`);
+    if (mode === 'primary' && location) lines.push(`${c.locationLbl}: ${c.locOpts.find((o) => o.key === location)?.label}`);
+    if (mode === 'primary' && morphology) lines.push(`${c.morphologyLbl}: ${c.morphOpts.find((o) => o.key === morphology)?.label}`);
+    if (mode === 'primary' && mucin) lines.push(`${c.mucinLbl}: ${c.mucinOpts.find((o) => o.key === mucin)?.label}`);
     if (tStage) lines.push(`${mode === 'primary' ? c.tStageLbl : c.ytStageLbl}: ${c.tOpts[tStage]}`);
-    if (location === 'lower' && sphincter) lines.push(`${c.sphincterLbl}: ${c.sphincterOpts.find((o) => o.key === sphincter)?.label}`);
+    if (mode === 'primary' && location === 'lower' && sphincter) lines.push(`${c.sphincterLbl}: ${c.sphincterOpts.find((o) => o.key === sphincter)?.label}`);
     if (mrf) lines.push(`${c.mrfLbl}: ${c.mrfOpts.find((o) => o.key === mrf)?.label}`);
     if (emvi) lines.push(`EMVI: ${emvi === 'yes' ? c.yes : c.no}`);
     if (mode === 'primary' && nodesPrimary) lines.push(`${c.nodesLbl}: ${c.nodesPrimaryOpts[nodesPrimary]}`);
     if (mode === 'restaging' && nodesRestaging) lines.push(`${c.nodesLbl}: ${nodesRestaging === 'positive' ? c.nodesRestagingPositive : c.nodesRestagingNegative}`);
-    if (mode === 'restaging' && mrTrg) lines.push(`mrTRG: ${c.trgOpts[mrTrg]}`);
-    if (verdict) lines.push(`\n${c.conclusion}: ${verdict.text}`);
+    if (mode === 'restaging' && restagingSystem === 'mrtrg' && mrTrg) lines.push(`mrTRG: ${c.trgOpts[mrTrg]}`);
+    if (mode === 'restaging' && restagingSystem === 'simplified' && simplifiedResponse) lines.push(`${c.simplifiedResponseQ}: ${c.simplifiedOpts.find((o) => o.key === simplifiedResponse)?.label}`);
+    if (radSummary) lines.push(`\n${c.radSummaryLabel}: ${radSummary}`);
+    if (verdict) lines.push(`${c.conclusion}: ${verdict.text}`);
     return lines.join('\n');
   };
 
@@ -326,39 +396,43 @@ export default function RectalCancerMRI() {
         </div>
       </Card>
 
-      <Card>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.locationQ}</label>
-        <OptionButtons options={[
-          { key: 'upper', label: c.locOpts.find((o) => o.key === 'upper').label },
-          { key: 'mid', label: c.locOpts.find((o) => o.key === 'mid').label },
-          { key: 'lower', label: c.locOpts.find((o) => o.key === 'lower').label },
-        ]} value={location} onChange={setLocation} />
-      </Card>
+      {mode === 'primary' && (
+        <Card>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.locationQ}</label>
+          <OptionButtons options={[
+            { key: 'upper', label: c.locOpts.find((o) => o.key === 'upper').label },
+            { key: 'mid', label: c.locOpts.find((o) => o.key === 'mid').label },
+            { key: 'lower', label: c.locOpts.find((o) => o.key === 'lower').label },
+          ]} value={location} onChange={setLocation} />
+        </Card>
+      )}
 
-      <Card>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">{c.morphologyLbl}</label>
-            <div className="space-y-1.5">
-              {['polypoid', 'annular', 'partlyAnnular'].map((key) => (
-                <button key={key} onClick={() => setMorphology(key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${morphology === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
-                  {c.morphOpts.find((o) => o.key === key).label}
-                </button>
-              ))}
+      {mode === 'primary' && (
+        <Card>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">{c.morphologyLbl}</label>
+              <div className="space-y-1.5">
+                {['polypoid', 'annular', 'partlyAnnular'].map((key) => (
+                  <button key={key} onClick={() => setMorphology(key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${morphology === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                    {c.morphOpts.find((o) => o.key === key).label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">{c.mucinLbl}</label>
+              <div className="space-y-1.5">
+                {['none', 'some', 'mostly'].map((key) => (
+                  <button key={key} onClick={() => setMucin(key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${mucin === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                    {c.mucinOpts.find((o) => o.key === key).label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">{c.mucinLbl}</label>
-            <div className="space-y-1.5">
-              {['none', 'some', 'mostly'].map((key) => (
-                <button key={key} onClick={() => setMucin(key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${mucin === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
-                  {c.mucinOpts.find((o) => o.key === key).label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
         <RectalTScheme />
@@ -374,7 +448,7 @@ export default function RectalCancerMRI() {
         <OptionButtons options={tOptions} value={tStage} onChange={setTStage} />
       </Card>
 
-      {location === 'lower' && (
+      {mode === 'primary' && location === 'lower' && (
         <>
           <Accordion icon={<IconBookOpen size={16} />} title={c.sphincterDiagramTitle} defaultOpen>
             <SphincterComplexScheme />
@@ -439,20 +513,45 @@ export default function RectalCancerMRI() {
             <button onClick={() => setNodesRestaging('positive')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${nodesRestaging === 'positive' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.nodesRestagingPositive}</button>
           </div>
         )}
+        {mode === 'primary' && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.nodesPrimaryMorphNote}</p>}
         {mode === 'restaging' && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.nodesRestagingNote}</p>}
       </Card>
 
       {mode === 'restaging' && (
+        <Card>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.restagingSystemQ}</label>
+          <div className="flex gap-2">
+            <button onClick={() => setRestagingSystem('mrtrg')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${restagingSystem === 'mrtrg' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restagingSystemMrtrg}</button>
+            <button onClick={() => setRestagingSystem('simplified')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${restagingSystem === 'simplified' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restagingSystemSimplified}</button>
+          </div>
+        </Card>
+      )}
+
+      {mode === 'restaging' && restagingSystem === 'mrtrg' && (
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.mrTrgQ}</label>
           <OptionButtons options={trgOptions} value={mrTrg} onChange={setMrTrg} />
         </Card>
       )}
 
-      {verdict && (
+      {mode === 'restaging' && restagingSystem === 'simplified' && (
+        <Card>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.simplifiedResponseQ}</label>
+          <OptionButtons options={c.simplifiedOpts} value={simplifiedResponse} onChange={setSimplifiedResponse} />
+        </Card>
+      )}
+
+      {mode === 'restaging' && <InfoBox tone="slate">{c.restagingAccuracyNote}</InfoBox>}
+
+      {radSummary && (
         <Card className="text-center">
-          <span className="text-xs text-slate-500 block mb-1">{c.resultLabel}</span>
-          <InfoBox tone={verdict.tone}>{verdict.text}</InfoBox>
+          <span className="text-xs text-slate-500 block mb-1">{c.radSummaryLabel}</span>
+          <p className="text-2xl font-black text-slate-800 dark:text-slate-100">{radSummary}</p>
+          {verdict && (
+            <div className="mt-3 text-left">
+              <InfoBox tone={verdict.tone}>{verdict.text}</InfoBox>
+            </div>
+          )}
         </Card>
       )}
 
@@ -467,9 +566,9 @@ export default function RectalCancerMRI() {
       {hasInteracted && (
         <StickyBar>
           <div className="min-w-0 text-center">
-            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultLabel}:</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.radSummaryLabel}:</span>
             <span className="text-sm font-bold leading-snug text-slate-800 dark:text-slate-100 block">
-              {verdict ? verdict.text : c.pendingVerdict}
+              {radSummary || c.pendingVerdict}
             </span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">

@@ -559,7 +559,7 @@ export default function MullerianAnomalies() {
         </div>
       </Card>
 
-      <Accordion icon={<IconBookOpen size={16} />} title={c.devDiagramTitle} defaultOpen>
+      <Accordion icon={<IconBookOpen size={16} />} title={c.devDiagramTitle}>
         <div className="space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400">{c.devDiagramIntro}</p>
           <DevelopmentScheme />
@@ -593,7 +593,7 @@ export default function MullerianAnomalies() {
 
       {/* ---- Unicorne ---- */}
       {dev === 'unicorne' && (
-        <Accordion icon={<IconBookOpen size={16} />} title={c.hemiuterusDiagramTitle} defaultOpen>
+        <Accordion icon={<IconBookOpen size={16} />} title={c.hemiuterusDiagramTitle}>
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.hemiuterusDiagramIntro}</p>
             <HemiuterusScheme />
@@ -640,7 +640,7 @@ export default function MullerianAnomalies() {
       {/* ---- Bilateral + cleft: bicorne/didelfo ---- */}
       {dev === 'bilateral' && contour === 'cleft' && (
         <>
-          <Accordion icon={<IconBookOpen size={16} />} title={c.bicorneDiagramTitle} defaultOpen>
+          <Accordion icon={<IconBookOpen size={16} />} title={c.bicorneDiagramTitle}>
             <div className="space-y-3">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.bicorneDiagramIntro}</p>
               <BicorneScheme />
@@ -693,7 +693,7 @@ export default function MullerianAnomalies() {
 
       {/* ---- Bilateral + normal: T-shape ---- */}
       {dev === 'bilateral' && contour === 'normal' && (
-        <Accordion icon={<IconBookOpen size={16} />} title={c.tshapeDiagramTitle} defaultOpen>
+        <Accordion icon={<IconBookOpen size={16} />} title={c.tshapeDiagramTitle}>
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.tshapeDiagramIntro}</p>
             <TshapeScheme />
@@ -722,7 +722,7 @@ export default function MullerianAnomalies() {
       {/* ---- Bilateral + normal + no T-shape: cuantitativo ---- */}
       {showQuant && (
         <>
-          <Accordion icon={<IconBookOpen size={16} />} title={c.diagramSectionTitle} defaultOpen>
+          <Accordion icon={<IconBookOpen size={16} />} title={c.diagramSectionTitle}>
             <div className="space-y-4">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.diagramIntro}</p>
               <SeptateScheme />
