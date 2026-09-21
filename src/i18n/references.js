@@ -234,6 +234,8 @@ export const REFERENCES = {
     'Munro MG, Critchley HOD, Broder MS, Fraser IS; FIGO Working Group on Menstrual Disorders. FIGO classification system (PALM-COEIN) for causes of abnormal uterine bleeding in nongravid women of reproductive age. Int J Gynaecol Obstet. 2011;113(1):3-13. (Leiomyoma subclassification revised by FIGO in 2018.)',
     'Zlotykamien-Taïeb E, Gherman D, Al Rouhban R, Florin M, Darai E, Haddad B, Dabi Y, Arbel S, Jha P, Thomassin-Naggara I. Novel approach to MRI based risk stratification of uterine myometrial lesions. Eur J Radiol. 2025;187:112126.',
     { text: 'Hindman NH, Kang F, Fournier L, et al. MRI Evaluation of Uterine Masses for Risk of Leiomyosarcoma: A Consensus Statement. Radiology. 2023;306(2):e211658.', doi: '10.1148/radiol.211658' },
+    { text: 'Arleo EK, Schwartz PE, Hui P, McCarthy S. Review of Leiomyoma Variants. AJR Am J Roentgenol. 2015;205(4):912-921.', doi: '10.2214/AJR.14.13946' },
+    { text: 'DeMulder D, Ascher SM. Uterine Leiomyosarcoma: Can MRI Differentiate Leiomyosarcoma From Benign Leiomyoma Before Treatment? AJR Am J Roentgenol. 2018;211(6):1405-1415.', doi: '10.2214/AJR.17.19234' },
   ],
   adnexalIncidental: [
     { text: 'Patel MD, Ascher SM, Horrow MM, Pickhardt PJ, Poder L, Goldman M, Berland LL, Pandharipande PV, Maturen KE. Management of Incidental Adnexal Findings on CT and MRI: A White Paper of the ACR Incidental Findings Committee. J Am Coll Radiol. 2020;17(2):248-254.', doi: '10.1016/j.jacr.2019.10.008' },

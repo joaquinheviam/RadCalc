@@ -200,14 +200,26 @@ export default function UterineFibroids() {
   const [adcQual, setAdcQual] = useState(null); // null | 'low' | 'high'
   const [margins, setMargins] = useState(null);
   const [menop, setMenop] = useState(null);
+  // Caracterización opcional de variante/degeneración (solo se ofrece cuando el
+  // riesgo de leiomiosarcoma ya resultó bajo: Score 2 o 3). No modifica ni depende
+  // de una nueva pregunta redundante: reutiliza la señal T2 (t2) y el score ya
+  // calculados por el algoritmo de riesgo, y solo agrega T1/fat-sat/realce.
+  const [t1Signal, setT1Signal] = useState(null); // null | 'isohypo' | 'hyper' | 'void'
+  const [fatSatLoss, setFatSatLoss] = useState(null); // null | 'yes' | 'no'
+  const [enhancement, setEnhancement] = useState(null); // null | 'none_minimal' | 'progressive' | 'marked'
 
-  const resetAdcStep = () => { setAdcMode('quant'); setAdc(''); setAdcQual(null); setMargins(null); setMenop(null); };
+  const resetVariant = () => { setT1Signal(null); setFatSatLoss(null); setEnhancement(null); };
+  const resetAdcStep = () => { setAdcMode('quant'); setAdc(''); setAdcQual(null); setMargins(null); setMenop(null); resetVariant(); };
   const handleStep1 = (v) => { setStep1(v); setT2(null); setDw(null); resetAdcStep(); };
   const handleT2 = (v) => { setT2(v); setDw(null); resetAdcStep(); };
   const handleDw = (v) => { setDw(v); resetAdcStep(); };
-  const handleMargins = (v) => { setMargins(v); setMenop(null); };
+  const handleMargins = (v) => { setMargins(v); setMenop(null); resetVariant(); };
+  const handleT1Signal = (v) => { setT1Signal(v); setFatSatLoss(null); setEnhancement(null); };
   const resetRisk = () => { setStep1(null); setT2(null); setDw(null); resetAdcStep(); };
   const handleRiskBack = () => {
+    if (enhancement !== null) { setEnhancement(null); return; }
+    if (fatSatLoss !== null) { setFatSatLoss(null); return; }
+    if (t1Signal !== null) { setT1Signal(null); return; }
     if (menop !== null) { setMenop(null); return; }
     if (margins !== null) { setMargins(null); return; }
     if (adc !== '' || adcQual !== null) { setAdc(''); setAdcQual(null); return; }
@@ -247,6 +259,30 @@ export default function UterineFibroids() {
   const showMarginsQ = step1 === 'yes' && t2 === 'highInt' && dw === 'high' && hasAdcInput && adcRestricted;
   const showMenopQ = showMarginsQ && margins === 'irregular';
 
+  // Caracterización de variante/degeneración: solo se ofrece cuando el riesgo ya
+  // resultó bajo (Score 2 o 3); reutiliza `t2` y `resultKey` del algoritmo de
+  // riesgo (ver Arleo et al. AJR 2015; DeMulder & Ascher, AJR 2018, Tabla 2).
+  const showVariantForm = resultKey === 'score2' || resultKey === 'score3';
+  let variant = null;
+  if (showVariantForm) {
+    if (t1Signal === 'void') {
+      variant = 'calcific';
+    } else if (t1Signal === 'hyper') {
+      if (fatSatLoss === 'yes') variant = 'lipoleiomyoma';
+      else if (fatSatLoss === 'no') variant = 'red';
+    } else if (t1Signal === 'isohypo') {
+      if (t2 === 'low') {
+        if (enhancement === 'none_minimal') variant = 'hyaline';
+        else if (enhancement) variant = 'usual';
+      } else if (t2 === 'highInt') {
+        if (enhancement === 'none_minimal') variant = 'cystic';
+        else if (enhancement === 'progressive') variant = 'myxoid';
+        else if (enhancement === 'marked') variant = resultKey === 'score3' ? 'cellular' : 'indeterminate';
+      }
+    }
+  }
+  const variantReportStr = variant ? `${c.variantSectionTitle}: ${c.variants[variant]}. ${c.variantsDesc[variant] || ''}`.trim() : null;
+
   const riskReportStr = (() => {
     if (!resultObj) return null;
     const parts = [];
@@ -268,7 +304,7 @@ export default function UterineFibroids() {
   const resetAll = () => { resetFigo(); resetRisk(); };
   const hasAnyResult = !!(figoTypeObj || resultObj);
   const handleCopyAll = () => {
-    const parts = [figoReportStr, riskReportStr].filter(Boolean);
+    const parts = [figoReportStr, riskReportStr, variantReportStr].filter(Boolean);
     if (parts.length === 0) return;
     copyToClipboard(parts.join('\n\n'), t.common.copiedOk, t.common.copiedErr);
   };
@@ -454,6 +490,51 @@ export default function UterineFibroids() {
         </Card>
       )}
 
+      {showVariantForm && (
+        <div className="pt-2 border-t border-slate-200 dark:border-slate-700 animate-in fade-in">
+          <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wide mt-4">{c.variantSectionTitle}</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">{c.variantIntro}</p>
+
+          <Card>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.t1SignalQ}</label>
+            <div className="space-y-2">
+              {c.t1SignalOpts.map(opt => (
+                <button key={opt.key} onClick={() => handleT1Signal(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t1Signal === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+              ))}
+            </div>
+          </Card>
+
+          {t1Signal === 'hyper' && (
+            <Card className="mt-3">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.fatSatQ}</label>
+              <div className="flex gap-2">
+                <button onClick={() => setFatSatLoss('yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${fatSatLoss === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setFatSatLoss('no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${fatSatLoss === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+              </div>
+            </Card>
+          )}
+
+          {t1Signal === 'isohypo' && (
+            <Card className="mt-3">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.enhancementQ}</label>
+              <div className="space-y-2">
+                {c.enhancementOpts.map(opt => (
+                  <button key={opt.key} onClick={() => setEnhancement(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${enhancement === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {variant && (
+            <Card className="text-center mt-3">
+              <span className="text-xs text-slate-500 block mb-1">{c.variantResultLabel}</span>
+              <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{c.variants[variant]}</span>
+              {c.variantsDesc[variant] && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.variantsDesc[variant]}</p>}
+            </Card>
+          )}
+        </div>
+      )}
+
       <UsageNotes paragraphs={[...c.figoUsage, ...c.usage]} />
       <References items={REFERENCES.leiomyoma} />
       <ReportBugLink calcTitle={c.title} />
@@ -468,6 +549,9 @@ export default function UterineFibroids() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">
               {figoTypeObj && resultObj ? `${c.figoResultLabel} · ${c.resultLabel}` : figoTypeObj ? c.figoResultLabel : c.resultLabel}
             </span>
+            {variant && (
+              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 block mt-1">{c.variants[variant]}</span>
+            )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} />
