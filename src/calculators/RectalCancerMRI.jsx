@@ -41,13 +41,21 @@ function RectalTScheme() {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
       <svg viewBox="0 0 760 650" className="h-auto w-full max-w-lg text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
-        {/* Fascia mesorrectal (MRF): plano fascial, por eso discontinuo */}
-        <circle cx="280" cy="310" r="185" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" className="text-slate-400 dark:text-slate-500" />
-        {/* Muscular propia: pared sólida real */}
-        <circle cx="280" cy="310" r="110" fill="none" stroke="currentColor" strokeWidth="4.5" />
+        <defs>
+          <filter id="rectTTumorShadow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="2" dy="4" stdDeviation="3" floodOpacity="0.35" />
+          </filter>
+        </defs>
+        {/* Fascia mesorrectal (MRF): borde sólido (límite quirúrgico real que se
+            mide en la RM), más grueso que la muscular propia para que ambos
+            anillos se lean como capas distintas */}
+        <circle cx="280" cy="310" r="185" fill="none" stroke="currentColor" strokeWidth="5" className="text-slate-500 dark:text-slate-400" />
+        {/* Muscular propia: disco relleno (representa la pared + submucosa),
+            con la luz recortada encima */}
+        <circle cx="280" cy="310" r="110" fill="currentColor" className="text-slate-200 dark:text-slate-700/70" stroke="currentColor" strokeWidth="4.5" />
         {/* Luz rectal, forma irregular */}
         <path
-          fill="currentColor" className="text-slate-300 dark:text-slate-700"
+          fill="currentColor" className="text-slate-300 dark:text-slate-800"
           d="M 258,268 C 280,260 292,278 305,276 C 322,272 316,296 326,306 C 340,312 328,328 334,344 C 320,362 302,350 288,364 C 272,380 254,364 238,372 C 222,364 234,344 222,332 C 208,322 224,306 232,292 C 226,272 246,272 258,268 Z"
         />
         {/* Reflexión peritoneal (solo recto superior, arco antero-superior) */}
@@ -58,34 +66,34 @@ function RectalTScheme() {
         <text x="205" y="315" fill="currentColor" className="text-slate-700 dark:text-slate-200" fontSize="13" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T1/T2</text>
 
         {/* T3a (<1mm) y T3b (1-5mm) más allá de la muscular: buen pronóstico, verde */}
-        <ellipse cx="195.2" cy="225.2" rx="30" ry="30" fill="#059669" opacity="0.85" stroke="#059669" strokeWidth="2.5" />
+        <ellipse cx="195.2" cy="225.2" rx="30" ry="30" fill="#059669" stroke="#047857" strokeWidth="2" filter="url(#rectTTumorShadow)" />
         <text x="195.2" y="231" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">a</text>
 
-        <ellipse cx="184.6" cy="405.4" rx="32" ry="32" fill="#059669" opacity="0.85" stroke="#059669" strokeWidth="2.5" />
+        <ellipse cx="184.6" cy="405.4" rx="32" ry="32" fill="#059669" stroke="#047857" strokeWidth="2" filter="url(#rectTTumorShadow)" />
         <text x="184.6" y="411.5" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">b</text>
 
         {/* T3c (5-15mm) y T3d (>15mm), acercándose a la MRF: mayor riesgo, rojo */}
-        <ellipse cx="389.6" cy="419.6" rx="33" ry="33" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <ellipse cx="389.6" cy="419.6" rx="33" ry="33" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
         <text x="389.6" y="425.5" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">c</text>
 
-        <ellipse cx="391.7" cy="198.3" rx="32" ry="32" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <ellipse cx="391.7" cy="198.3" rx="32" ry="32" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
         <text x="391.7" y="204" fill="#ffffff" fontSize="17" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">d</text>
 
         {/* T3 con MRF+ (margen circunferencial <1mm): toca la fascia */}
-        <ellipse cx="445" cy="310" rx="46" ry="30" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <ellipse cx="445" cy="310" rx="46" ry="30" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
         <text x="445" y="315.5" fill="#ffffff" fontSize="12.5" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">MRF+</text>
 
         {/* T4a: perfora a través de la reflexión peritoneal, se extiende más allá de la MRF */}
-        <ellipse cx="280" cy="158" rx="27" ry="95" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <ellipse cx="280" cy="158" rx="27" ry="95" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
         <text x="280" y="163" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4a</text>
 
         {/* T4b: atraviesa la MRF hacia un órgano/estructura adyacente */}
-        <ellipse cx="280" cy="500" rx="27" ry="95" fill="#dc2626" opacity="0.82" stroke="#dc2626" strokeWidth="2.5" />
+        <ellipse cx="280" cy="500" rx="27" ry="95" fill="#dc2626" stroke="#b91c1c" strokeWidth="2" filter="url(#rectTTumorShadow)" />
         <text x="280" y="505" fill="#ffffff" fontSize="15" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">T4b</text>
 
         {/* Órgano/estructura adyacente (acento fijo naranja, no depende del tema) */}
         <g transform="translate(280,592)">
-          <circle cx="0" cy="0" r="34" fill="#ea580c" />
+          <circle cx="0" cy="0" r="34" fill="#ea580c" filter="url(#rectTTumorShadow)" />
           <circle cx="-10" cy="-10" r="15" fill="#f97316" opacity="0.6" />
           <text x="0" y="5" fill="#ffffff" fontSize="11" fontWeight="800" textAnchor="middle" fontFamily="system-ui, sans-serif">ÓRGANO</text>
         </g>
@@ -121,52 +129,58 @@ function RectalTScheme() {
 }
 
 // Diagrama coronal del complejo esfinteriano, relevante solo para el recto
-// bajo: IS (esfínter interno / continuación de la muscular propia), ISS
-// (plano interesfinteriano graso) y ES (esfínter externo / elevador del
-// ano). Reconstruido en currentColor + badges de color fijo a partir de la
-// referencia de la usuaria (que usaba fondo blanco fijo y relleno de color
-// por capa) — aquí las tres capas se distinguen por contorno/trama en vez
-// de relleno de color, para que se lea igual en ambos temas.
+// bajo: IS (esfínter interno / continuación de la muscular propia, rojo),
+// ISS (espacio interesfinteriano graso, ámbar) y ES (esfínter externo /
+// elevador del ano, café) como tres capas concéntricas de relleno sólido, con
+// dos tumores ilustrativos (azul: IS+ISS; café oscuro: IS+ISS+ES) — mismos
+// colores y trazado que la referencia de la usuaria; el color de cada capa es
+// un hallazgo anatómico fijo (no theme-adaptive), igual criterio que el resto
+// de la app para elementos con significado clínico. El fondo blanco fijo y el
+// bloque de <style> de la referencia se omiten (el contenedor ya aporta el
+// fondo en ambos temas, y las clases CSS globales están prohibidas en esta
+// SPA de una sola página); las sombras se logran con un <filter> con id único
+// en vez de clases.
 function SphincterComplexScheme() {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 400 320" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
-        {/* ES: esfínter externo / elevador del ano (capa más externa) */}
-        <path
-          fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
-          d="M 100,40 C 60,60 40,110 44,160 L 44,260 C 44,280 60,290 70,278 L 70,170 C 68,120 84,75 115,50 Z
-             M 300,40 C 340,60 360,110 356,160 L 356,260 C 356,280 340,290 330,278 L 330,170 C 332,120 316,75 285,50 Z"
-        />
-        {/* ISS: espacio interesfinteriano (graso), banda intermedia */}
-        <path
-          fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="6 5"
-          className="text-slate-400 dark:text-slate-500"
-          d="M 118,55 C 92,85 80,125 82,165 L 82,255 C 82,268 94,274 100,266 L 100,160 C 99,120 108,88 128,65 Z
-             M 282,55 C 308,85 320,125 318,165 L 318,255 C 318,268 306,274 300,266 L 300,160 C 301,120 292,88 272,65 Z"
-        />
-        {/* IS: esfínter interno, continuación directa de la muscular propia rectal */}
-        <path
-          fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round"
-          d="M 150,20 C 122,55 108,105 110,150 L 110,250 C 110,265 124,270 132,260 L 132,148 C 131,110 142,68 168,35 Z
-             M 250,20 C 278,55 292,105 290,150 L 290,250 C 290,265 276,270 268,260 L 268,148 C 269,110 258,68 232,35 Z"
-        />
+      <svg viewBox="45 55 570 520" className="h-auto w-full max-w-sm" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="rectSphincterTumorShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="2" dy="4" stdDeviation="3" floodOpacity="0.4" />
+          </filter>
+          <filter id="rectSphincterTextShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="1" dy="1" stdDeviation="1" floodOpacity="0.6" />
+          </filter>
+        </defs>
 
-        {/* Tumor izquierdo: compromete IS + ISS, respeta ES */}
-        <path
-          fill="#1d4ed8" opacity="0.55" stroke="#1d4ed8" strokeWidth="2"
-          d="M 118,190 C 132,180 148,196 150,212 C 158,226 148,246 130,244 C 110,252 96,232 100,214 C 96,200 108,192 118,190 Z"
-        />
-        <rect x="60" y="290" width="20" height="18" rx="4" fill="#1d4ed8" />
-        <text x="70" y="303" fill="#ffffff" fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">1</text>
+        <g transform="translate(25, 40)">
+          {/* ================= DERECHA ================= */}
+          <path fill="#943f33" stroke="#63261d" strokeWidth="2" d="M 530 140 C 470 180, 420 250, 408 320 L 408 480 C 408 520, 358 520, 358 480 L 358 300 C 370 220, 420 140, 480 90 C 515 65, 555 110, 530 140 Z" />
+          <path fill="#fbb03b" stroke="#d98516" strokeWidth="2" d="M 358 260 L 358 475 C 358 505, 334 505, 334 475 L 334 240 C 342 245, 350 250, 358 260 Z" />
+          <path fill="#e03a3a" stroke="#a81d1d" strokeWidth="2" d="M 410 50 C 370 110, 334 170, 334 240 L 334 470 C 334 495, 310 495, 310 470 L 310 240 C 310 170, 340 110, 370 50 C 385 25, 425 25, 410 50 Z" />
+          <path fill="#e03a3a" stroke="#a81d1d" strokeWidth="2" d="M 345 150 Q 430 100, 480 50 C 490 60, 485 75, 465 95 Q 410 150, 340 175 Z" />
+          {/* Tumor derecho (café oscuro): IS + ISS + ES */}
+          <path fill="#451a03" stroke="#290f02" strokeWidth="1.5" filter="url(#rectSphincterTumorShadow)" d="M 330 310 C 350 290, 370 320, 380 340 C 400 360, 410 380, 390 410 C 395 430, 370 455, 340 445 C 310 460, 280 430, 290 400 C 275 380, 290 350, 305 340 C 300 320, 315 315, 330 310 Z" />
 
-        {/* Tumor derecho: compromete IS + ISS + ES */}
-        <path
-          fill="#78350f" opacity="0.6" stroke="#78350f" strokeWidth="2"
-          d="M 282,175 C 300,165 318,180 322,198 C 332,214 322,238 298,236 C 276,248 256,228 262,206 C 256,190 270,180 282,175 Z"
-        />
-        <rect x="320" y="290" width="20" height="18" rx="4" fill="#78350f" />
-        <text x="330" y="303" fill="#ffffff" fontSize="10" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">2</text>
+          {/* ================= IZQUIERDA ================= */}
+          <path fill="#943f33" stroke="#63261d" strokeWidth="2" d="M 70 140 C 130 180, 180 250, 192 320 L 192 480 C 192 520, 242 520, 242 480 L 242 300 C 230 220, 180 140, 120 90 C 85 65, 45 110, 70 140 Z" />
+          <path fill="#fbb03b" stroke="#d98516" strokeWidth="2" d="M 242 260 L 242 475 C 242 505, 266 505, 266 475 L 266 240 C 258 245, 250 250, 242 260 Z" />
+          <path fill="#e03a3a" stroke="#a81d1d" strokeWidth="2" d="M 190 50 C 230 110, 266 170, 266 240 L 266 470 C 266 495, 290 495, 290 470 L 290 240 C 290 170, 260 110, 230 50 C 215 25, 175 25, 190 50 Z" />
+          {/* Tumor izquierdo (azul): IS + ISS, respeta el ES */}
+          <path fill="#1d4ed8" stroke="#1e3a8a" strokeWidth="1.5" filter="url(#rectSphincterTumorShadow)" d="M 270 310 C 290 300, 310 320, 295 340 C 310 360, 290 390, 275 390 C 255 390, 245 375, 245 350 C 245 325, 250 315, 270 310 Z" />
+
+          {/* Etiquetas anatómicas (lado izquierdo) */}
+          <g fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="13" fill="#ffffff" textAnchor="middle" filter="url(#rectSphincterTextShadow)">
+            <text x="217" y="440">ES</text>
+            <text x="254" y="440">ISS</text>
+            <text x="278" y="440">IS</text>
+          </g>
+          {/* Etiquetas sobre los tumores */}
+          <g fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="13" fill="#ffffff" textAnchor="middle" dominantBaseline="middle">
+            <text x="274" y="352">Tu</text>
+            <text x="345" y="390">Tu</text>
+          </g>
+        </g>
       </svg>
     </div>
   );
@@ -356,12 +370,15 @@ export default function RectalCancerMRI() {
   // contexto. En reetapificación el T se antepone con "y" (yT), como en el resto
   // de la calculadora.
   const COMPACT_T = { t1t2: 'T1-T2', t3a: 'T3a', t3b: 'T3b', t3c: 'T3c', t3d: 'T3d', t4a: 'T4a', t4b: 'T4b' };
+  const isLowRectalSphincterCase = mode === 'primary' && location === 'lower';
   const radiologicalSummary = () => {
     const parts = [];
     if (tStage) parts.push(`${mode === 'restaging' ? 'y' : ''}${COMPACT_T[tStage]}`);
     if (nodesAnswered) parts.push(nodesPositive ? 'N+' : 'N-');
     if (emvi) parts.push(emvi === 'yes' ? 'EMVI+' : 'EMVI-');
     if (mrf) parts.push(mrf === 'clear' ? 'MRF-' : mrf === 'involved' ? 'MRF+' : 'MRF~');
+    if (isLowRectalSphincterCase && sphincter === 'es') parts.push(c.sphincterEasSummaryTag);
+    else if (isLowRectalSphincterCase && sphincter === 'iss') parts.push(c.sphincterIspSummaryTag);
     return parts.length ? parts.join(', ') : null;
   };
   const radSummary = radiologicalSummary();
@@ -372,7 +389,11 @@ export default function RectalCancerMRI() {
     if (mode === 'primary' && morphology) lines.push(`${c.morphologyLbl}: ${c.morphOpts.find((o) => o.key === morphology)?.label}`);
     if (mode === 'primary' && mucin) lines.push(`${c.mucinLbl}: ${c.mucinOpts.find((o) => o.key === mucin)?.label}`);
     if (tStage) lines.push(`${mode === 'primary' ? c.tStageLbl : c.ytStageLbl}: ${c.tOpts[tStage]}`);
-    if (mode === 'primary' && location === 'lower' && sphincter) lines.push(`${c.sphincterLbl}: ${c.sphincterOpts.find((o) => o.key === sphincter)?.label}`);
+    if (mode === 'primary' && location === 'lower' && sphincter) {
+      lines.push(`${c.sphincterLbl}: ${c.sphincterOpts.find((o) => o.key === sphincter)?.label}`);
+      if (sphincter === 'iss') lines.push(`${c.sphincterIspNote}`);
+      if (sphincter === 'es') lines.push(`${c.sphincterEasNote}`);
+    }
     if (mrf) lines.push(`${c.mrfLbl}: ${c.mrfOpts.find((o) => o.key === mrf)?.label}`);
     if (emvi) lines.push(`EMVI: ${emvi === 'yes' ? c.yes : c.no}`);
     if (mode === 'primary' && nodesPrimary) lines.push(`${c.nodesLbl}: ${c.nodesPrimaryOpts[nodesPrimary]}`);
@@ -453,8 +474,8 @@ export default function RectalCancerMRI() {
           <Accordion icon={<IconBookOpen size={16} />} title={c.sphincterDiagramTitle} defaultOpen>
             <SphincterComplexScheme />
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-2">
-              <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-blue-700 mr-1 align-[-1px]"></span>{c.sphincterLegend1}</span>
-              <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-800 mr-1 align-[-1px]"></span>{c.sphincterLegend2}</span>
+              <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#1d4ed8] mr-1 align-[-1px]"></span>{c.sphincterLegend1}</span>
+              <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#451a03] mr-1 align-[-1px]"></span>{c.sphincterLegend2}</span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.sphincterDiagramNote}</p>
           </Accordion>
@@ -466,6 +487,8 @@ export default function RectalCancerMRI() {
               { key: 'iss', label: c.sphincterOpts.find((o) => o.key === 'iss').label },
               { key: 'es', label: c.sphincterOpts.find((o) => o.key === 'es').label },
             ]} value={sphincter} onChange={setSphincter} />
+            {sphincter === 'iss' && <div className="mt-3"><InfoBox tone="slate">{c.sphincterIspNote}</InfoBox></div>}
+            {sphincter === 'es' && <div className="mt-3"><InfoBox tone="amber">{c.sphincterEasNote}</InfoBox></div>}
           </Card>
         </>
       )}

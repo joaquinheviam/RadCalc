@@ -4418,6 +4418,10 @@ export default {
       sphincterLegend1: 'Tumor 1: invades IS + ISS, spares the ES',
       sphincterLegend2: 'Tumor 2: invades IS + ISS + ES',
       sphincterDiagramNote: 'IS (internal sphincter) is the direct continuation of the rectal muscularis propria; ISS (intersphincteric space) is the fat plane between both sphincters; ES (external sphincter/levator ani) is the outermost striated muscle layer. The degree of invasion (IS → IS+ISS → IS+ISS+ES) determines resectability with sphincter preservation.',
+      sphincterIspNote: 'Extension into the intersphincteric space (ISS) without external sphincter involvement: the ISOG-ISR group (International Standardization and Optimization Group for Intersphincteric Resection) proposes flagging this finding with the "-isp" suffix to identify patients at the margin of intersphincteric resection.',
+      sphincterEasNote: 'By international expert consensus, invasion of the external sphincter (a skeletal muscle) is classified as T4b disease, regardless of the depth of rectal wall invasion. Verify that the reported T category is consistent with this finding.',
+      sphincterEasSummaryTag: 'EAS+ (T4b)',
+      sphincterIspSummaryTag: 'ISS (-isp)',
       mrfQ: 'Mesorectal fascia (MRF)',
       mrfLbl: 'MRF',
       mrfOpts: [
