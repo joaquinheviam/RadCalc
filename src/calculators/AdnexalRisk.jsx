@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function OptionButtons({ options, value, onChange }) {
   return (
@@ -47,6 +47,7 @@ const YES_NO = (value, onChange, yesLabel, noLabel) => (
 
 export default function AdnexalRisk() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.adnexalRisk;
 
   const [activeTool, setActiveTool] = useState(null); // 'orads' | 'iota' | 'adnex'
@@ -259,7 +260,7 @@ export default function AdnexalRisk() {
 
   const pct = (v) => `${(v * 100).toFixed(1)}%`;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const toolName = activeTool === 'orads' ? 'O-RADS US v2022' : activeTool === 'iota' ? 'IOTA Simple Rules' : 'IOTA ADNEX';
     let txt = `${c.title}\n${c.toolTitle}: ${toolName}\n`;
     if (oradsResult) {
@@ -269,7 +270,12 @@ export default function AdnexalRisk() {
     } else if (adnexResult && !adnexResult.error) {
       txt += `${c.adnexBenignLabel}: ${pct(adnexResult.benign)}\n${c.adnexBorderlineLabel}: ${pct(adnexResult.borderline)}\n${c.adnexStage1Label}: ${pct(adnexResult.stage1)}\n${c.adnexStage24Label}: ${pct(adnexResult.stage2to4)}\n${c.adnexMetastaticLabel}: ${pct(adnexResult.metastatic)}\n${c.adnexTotalMalignancyLabel}: ${pct(adnexResult.totalMalignancy)}`;
     }
-    copyToClipboard(txt, t.common.copiedOk, t.common.copiedErr);
+    return txt;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   const toneText = (tone) => ({
@@ -532,12 +538,22 @@ export default function AdnexalRisk() {
               {activeTool === 'orads' ? oradsResult.score : activeTool === 'iota' ? iotaResult.title : pct(adnexResult.totalMalignancy)}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

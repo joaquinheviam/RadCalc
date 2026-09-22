@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ScoreSelector5, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ScoreSelector5, Accordion, AlgorithmSchema } from '../components/shared/index.js';
 import { IconGitBranch } from '../components/icons/index.js';
 import { SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
@@ -57,6 +57,7 @@ const LayersIcon = () => (
 
 export default function VIRADS() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.virads;
   const algorithmTree = buildViradsAlgoTree(c);
 
@@ -107,11 +108,16 @@ export default function VIRADS() {
   else if (final === 3) interp = c.interpretation.equivocal;
   else if (final > 0) interp = c.interpretation.low;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!final) return;
     const text = mode === 'classic'
       ? c.reportText(t2 || t.common.notEvaluated, dwi || t.common.notEvaluated, dce || t.common.notEvaluated, final)
       : `${c.algoTitle}\n${c.finalCategory}: VI-RADS ${final}\n${c.categoryDesc[final - 1]}`;
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
@@ -271,12 +277,22 @@ export default function VIRADS() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{mode === 'algo' ? c.categoryLabel : c.finalCategory}</span>
             <span className={`text-4xl font-black block mt-1 ${final >= 4 ? 'text-red-500' : final === 3 ? 'text-amber-500' : 'text-emerald-500'}`}>VI-RADS {final}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

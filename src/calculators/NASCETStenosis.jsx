@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
 function getCategory(pct) {
   if (pct >= 99.5) return 'occlusion';
@@ -88,6 +88,7 @@ function NascetDiagram() {
 
 export default function NASCETStenosis() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.nascetStenosis;
   const [measure1, setMeasure1] = useState('');
   const [measure2, setMeasure2] = useState('');
@@ -117,7 +118,7 @@ export default function NASCETStenosis() {
     mild: c.catMild, moderate: c.catModerate, severe: c.catSevere, occlusion: c.catOcclusion,
   })[cat];
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [];
     if (showElig) lines.push(`${c.eligLabel}: ${pctElig.toFixed(0)}% (${categoryLabel(catElig)})`);
     if (showAnalysis) lines.push(`${c.analysisLabel}: ${pctAnalysis.toFixed(0)}% (${categoryLabel(catAnalysis)})`);
@@ -127,7 +128,12 @@ export default function NASCETStenosis() {
       const cat = showAnalysis ? catAnalysis : catElig;
       lines.push({ mild: c.resultMild, moderate: c.resultModerate, severe: c.resultSevere, occlusion: c.resultOcclusion }[cat]);
     }
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setMeasure1(''); setMeasure2(''); setMeasure3(''); setTotalOcclusion(false); setFlowRelated(false); };
 
@@ -236,12 +242,22 @@ export default function NASCETStenosis() {
               </>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle, IconInfo } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 // See BiradsMammography.jsx for the design rationale: BI-RADS assessment is a
 // radiologist gestalt synthesis, not a deterministic algorithm, so this component
@@ -99,6 +99,7 @@ function CheckButtons({ options, values, onToggle }) {
 
 export default function BiradsUltrasound() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.biradsUs;
 
   const [composition, setComposition] = useState(null);
@@ -191,7 +192,7 @@ export default function BiradsUltrasound() {
     return list;
   };
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!finalCategory) return;
     const compositionLabel = composition ? c.compositionOptions.find(o => o.key === composition)?.label : '';
     const finding = findingLabel();
@@ -200,6 +201,11 @@ export default function BiradsUltrasound() {
     const categoryLine = `BI-RADS ${finalCategory} — ${catDesc}`;
     const managementLine = c.management[managementGroup(finalCategory)];
     const text = c.reportText(compositionLabel, finding, assocText, categoryLine, managementLine);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
@@ -424,12 +430,22 @@ export default function BiradsUltrasound() {
             <span className={`text-3xl font-black block mt-1 leading-tight ${catColor(finalCategory)}`}>BI-RADS {finalCategory}</span>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.management[managementGroup(finalCategory)]}</p>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

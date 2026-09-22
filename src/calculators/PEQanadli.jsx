@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, Accordion, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 // Lista de botones de opción única (patrón compartido con otras calculadoras).
 function OptionList({ label, options, value, onChange }) {
@@ -47,6 +47,8 @@ const PE_QANADLI_ALL_IDS = PE_QANADLI_LUNGS.flatMap(l => l.groups.flatMap(g => g
 
 export default function PEQanadli() {
   const { t, lang } = useLang();
+  const [showPreviewPerads, setShowPreviewPerads] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.peQanadli;
   const p = c.perads;
   const [mode, setMode] = useState('perads'); // 'perads' (por defecto) | 'quant'
@@ -86,13 +88,18 @@ export default function PEQanadli() {
   }
   const peradsToneClass = peradsTone === 'red' ? 'text-red-500' : peradsTone === 'amber' ? 'text-amber-500' : peradsTone === 'emerald' ? 'text-emerald-500' : 'text-slate-500';
 
-  const handleCopyPerads = () => {
+  const getReportTextPerads = () => {
     const lines = [p.reportTitle, `${p.categoryLabel}: ${peradsCode}`, peradsFindings];
     if (peradsMgmt) lines.push(`${p.managementTitle}: ${peradsMgmt}`);
     if (peradsInv) lines.push(`${p.investigationsTitle}: ${peradsInv}`);
     if (exception) lines.push(p.modifierEText);
     if (tPlus) lines.push(p.modifierTText);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopyPerads = () => {
+    const text = getReportTextPerads();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetPerads = () => { setQuality('optimal'); setLocation(null); setException(false); setRvPlus(false); setTPlus(false); };
 
@@ -125,11 +132,15 @@ export default function PEQanadli() {
   const rvThreshold = rvMethod === 'axial' ? 1.0 : 0.9;
   const rvStrain = hasRv && rvRatio > rvThreshold;
 
-  const handleCopy = () => {
-    const text = c.reportText(
+  const getReportText = () => {
+    return c.reportText(
       hasQ ? qScoreDisplay : '—', hasQ ? qPercent.toFixed(0) : '—', hasQ ? qCat : t.common.notEvaluated,
       hasRv ? rvRatio.toFixed(2) : '—', hasRv ? (rvStrain ? c.rvStrainPositive : c.rvStrainNegative) : t.common.notEvaluated
     );
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => {
@@ -307,9 +318,10 @@ export default function PEQanadli() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{p.categoryLabel}</span>
             <span className={`text-3xl font-black block leading-tight ${peradsToneClass}`}>{peradsCode}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetPerads} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopyPerads} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetPerads} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreviewPerads(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopyPerads} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
@@ -329,12 +341,31 @@ export default function PEQanadli() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreviewPerads}
+        onClose={() => setShowPreviewPerads(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportTextPerads()}
+        onCopy={handleCopyPerads}
+        copyLabel={t.common.copyReport}
+      />
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

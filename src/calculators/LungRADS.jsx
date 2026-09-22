@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { IconCopy, IconCheckCircle, IconArrowRight, IconGitBranch } from '../components/icons/index.js';
-import { Card, NumberField, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { IconCheckCircle, IconArrowRight, IconGitBranch } from '../components/icons/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
 import { buildWizardTree, SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
 function lungRadsCatColor(key) {
@@ -15,6 +15,7 @@ function lungRadsCatColor(key) {
 
 export default function LungRADS() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.lungRads;
   const w = c.wizard;
   const algorithmTree = buildWizardTree(w, 'start', {
@@ -62,20 +63,22 @@ export default function LungRADS() {
       setNumVal('');
     }
   };
-  const handleCopy = () => {
-    if (!isResult) return;
+  const getReportText = () => {
+    if (!isResult) return '';
     const path = selectedLabels.join(' -> ');
     if (isNotClassified) {
-      const text = `${c.notClassifiedTitle}\n${c.notClassifiedDesc}${path ? '\n' + c.pathLabel + ': ' + path : ''}`;
-      copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
-      return;
+      return `${c.notClassifiedTitle}\n${c.notClassifiedDesc}${path ? '\n' + c.pathLabel + ': ' + path : ''}`;
     }
-    const text = c.reportText(effectiveCatObj.key, effectiveCatObj.label, effectiveCatObj.mgmt, sMod, path);
+    return c.reportText(effectiveCatObj.key, effectiveCatObj.label, effectiveCatObj.mgmt, sMod, path);
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
-    <div className="space-y-4 pb-4 animate-in fade-in">
+    <div className={`space-y-4 animate-in fade-in ${isResult ? 'pb-56' : 'pb-4'}`}>
       {history.length > 1 && (
         <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
           <div className="flex justify-between items-center mb-2">
@@ -123,14 +126,6 @@ export default function LungRADS() {
         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-800 text-center space-y-4">
           <h2 className="text-lg font-black text-emerald-600 dark:text-emerald-400">{c.notClassifiedTitle}</h2>
           <p className="text-sm text-slate-600 dark:text-slate-300 text-left">{c.notClassifiedDesc}</p>
-          <div className="flex gap-2 pt-2">
-            <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
-              {c.changeType}
-            </button>
-            <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-              <IconCopy size={18} /> {t.common.copy}
-            </button>
-          </div>
         </div>
       ) : (
         <div className="space-y-4">
@@ -157,14 +152,6 @@ export default function LungRADS() {
               <p className="text-sm text-slate-700 dark:text-slate-200 leading-snug">{effectiveCatObj.mgmt}</p>
             </div>
             <p className="text-xs text-slate-400 dark:text-slate-500">{c.prevalenceLabel}: {effectiveCatObj.prevalence}</p>
-            <div className="flex gap-2 pt-2">
-              <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
-                {c.changeType}
-              </button>
-              <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-                <IconCopy size={18} /> {t.common.copy}
-              </button>
-            </div>
           </div>
         </div>
       )}
@@ -178,6 +165,34 @@ export default function LungRADS() {
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />
+      {isResult && (
+        <StickyBar>
+          <div className="min-w-0 text-center">
+            {isNotClassified ? (
+              <span className="text-lg font-black block text-emerald-600 dark:text-emerald-400">{c.notClassifiedTitle}</span>
+            ) : (
+              <>
+                <span className={`text-2xl font-black block ${lungRadsCatColor(effectiveCatObj.key)}`}>Lung-RADS {effectiveCatObj.key}{sMod ? 'S' : ''}</span>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug mt-1">{effectiveCatObj.label}</p>
+              </>
+            )}
+          </div>
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={handleReset} label={c.changeType} caption={c.changeType} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
+          </div>
+        </StickyBar>
+      )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

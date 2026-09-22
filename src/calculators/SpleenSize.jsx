@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function OptionList({ label, options, value, onChange }) {
   return (
@@ -19,6 +19,7 @@ function OptionList({ label, options, value, onChange }) {
 
 export default function SpleenSize() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.spleenSize;
 
   const [sex, setSex] = useState('f'); // 'f' | 'm'
@@ -47,7 +48,7 @@ export default function SpleenSize() {
   const showResult = hasHeight && hasLength;
   const enlarged = showResult ? (lengthEnlarged || (volumeEnlarged === true)) : null;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [
       c.reportTitle,
       `${c.ulnLengthLabel}: ${ulnLength.toFixed(1)} cm`,
@@ -58,7 +59,12 @@ export default function SpleenSize() {
       lines.push(`${c.actualVolumeLabel}: ${actualVolume.toFixed(0)} cm³`);
     }
     lines.push(`${c.resultLabel}: ${enlarged ? c.enlarged : c.normal}`);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setSex('f'); setHeight(''); setLength(''); setAp(''); setWidth(''); };
 
@@ -106,12 +112,22 @@ export default function SpleenSize() {
           <div className="min-w-0 text-center">
             <span className={`text-3xl font-black block leading-tight ${enlarged ? 'text-red-500' : 'text-emerald-500'}`}>{enlarged ? c.enlarged : c.normal}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

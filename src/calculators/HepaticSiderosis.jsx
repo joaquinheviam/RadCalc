@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function HepaticSiderosis() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.siderosis;
   const [inputType, setInputType] = useState('r2star');
   const [val, setVal] = useState('');
@@ -25,8 +26,13 @@ export default function HepaticSiderosis() {
     else { category = c.catSevere; color = 'text-red-500'; }
   }
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const text = c.reportText(t2star.toFixed(2), r2star.toFixed(2), lic.toFixed(2), category);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setInputType('r2star'); setVal(''); };
@@ -89,12 +95,22 @@ export default function HepaticSiderosis() {
             <span className={`text-4xl font-black block ${color}`}>{lic.toFixed(2)}</span>
             <span className={`text-base font-semibold block mt-1 ${color}`}>{category}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

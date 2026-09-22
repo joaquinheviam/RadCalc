@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function RenalScore() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.renalScore;
   const [radius, setRadius] = useState('');
   const [exo, setExo] = useState(null);
@@ -29,9 +30,14 @@ export default function RenalScore() {
   const formula = canCompute ? `R${rPts}E${ePts}N${nPts}A${antLetter}L${lPts}` : null;
   const suffix = hilar ? 'h' : '';
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!canCompute) return;
     const text = c.reportText(formula + suffix, total, risk);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => {
@@ -97,12 +103,22 @@ export default function RenalScore() {
             <span className="text-3xl font-black text-slate-800 dark:text-slate-100 block leading-tight">{formula}{suffix} = {total}</span>
             <span className={`text-sm font-semibold block mt-1 ${riskColor}`}>{risk}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

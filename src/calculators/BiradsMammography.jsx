@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle, IconInfo } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 // BI-RADS assessment is not a deterministic algorithm (unlike LI-RADS/PI-RADS/TI-RADS):
 // it is a radiologist gestalt synthesis of descriptors. This component therefore never
@@ -127,6 +127,7 @@ function CheckButtons({ options, values, onToggle }) {
 
 export default function BiradsMammography() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.biradsMammo;
 
   const [density, setDensity] = useState(null);
@@ -212,7 +213,7 @@ export default function BiradsMammography() {
 
   const assocLabelsList = () => c.assocFeatures.filter(a => assoc[a.key]).map(a => a.label);
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!finalCategory) return;
     const densityLabel = density ? c.densityOptions.find(o => o.key === density)?.label : '';
     const finding = findingLabel();
@@ -221,6 +222,11 @@ export default function BiradsMammography() {
     const categoryLine = `BI-RADS ${finalCategory} — ${catDesc}`;
     const managementLine = c.management[managementGroup(finalCategory)];
     const text = c.reportText(densityLabel, finding, assocText, categoryLine, managementLine);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
@@ -415,12 +421,22 @@ export default function BiradsMammography() {
             <span className={`text-3xl font-black block mt-1 leading-tight ${catColor(finalCategory)}`}>BI-RADS {finalCategory}</span>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.management[managementGroup(finalCategory)]}</p>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

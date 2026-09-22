@@ -3,10 +3,11 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function CADRADS() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.cadrads;
   const [stenosis, setStenosis] = useState(null);
   const [mods, setMods] = useState({ N: false, S: false, G: false, I: false, HRP: false, E: false });
@@ -16,9 +17,14 @@ export default function CADRADS() {
   const modString = [...Object.entries(mods).filter(([,v]) => v).map(([k]) => k), ...(pMod ? [pMod] : [])].join('/');
   const resultString = stenosis ? `CAD-RADS ${stenosis}${modString ? '/' + modString : ''}` : '';
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!stenosis) return;
     const text = c.reportText(stenosis, modString);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
@@ -74,12 +80,22 @@ export default function CADRADS() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultLabel}</span>
             <span className={`text-3xl font-black block mt-1 leading-tight ${riskColor}`}>{resultString}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

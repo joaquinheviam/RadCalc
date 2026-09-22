@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function PancreatitisAtlanta() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.pancreatitisAtlanta;
   const [necrosis, setNecrosis] = useState(null); // null | false | 'parenchymal'|'peripancreatic'|'combined'
   const [necrosisExtent, setNecrosisExtent] = useState(null); // null | 'under30' | 'over30'
@@ -42,7 +43,7 @@ export default function PancreatitisAtlanta() {
     : (collectionKey ? (multiplicity === 'multiple' ? c.finalDx.collectionPlural[collectionKey] : c.finalDx.collectionSingular[collectionKey]) : null);
   const finalDxText = (morphPhrase && collectionPhrase) ? `${morphPhrase} ${collectionPhrase}` : null;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const text = c.reportText(
       morphResult ? morphResult.label : t.common.notEvaluated,
       necrosisExtentLabel,
@@ -50,6 +51,11 @@ export default function PancreatitisAtlanta() {
       severityResult ? severityResult.label : t.common.notEvaluated,
       finalDxText
     );
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => {
@@ -167,12 +173,22 @@ export default function PancreatitisAtlanta() {
             )}
             <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">{severityResult ? `${c.severityTitle}: ${severityResult.label}` : c.finalDxTitle}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

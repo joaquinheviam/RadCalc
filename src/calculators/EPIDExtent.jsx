@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const N_SLICES = 10;
 const emptyArr = () => Array(N_SLICES).fill('');
@@ -12,6 +12,7 @@ const emptyGohLevels = () => Array(N_GOH_LEVELS).fill('');
 
 export default function EPIDExtent() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.epidExtent;
   const [method, setMethod] = useState('goh'); // 'goh' | 'tschaler'
 
@@ -55,7 +56,7 @@ export default function EPIDExtent() {
     : (fibAreas.some(v => v !== '') || totalAreas.some(v => v !== ''));
   const hasResult = method === 'goh' ? gohHasResult : tschalerValid;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const text = method === 'goh'
       ? c.reportTextGoh(
           gohAvg.toFixed(1),
@@ -64,6 +65,11 @@ export default function EPIDExtent() {
           gohCategory ? c[gohCategory + 'Label'] : c.gohIndeterminateLabel
         )
       : c.reportTextTschaler(tschalerPct.toFixed(1), nSlicesFilled, sumFib.toFixed(1), sumTotal.toFixed(1));
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => {
@@ -171,12 +177,22 @@ export default function EPIDExtent() {
               <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1">{c.tschalerGohRefNote}</span>
             </div>
           )}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const btnCls = (active) =>
   `w-full text-left p-2.5 rounded-lg border text-xs transition-all ${active ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`;
@@ -22,6 +22,7 @@ function YesNoRow({ label, value, onChange, yesLabel, noLabel }) {
 
 export default function Pecarn() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.pecarn;
 
   const [age, setAge] = useState(null); // 'under2' | 'over2'
@@ -90,12 +91,17 @@ export default function Pecarn() {
     low: { title: c.verdictLowTitle, risk: isUnder2 ? c.verdictLowRiskUnder2 : c.verdictLowRiskOver2, color: 'text-emerald-500', tone: 'emerald' },
   }[verdict];
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!verdictMeta) return;
     const lines = [verdictMeta.title, verdictMeta.risk];
     if (verdict === 'intermediate') lines.push(c.verdictIntNote);
     if (verdict === 'low') lines.push(c.verdictLowNote);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
@@ -161,12 +167,22 @@ export default function Pecarn() {
               {verdictMeta.title}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

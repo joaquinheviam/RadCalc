@@ -3,12 +3,13 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const FIELDS = ['margin', 'periosteal', 'endosteal', 'fracture', 'softTissue', 'priorCancer'];
 
 export default function BoneRADS() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.boneRads;
   const [margin, setMargin] = useState(null);
   const [periosteal, setPeriosteal] = useState(null);
@@ -58,9 +59,14 @@ export default function BoneRADS() {
     setNotEvaluable(false);
   };
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!category) return;
-    copyToClipboard(c.reportText(category.title, notEvaluable ? null : pointTotal), t.common.copiedOk, t.common.copiedErr);
+    return c.reportText(category.title, notEvaluable ? null : pointTotal);
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   const OptionGroup = ({ label, options, value, onChange }) => (
@@ -158,12 +164,22 @@ export default function BoneRADS() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultTitle}</span>
             <span className={`text-2xl font-black block mt-1 leading-tight ${colorFor(categoryKey)}`}>{category.title}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

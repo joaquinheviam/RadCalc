@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconBookOpen } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, ZoomableDiagram } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, ZoomableDiagram } from '../components/shared/index.js';
 
 const btnCls = (active) =>
   `w-full text-left p-2.5 rounded-lg border text-xs transition-all ${active ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`;
@@ -287,6 +287,7 @@ const VAGINA_CODES = { normal: 'V0', longNonObstructing: 'V1', longObstructing: 
 
 export default function MullerianAnomalies() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.mullerianAnomalies;
 
   /* ==================== Cuerpo uterino ==================== */
@@ -515,13 +516,18 @@ export default function MullerianAnomalies() {
   })();
 
   const resetAll = () => { resetBody(); setCervixFinding(null); setVaginaFinding(null); };
-  const handleCopyAll = () => {
+  const getReportTextAll = () => {
     const parts = [];
     if (bodyReportStr) parts.push(`${c.bodySectionTitle}: ${bodyReportStr}`);
     if (cervixReportStr) parts.push(`${c.cervixSectionTitle}: ${cervixReportStr}`);
     if (vaginaReportStr) parts.push(`${c.vaginaSectionTitle}: ${vaginaReportStr}`);
     if (parts.length === 0) return;
-    copyToClipboard(`${c.reportTitle}\n${parts.join('\n')}`, t.common.copiedOk, t.common.copiedErr);
+    return `${c.reportTitle}\n${parts.join('\n')}`;
+  };
+  const handleCopyAll = () => {
+    const text = getReportTextAll();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   // Bloque reutilizable: muestra el código compuesto ESHRE/ESGE (U#,C#,V#)
@@ -859,12 +865,22 @@ export default function MullerianAnomalies() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopyAll} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopyAll} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopyAll}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

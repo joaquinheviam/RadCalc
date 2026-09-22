@@ -3,10 +3,11 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function PSADCalculator() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.psad;
   const [ap, setAp] = useState('');
   const [tr, setTr] = useState('');
@@ -24,10 +25,15 @@ export default function PSADCalculator() {
   const volCatKey = vol <= 30 ? 'volCatNormal' : vol <= 49 ? 'volCatMild' : vol <= 69 ? 'volCatModerate' : 'volCatMarked';
   const volCatLabel = c[volCatKey];
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const text = showPsad
       ? c.reportText(vol.toFixed(1), volCatLabel, psa, psad.toFixed(2), isHighRisk ? c.highRisk : c.normal)
       : c.reportTextVolOnly(vol.toFixed(1), volCatLabel);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setAp(''); setTr(''); setLong(''); setPsa(''); setFactor(0.52); };
@@ -82,12 +88,22 @@ export default function PSADCalculator() {
               <span className="text-sm text-slate-400 dark:text-slate-500 block mt-2">{c.psaPending}</span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

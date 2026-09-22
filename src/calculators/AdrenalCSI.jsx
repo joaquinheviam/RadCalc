@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function AdrenalCSI() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.adrenalMri;
   const [method, setMethod] = useState('asr'); // 'asr' = señal corregida con órgano de referencia; 'sii' = solo señal adrenal
   const [refOrgan, setRefOrgan] = useState('spleen'); // 'spleen' (preferido) | 'muscle'
@@ -37,10 +38,15 @@ export default function AdrenalCSI() {
   const isAdenoma = method === 'sii' ? isAdenomaSii : isAdenomaAsr;
   const refLabel = refOrgan === 'spleen' ? c.referenceSpleen : c.referenceMuscle;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const text = method === 'sii'
       ? c.reportTextSii(lesionIn, lesionOut, sii.toFixed(1), isAdenomaSii ? c.conclSiiAdenoma : c.conclSiiNot)
       : c.reportText(lesionIn, lesionOut, refIn, refOut, refLabel, asr.toFixed(1), isAdenomaAsr ? c.conclAdenoma : c.conclNot);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setLesionIn(''); setLesionOut(''); setRefIn(''); setRefOut(''); };
@@ -113,12 +119,22 @@ export default function AdrenalCSI() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} disabled={!isValid} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} disabled={!isValid} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} disabled={!isValid} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

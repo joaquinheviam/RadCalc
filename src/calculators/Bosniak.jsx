@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { IconCopy, IconArrowRight, IconGitBranch } from '../components/icons/index.js';
-import { Card, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { IconArrowRight, IconGitBranch } from '../components/icons/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
 import { buildWizardTree, SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
 export default function Bosniak() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.bosniak;
   const algorithmTree = buildWizardTree(c, 'start');
   const [history, setHistory] = useState(['start']);
@@ -27,15 +28,19 @@ export default function Bosniak() {
       setSelectedLabels(selectedLabels.slice(0, -1));
     }
   };
-  const handleCopy = () => {
-    if (!isResult) return;
+  const getReportText = () => {
+    if (!isResult) return '';
     const path = selectedLabels.join(' -> ');
-    const text = c.reportText(path, currentNode.cat, currentNode.risk, currentNode.recs);
+    return c.reportText(path, currentNode.cat, currentNode.risk, currentNode.recs);
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
-    <div className="space-y-4 pb-4 animate-in fade-in">
+    <div className={`space-y-4 animate-in fade-in ${isResult ? 'pb-56' : 'pb-4'}`}>
       {history.length > 1 && (
         <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl text-xs text-slate-500 dark:text-slate-400">
           <div className="flex justify-between items-center mb-2">
@@ -76,14 +81,6 @@ export default function Bosniak() {
             <span className="block font-semibold mb-1 text-blue-800 dark:text-blue-300">{c.recommendation}:</span>
             {currentNode.recs}
           </div>
-          <div className="flex gap-2 pt-2">
-            <button onClick={handleReset} className="flex-1 py-3 rounded-xl font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">
-              {t.common.reset}
-            </button>
-            <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-              <IconCopy size={18} /> {t.common.copy}
-            </button>
-          </div>
         </div>
       )}
       <UsageNotes paragraphs={c.usage} />
@@ -96,6 +93,28 @@ export default function Bosniak() {
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />
+      {isResult && (
+        <StickyBar>
+          <div className="min-w-0 text-center">
+            <span className="text-2xl font-black block text-blue-600 dark:text-blue-400">{currentNode.cat}</span>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug mt-1">{currentNode.risk}</p>
+          </div>
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={handleReset} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
+          </div>
+        </StickyBar>
+      )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

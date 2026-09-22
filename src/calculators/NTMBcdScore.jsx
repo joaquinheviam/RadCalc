@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const BCD_LOBES = ['rul', 'rml', 'rll', 'lul', 'lingula', 'lll'];
 
 export default function NTMBcdScore() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.ntmBcd;
   const [lobes, setLobes] = useState(() => Object.fromEntries(BCD_LOBES.map(l => [l, { cavity: false, be: false }])));
   const hasAnyInput = Object.values(lobes).some(l => l.cavity || l.be);
@@ -19,9 +20,14 @@ export default function NTMBcdScore() {
   if (score >= 4) { riskKey = 'high'; riskLabel = c.highRisk; riskColor = 'text-red-500'; riskDesc = c.riskDesc.high; }
   else if (score >= 2) { riskKey = 'intermediate'; riskLabel = c.intermediateRisk; riskColor = 'text-amber-500'; riskDesc = c.riskDesc.intermediate; }
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lobeDetail = BCD_LOBES.map(l => `${c.lobeLabels[l]}: ${[lobes[l].cavity ? c.cavityLabel : null, lobes[l].be ? c.beLabel : null].filter(Boolean).join(' + ') || '-'}`).join('; ');
     const text = c.reportText(score, riskLabel, lobeDetail);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => setLobes(Object.fromEntries(BCD_LOBES.map(l => [l, { cavity: false, be: false }])));
@@ -54,12 +60,22 @@ export default function NTMBcdScore() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.scoreLabel}</span>
             <span className={`text-3xl font-black block mt-1 leading-tight ${riskColor}`}>{score}/6 — {riskLabel}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

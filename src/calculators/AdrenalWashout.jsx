@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 // Puntos de corte según Hevia-Morel et al. (revisión suprarrenal, en preparación),
 // que a su vez sintetizan: Caoili 2002 (15 min), Blake 2006 / Kumagae 2013 (10 min),
@@ -19,6 +19,7 @@ const PROTOCOL_LABEL_KEYS = { p15: 'protocol15', p10: 'protocol10', p5: 'protoco
 
 export default function AdrenalWashout() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.adrenalCt;
   const [protocol, setProtocol] = useState('p15');
   const [nc, setNc] = useState('');
@@ -103,7 +104,7 @@ export default function AdrenalWashout() {
     ? c.verdictAdenomaPrefix + verdictCaveatParts.map(p => p.text).join(c.verdictJoiner) + '.'
     : null;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [];
     if (canPlr) {
       lines.push(c.reportTitle(protocolLabel));
@@ -124,7 +125,12 @@ export default function AdrenalWashout() {
       if (size !== '') lines.push(c.reportLineSize(size));
       lines.push(c[ncTier]);
     }
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setProtocol('p15'); setNc(''); setVen(''); setDel(''); setSize(''); };
 
@@ -243,9 +249,10 @@ export default function AdrenalWashout() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
@@ -260,12 +267,22 @@ export default function AdrenalWashout() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

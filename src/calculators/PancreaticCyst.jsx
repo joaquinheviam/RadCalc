@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
 import { IconInfo } from '../components/icons/index.js';
 
 // Botón de dos opciones (Sí/No), estilo reutilizado de otras calculadoras (ej. LIRADS).
@@ -34,6 +34,7 @@ function OptionList({ label, options, value, onChange }) {
 
 export default function PancreaticCyst() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.pancreaticCyst;
 
   const [diagnosis, setDiagnosis] = useState('indeterminate'); // 'indeterminate' | 'sca' | 'pseudocyst' | 'spn'
@@ -380,7 +381,7 @@ export default function PancreaticCyst() {
   const showResult = bigLabel !== null;
   const toneClass = bigTone === 'red' ? 'text-red-500' : bigTone === 'amber' ? 'text-amber-500' : bigTone === 'slate' ? 'text-slate-500 dark:text-slate-400' : 'text-emerald-500';
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [c.reportTitle];
     lines.push(c.reportLineDiagnosis(diagnosisLabelText));
     if (size !== '') lines.push(c.reportLineSize(size));
@@ -412,7 +413,12 @@ export default function PancreaticCyst() {
     } else if (bigMsg) {
       lines.push(c.reportConclusion(bigMsg));
     }
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   const resetAll = () => {
@@ -617,12 +623,22 @@ export default function PancreaticCyst() {
             {bigMsg && <span className="text-base font-semibold block mt-2 leading-snug">{bigMsg}</span>}
             {extraNote && <span className="text-sm font-medium block mt-2 leading-snug text-amber-500">{extraNote}</span>}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

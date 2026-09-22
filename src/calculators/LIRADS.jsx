@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle, IconGitBranch } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
 import { SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
 // Mirrors the outer LR-TIV/LR-M gating verbatim. The size x APHE x feature-count
@@ -66,6 +66,7 @@ function adjustLiRadsForAF(baseCat, hasMalignantAF, hasBenignAF) {
 
 export default function LIRADS() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.lirads;
   const algorithmTree = buildLiradsTree(c, t);
   const [size, setSize] = useState(0);
@@ -96,7 +97,7 @@ export default function LIRADS() {
   const toggleAfMal = (key) => setAfMalignant(prev => ({ ...prev, [key]: !prev[key] }));
   const toggleAfBen = (key) => setAfBenignSel(prev => ({ ...prev, [key]: !prev[key] }));
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!finalCat) return;
     const sizeLabel = size === 1 ? c.size1 : size === 2 ? c.size2 : c.size3;
     const featLabels = Object.entries(feats).filter(([,v]) => v).map(([k]) => k === 'washout' ? c.featWashout : k === 'capsule' ? c.featCapsule : c.featGrowth);
@@ -113,6 +114,11 @@ export default function LIRADS() {
       afSummary = c.afSummaryText(baseCat, malLabels.length ? malLabels.join(', ') : t.common.none, benLabels.length ? benLabels.join(', ') : t.common.none);
     }
     const text = c.reportText(sizeLabel, aphe ? t.common.yes : t.common.no, featLabels.length ? featLabels.join(', ') : t.common.none, override, catLabel, afSummary);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => {
@@ -247,12 +253,22 @@ export default function LIRADS() {
             <span className={`text-4xl font-black block ${finalCat === 'LR-5' || finalCat === 'LR-M' || finalCat === 'LR-TIV' ? 'text-red-500' : finalCat === 'LR-4' ? 'text-orange-500' : finalCat === 'LR-3' ? 'text-amber-500' : 'text-emerald-500'}`}>{finalCat}</span>
             <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug mt-1">{c.categories[finalCat]}</p>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

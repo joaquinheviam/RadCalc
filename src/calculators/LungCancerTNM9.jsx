@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconBookOpen, IconCheckCircle } from '../components/icons/index.js';
-import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
+import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
 function OptionButtons({ options, value, onChange }) {
   return (
@@ -472,6 +472,7 @@ function getStage(t, n, m) {
 
 export default function LungCancerTNM9() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.lungCancerTNM9;
 
   // Carril de determinación del T: 'guided' (por defecto, arma el T a partir
@@ -641,7 +642,7 @@ export default function LungCancerTNM9() {
     return parts.join(' ');
   };
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!isComplete) return;
     const lines = [
       c.reportTitle,
@@ -653,7 +654,12 @@ export default function LungCancerTNM9() {
     if (!isTis && nVal) lines.push(`N: ${nVal} — ${nOptions.find((o) => o.key === nVal)?.label}`);
     lines.push(`M: ${mVal} — ${mOptions.find((o) => o.key === mVal)?.label}`);
     lines.push(`${c.resultLabel}: ${stage ? `${c.stageLabel} ${stage}` : c.stageNA}`);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
@@ -852,12 +858,22 @@ export default function LungCancerTNM9() {
               {stage ? `${c.stageLabel} ${stage}` : c.stageNA} ({tnmSummary()})
             </span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

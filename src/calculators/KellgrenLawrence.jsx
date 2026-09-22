@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 const ARTHROPLASTY_HR = {
   knee: { single: 19.3, paired: 4.8 },
@@ -14,6 +14,7 @@ const MANAGE_TONE = ['emerald', 'amber', 'amber', 'amber', 'red'];
 
 export default function KellgrenLawrence() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.kellgrenLawrence;
   const [jointIdx, setJointIdx] = useState(0);
   const [grade, setGrade] = useState(null);
@@ -38,7 +39,7 @@ export default function KellgrenLawrence() {
 
   const showManagement = joint.key === 'knee' && grade !== null;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [
       `${c.jointLabel}: ${joint.name} (${joint.projection})`,
       `${c.gradeLabel}: ${grade} — ${c.gradeDefs[grade]}`,
@@ -53,7 +54,12 @@ export default function KellgrenLawrence() {
       if (readingMethod === 'paired') lines.push(c.arthroplastyPairedCaveat);
     }
     if (showProgression) lines.push(c.progressionText);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setJointIdx(0); setGrade(null); setReadingMethod(null); setRoaDef(null); };
 
@@ -198,12 +204,22 @@ export default function KellgrenLawrence() {
               {c.gradeShort} {grade}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

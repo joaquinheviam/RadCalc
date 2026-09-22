@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, AlgorithmSchema } from '../components/shared/index.js';
+import { Card, Accordion, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, AlgorithmSchema } from '../components/shared/index.js';
 import { IconGitBranch } from '../components/icons/index.js';
 import { SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
@@ -151,6 +151,7 @@ function cclsCompute(t2, cmp, ans) {
 
 export default function CCLS() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.ccls;
   const algorithmTree = buildCclsTree(c, t);
   const [gate, setGate] = useState(null);
@@ -221,7 +222,7 @@ export default function CCLS() {
   const t2Label = t2 ? c.t2Options.find(o => o.key === t2).label : null;
   const cmpLabel = cmp ? c.cmpOptions.find(o => o.key === cmp).label : null;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!result) return;
     const parts = [t2Label, cmpLabel];
     if (fat !== null) parts.push(`${c.fatQ.split('?')[0]}? ${fat === 'y' ? t.common.yes : t.common.no}`);
@@ -231,6 +232,11 @@ export default function CCLS() {
     if (homog !== null) parts.push(`${c.homogQ.split('?')[0]}? ${homog === 'y' ? t.common.yes : t.common.no}`);
     const path = parts.filter(Boolean).join('; ');
     const text = c.reportText(path, result.score, likertLabel, diffText, mgmtText);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
@@ -405,12 +411,22 @@ export default function CCLS() {
             <span className={`text-4xl font-black block ${scoreColor}`}>ccLS {result.score}/5</span>
             <span className={`text-sm font-semibold block mt-1 ${scoreColor}`}>{likertLabel}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={handleReset} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={handleReset} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

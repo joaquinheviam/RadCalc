@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
 import { IconGitBranch } from '../components/icons/index.js';
 import { SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 
@@ -56,6 +56,7 @@ function buildPiradsTree(c) {
 
 export default function PIRADS() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.pirads;
   const algorithmTree = buildPiradsTree(c);
   const [zone, setZone] = useState('pz');
@@ -73,7 +74,7 @@ export default function PIRADS() {
     else if (t2 > 0) finalScore = t2;
   }
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!finalScore) return;
     const txtZone = zone === 'pz' ? c.pz : c.tz;
     const text = c.reportText(
@@ -83,6 +84,11 @@ export default function PIRADS() {
       dce === '+' ? c.dcePos : dce === '-' ? c.dceNeg : c.naText,
       finalScore
     );
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setZone('pz'); setDwi(0); setT2(0); setDce(''); setEpe(''); };
@@ -194,12 +200,22 @@ export default function PIRADS() {
               PI-RADS {finalScore}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

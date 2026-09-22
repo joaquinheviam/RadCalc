@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
 import { IconClock } from '../components/icons/index.js';
 
 // Lista de botones de opción única (mismo patrón que PancreaticCyst/PancreasResect).
@@ -60,6 +60,7 @@ function daysBetween(d1, d2) {
 
 export default function VDT() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.vdt;
 
   const [noduleType, setNoduleType] = useState(null); // 'solid' | 'partSolid' | 'nonSolid'
@@ -156,7 +157,7 @@ export default function VDT() {
   const showInterpretation = hasAllInputs;
   const showResult = hasAllInputs;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [c.title];
     if (isGrowth) lines.push(`${c.resultVdtLabel} ${Math.round(vdtDays)} d`);
     else if (isShrinkage) lines.push(`${c.resultShrinkageLabel} ${Math.round(vhtDays)} d`);
@@ -169,7 +170,12 @@ export default function VDT() {
     if (estiBucket) lines.push(`${c.estiFrameTitle}: ${c[`esti${estiBucket}ThresholdNote`]}`);
     if (btsBand) lines.push(`${c.btsFrameTitle}: ${c[`btsBand${btsBand}Note`]}`);
     if (summaryNote) lines.push(summaryNote);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   const resetAll = () => {
@@ -358,12 +364,22 @@ export default function VDT() {
             {isStable && <span className={`text-xl font-bold ${summaryToneClass}`}>{c.resultStableLabel}</span>}
             {summaryNote && <span className="text-sm font-semibold block mt-2 leading-snug text-slate-600 dark:text-slate-300">{summaryNote}</span>}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 export default function MRIFatFraction() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.mriFf;
   const [method, setMethod] = useState('ff'); // 'ff' = single dual-echo; 'pct' = spleen-normalized
   const [inPhase, setInPhase] = useState('');
@@ -40,10 +41,15 @@ export default function MRIFatFraction() {
     else category = 'ffCatMarked';
   }
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const text = method === 'ff'
       ? c.reportText(ff.toFixed(1), inPhase, outPhase, c[category])
       : c.reportTextPct(fp.toFixed(1), inPhase, outPhase, spleenIn, spleenOut, c[category]);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setMethod('ff'); setInPhase(''); setOutPhase(''); setSpleenIn(''); setSpleenOut(''); };
@@ -115,12 +121,22 @@ export default function MRIFatFraction() {
             )}
             {!isValid && <span className="text-sm text-slate-400 block mt-1">{t.common.notEvaluated}</span>}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} disabled={!isValid} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} disabled={!isValid} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} disabled={!isValid} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

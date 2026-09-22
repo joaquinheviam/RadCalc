@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, Accordion, NumberField, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, Accordion, NumberField, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function GradeSelector({ label, value, onChange, defs }) {
   return (
@@ -35,6 +35,7 @@ const TONE = { nonspecific: 'emerald', halo: 'amber', extensive: 'red' };
 
 export default function FazekasScale() {
   const { t } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.fazekasScale;
   const [pvh, setPvh] = useState(null);
   const [dwmh, setDwmh] = useState(null);
@@ -45,7 +46,7 @@ export default function FazekasScale() {
   const interp = hasAny ? getInterpretation(pvh, dwmh) : null;
   const interpText = { nonspecific: c.interpNonspecific, halo: c.interpHalo, extensive: c.interpExtensive };
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [];
     if (hasAny) {
       lines.push(
@@ -59,7 +60,12 @@ export default function FazekasScale() {
       lines.push(`${c.subtypeLabel}: ${label} — ${c.subtypeTexts[subtype]}`);
     }
     if (stage !== '') lines.push(`${c.stageLabel}: ${stage}`);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setPvh(null); setDwmh(null); setSubtype(null); setStage(''); };
   const hasReport = hasAny || subtype !== null || stage !== '';
@@ -113,12 +119,22 @@ export default function FazekasScale() {
               {stage !== '' && (hasAny || subtype ? ' — ' : '') + `${c.stageShort} ${stage}`}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

@@ -5,6 +5,8 @@ import {
   StickyBar,
   ResetIconButton,
   CopyIconButton,
+  PreviewIconButton,
+  ReportPreviewModal,
   InfoBox,
   References,
   UsageNotes,
@@ -75,6 +77,7 @@ function OptionList({ label, options, value, onChange }) {
 export default function ILDClassifier() {
   const { t, lang } = useContext(LangContext);
   const c = t.calc.ildClassifier;
+  const [showPreview, setShowPreview] = useState(false);
 
   // Estados del Formulario
   // Etapa 1 (ATS 2025 ILA/ILD): dominio clínico-fisiológico y extensión tomográfica
@@ -484,7 +487,7 @@ export default function ILDClassifier() {
   // descartar un componente de infección o exacerbación aguda sobreagregada.
   const showGGOCaution = entityType === 'EPID' && (extensiveGGO || feature === 'ggo');
 
-  const handleCopy = () => {
+  const getReportText = () => {
     const lines = [
       c.reportTitle,
       `${c.reportEntityLabel} ${entityLabel}`,
@@ -508,7 +511,12 @@ export default function ILDClassifier() {
       }
     }
     lines.push(c.reportFooter);
-    copyToClipboard(lines.join('\n'), t.common.copiedOk, t.common.copiedErr);
+    return lines.join('\n');
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
@@ -796,9 +804,10 @@ export default function ILDClassifier() {
               <span className={`text-xs font-semibold uppercase tracking-wider ${entityType === 'NORMAL_OR_MINIMAL' ? 'text-slate-500 dark:text-slate-400' : 'text-amber-600 dark:text-amber-400'}`}>
                 {entityLabel}
               </span>
-              <div className="flex gap-2">
-                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
-                <ResetIconButton onClick={handleReset} label={t.common.reset} />
+              <div className="flex items-start gap-5">
+                <ResetIconButton onClick={handleReset} label={t.common.reset} caption={t.common.reset} />
+                <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+                <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
               </div>
             </div>
 
@@ -894,13 +903,23 @@ export default function ILDClassifier() {
                 {entityType === 'NORMAL_OR_MINIMAL' ? c.resNormal : patternLabelFinal}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
-              <ResetIconButton onClick={handleReset} label={t.common.reset} />
+            <div className="flex items-start gap-5">
+              <ResetIconButton onClick={handleReset} label={t.common.reset} caption={t.common.reset} />
+              <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+              <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
             </div>
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

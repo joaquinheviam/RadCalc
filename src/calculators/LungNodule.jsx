@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function fleischnerRec(c, type, count, risk, size) {
   if (type === 'solid') {
@@ -41,6 +41,7 @@ function nccnRec(c, type, count, risk, size) {
 
 export default function LungNodule() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.lungNodule;
   // Paso 1: cribado de nódulo perifisural (PFN / ganglio linfático intrapulmonar), Schreuder et al. 2020.
   // pfnStage: 'gate1' | 'gate2' | 'gate3' | 'result-pfn' | 'result-notpfn' | 'skipped'
@@ -69,13 +70,23 @@ export default function LungNodule() {
   const countLabelText = count === 'single' ? c.countSingle : c.countMultiple;
   const riskLabelText = risk === 'high' ? c.riskHigh : c.riskLow;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!rec) return;
     const text = c.reportText(typeLabelText, countLabelText, size, type === 'solid' ? riskLabelText : '', rec, frameworkLabel);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
-  const handleCopyPfn = () => {
+  const getReportTextPfn = () => {
     const text = c.pfnReportText(pfnStage === 'result-pfn' ? c.pfnResultTitle : c.pfnNotResultTitle);
+    return text;
+  };
+  const handleCopyPfn = () => {
+    const text = getReportTextPfn();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
@@ -214,12 +225,22 @@ export default function LungNodule() {
             <span className="text-2xl font-black text-slate-800 dark:text-slate-100 block leading-tight">{rec}</span>
             <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">{resultLabel}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

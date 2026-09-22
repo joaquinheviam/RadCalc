@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 
 function liradsTrCatColor(key) {
   if (key === 'viable') return 'text-red-500';
@@ -24,6 +24,7 @@ function liradsTrCatBorder(key, active) {
 
 export default function LIRADSTreatmentResponse() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.liradsTr;
   const [core, setCore] = useState(null); // 'nonradiation' | 'radiation'
   const [category, setCategory] = useState(null);
@@ -41,11 +42,16 @@ export default function LIRADSTreatmentResponse() {
   const handleCoreChange = (val) => { setCore(val); setCategory(null); setAfDiffusion(false); setAfT2(false); };
   const handleCategoryChange = (key) => { setCategory(key); setAfDiffusion(false); setAfT2(false); };
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!finalCatObj) return;
     const coreLabel = core === 'nonradiation' ? c.coreNonradiation : c.coreRadiation;
     const afNote = afApplied ? c.afUpgradedNote(selectedCatObj.label) : '';
     const text = c.reportText(coreLabel, finalCatObj.label, afNote);
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setCore(null); setCategory(null); setAfDiffusion(false); setAfT2(false); };
@@ -117,12 +123,22 @@ export default function LIRADSTreatmentResponse() {
           <div className="min-w-0 text-center">
             <span className={`text-4xl font-black block ${liradsTrCatColor(finalCatObj.key)}`}>LR-TR {finalCatObj.label}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

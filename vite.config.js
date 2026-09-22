@@ -56,6 +56,7 @@ export default defineConfig({
         short_name: 'RadioCalc',
         description:
           'Calculadoras radiológicas clínicas: PSAD, fracción grasa por RM, lavado adrenal, siderosis hepática, TI-RADS, O-RADS, PI-RADS y más.',
+        categories: ['medical', 'health', 'utilities'],
         theme_color: '#0f172a',
         background_color: '#0f172a',
         display: 'standalone',
@@ -67,6 +68,56 @@ export default defineConfig({
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
           { src: 'icons/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+        // Accesos directos (jump list en Windows, menú de mantener presionado en Android)
+        // a algunas de las calculadoras más usadas.
+        shortcuts: [
+          {
+            name: 'PSAD y Volumen Prostático',
+            short_name: 'PSAD',
+            url: `${BASE_PATH}es/calc/psad`,
+            description: 'Volumen prostático (fórmula elipsoide) y densidad de PSA',
+            icons: [{ src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'ACR TI-RADS (Tiroides)',
+            short_name: 'TI-RADS',
+            url: `${BASE_PATH}es/calc/tirads`,
+            description: 'Estratificación de riesgo de nódulos tiroideos por ecografía',
+            icons: [{ src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'PI-RADS v2.1 (Próstata)',
+            short_name: 'PI-RADS',
+            url: `${BASE_PATH}es/calc/pirads`,
+            description: 'Estratificación de riesgo de cáncer de próstata por RM multiparamétrica',
+            icons: [{ src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'ACR O-RADS MRI (Ovario)',
+            short_name: 'O-RADS',
+            url: `${BASE_PATH}es/calc/orads`,
+            description: 'Estratificación de riesgo de masas anexiales por RM',
+            icons: [{ src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' }],
+          },
+        ],
+        // Screenshots para el diálogo de instalación enriquecido (Chrome/Edge) y para
+        // que PWABuilder pueda usarlas al armar la ficha de las tiendas.
+        screenshots: [
+          {
+            src: 'screenshots/mobile-home.png',
+            sizes: '420x900',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Listado de calculadoras en el celular',
+          },
+          {
+            src: 'screenshots/desktop-home.png',
+            sizes: '1280x800',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Listado de calculadoras en escritorio',
+          },
         ],
       },
       workbox: {

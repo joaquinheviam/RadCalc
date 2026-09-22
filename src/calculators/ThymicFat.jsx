@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconGitBranch, IconArrowRight, IconChevronLeft, IconRefresh, IconInfo } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion } from '../components/shared/index.js';
 
 // SII > 8.92% (Priola et al., Radiology 2015): 100% sensibilidad/especificidad
 // para hiperplasia tímica / timo normal; no requiere tejido de referencia y no
@@ -248,6 +248,7 @@ function AggressiveAdc({ a }) {
 
 export default function ThymicFat() {
   const { t, lang } = useLang();
+  const [showPreview, setShowPreview] = useState(false);
   const c = t.calc.thymic;
   const [thymusIn, setThymusIn] = useState('');
   const [thymusOut, setThymusOut] = useState('');
@@ -304,7 +305,7 @@ export default function ThymicFat() {
 
   const result = scenarioMap ? scenarioMap[scenario] : null;
 
-  const handleCopy = () => {
+  const getReportText = () => {
     if (!result) return;
     const text = c.reportText(
       thymusIn,
@@ -315,6 +316,11 @@ export default function ThymicFat() {
       sii.toFixed(1),
       result.title
     );
+    return text;
+  };
+  const handleCopy = () => {
+    const text = getReportText();
+    if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
   const resetAll = () => { setThymusIn(''); setThymusOut(''); setMuscleIn(''); setMuscleOut(''); };
@@ -386,12 +392,22 @@ export default function ThymicFat() {
             <span className={`text-4xl font-black block ${siiBenign ? 'text-emerald-500' : 'text-red-500'}`}>{sii.toFixed(1)}%</span>
             <span className={`text-base font-semibold block mt-1 ${result.tone === 'red' ? 'text-red-500' : result.tone === 'amber' ? 'text-amber-500' : 'text-emerald-500'}`}>{result.title}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopy} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getReportText()}
+        onCopy={handleCopy}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }
