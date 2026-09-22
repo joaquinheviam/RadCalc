@@ -877,7 +877,7 @@ export default function MullerianAnomalies() {
         onClose={() => setShowPreview(false)}
         closeLabel={t.common.closeAria}
         title={t.common.reportPreviewTitle}
-        reportText={getReportText()}
+        reportText={getReportTextAll()}
         onCopy={handleCopyAll}
         copyLabel={t.common.copyReport}
       />
