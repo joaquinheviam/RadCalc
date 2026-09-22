@@ -1,4 +1,12 @@
 export const REFERENCES = {
+  brainAvm: [
+    { text: 'Spetzler RF, Martin NA. A proposed grading system for arteriovenous malformations. J Neurosurg. 1986;65(4):476-483.', doi: '10.3171/jns.1986.65.4.0476' },
+    { text: 'Lawton MT, Kim H, McCulloch CE, Mikhak B, Young WL. A supplementary grading scale for selecting patients with brain arteriovenous malformations for surgery. Neurosurgery. 2010;66(4):702-713.', doi: '10.1227/01.NEU.0000367555.16733.E1' },
+    { text: 'Kim H, Abla AA, Nelson J, McCulloch CE, Bervini D, Morgan MK, Stapleton C, Walcott BP, Ogilvy CS, Spetzler RF, Lawton MT. Validation of the Supplemented Spetzler-Martin Grading System for Brain Arteriovenous Malformations in a Multicenter Cohort of 1009 Surgical Patients. Neurosurgery. 2015;76(1).', doi: '10.1227/NEU.0000000000000556' },
+    { text: 'Derdeyn CP, Zipfel GJ, Albuquerque FC, et al. Management of Brain Arteriovenous Malformations: A Scientific Statement for Healthcare Professionals From the American Heart Association/American Stroke Association. Stroke. 2017;48:e200-e224.', doi: '10.1161/STR.0000000000000134' },
+    { text: 'Chen Y, Han H, Meng X, et al. Development and Validation of a Scoring System for Hemorrhage Risk in Brain Arteriovenous Malformations. JAMA Netw Open. 2023;6(3):e231070.', doi: '10.1001/jamanetworkopen.2023.1070' },
+    { text: 'Grüter BE, Sun W, Fierstra J, Regli L, Germans MR. Systematic review of brain arteriovenous malformation grading systems evaluating microsurgical treatment recommendation. Neurosurg Rev. 2021;44:2571-2582.', doi: '10.1007/s10143-020-01464-3' },
+  ],
   abc2Hematoma: [
     { text: 'Kothari RU, Brott T, Broderick JP, Barsan WG, Sauerbeck LR, Zuccarello M, Khoury J. The ABCs of measuring intracerebral hemorrhage volumes. Stroke. 1996;27(8):1304-1305.', doi: '10.1161/01.str.27.8.1304' },
     { text: 'Chaisawasthomrong C, Boongird A. Determining the optimal hematoma volume-based thresholds for surgical and medical strategies in basal ganglia hemorrhage. Neurosurg Rev. 2025;48:255.', doi: '10.1007/s10143-025-03403-6' },

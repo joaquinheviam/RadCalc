@@ -65,6 +65,7 @@ const ASPECTS = lazy(() => import('./ASPECTS.jsx'));
 const TLICS = lazy(() => import('./TLICS.jsx'));
 const SINS = lazy(() => import('./SINS.jsx'));
 const Pecarn = lazy(() => import('./Pecarn.jsx'));
+const BrainAVM = lazy(() => import('./BrainAVM.jsx'));
 const AAST2018 = lazy(() => import('./AAST2018.jsx'));
 const CRADS2023 = lazy(() => import('./CRADS2023.jsx'));
 const RectalCancerMRI = lazy(() => import('./RectalCancerMRI.jsx'));
@@ -137,6 +138,7 @@ export const calculators = [
   { id: 'sahGrading', catKey: 'neuro', component: SAHGrading },
   { id: 'sins', catKey: 'neuro', component: SINS },
   { id: 'pecarn', catKey: 'neuro', component: Pecarn },
+  { id: 'brainAvm', catKey: 'neuro', component: BrainAVM },
 ];
 
 export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro'];
