@@ -3328,8 +3328,8 @@ export default {
       ],
     },
     adnexalRisk: {
-      title: 'O-RADS US e IOTA (Ultrasonido)',
-      subtitle: 'Estratificación de riesgo de malignidad para masas anexiales por ultrasonido — O-RADS US v2022 e IOTA Simple Rules.',
+      title: 'IOTA/ADNEX y O-RADS (Ultrasonido)',
+      subtitle: 'Estratificación de riesgo de malignidad para masas anexiales por ultrasonido — IOTA ADNEX, IOTA Simple Rules y O-RADS US v2022.',
       toolTitle: 'Herramienta utilizada',
       selectToolQ: '¿Qué sistema desea utilizar?',
       resultLabel: 'Veredicto',

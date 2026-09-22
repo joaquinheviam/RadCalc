@@ -3326,8 +3326,8 @@ export default {
       ],
     },
     adnexalRisk: {
-      title: 'O-RADS US and IOTA (Ultrasound)',
-      subtitle: 'Malignancy risk stratification for adnexal masses on ultrasound — O-RADS US v2022 and IOTA Simple Rules.',
+      title: 'IOTA/ADNEX and O-RADS (Ultrasound)',
+      subtitle: 'Malignancy risk stratification for adnexal masses on ultrasound — IOTA ADNEX, IOTA Simple Rules, and O-RADS US v2022.',
       toolTitle: 'Tool used',
       selectToolQ: 'Which system do you want to use?',
       resultLabel: 'Verdict',
