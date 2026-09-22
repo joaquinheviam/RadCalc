@@ -22,3 +22,4 @@ export { default as IconGitBranch } from './IconGitBranch.jsx';
 export { default as IconExternalLink } from './IconExternalLink.jsx';
 export { default as IconGlobe } from './IconGlobe.jsx';
 export { default as IconMaximize } from './IconMaximize.jsx';
+export { default as IconEye } from './IconEye.jsx';

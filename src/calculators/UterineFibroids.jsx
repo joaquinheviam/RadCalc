@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
 const FIGO_SUBMUCOSAL_TYPES = ['0', '1', '2'];
 const FIGO_OTHER_TYPES = ['3', '4', '5', '6', '7', '8'];
@@ -150,6 +150,7 @@ function FigoFibroidDiagram({ labels, typeLabels, highlightType = null, onSelect
 export default function UterineFibroids() {
   const { t } = useLang();
   const c = t.calc.leiomyoma;
+  const [showPreview, setShowPreview] = useState(false);
 
   const figoDiagramTypeLabels = {};
   Object.values(c.figoTypes).forEach((v) => { figoDiagramTypeLabels[v.code] = v.label; });
@@ -309,10 +310,16 @@ export default function UterineFibroids() {
   /* ---------- Combinado: reset total, copia total, sticky bar ---------- */
   const resetAll = () => { resetFigo(); resetRisk(); };
   const hasAnyResult = !!(figoTypeObj || resultObj);
-  const handleCopyAll = () => {
+  // Única fuente de verdad para el texto del informe: la usan tanto el botón
+  // de copiar como el modal de vista previa (Mostrar informe).
+  const getFullReportText = () => {
     const parts = [figoReportStr, riskReportStr, variantReportStr].filter(Boolean);
-    if (parts.length === 0) return;
-    copyToClipboard(parts.join('\n\n'), t.common.copiedOk, t.common.copiedErr);
+    return parts.join('\n\n');
+  };
+  const handleCopyAll = () => {
+    const text = getFullReportText();
+    if (!text) return;
+    copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
   return (
@@ -559,12 +566,22 @@ export default function UterineFibroids() {
               <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 block mt-1">{c.variants[variant]}</span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <ResetIconButton onClick={resetAll} label={t.common.reset} />
-            <CopyIconButton onClick={handleCopyAll} label={t.common.copyReport} />
+          <div className="flex items-start gap-5 shrink-0">
+            <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
+            <PreviewIconButton onClick={() => setShowPreview(true)} label={t.common.showReport} caption={t.common.showReportCaption} />
+            <CopyIconButton onClick={handleCopyAll} label={t.common.copyReport} caption={t.common.copy} />
           </div>
         </StickyBar>
       )}
+      <ReportPreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        closeLabel={t.common.closeAria}
+        title={t.common.reportPreviewTitle}
+        reportText={getFullReportText()}
+        onCopy={handleCopyAll}
+        copyLabel={t.common.copyReport}
+      />
     </div>
   );
 }

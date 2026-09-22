@@ -21,3 +21,5 @@ export { default as Changelog } from './Changelog.jsx';
 export { default as AboutInfo } from './AboutInfo.jsx';
 export { default as Sponsors } from './Sponsors.jsx';
 export { default as ZoomableDiagram } from './ZoomableDiagram.jsx';
+export { default as PreviewIconButton } from './PreviewIconButton.jsx';
+export { default as ReportPreviewModal } from './ReportPreviewModal.jsx';
