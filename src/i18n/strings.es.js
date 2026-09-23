@@ -5,6 +5,14 @@ export default {
   metaDescription: 'Calculadoras radiológicas basadas en evidencia para la práctica clínica diaria, con algoritmos según las guías de las principales sociedades científicas. Apoyo para el manejo de hallazgos incidentales. Gratis y sin publicidad.',
   common: {
     categoriesNavAria: 'Ir a una especialidad',
+    langPromptTitle: '¿Necesitas RadioCalc en tu idioma?',
+    langPromptTitleNamed: (name) => `¿Necesitas RadioCalc en ${name}?`,
+    langPromptBody: 'Escríbenos y vemos cómo podemos ayudarte.',
+    langPromptEmail: 'Escribir correo',
+    langPromptCopy: 'Copiar mensaje',
+    langPromptDismiss: 'No, gracias',
+    langPromptCopiedOk: 'Mensaje copiado. Pégalo en tu correo y envíalo a la dirección indicada.',
+    otherLanguageLink: '¿Otro idioma?',
     negativeHint: 'Toca ± para cambiar a valor negativo',
     negativeCaption: 'Negativo',
     diagramZoom: {

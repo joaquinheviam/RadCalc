@@ -13,6 +13,8 @@ import { calcMetaDescription } from './utils/calcMetaDescription.js';
 import { Logo, SiteFooter, Sponsors, AboutInfo } from './components/shared/index.js';
 import DonationPrompt from './components/shared/DonationPrompt.jsx';
 import CategoryNav from './components/shared/CategoryNav.jsx';
+import LanguageRequestPrompt from './components/shared/LanguageRequestPrompt.jsx';
+import { useLanguageRequestPrompt } from './hooks/useLanguageRequestPrompt.js';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy } from './components/icons/index.js';
 import { buildMailto, buildMailTextForClipboard } from './utils/mailto.js';
 import { copyToClipboard } from './utils/clipboard.js';
@@ -148,7 +150,9 @@ function AppShell() {
     }
   }, [lang, activeEntry, t]);
 
+  const { prompt: langPrompt, registerToggle, close: closeLangPrompt } = useLanguageRequestPrompt();
   const toggleLang = () => {
+    registerToggle();
     const other = lang === 'es' ? 'en' : 'es';
     navigate(activeEntry ? `/${other}/calc/${activeEntry.id}/` : `/${other}/`);
   };
@@ -378,6 +382,7 @@ function AppShell() {
       <InstallPromptIOS />
       <InstallPromptAndroid />
       <DonationPrompt />
+      <LanguageRequestPrompt prompt={langPrompt} onClose={closeLangPrompt} />
     </LangContext.Provider>
   );
 }
