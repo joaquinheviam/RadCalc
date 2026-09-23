@@ -8,6 +8,9 @@ import { useEffect, useRef, useState } from 'react';
 // espacio para la barra superior y esta fila.
 export default function CategoryNav({ categories, ariaLabel }) {
   const [active, setActive] = useState(null);
+  // Difuminado en los bordes de la fila (solo celular): indica que hay más
+  // botones hacia ese lado; desaparece al llegar al extremo.
+  const [fade, setFade] = useState({ left: false, right: false });
   const rowRef = useRef(null);
   const chipRefs = useRef({});
 
@@ -15,10 +18,15 @@ export default function CategoryNav({ categories, ariaLabel }) {
   useEffect(() => {
     const sections = categories.map((cat) => document.getElementById(`cat-${cat.key}`)).filter(Boolean);
     if (!sections.length || typeof IntersectionObserver === 'undefined') return undefined;
+    // Se guarda el estado de todas las secciones (el observador solo informa
+    // las que cambian) y se marca la de más arriba dentro de la franja visible.
+    const visibleIds = new Set();
     const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      if (visible.length) setActive(visible[0].target.id.replace('cat-', ''));
-    }, { rootMargin: '-130px 0px -55% 0px' });
+      entries.forEach((e) => { if (e.isIntersecting) visibleIds.add(e.target.id); else visibleIds.delete(e.target.id); });
+      const top = sections.filter((s) => visibleIds.has(s.id))
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
+      if (top) setActive(top.id.replace('cat-', ''));
+    }, { rootMargin: '-110px 0px -55% 0px' });
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
   }, [categories]);
@@ -32,6 +40,19 @@ export default function CategoryNav({ categories, ariaLabel }) {
     row.scrollTo({ left: chip.offsetLeft - row.clientWidth / 2 + chip.clientWidth / 2, behavior: 'smooth' });
   }, [active]);
 
+  useEffect(() => {
+    const row = rowRef.current;
+    if (!row) return undefined;
+    const update = () => setFade({
+      left: row.scrollLeft > 4,
+      right: row.scrollLeft + row.clientWidth < row.scrollWidth - 4,
+    });
+    update();
+    row.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => { row.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
+  }, [categories]);
+
   const goTo = (key) => {
     const el = document.getElementById(`cat-${key}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -40,6 +61,7 @@ export default function CategoryNav({ categories, ariaLabel }) {
 
   return (
     <nav aria-label={ariaLabel} className="sticky top-[60px] z-40 -mx-4 px-4 py-2 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
+      <div className="relative">
       <div ref={rowRef} className="flex gap-2 overflow-x-auto no-scrollbar md:flex-wrap md:justify-center md:overflow-visible">
         {categories.map((cat) => (
           <button
@@ -57,6 +79,9 @@ export default function CategoryNav({ categories, ariaLabel }) {
             <span className={`text-[10px] font-bold ${active === cat.key ? 'text-blue-100' : 'text-slate-400 dark:text-slate-500'}`}>{cat.count}</span>
           </button>
         ))}
+      </div>
+      <div aria-hidden="true" className={`pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-slate-50 dark:from-slate-900 to-transparent transition-opacity md:hidden ${fade.left ? 'opacity-100' : 'opacity-0'}`} />
+      <div aria-hidden="true" className={`pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-slate-50 dark:from-slate-900 to-transparent transition-opacity md:hidden ${fade.right ? 'opacity-100' : 'opacity-0'}`} />
       </div>
     </nav>
   );
