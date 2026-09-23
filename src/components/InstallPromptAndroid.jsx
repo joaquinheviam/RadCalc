@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useContext } from 'react';
 import { LangContext } from '../i18n/LangContext.js';
+import { useInstallState, promptInstall } from '../pwa/installPrompt.js';
 
 // Icono simple de "instalar" (flecha hacia una bandeja), para no depender
 // de más iconos del proyecto en un componente tan pequeño.
@@ -12,58 +13,30 @@ const DownloadIcon = () => (
 // Contraparte de InstallPromptIOS.jsx para Chrome/Edge/Samsung Internet en
 // Android: estos navegadores exponen el evento nativo `beforeinstallprompt`
 // cuando la PWA es instalable (manifest + service worker ya los provee
-// vite-plugin-pwa). Interceptamos ese evento para mostrar un banner con el
-// mismo estilo visual que el de iOS, en vez del mini-infobar genérico del
-// navegador. Firefox para Android no dispara este evento: en ese caso el
+// vite-plugin-pwa). El evento se captura en src/pwa/installPrompt.js y aquí
+// se muestra un banner con el mismo estilo visual que el de iOS, en vez del
+// mini-infobar genérico del navegador. Firefox para Android no dispara este evento: en ese caso el
 // banner simplemente nunca aparece (no hay downgrade visible).
 export default function InstallPromptAndroid() {
   const { t } = useContext(LangContext);
   const c = t.common.installAndroid;
-  const [showPrompt, setShowPrompt] = useState(false);
-  const deferredPromptRef = useRef(null);
-
-  useEffect(() => {
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    const hasDismissed = localStorage.getItem('radiocalc:android-prompt-dismissed');
-    if (isStandalone || hasDismissed) return;
-
-    const handleBeforeInstallPrompt = (event) => {
-      event.preventDefault();
-      deferredPromptRef.current = event;
-      setShowPrompt(true);
-    };
-    const handleAppInstalled = () => {
-      setShowPrompt(false);
-      deferredPromptRef.current = null;
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
+  const { canPrompt, installed } = useInstallState();
+  const [dismissed, setDismissed] = useState(() => {
+    try { return Boolean(localStorage.getItem('radiocalc:android-prompt-dismissed')); } catch { return false; }
+  });
+  const showPrompt = canPrompt && !installed && !dismissed;
 
   const handleDismiss = () => {
-    setShowPrompt(false);
-    localStorage.setItem('radiocalc:android-prompt-dismissed', 'true');
+    setDismissed(true);
+    try { localStorage.setItem('radiocalc:android-prompt-dismissed', 'true'); } catch { /* sin almacenamiento */ }
   };
 
+  // Se acepte o no la instalación, el evento ya se consumió: se oculta el
+  // banner (si la persona la rechazó, se respeta igual que con "Ahora no").
+  // El botón "Instalar" de la barra superior sigue disponible.
   const handleInstall = async () => {
-    const deferredPrompt = deferredPromptRef.current;
-    if (!deferredPrompt) {
-      setShowPrompt(false);
-      return;
-    }
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    // Se acepte o no la instalación, el evento ya se consumió una vez:
-    // ocultamos el banner (si el usuario la rechazó, respetamos su
-    // elección igual que con "Ahora no").
-    deferredPromptRef.current = null;
-    setShowPrompt(false);
-    localStorage.setItem('radiocalc:android-prompt-dismissed', 'true');
+    await promptInstall();
+    handleDismiss();
   };
 
   if (!showPrompt) return null;
@@ -83,6 +56,7 @@ export default function InstallPromptAndroid() {
         </div>
 
         <p className="text-xs text-slate-300">{c.desc}</p>
+        <p className="text-[11px] text-slate-400">{t.common.installGuide.later}</p>
 
         <div className="flex justify-end gap-2">
           <button
