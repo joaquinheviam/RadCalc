@@ -42,9 +42,9 @@ export default function SiteFooter() {
       {openModal === 'sponsors' && (
         <Sponsors onClose={() => setOpenModal(null)} onOpenAbout={() => setOpenModal('about')} />
       )}
-      <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed max-w-sm mx-auto">
+      <div data-nosnippet="" className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed max-w-sm mx-auto">
         {t.common.disclaimer}
-      </p>
+      </div>
       <div className="flex items-center justify-center gap-4 flex-wrap">
         <a
           href={LINKEDIN_URL}
