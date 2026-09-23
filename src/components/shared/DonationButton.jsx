@@ -17,7 +17,7 @@ export default function DonationButton() {
   if (hasMercadoPago && !hasPaypal) {
     return (
       <div className="flex flex-col items-center gap-2 py-1">
-        <p className="text-sm text-slate-500 dark:text-slate-400">{t.common.donateText}</p>
+        <div data-nosnippet="" className="text-sm text-slate-500 dark:text-slate-400">{t.common.donateText}</div>
         <a
           href={DONATION_URL}
           target="_blank"
@@ -34,7 +34,7 @@ export default function DonationButton() {
   if (hasPaypal && !hasMercadoPago) {
     return (
       <div className="flex flex-col items-center gap-2 py-1">
-        <p className="text-sm text-slate-500 dark:text-slate-400">{t.common.donateText}</p>
+        <div data-nosnippet="" className="text-sm text-slate-500 dark:text-slate-400">{t.common.donateText}</div>
         <PaypalForm hostedButtonId={PAYPAL_HOSTED_BUTTON_ID} label={t.common.donateButton} />
       </div>
     );
@@ -57,7 +57,7 @@ function DonationMenu({ t }) {
 
   return (
     <div className="flex flex-col items-center gap-2 py-1">
-      <p className="text-sm text-slate-500 dark:text-slate-400">{t.common.donateText}</p>
+      <div data-nosnippet="" className="text-sm text-slate-500 dark:text-slate-400">{t.common.donateText}</div>
       <div className="relative inline-block text-left" ref={ref}>
         <button
           type="button"

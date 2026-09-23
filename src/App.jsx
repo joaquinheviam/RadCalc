@@ -9,6 +9,7 @@ import { SEARCH_TERMS } from './i18n/searchTerms.js';
 import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
 import { updateSeoHead } from './utils/seoHead.js';
+import { calcMetaDescription } from './utils/calcMetaDescription.js';
 import { Logo, SiteFooter, Sponsors, AboutInfo } from './components/shared/index.js';
 import DonationPrompt from './components/shared/DonationPrompt.jsx';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy } from './components/icons/index.js';
@@ -132,7 +133,7 @@ function AppShell() {
       const cc = t.calc[activeEntry.id];
       updateSeoHead({
         title: `${cc.title} | RadioCalc Clinical`,
-        description: cc.subtitle || t.tagline,
+        description: calcMetaDescription(cc, t),
         lang,
         pathSuffix: `calc/${activeEntry.id}/`,
       });

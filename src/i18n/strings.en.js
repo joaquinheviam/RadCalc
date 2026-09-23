@@ -1,6 +1,7 @@
 export default {
   appName: 'RadioCalc Clinical',
   tagline: 'Radiology calculators, decision algorithms and scoring scales for everyday clinical practice',
+  calcMetaSuffix: 'Free calculator based on current guidelines, with instant results, a ready-to-copy report and references.',
   metaDescription: 'Evidence-based radiology calculators for everyday clinical practice, with algorithms following major scientific society guidelines. Support for managing incidental findings. Free and ad-free.',
   common: {
     diagramZoom: {

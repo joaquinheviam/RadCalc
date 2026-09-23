@@ -22,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { calculators } from '../src/calculators/registry.js';
 import { STRINGS } from '../src/i18n/strings.js';
+import { calcMetaDescription } from '../src/utils/calcMetaDescription.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, '..', 'dist');
@@ -108,7 +109,7 @@ for (const lang of LANGS) {
     writeRoute(`${lang}/calc/${cc.id}`, buildHead(template, {
       lang,
       title: `${entry.title} | RadioCalc Clinical`,
-      description: entry.subtitle || t.tagline,
+      description: calcMetaDescription(entry, t),
       pathSuffix: `calc/${cc.id}/`,
     }));
     count++;

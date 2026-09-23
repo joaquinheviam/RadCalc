@@ -6,8 +6,10 @@ import { useLang } from '../../i18n/LangContext.js';
 export default function CalcDisclaimer() {
   const { t } = useLang();
   return (
-    <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed text-center max-w-sm mx-auto py-1">
+    // data-nosnippet: sigue visible en la página, pero Google no lo usa como
+    // resumen en los resultados de búsqueda (solo se respeta en div/span/section).
+    <div data-nosnippet="" className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed text-center max-w-sm mx-auto py-1">
       {t.common.disclaimer}
-    </p>
+    </div>
   );
 }
