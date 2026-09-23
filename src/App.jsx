@@ -78,6 +78,9 @@ function AppShell() {
   const [darkMode, setDarkMode] = useLocalStorageState('radiocalc:darkMode', true);
   const [, setStoredLang] = useLocalStorageState('radiocalc:lang', 'es');
   const [favorites, setFavorites] = useLocalStorageState('radiocalc:favorites', []);
+  // Especialidades fijadas por la persona: van primero en la fila de accesos
+  // y en el orden de la lista de la portada (en el orden en que se fijaron).
+  const [pinnedCats, setPinnedCats] = useLocalStorageState('radiocalc:pinnedCategories', []);
   const [searchQuery, setSearchQuery] = useState('');
   const [topModal, setTopModal] = useState(null); // null | 'sponsors' | 'about'
 
@@ -160,9 +163,20 @@ function AppShell() {
   const goHome = () => navigate(`/${lang}/`);
 
   // Especialidades con al menos una calculadora, para los accesos rápidos de la portada.
-  const navCategories = useMemo(() => categoryOrder
-    .map((key) => ({ key, label: t.categories[key], count: calculators.filter((cc) => cc.catKey === key).length }))
-    .filter((cat) => cat.count > 0), [t]);
+  const orderedCatKeys = useMemo(() => {
+    const available = categoryOrder.filter((key) => calculators.some((cc) => cc.catKey === key));
+    const pinned = pinnedCats.filter((key) => available.includes(key));
+    return [...pinned, ...available.filter((key) => !pinned.includes(key))];
+  }, [pinnedCats]);
+  const navCategories = useMemo(() => orderedCatKeys.map((key) => ({
+    key,
+    label: t.categories[key],
+    count: calculators.filter((cc) => cc.catKey === key).length,
+    pinned: pinnedCats.includes(key),
+  })), [orderedCatKeys, pinnedCats, t]);
+  const togglePinnedCat = (key) => {
+    setPinnedCats((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  };
   const normalizedQuery = normalizeSearchText(searchQuery.trim());
   const searchResults = useMemo(() => {
     if (!normalizedQuery) return null;
@@ -216,7 +230,14 @@ function AppShell() {
             </Suspense>
           ) : (
             <div className="space-y-6">
-              {!searchResults && <CategoryNav categories={navCategories} ariaLabel={t.common.categoriesNavAria} />}
+              {!searchResults && (
+                <CategoryNav
+                  categories={navCategories}
+                  ariaLabel={t.common.categoriesNavAria}
+                  onTogglePin={togglePinnedCat}
+                  onResetPins={() => setPinnedCats([])}
+                />
+              )}
               <div className="flex flex-col items-center text-center gap-3 py-4">
                 <Logo size={56} />
                 <div>
@@ -350,7 +371,7 @@ function AppShell() {
                 )
               ) : (
                 <div className="md:columns-2 xl:columns-3 gap-6">
-                  {categoryOrder.filter((catKey) => calculators.some((cc) => cc.catKey === catKey)).map((catKey) => (
+                  {orderedCatKeys.map((catKey) => (
                     <div key={catKey} id={`cat-${catKey}`} className="break-inside-avoid mb-6 last:mb-0 scroll-mt-32">
                       <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1">
                         {t.categories[catKey]}

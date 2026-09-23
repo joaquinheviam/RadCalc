@@ -5,6 +5,11 @@ export default {
   metaDescription: 'Evidence-based radiology calculators for everyday clinical practice, with algorithms following major scientific society guidelines. Support for managing incidental findings. Free and ad-free.',
   common: {
     categoriesNavAria: 'Jump to a specialty',
+    customizeCategories: 'Customize',
+    customizeCategoriesTitle: 'Your specialties',
+    customizeCategoriesHint: 'Star the specialties you use most: they will appear first, both in this row and in the calculator list (in the order you star them). Saved on this device.',
+    customizeCategoriesReset: 'Reset order',
+    customizeCategoriesDone: 'Done',
     langPromptTitle: 'Need RadioCalc in your language?',
     langPromptTitleNamed: (name) => `Need RadioCalc in ${name}?`,
     langPromptBody: 'Write to us and we will see how we can help.',

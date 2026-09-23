@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useLang } from '../../i18n/LangContext.js';
+import { IconStar } from '../icons/index.js';
+import Modal from './Modal.jsx';
 
 // Fila de accesos rápidos por especialidad en la portada. Se desliza en
 // horizontal en el celular, queda fija bajo la barra superior al hacer
@@ -6,8 +10,13 @@ import { useEffect, useRef, useState } from 'react';
 // esa sección (no filtra: favoritas y búsqueda siguen igual). Cada sección
 // del listado debe tener id="cat-<clave>" y un scroll-margin que deje
 // espacio para la barra superior y esta fila.
-export default function CategoryNav({ categories, ariaLabel }) {
+// Con "Personalizar" la persona fija especialidades (estrella): las fijadas
+// llegan ya ordenadas primero desde App.jsx, que también reordena la lista.
+export default function CategoryNav({ categories, ariaLabel, onTogglePin, onResetPins }) {
+  const { t } = useLang();
   const [active, setActive] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const anyPinned = categories.some((cat) => cat.pinned);
   // Difuminado en los bordes de la fila (solo celular): indica que hay más
   // botones hacia ese lado; desaparece al llegar al extremo.
   const [fade, setFade] = useState({ left: false, right: false });
@@ -53,6 +62,13 @@ export default function CategoryNav({ categories, ariaLabel }) {
     return () => { row.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
   }, [categories]);
 
+  // Al cambiar las especialidades fijadas, la fila vuelve al inicio para que
+  // se vean primero las fijadas.
+  const orderKey = categories.map((cat) => cat.key).join(',');
+  useEffect(() => {
+    if (rowRef.current) rowRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+  }, [orderKey]);
+
   const goTo = (key) => {
     const el = document.getElementById(`cat-${key}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -75,14 +91,60 @@ export default function CategoryNav({ categories, ariaLabel }) {
                 : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-400'
             }`}
           >
+            {cat.pinned && <IconStar size={11} filled className={active === cat.key ? 'text-amber-200' : 'text-amber-400'} />}
             {cat.label}
             <span className={`text-[10px] font-bold ${active === cat.key ? 'text-blue-100' : 'text-slate-400 dark:text-slate-500'}`}>{cat.count}</span>
           </button>
         ))}
+        <button
+          onClick={() => setEditing(true)}
+          className="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-dashed border-slate-300 dark:border-slate-600 text-xs font-semibold whitespace-nowrap text-slate-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        >
+          <span aria-hidden="true">✏️</span> {t.common.customizeCategories}
+        </button>
       </div>
       <div aria-hidden="true" className={`pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-slate-50 dark:from-slate-900 to-transparent transition-opacity md:hidden ${fade.left ? 'opacity-100' : 'opacity-0'}`} />
       <div aria-hidden="true" className={`pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-slate-50 dark:from-slate-900 to-transparent transition-opacity md:hidden ${fade.right ? 'opacity-100' : 'opacity-0'}`} />
       </div>
+      {/* Portal al <body>: la fila usa backdrop-blur, que convierte a la <nav>
+          en el contenedor de los elementos "fixed" y dejaría el modal encerrado
+          dentro de la fila en vez de centrado en la pantalla. */}
+      {editing && createPortal(
+        <Modal title={t.common.customizeCategoriesTitle} onClose={() => setEditing(false)} closeLabel={t.common.closeAria}>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t.common.customizeCategoriesHint}</p>
+          <ul className="divide-y divide-slate-100 dark:divide-slate-700 border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden">
+            {categories.map((cat) => (
+              <li key={cat.key}>
+                <button
+                  onClick={() => onTogglePin(cat.key)}
+                  aria-pressed={cat.pinned}
+                  className="w-full flex items-center gap-3 px-3 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                >
+                  <IconStar size={18} filled={cat.pinned} className={cat.pinned ? 'text-amber-400' : 'text-slate-300 dark:text-slate-600'} />
+                  <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">{cat.label}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">{cat.count}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center justify-between gap-3 mt-4">
+            <button
+              onClick={onResetPins}
+              disabled={!anyPinned}
+              className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-red-500 disabled:opacity-40 disabled:pointer-events-none"
+            >
+              {t.common.customizeCategoriesReset}
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="px-4 py-2 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+            >
+              {t.common.customizeCategoriesDone}
+            </button>
+          </div>
+        </Modal>,
+        document.body
+      )}
     </nav>
   );
 }
