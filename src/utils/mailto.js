@@ -4,6 +4,7 @@ export const LINKEDIN_URL = 'https://www.linkedin.com/in/joaqu%C3%ADn-hevia-more
 // type: 'bug' (reportar error) | 'update' (sugerir actualización) | 'suggestion' (sugerencia general)
 //     | 'missingCalculator' (pedir un algoritmo/calculadora que no existe, desde el buscador)
 //     | 'sponsor' (avisar una donación para la sección de Agradecimientos)
+//     | 'languageRequest' (pedir RadioCalc en otro idioma; calcTitle = nombre del idioma, si se conoce)
 const getTemplate = (calcTitle, lang, type) => {
   const page = calcTitle || (lang === 'es' ? '(general del sitio)' : '(general site issue)');
   const templates = {
@@ -23,6 +24,10 @@ const getTemplate = (calcTitle, lang, type) => {
       missingCalculator: {
         subject: `RadioCalc Clinical - Sugerencia de nueva calculadora${calcTitle ? ' (busqué: ' + calcTitle + ')' : ''}`,
         body: `Hola Dr. Hevia,\n\nNo encontré la siguiente calculadora o algoritmo en RadioCalc y me gustaría sugerir su incorporación${calcTitle ? ` (busqué: "${calcTitle}")` : ''}.\n\n1. Nombre de la calculadora o algoritmo:\n- \n\n2. Evidencia bibliográfica o DOI que la respalde:\n- \n\nGracias.`,
+      },
+      languageRequest: {
+        subject: `RadioCalc Clinical - Solicitud de idioma${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+        body: `Hola Dr. Hevia,\n\nMe gustaría usar RadioCalc Clinical en otro idioma.\n\n1. Idioma:\n- ${calcTitle || ''}\n\n2. País e institución (opcional):\n- \n\n3. Calculadoras que más usaría (opcional):\n- \n\nGracias.`,
       },
       sponsor: {
         subject: `RadioCalc Clinical - Aviso de donación para Agradecimientos`,
@@ -45,6 +50,10 @@ const getTemplate = (calcTitle, lang, type) => {
       missingCalculator: {
         subject: `RadioCalc Clinical - New calculator suggestion${calcTitle ? ' (I searched: ' + calcTitle + ')' : ''}`,
         body: `Hi Dr. Hevia,\n\nI couldn't find the following calculator or algorithm in RadioCalc and would like to suggest adding it${calcTitle ? ` (I searched: "${calcTitle}")` : ''}.\n\n1. Name of the calculator or algorithm:\n- \n\n2. Supporting literature or DOI:\n- \n\nThanks.`,
+      },
+      languageRequest: {
+        subject: `RadioCalc Clinical - Language request${calcTitle ? ' (' + calcTitle + ')' : ''}`,
+        body: `Hi Dr. Hevia,\n\nI would like to use RadioCalc Clinical in another language.\n\n1. Language:\n- ${calcTitle || ''}\n\n2. Country and institution (optional):\n- \n\n3. Calculators I would use most (optional):\n- \n\nThanks.`,
       },
       sponsor: {
         subject: `RadioCalc Clinical - Donation notice for Acknowledgments`,

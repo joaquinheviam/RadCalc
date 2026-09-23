@@ -5,6 +5,14 @@ export default {
   metaDescription: 'Evidence-based radiology calculators for everyday clinical practice, with algorithms following major scientific society guidelines. Support for managing incidental findings. Free and ad-free.',
   common: {
     categoriesNavAria: 'Jump to a specialty',
+    langPromptTitle: 'Need RadioCalc in your language?',
+    langPromptTitleNamed: (name) => `Need RadioCalc in ${name}?`,
+    langPromptBody: 'Write to us and we will see how we can help.',
+    langPromptEmail: 'Send an email',
+    langPromptCopy: 'Copy message',
+    langPromptDismiss: 'No, thanks',
+    langPromptCopiedOk: 'Message copied. Paste it into your email and send it to the address shown.',
+    otherLanguageLink: 'Other language?',
     negativeHint: 'Tap ± to make the value negative',
     negativeCaption: 'Negative',
     diagramZoom: {

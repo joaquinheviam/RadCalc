@@ -7,6 +7,7 @@ import DonationButton from './DonationButton.jsx';
 import Changelog from './Changelog.jsx';
 import AboutInfo from './AboutInfo.jsx';
 import Sponsors from './Sponsors.jsx';
+import { OPEN_EVENT as OPEN_LANG_PROMPT_EVENT } from '../../hooks/useLanguageRequestPrompt.js';
 
 export default function SiteFooter() {
   const { t, lang } = useLang();
@@ -35,6 +36,13 @@ export default function SiteFooter() {
         >
           <IconStar size={16} />
           {t.common.sponsorsButton}
+        </button>
+        <button
+          onClick={() => window.dispatchEvent(new Event(OPEN_LANG_PROMPT_EVENT))}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        >
+          <span aria-hidden="true">🌐</span>
+          {t.common.otherLanguageLink}
         </button>
       </div>
       {openModal === 'changelog' && <Changelog onClose={() => setOpenModal(null)} />}
