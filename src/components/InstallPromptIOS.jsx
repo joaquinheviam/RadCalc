@@ -69,6 +69,7 @@ export default function InstallPromptIOS() {
             <span>2. {c.step2} <strong>"{c.step2Action}"</strong> <PlusSquareIcon />.</span>
           </li>
         </ol>
+        <p className="text-[11px] text-slate-400">{t.common.installGuide.later}</p>
 
         <div className="flex justify-end">
           <button

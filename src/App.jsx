@@ -1,5 +1,6 @@
 import InstallPromptIOS from './components/InstallPromptIOS';
 import InstallPromptAndroid from './components/InstallPromptAndroid';
+import InstallGuide from './components/InstallGuide';
 import OldDomainBanner from './components/OldDomainBanner';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
@@ -208,6 +209,7 @@ function AppShell() {
             </h1>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            <InstallGuide compact={Boolean(activeEntry)} />
             <button
               onClick={toggleLang}
               aria-label="Toggle language"
