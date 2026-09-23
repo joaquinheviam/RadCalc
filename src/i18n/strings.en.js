@@ -948,23 +948,48 @@ export default {
       ],
     },
     siderosis: {
-      title: 'MRI Hepatic Siderosis (1.5 T)',
-      subtitle: 'Estimation of liver iron concentration (LIC) using T2* relaxation times or gradient-echo MRI sequences at 1.5 Tesla.',
+      title: 'MRI Hepatic Siderosis (1.5 T / 3 T)',
+      subtitle: 'Estimation of liver iron concentration (LIC) from hepatic T2* or R2* on 1.5 T or 3 T MRI, using the field-strength-specific calibration.',
+      fieldQ: 'Scanner field strength',
+      fieldLabels: { '1.5': '1.5 T', '3': '3 T' },
       enterT2: 'Enter T2* (ms)',
       enterR2: 'Enter R2* (Hz)',
       valueOf: 'Value of',
       licEstimated: 'Estimated LIC (mg/g)',
-      catNormal: 'Normal',
-      catMild: 'Mild overload',
-      catModerate: 'Moderate overload',
-      catSevere: 'Severe overload',
-      fieldStrengthNote: 'Calibrated and validated only for 1.5 T MRI (St Pierre et al. 2005; ESGAR/SAR 2023 cutoffs). Do not apply these values to 3 T studies — the R2*-LIC relationship differs substantially between field strengths.',
-      reportText: (t2, r2, lic, cat) =>
-        `MRI hepatic siderosis (R2* method, 1.5 T):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nEstimated LIC: ${lic} mg/g dry tissue.\nCategory: ${cat}.`,
+      categories: {
+        normal: 'Normal',
+        borderline: 'Borderline',
+        mild: 'Mild overload',
+        moderate: 'Moderate overload',
+        severe: 'Severe overload',
+      },
+      meaning: {
+        normal: 'No iron overload (LIC < 1.8 mg/g).',
+        borderline: 'LIC 1.8-3.2 mg/g: slightly above normal. In chelated patients, below the target range (risk of chelator toxicity).',
+        mild: 'LIC 3.2-7.0 mg/g. In chelated patients this is the target treatment range.',
+        moderate: 'LIC 7.0-15.0 mg/g: increased risk of iron-related complications.',
+        severe: 'LIC > 15.0 mg/g: high risk of cardiac damage and early death.',
+      },
+      calibrationUsed: {
+        '1.5': '1.5 T calibration: Wood et al. 2005 (LIC = 0.0254 × R2* + 0.202).',
+        '3': '3 T calibration: Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03).',
+      },
+      overRange: {
+        '1.5': 'Very severe overload: at 1.5 T, R2* loses accuracy above ~40 mg/g and the true value may be underestimated.',
+        '3': 'Very severe overload: at 3 T, R2* loses accuracy above ~26 mg/g and the true value may be underestimated. 1.5 T is preferred for known or suspected severe overload.',
+      },
+      fieldStrengthNote: 'Make sure to select the field strength (1.5 T or 3 T) of the scanner used: the same T2*/R2* corresponds to very different iron concentrations at each field (at 3 T, R2* is roughly twice the 1.5 T value).',
+      reportText: (grade, t2, r2, lic, field) => {
+        const adj = { borderline: 'minimal (borderline)', mild: 'mild', moderate: 'moderate', severe: 'severe' };
+        const tail = `T2* value of ${t2} ms at ${field} (R2* ${r2} Hz), equivalent to a liver iron concentration of ${lic} mg/g (normal < 1.8 mg/g).`;
+        return grade === 'normal' ? `No signs of hepatic siderosis: ${tail}` : `Signs of ${adj[grade]} hepatic siderosis: ${tail}`;
+      },
       usage: [
-        'R2* (=1000/T2*) correlates linearly with liver iron concentration (LIC) per the St Pierre et al. 2005 calibration, derived on 1.5 T MRI: LIC = 0.0254 × R2* + 0.202 (mg/g dry tissue).',
-        'Approximate LIC cutoffs (ESGAR/SAR 2023 guideline): normal < 1.8 mg/g (1.8-3.2 mg/g is considered "borderline"); mild overload 1.8-7.0 mg/g; moderate 7.0-15.0 mg/g; severe > 15.0 mg/g.',
-        'The R2*-LIC relationship is field-strength dependent and is not directly extrapolable between 1.5 T and 3 T. A multicenter study published in Radiology (2022) comparing both field strengths found clearly different LIC-R2* calibration slopes (substantially lower at 3 T than at 1.5 T for the same R2*), confirming the formulas are not interchangeable; do not enter R2* values obtained on a 3 T scanner here without a field-strength-specific calibration.',
+        'R2* (= 1000/T2*) increases linearly with liver iron concentration (LIC). Conversion to LIC depends on field strength: at 1.5 T the biopsy-validated calibration of Wood et al. 2005 is used (LIC = 0.0254 × R2* + 0.202 mg/g dry weight); at 3 T, the multicenter, multivendor calibration of Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03 mg/g).',
+        'At 3 T, liver R2* is roughly twice the 1.5 T value for the same iron content (Storey et al. 2007: R2* 3 T ≈ 2 × R2* 1.5 T − 11 s⁻¹). The formulas are therefore not interchangeable and the scanner field strength must be confirmed.',
+        'LIC cut-offs (ESGAR/SAR 2023 guideline): normal < 1.8 mg/g; borderline 1.8-3.2 mg/g; mild overload 3.2-7.0 mg/g; moderate 7.0-15.0 mg/g; severe > 15.0 mg/g. For reference, normal liver R2* is ~28-39 s⁻¹ at 1.5 T and ~69 s⁻¹ at 3 T.',
+        'Acquisition: multi-echo gradient echo (ideally fat-corrected multi-echo Dixon) in a single breath-hold. Measure with large ROIs in the parenchyma (ideally several, or whole-liver segmentation), avoiding vessels and artifacts. Coexisting steatosis can bias R2* unless a fat-corrected sequence is used.',
+        'Dynamic range: in very severe overload T2* approaches the minimum TE and R2* loses accuracy (above ~40 mg/g at 1.5 T and ~26 mg/g at 3 T), so 1.5 T is preferred for known or suspected severe overload. For follow-up of the same patient, use the same field strength, technique and calibration.',
       ],
     },
     thymic: {
