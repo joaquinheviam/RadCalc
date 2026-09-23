@@ -117,10 +117,12 @@ export const REFERENCES = {
     { text: 'Kottam A, Hanneman K, Schenone A, et al. State-of-the-art imaging of infiltrative cardiomyopathies: a scientific statement from the American Heart Association. Circ Cardiovasc Imaging. 2023;16(11):e000081.', doi: '10.1161/HCI.0000000000000081' },
   ],
   siderosis: [
-    { text: 'St Pierre TG, Clark PR, Chua-Anusorn W, et al. Noninvasive measurement and imaging of liver iron concentrations using proton magnetic resonance. Blood. 2005;105(2):855-861.', doi: '10.1182/blood-2004-10-3982' },
-    'Wood JC, Enriquez C, Ghugre N, et al. MRI R2 and R2* mapping accurately estimates hepatic iron concentration in transfusion-dependent thalassemia and sickle cell disease patients. Blood. 2005;106(4):1460-1465.',
+    { text: 'Wood JC, Enriquez C, Ghugre N, et al. MRI R2 and R2* mapping accurately estimates hepatic iron concentration in transfusion-dependent thalassemia and sickle cell disease patients. Blood. 2005;106(4):1460-1465.', doi: '10.1182/blood-2004-10-3982' },
+    { text: 'Hernando D, Zhao R, Yuan Q, et al. Multicenter reproducibility of liver iron quantification with 1.5-T and 3.0-T MRI. Radiology. 2023;306(2):e213256.', doi: '10.1148/radiol.213256' },
+    { text: 'Storey P, Thompson AA, Carqueville CL, et al. R2* imaging of transfusional iron burden at 3T and comparison with 1.5T. J Magn Reson Imaging. 2007;25(3):540-547.', doi: '10.1002/jmri.20816' },
+    { text: 'Reeder SB, Yokoo T, França M, et al. Quantification of liver iron overload with MRI: review and guidelines from the ESGAR and SAR. Radiology. 2023;307(1):e221856.', doi: '10.1148/radiol.221856' },
+    { text: 'St Pierre TG, Clark PR, Chua-Anusorn W, et al. Noninvasive measurement and imaging of liver iron concentrations using proton magnetic resonance. Blood. 2005;105(2):855-861.', doi: '10.1182/blood-2004-01-0177' },
     { text: 'Hankins JS, McCarville MB, Loeffler RB, et al. R2* magnetic resonance imaging of the liver in patients with iron overload. Blood. 2009;113(20):4853-4855.', doi: '10.1182/blood-2008-12-191643' },
-    { text: 'Henninger B, Alustiza J, Garbowski M, Gandon Y. Quantification of liver iron overload with MRI: review and guidelines from the ESGAR and SAR. Radiology. 2023;306(1):e221856.', doi: '10.1148/radiol.221856' },
   ],
   thymic: [
     { text: 'Inaoka T, Takahashi K, Mineta M, Yamada T, Shuke N, Okizaki A, Nagasawa K, Sugimori H, Aburano T. Thymic hyperplasia and thymus gland tumors: differentiation with chemical shift MR imaging. Radiology. 2007;243(3):869-876.', doi: '10.1148/radiol.2433060797' },

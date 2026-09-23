@@ -948,23 +948,49 @@ export default {
       ],
     },
     siderosis: {
-      title: 'Siderosis Hepática por RM (1.5 T)',
-      subtitle: 'Estimación de la concentración de hierro hepático (LIC) a partir de tiempos de relajación T2* o gradiente eco en RM de 1.5 Tesla.',
+      title: 'Siderosis Hepática por RM (1.5 T / 3 T)',
+      subtitle: 'Estimación de la concentración de hierro hepático (LIC) a partir del T2* o R2* hepático en RM de 1.5 T o 3 T, con la calibración específica de cada campo magnético.',
+      fieldQ: 'Campo magnético del equipo',
+      fieldLabels: { '1.5': '1,5 T', '3': '3 T' },
       enterT2: 'Ingresar T2* (ms)',
       enterR2: 'Ingresar R2* (Hz)',
       valueOf: 'Valor de',
       licEstimated: 'LIC Estimado (mg/g)',
-      catNormal: 'Normal',
-      catMild: 'Sobrecarga Leve',
-      catModerate: 'Sobrecarga Moderada',
-      catSevere: 'Sobrecarga Severa',
-      fieldStrengthNote: 'Calibrada y validada solo para RM de 1.5 T (St Pierre et al. 2005; puntos de corte ESGAR/SAR 2023). No aplique estos valores a estudios de 3 T — la relación R2*-LIC difiere sustancialmente entre campos.',
-      reportText: (t2, r2, lic, cat) =>
-        `Siderosis hepática por RM (método R2*, 1.5 T):\nT2*: ${t2} ms\nR2*: ${r2} Hz\nLIC estimado: ${lic} mg/g de tejido seco.\nCategoría: ${cat}.`,
+      categories: {
+        normal: 'Normal',
+        borderline: 'Limítrofe',
+        mild: 'Sobrecarga Leve',
+        moderate: 'Sobrecarga Moderada',
+        severe: 'Sobrecarga Severa',
+      },
+      meaning: {
+        normal: 'Sin sobrecarga de hierro (LIC < 1.8 mg/g).',
+        borderline: 'LIC 1.8-3.2 mg/g: levemente sobre lo normal. En pacientes en quelación, bajo el rango objetivo (riesgo de toxicidad del quelante).',
+        mild: 'LIC 3.2-7.0 mg/g. En pacientes en quelación corresponde al rango objetivo de tratamiento.',
+        moderate: 'LIC 7.0-15.0 mg/g: mayor riesgo de complicaciones por hierro.',
+        severe: 'LIC > 15.0 mg/g: riesgo elevado de daño cardíaco y muerte precoz.',
+      },
+      calibrationUsed: {
+        '1.5': 'Calibración 1,5 T: Wood et al. 2005 (LIC = 0.0254 × R2* + 0.202).',
+        '3': 'Calibración 3 T: Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03).',
+      },
+      overRange: {
+        '1.5': 'Sobrecarga muy severa: a 1,5 T el R2* pierde exactitud por sobre ~40 mg/g y el valor real puede estar subestimado.',
+        '3': 'Sobrecarga muy severa: a 3 T el R2* pierde exactitud por sobre ~26 mg/g y el valor real puede estar subestimado. Ante sobrecarga severa conocida o sospechada se prefiere RM de 1,5 T.',
+      },
+      fieldStrengthNote: 'Asegúrese de seleccionar el campo magnético (1,5 T o 3 T) del equipo en que se adquirió el estudio: el mismo T2*/R2* corresponde a concentraciones de hierro muy distintas en cada campo (a 3 T el R2* es aproximadamente el doble que a 1,5 T).',
+      reportText: (grade, t2, r2, lic, field) => {
+        const n = (x) => String(x).replace('.', ',');
+        const adj = { borderline: 'mínima (rango limítrofe)', mild: 'leve', moderate: 'moderada', severe: 'acentuada' };
+        const tail = `valor T2* de ${n(t2)} ms en ${field} (R2* ${n(r2)} Hz), equivalente a una concentración de hierro hepático de ${n(lic)} mg/g (valor normal < 1,8 mg/g).`;
+        return grade === 'normal' ? `No hay signos de siderosis hepática: ${tail}` : `Signos de siderosis hepática ${adj[grade]}: ${tail}`;
+      },
       usage: [
-        'R2* (=1000/T2*) se relaciona linealmente con la concentración de hierro hepático (LIC) según la calibración de St Pierre et al. 2005, derivada en RM de 1.5 T: LIC = 0.0254 × R2* + 0.202 (mg/g de tejido seco).',
-        'Puntos de corte aproximados de LIC (guía ESGAR/SAR 2023): normal < 1.8 mg/g (1.8-3.2 mg/g se considera "borderline"); sobrecarga leve 1.8-7.0 mg/g; moderada 7.0-15.0 mg/g; severa > 15.0 mg/g.',
-        'La relación R2*-LIC es dependiente del campo magnético y no es directamente extrapolable entre 1.5 T y 3 T. Un estudio multicéntrico publicado en Radiology (2022) comparando ambos campos encontró pendientes de calibración LIC-R2* claramente distintas (sustancialmente menor a 3 T que a 1.5 T para el mismo R2*), confirmando que las fórmulas no son intercambiables; no ingrese aquí valores de R2* obtenidos en un equipo de 3 T sin una calibración específica para ese campo.',
+        'R2* (= 1000/T2*) aumenta de forma lineal con la concentración de hierro hepático (LIC). La conversión a LIC depende del campo magnético: a 1,5 T se usa la calibración de Wood et al. 2005, validada contra biopsia (LIC = 0.0254 × R2* + 0.202 mg/g de peso seco); a 3 T, la calibración multicéntrica y multifabricante de Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03 mg/g).',
+        'A 3 T el R2* hepático es aproximadamente el doble que a 1,5 T para el mismo contenido de hierro (Storey et al. 2007: R2* 3 T ≈ 2 × R2* 1,5 T − 11 s⁻¹). Por eso las fórmulas no son intercambiables y es imprescindible confirmar el campo del equipo.',
+        'Puntos de corte de LIC (guía ESGAR/SAR 2023): normal < 1.8 mg/g; limítrofe 1.8-3.2 mg/g; sobrecarga leve 3.2-7.0 mg/g; moderada 7.0-15.0 mg/g; severa > 15.0 mg/g. Como referencia, el R2* hepático normal es ~28-39 s⁻¹ a 1,5 T y ~69 s⁻¹ a 3 T.',
+        'Adquisición: gradiente eco multieco (idealmente Dixon multieco con corrección de grasa) en una sola apnea. Medir con ROIs amplias en el parénquima (idealmente varias, o segmentación de todo el hígado), evitando vasos y artefactos. La esteatosis coexistente puede alterar el R2* si no se usa una secuencia corregida por grasa.',
+        'Rango dinámico: en sobrecarga muy severa el T2* se acerca al TE mínimo y el R2* pierde exactitud (por sobre ~40 mg/g a 1,5 T y ~26 mg/g a 3 T), por lo que se prefiere 1,5 T ante sobrecarga severa conocida o sospechada. Para el seguimiento de un mismo paciente conviene usar el mismo campo, técnica y calibración.',
       ],
     },
     thymic: {
