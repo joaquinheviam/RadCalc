@@ -115,8 +115,12 @@ export default function AdrenalWashout() {
       lines.push(c.reportLineVen(ven));
       lines.push(c.reportLineDel(del, protocolLabel));
       if (size !== '') lines.push(c.reportLineSize(size));
-      lines.push(pla !== null ? c.reportLinePla(pla.toFixed(1), isAdenomaPla ? c.compatible : c.notSuggestive) : c.reportLinePlaNA);
-      lines.push(c.reportLinePlr(plr.toFixed(1), isAdenomaPlr ? c.compatible : c.notSuggestive));
+      // Con grasa macroscópica el lavado no aporta al diagnóstico: no se
+      // informan los porcentajes (evita un "compatible con adenoma" suelto).
+      if (!showMyelolipoma) {
+        lines.push(pla !== null ? c.reportLinePla(pla.toFixed(1), isAdenomaPla ? c.compatible : c.notSuggestive) : c.reportLinePlaNA);
+        lines.push(c.reportLinePlr(plr.toFixed(1), isAdenomaPlr ? c.compatible : c.notSuggestive));
+      }
       if (kamiyama) lines.push(c.reportLineKamiyama(kamiyamaCount));
       const conclusionText = showMyelolipoma
         ? c.myelolipomaVerdict + '.'
@@ -179,7 +183,12 @@ export default function AdrenalWashout() {
       {sizeTier === 'sizeHigh' && <InfoBox tone="amber">{c.sizeHigh}</InfoBox>}
       {sizeTier === 'sizeVeryHigh' && <InfoBox tone="amber">{c.sizeVeryHigh}</InfoBox>}
 
-      {canPlr && (
+      {canPlr && showMyelolipoma && (
+        <Card>
+          <InfoBox tone="emerald">{c.myelolipomaWashoutNote}</InfoBox>
+        </Card>
+      )}
+      {canPlr && !showMyelolipoma && (
         <Card>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
@@ -204,13 +213,9 @@ export default function AdrenalWashout() {
           {!canPla && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.onlyRelativeNote}</p>}
           {cfg.lowerEvidence && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.lowerEvidenceNote}</p>}
           <div className="mt-2">
-            {showMyelolipoma ? (
-              <InfoBox tone="emerald">{c.myelolipomaWashoutNote}</InfoBox>
-            ) : (
-              <InfoBox tone={isAdenomaWashout ? 'emerald' : 'amber'}>
-                {isAdenomaWashout ? c.adenomaCompatible : (ncHighSpecDespiteWashout ? c.washoutNotButNcHighSpecNote : c.adenomaNot)}
-              </InfoBox>
-            )}
+            <InfoBox tone={isAdenomaWashout ? 'emerald' : 'amber'}>
+              {isAdenomaWashout ? c.adenomaCompatible : (ncHighSpecDespiteWashout ? c.washoutNotButNcHighSpecNote : c.adenomaNot)}
+            </InfoBox>
           </div>
           {kamiyama && (
             <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
