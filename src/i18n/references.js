@@ -106,6 +106,16 @@ export const REFERENCES = {
     { text: 'Adam SZ, Nikolaidis P, Horowitz JM, Gabriel H, Hammond NA, Patel T, Miller FH. Chemical shift MR imaging of the adrenal gland: principles, pitfalls, and applications. Radiographics. 2016;36(2):414-432.', doi: '10.1148/rg.2016150139' },
     'Hevia-Morel J, Guzmán Moncada C, Huete Garín A. Glándulas suprarrenales en tomografía computarizada y resonancia magnética: hallazgos, protocolos de estudio y principales patologías en imagenología. Artículo de revisión (en preparación), Departamento de Radiología, Pontificia Universidad Católica de Chile.',
   ],
+  cardiacSiderosis: [
+    { text: 'Anderson LJ, Holden S, Davis B, et al. Cardiovascular T2-star (T2*) magnetic resonance for the early diagnosis of myocardial iron overload. Eur Heart J. 2001;22(23):2171-2179.', doi: '10.1053/euhj.2001.2822' },
+    { text: 'Kirk P, Roughton M, Porter JB, et al. Cardiac T2* magnetic resonance for prediction of cardiac complications in thalassemia major. Circulation. 2009;120(20):1961-1968.', doi: '10.1161/CIRCULATIONAHA.109.874487' },
+    { text: 'Carpenter JP, He T, Kirk P, et al. On T2* magnetic resonance and cardiac iron. Circulation. 2011;123(14):1519-1528.', doi: '10.1161/CIRCULATIONAHA.110.007641' },
+    { text: 'Anderson LJ. Assessment of iron overload with T2* magnetic resonance imaging. Prog Cardiovasc Dis. 2011;54(3):287-294.', doi: '10.1016/j.pcad.2011.07.004' },
+    { text: 'He T, Gatehouse PD, Smith GC, Mohiaddin RH, Pennell DJ, Firmin DN. Myocardial T2* measurements in iron-overloaded thalassemia: an in vivo study to investigate optimal methods of quantification. Magn Reson Med. 2008;60(5):1082-1089.', doi: '10.1002/mrm.21744' },
+    { text: 'Pennell DJ, Udelson JE, Arai AE, et al. Cardiovascular function and treatment in β-thalassemia major: a consensus statement from the American Heart Association. Circulation. 2013;128(3):281-308.', doi: '10.1161/CIR.0b013e31829b2be6' },
+    { text: 'Shah FT, Porter JB, Sadasivam N, et al. Guidelines for the monitoring and management of iron overload in patients with haemoglobinopathies and rare anaemias. Br J Haematol. 2022;196(2):336-350.', doi: '10.1111/bjh.17839' },
+    { text: 'Kottam A, Hanneman K, Schenone A, et al. State-of-the-art imaging of infiltrative cardiomyopathies: a scientific statement from the American Heart Association. Circ Cardiovasc Imaging. 2023;16(11):e000081.', doi: '10.1161/HCI.0000000000000081' },
+  ],
   siderosis: [
     { text: 'St Pierre TG, Clark PR, Chua-Anusorn W, et al. Noninvasive measurement and imaging of liver iron concentrations using proton magnetic resonance. Blood. 2005;105(2):855-861.', doi: '10.1182/blood-2004-10-3982' },
     'Wood JC, Enriquez C, Ghugre N, et al. MRI R2 and R2* mapping accurately estimates hepatic iron concentration in transfusion-dependent thalassemia and sickle cell disease patients. Blood. 2005;106(4):1460-1465.',

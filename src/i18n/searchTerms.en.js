@@ -24,6 +24,7 @@ export default {
   lungCysts: ['pulmonary cysts', 'cystic lung disease', 'lam', 'histiocytosis', 'birt-hogg-dube', 'cyst mimic', 'alveolar macrophage pneumonia', 'amp', 'dip', 'emphysema', 'cysts', 'cystic', 'cystic lung', 'lch', 'bip', 'bhds', 'ipf', 'lymphangioleiomyomatosis', 'hrct cysts'],
   cadrads: ['ca-rads', 'cadrads', 'coronary', 'coronary calcium', 'coronary ct angiography', 'coronary stenosis', 'coronary plaque', 'cad rads', 'cad-rads', 'cadrads 2.0', 'coronary cta', 'coronary artery', 'plaque burden', 'calcium score', 'ccta'],
   mriFf: ['fat fraction', 'fatty liver', 'hepatic steatosis', 'proton density fat fraction', 'pdff', 'mri ff', 'dixon', 'hepatic fat', 'steatosis', 'dixon liver', 'liver fat mri', 'mri pdff'],
+  cardiacSiderosis: ['cardiac siderosis', 'myocardial iron', 'iron overload cardiomyopathy', 'iron overload', 'thalassemia', 'hemochromatosis', 't2*', 't2 star', 'r2*', 'cardiac t2*', 'cardiac mri iron', 'iron', 'siderosis', 'chelation'],
   siderosis: ['hepatic siderosis', 'iron overload', 'hemochromatosis', 'r2*', 't2 star', 'ferriscan', 'siderosis', 'iron', 'hepatic iron', 'lic', 't2*', 'mri liver iron'],
   lirads: ['li-rads', 'lirads', 'hepatocellular carcinoma', 'hcc', 'liver nodule', 'cirrhosis', 'li rads', 'lirads 2018', 'chc', 'liver', 'liver ct', 'liver mri'],
   liradsTr: ['li-rads treatment response', 'hcc treatment response', 'lirads tr', 'tace', 'ablation', 'lr-tr', 'tr lirads', 'treatment response', 'locoregional response', 'hcc response', 'recist lirads'],

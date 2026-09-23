@@ -29,6 +29,7 @@ const LungScreening = lazy(() => import('./LungScreening.jsx'));
 const LungCysts = lazy(() => import('./LungCysts.jsx'));
 const EPIDExtent = lazy(() => import('./EPIDExtent.jsx'));
 const CADRADS = lazy(() => import('./CADRADS.jsx'));
+const CardiacSiderosis = lazy(() => import('./CardiacSiderosis.jsx'));
 const ThoracicGlossary = lazy(() => import('./ThoracicGlossary.jsx'));
 const MRIFatFraction = lazy(() => import('./MRIFatFraction.jsx'));
 const HepaticSiderosis = lazy(() => import('./HepaticSiderosis.jsx'));
@@ -89,6 +90,7 @@ export const calculators = [
   { id: 'lungCancerTNM9', catKey: 'torax', component: LungCancerTNM9 },
   // Cardiovascular
   { id: 'cadrads', catKey: 'cardio', component: CADRADS },
+  { id: 'cardiacSiderosis', catKey: 'cardio', component: CardiacSiderosis },
   // Abdomen (hepatobiliopancreático y suprarrenal)
   { id: 'mriFf', catKey: 'abdomen', component: MRIFatFraction },
   { id: 'siderosis', catKey: 'abdomen', component: HepaticSiderosis },

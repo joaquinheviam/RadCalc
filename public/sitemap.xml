@@ -81,6 +81,11 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://radiocalc.app/es/calc/cardiacSiderosis/</loc>
+    <lastmod>2026-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://radiocalc.app/es/calc/mriFf/</loc>
     <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
@@ -377,6 +382,11 @@
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/cadrads/</loc>
+    <lastmod>2026-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://radiocalc.app/en/calc/cardiacSiderosis/</loc>
     <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
   </url>
