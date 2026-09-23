@@ -56,20 +56,30 @@ function CardiacSiderosisDiagram({ labels }) {
             fill="none"
           />
 
-          {/* Miocardio del Ventrículo Derecho (VD) - Forma de semiluna adherida al septo */}
+          {/* Miocardio de la Pared Libre del Ventrículo Derecho (VD) */}
+          {/* Se inserta exactamente en el epicardio del VI (x=210, y=73 y 247) creando la cavidad del VD */}
+          {/* Radios ajustados respecto del original de Gemini (100,120 / 92,112 → 120,87 / 110,87): con los
+              originales la pared quedaba dentro del VI; así la semiluna llega a x≈90 con la misma altura del VI. */}
           <path
-            d="M 180,75 C 60,70 30,220 80,280 C 110,315 175,255 175,255 C 130,220 115,190 115,160 C 115,125 145,100 180,75 Z"
+            d="M 210,73 A 120,87 0 0,0 210,247 A 110,87 0 0,1 210,73 Z"
             className="text-slate-200 dark:text-slate-700/80"
             fill="currentColor"
           />
-          {/* Contorno exterior del VD */}
+          {/* Contorno exterior (epicárdico) del VD */}
           <path
-            d="M 180,75 C 60,70 30,220 80,280 C 110,315 175,255 175,255"
+            d="M 210,73 A 120,87 0 0,0 210,247"
             className="text-slate-400 dark:text-slate-500"
             stroke="currentColor"
             strokeWidth="1.5"
             fill="none"
-            strokeLinecap="round"
+          />
+          {/* Contorno interior (endocárdico) del VD */}
+          <path
+            d="M 210,247 A 110,87 0 0,1 210,73"
+            className="text-slate-400 dark:text-slate-500"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            fill="none"
           />
         </g>
 
@@ -149,9 +159,10 @@ function CardiacSiderosisDiagram({ labels }) {
         >
           {labels.lvAbrev}
         </text>
+        {/* Posicionado en el centro de la nueva cavidad del VD */}
         <text
-          x="145"
-          y="166"
+          x="140"
+          y="162"
           className="text-slate-400 dark:text-slate-400"
           fill="currentColor"
           fontSize="16"
@@ -165,7 +176,7 @@ function CardiacSiderosisDiagram({ labels }) {
         {/* Línea indicadora: ROI Correcto */}
         <line
           x1="182"
-          y1="142"
+          y1="144"
           x2="150"
           y2="60"
           stroke="currentColor"
@@ -198,7 +209,7 @@ function CardiacSiderosisDiagram({ labels }) {
         {/* Línea indicadora: ROI Incorrecto / Artefactos */}
         <line
           x1="338"
-          y1="142"
+          y1="144"
           x2="380"
           y2="60"
           stroke="currentColor"
