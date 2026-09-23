@@ -865,6 +865,8 @@ export default {
       ncHighSpec: 'Non-contrast HU ≤ 10: very high specificity for a lipid-rich adenoma (10-HU threshold: 98% specificity, 71% sensitivity in the pooled analysis by Boland et al., AJR 1998; a 0-HU threshold raises specificity to 100% but lowers sensitivity to 47%, Lee et al., Radiology 1991).',
       ncIndeterminate: 'Non-contrast HU between 10 and 43: indeterminate by density alone (10-40% of adenomas are "lipid-poor" and exceed 10 HU). Completing the contrast washout study (PLA/PLR) is recommended to characterize the lesion.',
       ncSuspiciousMalignant: 'Non-contrast HU > 43 (without calcification or hemorrhage): suspicious for malignancy. Consider further evaluation, including FDG PET-CT.',
+      myelolipomaVerdict: 'Macroscopic fat: consistent with myelolipoma',
+      myelolipomaWashoutNote: 'Macroscopic fat (≤ -20 HU on non-contrast): consistent with myelolipoma. When macroscopic fat is present, washout criteria are not used to characterize the lesion.',
       myelolipoma: 'Non-contrast HU ≤ -20 (if the ROI covers more than 50% of the lesion): suggests myelolipoma (macroscopic fat content) rather than a typical adenoma; a confident diagnosis requires macroscopic fat to represent more than 50% of the lesion.',
       pheoCaution: 'Portal-venous phase HU > 110: consider pheochromocytoma in the differential diagnosis, unless microscopic fat is present (non-contrast HU < 10), in which case it is more compatible with a rapidly-enhancing adenoma.',
       usage: [
