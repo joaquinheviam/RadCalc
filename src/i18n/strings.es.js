@@ -972,7 +972,7 @@ export default {
       },
       calibrationUsed: {
         '1.5': 'Calibración 1,5 T: Wood et al. 2005 (LIC = 0.0254 × R2* + 0.202).',
-        '3': 'Calibración 3 T: Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03).',
+        '3': 'Calibración 3 T: R2* convertido a su equivalente de 1,5 T (Storey et al. 2007: R2* 1,5 T = (R2* 3 T + 11) / 2) y luego Wood et al. 2005.',
       },
       overRange: {
         '1.5': 'Sobrecarga muy severa: a 1,5 T el R2* pierde exactitud por sobre ~40 mg/g y el valor real puede estar subestimado.',
@@ -986,7 +986,7 @@ export default {
         return grade === 'normal' ? `No hay signos de siderosis hepática: ${tail}` : `Signos de siderosis hepática ${adj[grade]}: ${tail}`;
       },
       usage: [
-        'R2* (= 1000/T2*) aumenta de forma lineal con la concentración de hierro hepático (LIC). La conversión a LIC depende del campo magnético: a 1,5 T se usa la calibración de Wood et al. 2005, validada contra biopsia (LIC = 0.0254 × R2* + 0.202 mg/g de peso seco); a 3 T, la calibración multicéntrica y multifabricante de Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03 mg/g).',
+        'R2* (= 1000/T2*) aumenta de forma lineal con la concentración de hierro hepático (LIC). La conversión a LIC depende del campo magnético: a 1,5 T se usa la calibración de Wood et al. 2005, validada contra biopsia (LIC = 0.0254 × R2* + 0.202 mg/g de peso seco); a 3 T, el R2* se convierte primero a su equivalente de 1,5 T según Storey et al. 2007 y luego se aplica Wood (LIC = 0.0254 × (R2* + 11) / 2 + 0.202 mg/g), igual que la calculadora de Columbia University. La calibración multicéntrica de Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03) da valores muy similares desde ~2 mg/g.',
         'A 3 T el R2* hepático es aproximadamente el doble que a 1,5 T para el mismo contenido de hierro (Storey et al. 2007: R2* 3 T ≈ 2 × R2* 1,5 T − 11 s⁻¹). Por eso las fórmulas no son intercambiables y es imprescindible confirmar el campo del equipo.',
         'Puntos de corte de LIC (guía ESGAR/SAR 2023): normal < 1.8 mg/g; limítrofe 1.8-3.2 mg/g; sobrecarga leve 3.2-7.0 mg/g; moderada 7.0-15.0 mg/g; severa > 15.0 mg/g. Como referencia, el R2* hepático normal es ~28-39 s⁻¹ a 1,5 T y ~69 s⁻¹ a 3 T.',
         'Adquisición: gradiente eco multieco (idealmente Dixon multieco con corrección de grasa) en una sola apnea. Medir con ROIs amplias en el parénquima (idealmente varias, o segmentación de todo el hígado), evitando vasos y artefactos. La esteatosis coexistente puede alterar el R2* si no se usa una secuencia corregida por grasa.',

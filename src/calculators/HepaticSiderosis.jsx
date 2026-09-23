@@ -6,11 +6,13 @@ import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewI
 
 // Calibraciones R2* -> LIC (mg/g de peso seco) según el campo del equipo.
 // 1.5 T: Wood et al. 2005 (calibrada contra biopsia).
-// 3 T: Hernando et al. 2023 (multicéntrica y multifabricante, recomendada
-// por la guía ESGAR/SAR 2023).
+// 3 T: el R2* se lleva a su equivalente de 1.5 T con Storey et al. 2007
+// (R2* 3 T = 2.00 × R2* 1.5 T − 11) y luego se aplica Wood; es el mismo
+// método que usa la calculadora de referencia de Columbia University.
+const wood15 = (r2) => 0.0254 * r2 + 0.202;
 const CALIBRATIONS = {
-  '1.5': { lic: (r2) => 0.0254 * r2 + 0.202, maxReliableLic: 40 },
-  '3': { lic: (r2) => 0.01349 * r2 - 0.03, maxReliableLic: 26 },
+  '1.5': { lic: wood15, maxReliableLic: 40 },
+  '3': { lic: (r2) => wood15((r2 + 11) / 2), maxReliableLic: 26 },
 };
 
 // Grados ESGAR/SAR 2023: normal < 1.8; limítrofe 1.8-3.2; leve 3.2-7.0;
