@@ -4,6 +4,7 @@ export default {
   calcMetaSuffix: 'Free calculator based on current guidelines, with instant results, a ready-to-copy report and references.',
   metaDescription: 'Evidence-based radiology calculators for everyday clinical practice, with algorithms following major scientific society guidelines. Support for managing incidental findings. Free and ad-free.',
   common: {
+    categoriesNavAria: 'Jump to a specialty',
     negativeHint: 'Tap ± to make the value negative',
     negativeCaption: 'Negative',
     diagramZoom: {

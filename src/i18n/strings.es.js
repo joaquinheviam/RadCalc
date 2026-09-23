@@ -4,6 +4,7 @@ export default {
   calcMetaSuffix: 'Calculadora gratuita basada en guías vigentes, con resultado inmediato, informe listo para copiar y referencias bibliográficas.',
   metaDescription: 'Calculadoras radiológicas basadas en evidencia para la práctica clínica diaria, con algoritmos según las guías de las principales sociedades científicas. Apoyo para el manejo de hallazgos incidentales. Gratis y sin publicidad.',
   common: {
+    categoriesNavAria: 'Ir a una especialidad',
     negativeHint: 'Toca ± para cambiar a valor negativo',
     negativeCaption: 'Negativo',
     diagramZoom: {

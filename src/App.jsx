@@ -12,6 +12,7 @@ import { updateSeoHead } from './utils/seoHead.js';
 import { calcMetaDescription } from './utils/calcMetaDescription.js';
 import { Logo, SiteFooter, Sponsors, AboutInfo } from './components/shared/index.js';
 import DonationPrompt from './components/shared/DonationPrompt.jsx';
+import CategoryNav from './components/shared/CategoryNav.jsx';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy } from './components/icons/index.js';
 import { buildMailto, buildMailTextForClipboard } from './utils/mailto.js';
 import { copyToClipboard } from './utils/clipboard.js';
@@ -154,6 +155,10 @@ function AppShell() {
   const openCalc = (id) => navigate(`/${lang}/calc/${id}/`);
   const goHome = () => navigate(`/${lang}/`);
 
+  // Especialidades con al menos una calculadora, para los accesos rápidos de la portada.
+  const navCategories = useMemo(() => categoryOrder
+    .map((key) => ({ key, label: t.categories[key], count: calculators.filter((cc) => cc.catKey === key).length }))
+    .filter((cat) => cat.count > 0), [t]);
   const normalizedQuery = normalizeSearchText(searchQuery.trim());
   const searchResults = useMemo(() => {
     if (!normalizedQuery) return null;
@@ -207,6 +212,7 @@ function AppShell() {
             </Suspense>
           ) : (
             <div className="space-y-6">
+              {!searchResults && <CategoryNav categories={navCategories} ariaLabel={t.common.categoriesNavAria} />}
               <div className="flex flex-col items-center text-center gap-3 py-4">
                 <Logo size={56} />
                 <div>
@@ -341,7 +347,7 @@ function AppShell() {
               ) : (
                 <div className="md:columns-2 xl:columns-3 gap-6">
                   {categoryOrder.filter((catKey) => calculators.some((cc) => cc.catKey === catKey)).map((catKey) => (
-                    <div key={catKey} className="break-inside-avoid mb-6 last:mb-0">
+                    <div key={catKey} id={`cat-${catKey}`} className="break-inside-avoid mb-6 last:mb-0 scroll-mt-32">
                       <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1">
                         {t.categories[catKey]}
                       </h2>
