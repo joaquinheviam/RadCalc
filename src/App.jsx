@@ -36,7 +36,7 @@ function CalcListRow({ title, category, isFav, onToggleFav, favAddLabel, favRemo
         className="flex-1 min-w-0 text-left py-4 pr-4 active:bg-slate-50 dark:active:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex justify-between items-center gap-3"
       >
         <span className="flex flex-col min-w-0">
-          <span className="font-medium text-slate-700 dark:text-slate-200 truncate">{title}</span>
+          <span className="font-medium text-slate-700 dark:text-slate-200 line-clamp-2">{title}</span>
           {category && <span className="text-xs text-slate-400 dark:text-slate-500">{category}</span>}
         </span>
         <div className="flex items-center gap-1 shrink-0">
@@ -176,7 +176,7 @@ function AppShell() {
             ) : (
               <Logo size={32} />
             )}
-            <h1 className="text-base sm:text-lg font-bold tracking-tight truncate">
+            <h1 className="text-base sm:text-lg font-bold tracking-tight leading-tight line-clamp-2">
               {activeTitle || t.appName}
             </h1>
           </div>
@@ -193,7 +193,10 @@ function AppShell() {
             </button>
           </div>
         </header>
-        <main className="max-w-md mx-auto p-4">
+        {/* En el inicio, desde tablet (md) la lista se reparte en 2 columnas
+            (3 desde xl) y el contenedor se ensancha; en celular y dentro de
+            cada calculadora se mantiene la columna angosta de siempre. */}
+        <main className={`mx-auto p-4 ${activeEntry ? 'max-w-md' : 'max-w-md md:max-w-4xl xl:max-w-6xl'}`}>
           {activeEntry ? (
             <Suspense fallback={<div className="py-16 text-center text-sm text-slate-400 dark:text-slate-500">…</div>}>
               <activeEntry.component />
@@ -207,7 +210,7 @@ function AppShell() {
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xs">{t.tagline}</p>
                 </div>
               </div>
-              <div className="relative">
+              <div className="relative md:max-w-xl md:mx-auto">
                 <IconSearch size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <input
                   type="text"
@@ -227,7 +230,7 @@ function AppShell() {
                 )}
               </div>
               {!searchResults && (
-                <div>
+                <div className="md:max-w-xl md:mx-auto">
                   <div className="flex items-center justify-between mb-3 px-1 gap-2">
                     {favoriteCalcs.length > 0 ? (
                       <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -288,7 +291,7 @@ function AppShell() {
               {topModal === 'about' && <AboutInfo onClose={() => setTopModal(null)} />}
               {searchResults ? (
                 searchResults.length > 0 ? (
-                  <div>
+                  <div className="md:max-w-xl md:mx-auto">
                     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden divide-y divide-slate-100 dark:divide-slate-700">
                       {searchResults.map((cc) => (
                         <CalcListRow
@@ -331,9 +334,9 @@ function AppShell() {
                   </div>
                 )
               ) : (
-                <>
+                <div className="md:columns-2 xl:columns-3 gap-6">
                   {categoryOrder.filter((catKey) => calculators.some((cc) => cc.catKey === catKey)).map((catKey) => (
-                    <div key={catKey}>
+                    <div key={catKey} className="break-inside-avoid mb-6 last:mb-0">
                       <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1">
                         {t.categories[catKey]}
                       </h2>
@@ -352,7 +355,7 @@ function AppShell() {
                       </div>
                     </div>
                   ))}
-                </>
+                </div>
               )}
               <SiteFooter />
             </div>
