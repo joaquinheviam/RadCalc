@@ -20,11 +20,10 @@ export default function Sponsors({ onClose, onOpenAbout }) {
   };
 
   // Una donación queda listada 12 meses desde su fecha; pasado ese plazo
-  // desaparece sola, sin tener que editar src/data/sponsors.js. Dentro del
-  // plazo, se ordena de mayor a menor aporte (empate: quien donó primero).
+  // desaparece sola, sin tener que editar src/data/sponsors.js. Se muestra
+  // en el orden en que está escrita la lista (sin montos).
   const active = SPONSORS
-    .filter((sp) => (now - new Date(sp.since + 'T00:00:00').getTime()) / MS_PER_MONTH <= VALID_MONTHS)
-    .sort((a, b) => b.amountUsd - a.amountUsd || new Date(a.since) - new Date(b.since));
+    .filter((sp) => (now - new Date(sp.since + 'T00:00:00').getTime()) / MS_PER_MONTH <= VALID_MONTHS);
 
   return (
     <Modal title={s.title} onClose={onClose} closeLabel={t.common.closeAria}>
