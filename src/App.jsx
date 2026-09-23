@@ -20,7 +20,10 @@ import { useLocalStorageState } from './hooks/useLocalStorageState.js';
 // categoría): la estrella y el botón de abrir son elementos hermanos (nunca
 // un <button> anidado dentro de otro) para que el click en cada uno se
 // maneje por separado sin efectos raros de propagación.
-function CalcListRow({ title, category, isFav, onToggleFav, favAddLabel, favRemoveLabel, onOpen, extra }) {
+// `singleLine`: en favoritos la fila ya lleva las flechas para reordenar y
+// la categoría, así que el nombre se corta en una línea para que no quede
+// una fila demasiado alta; en el resto del listado usa hasta 2 líneas.
+function CalcListRow({ title, category, isFav, onToggleFav, favAddLabel, favRemoveLabel, onOpen, extra, singleLine = false }) {
   return (
     <div className="w-full flex items-center gap-1">
       <button
@@ -36,7 +39,7 @@ function CalcListRow({ title, category, isFav, onToggleFav, favAddLabel, favRemo
         className="flex-1 min-w-0 text-left py-4 pr-4 active:bg-slate-50 dark:active:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex justify-between items-center gap-3"
       >
         <span className="flex flex-col min-w-0">
-          <span className="font-medium text-slate-700 dark:text-slate-200 line-clamp-2">{title}</span>
+          <span className={`font-medium text-slate-700 dark:text-slate-200 ${singleLine ? 'truncate' : 'line-clamp-2'}`}>{title}</span>
           {category && <span className="text-xs text-slate-400 dark:text-slate-500">{category}</span>}
         </span>
         <div className="flex items-center gap-1 shrink-0">
@@ -255,6 +258,7 @@ function AppShell() {
                         title={t.calc[cc.id].title}
                         category={t.categories[cc.catKey]}
                         isFav
+                        singleLine
                         onToggleFav={() => toggleFavorite(cc.id)}
                         favAddLabel={t.favorites.addAria}
                         favRemoveLabel={t.favorites.removeAria}
