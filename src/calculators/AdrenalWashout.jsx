@@ -115,9 +115,14 @@ export default function AdrenalWashout() {
       lines.push(c.reportLineVen(ven));
       lines.push(c.reportLineDel(del, protocolLabel));
       if (size !== '') lines.push(c.reportLineSize(size));
-      // Con grasa macroscópica el lavado no aporta al diagnóstico: no se
-      // informan los porcentajes (evita un "compatible con adenoma" suelto).
-      if (!showMyelolipoma) {
+      // Con grasa macroscópica el lavado no define el diagnóstico: se informan
+      // los porcentajes solo como dato, sin interpretarlos como adenoma, más
+      // una nota que lo aclara.
+      if (showMyelolipoma) {
+        lines.push(pla !== null ? c.reportLinePlaValue(pla.toFixed(1)) : c.reportLinePlaNA);
+        lines.push(c.reportLinePlrValue(plr.toFixed(1)));
+        lines.push(c.myelolipomaWashoutNote);
+      } else {
         lines.push(pla !== null ? c.reportLinePla(pla.toFixed(1), isAdenomaPla ? c.compatible : c.notSuggestive) : c.reportLinePlaNA);
         lines.push(c.reportLinePlr(plr.toFixed(1), isAdenomaPlr ? c.compatible : c.notSuggestive));
       }
@@ -185,7 +190,19 @@ export default function AdrenalWashout() {
 
       {canPlr && showMyelolipoma && (
         <Card>
-          <InfoBox tone="emerald">{c.myelolipomaWashoutNote}</InfoBox>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+              <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.absolute}</span>
+              <span className="text-xl font-bold text-slate-700 dark:text-slate-200">{pla !== null ? pla.toFixed(1) + '%' : '—'}</span>
+            </div>
+            <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+              <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.relative}</span>
+              <span className="text-xl font-bold text-slate-700 dark:text-slate-200">{plr.toFixed(1) + '%'}</span>
+            </div>
+          </div>
+          <div className="mt-2">
+            <InfoBox tone="emerald">{c.myelolipomaWashoutNote}</InfoBox>
+          </div>
         </Card>
       )}
       {canPlr && !showMyelolipoma && (

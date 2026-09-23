@@ -853,6 +853,8 @@ export default {
       reportLineDel: (v, label) => `Delayed phase HU (${label}): ${v}`,
       reportLineSize: (v) => `Lesion size: ${v} cm`,
       reportLinePla: (v, concl) => `Absolute washout (PLA): ${v}% (${concl}).`,
+      reportLinePlaValue: (v) => `Absolute washout (PLA): ${v}%.`,
+      reportLinePlrValue: (v) => `Relative washout (PLR): ${v}%.`,
       reportLinePlaNA: 'Absolute washout (PLA): not calculable (missing non-contrast value).',
       reportLinePlr: (v, concl) => `Relative washout (PLR): ${v}% (${concl}).`,
       reportLineKamiyama: (n) => `Additional evidence (Kamiyama 2009): ${n}/4 criteria met.`,
@@ -866,7 +868,7 @@ export default {
       ncIndeterminate: 'Non-contrast HU between 10 and 43: indeterminate by density alone (10-40% of adenomas are "lipid-poor" and exceed 10 HU). Completing the contrast washout study (PLA/PLR) is recommended to characterize the lesion.',
       ncSuspiciousMalignant: 'Non-contrast HU > 43 (without calcification or hemorrhage): suspicious for malignancy. Consider further evaluation, including FDG PET-CT.',
       myelolipomaVerdict: 'Macroscopic fat: consistent with myelolipoma',
-      myelolipomaWashoutNote: 'Macroscopic fat (≤ -20 HU on non-contrast): consistent with myelolipoma. When macroscopic fat is present, washout criteria are not used to characterize the lesion.',
+      myelolipomaWashoutNote: 'Regardless of the washout values, macroscopic fat in more than 50% of the lesion is consistent with myelolipoma.',
       myelolipoma: 'Non-contrast HU ≤ -20 (if the ROI covers more than 50% of the lesion): suggests myelolipoma (macroscopic fat content) rather than a typical adenoma; a confident diagnosis requires macroscopic fat to represent more than 50% of the lesion.',
       pheoCaution: 'Portal-venous phase HU > 110: consider pheochromocytoma in the differential diagnosis, unless microscopic fat is present (non-contrast HU < 10), in which case it is more compatible with a rapidly-enhancing adenoma.',
       usage: [

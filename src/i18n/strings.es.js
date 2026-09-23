@@ -853,6 +853,8 @@ export default {
       reportLineDel: (v, label) => `UH fase tardía (${label}): ${v}`,
       reportLineSize: (v) => `Tamaño de la lesión: ${v} cm`,
       reportLinePla: (v, concl) => `Lavado absoluto (PLA): ${v}% (${concl}).`,
+      reportLinePlaValue: (v) => `Lavado absoluto (PLA): ${v}%.`,
+      reportLinePlrValue: (v) => `Lavado relativo (PLR): ${v}%.`,
       reportLinePlaNA: 'Lavado absoluto (PLA): no calculable (falta el valor sin contraste).',
       reportLinePlr: (v, concl) => `Lavado relativo (PLR): ${v}% (${concl}).`,
       reportLineKamiyama: (n) => `Evidencia adicional (Kamiyama 2009): ${n}/4 criterios cumplidos.`,
@@ -866,7 +868,7 @@ export default {
       ncIndeterminate: 'UH sin contraste entre 10 y 43: indeterminado por densidad aislada (10-40% de los adenomas son "pobres en lípidos" y superan 10 UH). Se recomienda completar el estudio con lavado de contraste (PLA/PLR) para caracterizar la lesión.',
       ncSuspiciousMalignant: 'UH sin contraste > 43 (en ausencia de calcificación o hemorragia): sospechoso de malignidad. Considere estudio adicional, incluyendo PET-CT con FDG.',
       myelolipomaVerdict: 'Grasa macroscópica: compatible con mielolipoma',
-      myelolipomaWashoutNote: 'Grasa macroscópica (≤ -20 UH sin contraste): compatible con mielolipoma. Con grasa macroscópica, los criterios de lavado no se usan para caracterizar la lesión.',
+      myelolipomaWashoutNote: 'Independientemente del valor de lavado, la presencia de grasa macroscópica en más del 50% de la lesión es compatible con mielolipoma.',
       myelolipoma: 'UH sin contraste ≤ -20 (si el ROI abarca más del 50% de la lesión): sugiere mielolipoma (contenido macroscópico de grasa) más que un adenoma típico; el diagnóstico de certeza requiere que la grasa macroscópica represente más del 50% de la lesión.',
       pheoCaution: 'UH en fase portovenosa > 110: considere feocromocitoma en el diagnóstico diferencial, salvo que exista grasa microscópica (UH sin contraste < 10), donde es más compatible con un adenoma de realce rápido.',
       usage: [
