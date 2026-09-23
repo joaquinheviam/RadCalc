@@ -147,12 +147,12 @@ export default function AdrenalWashout() {
             ))}
           </div>
         </div>
-        <NumberField label={c.nonContrast} value={nc} onChange={setNc} />
+        <NumberField allowNegative label={c.nonContrast} value={nc} onChange={setNc} />
         <div>
-          <NumberField label={c.portal} value={ven} onChange={setVen} />
+          <NumberField allowNegative label={c.portal} value={ven} onChange={setVen} />
           <p className="text-[11px] text-amber-600 dark:text-amber-400 leading-snug mt-1">{c.portalWarning}</p>
         </div>
-        <NumberField label={protocol === 'p3' ? c.delayedAt3 : c.delayedAt(cfg.minutes)} value={del} onChange={setDel} />
+        <NumberField allowNegative label={protocol === 'p3' ? c.delayedAt3 : c.delayedAt(cfg.minutes)} value={del} onChange={setDel} />
         <NumberField label={c.sizeLabel} value={size} onChange={setSize} />
         <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.roiTip}</p>
         <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.heterogeneousNote}</p>
