@@ -972,7 +972,7 @@ export default {
       },
       calibrationUsed: {
         '1.5': '1.5 T calibration: Wood et al. 2005 (LIC = 0.0254 × R2* + 0.202).',
-        '3': '3 T calibration: Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03).',
+        '3': '3 T calibration: R2* converted to its 1.5 T equivalent (Storey et al. 2007: R2* 1.5 T = (R2* 3 T + 11) / 2), then Wood et al. 2005.',
       },
       overRange: {
         '1.5': 'Very severe overload: at 1.5 T, R2* loses accuracy above ~40 mg/g and the true value may be underestimated.',
@@ -985,7 +985,7 @@ export default {
         return grade === 'normal' ? `No signs of hepatic siderosis: ${tail}` : `Signs of ${adj[grade]} hepatic siderosis: ${tail}`;
       },
       usage: [
-        'R2* (= 1000/T2*) increases linearly with liver iron concentration (LIC). Conversion to LIC depends on field strength: at 1.5 T the biopsy-validated calibration of Wood et al. 2005 is used (LIC = 0.0254 × R2* + 0.202 mg/g dry weight); at 3 T, the multicenter, multivendor calibration of Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03 mg/g).',
+        'R2* (= 1000/T2*) increases linearly with liver iron concentration (LIC). Conversion to LIC depends on field strength: at 1.5 T the biopsy-validated calibration of Wood et al. 2005 is used (LIC = 0.0254 × R2* + 0.202 mg/g dry weight); at 3 T, R2* is first converted to its 1.5 T equivalent per Storey et al. 2007 and Wood is then applied (LIC = 0.0254 × (R2* + 11) / 2 + 0.202 mg/g), as in the Columbia University calculator. The multicenter calibration of Hernando et al. 2023 (LIC = 0.01349 × R2* − 0.03) gives very similar values from ~2 mg/g upward.',
         'At 3 T, liver R2* is roughly twice the 1.5 T value for the same iron content (Storey et al. 2007: R2* 3 T ≈ 2 × R2* 1.5 T − 11 s⁻¹). The formulas are therefore not interchangeable and the scanner field strength must be confirmed.',
         'LIC cut-offs (ESGAR/SAR 2023 guideline): normal < 1.8 mg/g; borderline 1.8-3.2 mg/g; mild overload 3.2-7.0 mg/g; moderate 7.0-15.0 mg/g; severe > 15.0 mg/g. For reference, normal liver R2* is ~28-39 s⁻¹ at 1.5 T and ~69 s⁻¹ at 3 T.',
         'Acquisition: multi-echo gradient echo (ideally fat-corrected multi-echo Dixon) in a single breath-hold. Measure with large ROIs in the parenchyma (ideally several, or whole-liver segmentation), avoiding vessels and artifacts. Coexisting steatosis can bias R2* unless a fat-corrected sequence is used.',
