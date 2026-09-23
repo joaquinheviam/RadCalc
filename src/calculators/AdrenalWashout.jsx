@@ -57,10 +57,13 @@ export default function AdrenalWashout() {
   // una nota que reconoce la especificidad del precontraste y pide confirmar
   // que la lesión sea sólida (no quística) y homogénea (una lesión quística o
   // heterogénea puede tener densidad baja y lavado nulo sin ser un adenoma).
-  const ncHighSpecDespiteWashout = canPlr && !isAdenomaWashout && hasNc && hNc <= 10;
+  // Grasa macroscópica (≤ -20 UH sin contraste): el diagnóstico pasa a ser
+  // mielolipoma y reemplaza cualquier veredicto de adenoma o de lavado.
+  const showMyelolipoma = hasNc && hNc <= -20;
+  const ncHighSpecDespiteWashout = canPlr && !isAdenomaWashout && hasNc && hNc <= 10 && !showMyelolipoma;
 
   // Evidencia adicional a los 5 min (Kamiyama 2009), solo si también hay precontraste.
-  const kamiyama = (cfg.hasKamiyama && canPla) ? {
+  const kamiyama = (cfg.hasKamiyama && canPla && !showMyelolipoma) ? {
     nc: hNc <= 19,
     delayed: hDel <= 50,
     pew: plr >= 45,
@@ -71,15 +74,15 @@ export default function AdrenalWashout() {
   // Interpretación aislada del valor sin contraste (siempre disponible si se ingresó).
   let ncTier = null;
   if (hasNc) {
-    if (hNc <= 10) ncTier = 'ncHighSpec';
+    if (showMyelolipoma) ncTier = 'myelolipoma';
+    else if (hNc <= 10) ncTier = 'ncHighSpec';
     else if (hNc <= 43) ncTier = 'ncIndeterminate';
     else ncTier = 'ncSuspiciousMalignant';
   }
 
-  const ncResultLabel = ncTier === 'ncHighSpec' ? c.compatible : ncTier === 'ncIndeterminate' ? c.ncResultIndeterminate : ncTier === 'ncSuspiciousMalignant' ? c.ncResultSuspicious : null;
-  const ncResultTone = ncTier === 'ncHighSpec' ? 'text-emerald-500' : ncTier === 'ncIndeterminate' ? 'text-amber-500' : 'text-red-500';
+  const ncResultLabel = ncTier === 'myelolipoma' ? c.myelolipomaVerdict : ncTier === 'ncHighSpec' ? c.compatible : ncTier === 'ncIndeterminate' ? c.ncResultIndeterminate : ncTier === 'ncSuspiciousMalignant' ? c.ncResultSuspicious : null;
+  const ncResultTone = (ncTier === 'ncHighSpec' || ncTier === 'myelolipoma') ? 'text-emerald-500' : ncTier === 'ncIndeterminate' ? 'text-amber-500' : 'text-red-500';
 
-  const showMyelolipoma = hasNc && hNc <= -20;
   const showPheo = hasVen && hVen > 110 && (!hasNc || hNc >= 10);
   // Para el veredicto del cuadro de resultado (más estricto que showPheo):
   // solo se marca cuando el precontraste fue medido y es > 10 UH.
@@ -112,10 +115,16 @@ export default function AdrenalWashout() {
       lines.push(c.reportLineVen(ven));
       lines.push(c.reportLineDel(del, protocolLabel));
       if (size !== '') lines.push(c.reportLineSize(size));
-      lines.push(pla !== null ? c.reportLinePla(pla.toFixed(1), isAdenomaPla ? c.compatible : c.notSuggestive) : c.reportLinePlaNA);
-      lines.push(c.reportLinePlr(plr.toFixed(1), isAdenomaPlr ? c.compatible : c.notSuggestive));
+      // Con grasa macroscópica el lavado no aporta al diagnóstico: no se
+      // informan los porcentajes (evita un "compatible con adenoma" suelto).
+      if (!showMyelolipoma) {
+        lines.push(pla !== null ? c.reportLinePla(pla.toFixed(1), isAdenomaPla ? c.compatible : c.notSuggestive) : c.reportLinePlaNA);
+        lines.push(c.reportLinePlr(plr.toFixed(1), isAdenomaPlr ? c.compatible : c.notSuggestive));
+      }
       if (kamiyama) lines.push(c.reportLineKamiyama(kamiyamaCount));
-      const conclusionText = (isAdenomaWashout && hasVerdictCaveat)
+      const conclusionText = showMyelolipoma
+        ? c.myelolipomaVerdict + '.'
+        : (isAdenomaWashout && hasVerdictCaveat)
         ? verdictCaveatPlainText
         : (isAdenomaWashout ? c.adenomaCompatible : (ncHighSpecDespiteWashout ? c.washoutNotButNcHighSpecNote : c.adenomaNot));
       lines.push(c.reportConclusion(conclusionText));
@@ -174,7 +183,12 @@ export default function AdrenalWashout() {
       {sizeTier === 'sizeHigh' && <InfoBox tone="amber">{c.sizeHigh}</InfoBox>}
       {sizeTier === 'sizeVeryHigh' && <InfoBox tone="amber">{c.sizeVeryHigh}</InfoBox>}
 
-      {canPlr && (
+      {canPlr && showMyelolipoma && (
+        <Card>
+          <InfoBox tone="emerald">{c.myelolipomaWashoutNote}</InfoBox>
+        </Card>
+      )}
+      {canPlr && !showMyelolipoma && (
         <Card>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
@@ -227,7 +241,9 @@ export default function AdrenalWashout() {
         <StickyBar>
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{protocolLabel}</span>
-            {isAdenomaWashout && hasVerdictCaveat ? (
+            {showMyelolipoma ? (
+              <span className="text-2xl font-black block mt-1 leading-tight text-emerald-500">{c.myelolipomaVerdict}</span>
+            ) : isAdenomaWashout && hasVerdictCaveat ? (
               <span className="text-xl font-bold block mt-1 leading-snug">
                 <span className="text-emerald-500">{c.verdictAdenomaPrefix}</span>
                 {verdictCaveatParts.map((part, i) => (
@@ -243,7 +259,7 @@ export default function AdrenalWashout() {
             ) : (
               <span className={`text-3xl font-black block mt-1 leading-tight ${isAdenomaWashout ? 'text-emerald-500' : 'text-amber-500'}`}>{isAdenomaWashout ? c.adenomaCompatible : c.adenomaNot}</span>
             )}
-            {!isAdenomaWashout && sizeTier && (
+            {!isAdenomaWashout && !showMyelolipoma && sizeTier && (
               <span className={`text-base sm:text-lg font-bold block mt-2 ${sizeTier === 'sizeVeryHigh' ? 'text-red-500' : 'text-amber-500'}`}>
                 {sizeTier === 'sizeVeryHigh' ? c.sizeRiskShortVeryHigh : c.sizeRiskShortHigh}
               </span>

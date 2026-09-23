@@ -865,6 +865,8 @@ export default {
       ncHighSpec: 'UH sin contraste ≤ 10: muy alta especificidad para adenoma rico en lípidos (umbral de 10 UH: especificidad 98%, sensibilidad 71%, en el análisis conjunto de Boland et al., AJR 1998; un umbral de 0 UH sube la especificidad a 100% pero baja la sensibilidad a 47%, Lee et al., Radiology 1991).',
       ncIndeterminate: 'UH sin contraste entre 10 y 43: indeterminado por densidad aislada (10-40% de los adenomas son "pobres en lípidos" y superan 10 UH). Se recomienda completar el estudio con lavado de contraste (PLA/PLR) para caracterizar la lesión.',
       ncSuspiciousMalignant: 'UH sin contraste > 43 (en ausencia de calcificación o hemorragia): sospechoso de malignidad. Considere estudio adicional, incluyendo PET-CT con FDG.',
+      myelolipomaVerdict: 'Grasa macroscópica: compatible con mielolipoma',
+      myelolipomaWashoutNote: 'Grasa macroscópica (≤ -20 UH sin contraste): compatible con mielolipoma. Con grasa macroscópica, los criterios de lavado no se usan para caracterizar la lesión.',
       myelolipoma: 'UH sin contraste ≤ -20 (si el ROI abarca más del 50% de la lesión): sugiere mielolipoma (contenido macroscópico de grasa) más que un adenoma típico; el diagnóstico de certeza requiere que la grasa macroscópica represente más del 50% de la lesión.',
       pheoCaution: 'UH en fase portovenosa > 110: considere feocromocitoma en el diagnóstico diferencial, salvo que exista grasa microscópica (UH sin contraste < 10), donde es más compatible con un adenoma de realce rápido.',
       usage: [
