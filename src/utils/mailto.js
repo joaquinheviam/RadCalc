@@ -1,4 +1,5 @@
 export const REPORT_EMAIL = 'drjoaquinhevia@gmail.com';
+export const INSTAGRAM_URL = 'https://www.instagram.com/radiocalclinical/';
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/joaqu%C3%ADn-hevia-morel-07421675/';
 
 // type: 'bug' (reportar error) | 'update' (sugerir actualización) | 'suggestion' (sugerencia general)
