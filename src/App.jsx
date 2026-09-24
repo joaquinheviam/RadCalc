@@ -16,8 +16,8 @@ import DonationPrompt from './components/shared/DonationPrompt.jsx';
 import CategoryNav from './components/shared/CategoryNav.jsx';
 import LanguageRequestPrompt from './components/shared/LanguageRequestPrompt.jsx';
 import { useLanguageRequestPrompt } from './hooks/useLanguageRequestPrompt.js';
-import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy } from './components/icons/index.js';
-import { buildMailto, buildMailTextForClipboard } from './utils/mailto.js';
+import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy, IconInstagram } from './components/icons/index.js';
+import { buildMailto, buildMailTextForClipboard, INSTAGRAM_URL } from './utils/mailto.js';
 import { copyToClipboard } from './utils/clipboard.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
 
@@ -208,7 +208,19 @@ function AppShell() {
               {activeTitle || t.appName}
             </h1>
           </div>
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            {/* Dentro de una calculadora, en celular, se oculta para no apretar
+                el título (sigue en el pie de página). */}
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t.common.instagramAria}
+              title="@radiocalclinical"
+              className={`${activeEntry ? 'hidden sm:inline-flex' : 'inline-flex'} p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-colors`}
+            >
+              <IconInstagram size={18} />
+            </a>
             <InstallGuide compact={Boolean(activeEntry)} />
             <button
               onClick={toggleLang}
@@ -217,7 +229,7 @@ function AppShell() {
             >
               {lang === 'es' ? 'EN' : 'ES'}
             </button>
-            <button onClick={() => setDarkMode(!darkMode)} aria-label="Toggle theme" className="p-2 hover:bg-white/20 rounded-full transition-colors">
+            <button onClick={() => setDarkMode(!darkMode)} aria-label="Toggle theme" className="p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-colors">
               {darkMode ? <IconSun /> : <IconMoon />}
             </button>
           </div>
