@@ -253,7 +253,7 @@ export default function InstallGuide({ compact = false }) {
         className={`inline-flex items-center gap-1 ${compact ? 'p-1.5' : 'px-2.5 py-1.5'} text-xs font-bold rounded-full hover:bg-white/20 transition-colors border border-white/30`}
       >
         <IconInstall className="w-3.5 h-3.5" />
-        {!compact && c.button}
+        {!compact && <span className="max-[359px]:hidden">{c.button}</span>}
       </button>
       {open && createPortal(
         <Modal title={c.title} onClose={() => setOpen(false)} closeLabel={t.common.closeAria}>
