@@ -71,7 +71,7 @@ export default function SiteFooter() {
           className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
         >
           <IconInstagram size={16} />
-          @radiocalclinical
+          @radiocalcclinical
         </a>
         <a
           href={buildMailto(null, lang, 'bug')}
