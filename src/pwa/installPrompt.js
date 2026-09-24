@@ -30,14 +30,37 @@ export function isStandalone() {
     || window.matchMedia('(display-mode: window-controls-overlay)').matches;
 }
 
-// 'ios' (iPhone/iPad, incluido iPadOS que se presenta como Mac), 'android'
-// o 'desktop'.
-export function detectPlatform() {
-  if (typeof navigator === 'undefined') return 'desktop';
+// Navegador concreto, porque los pasos para instalar cambian entre Safari y
+// Chrome en iPhone, o entre Chrome y Samsung Internet en Android:
+// iosSafari, iosChrome, iosOther, androidChrome, androidSamsung,
+// androidFirefox, desktopChromium, desktopSafari, desktopFirefox.
+export function detectBrowser() {
+  if (typeof navigator === 'undefined') return 'desktopChromium';
   const ua = navigator.userAgent;
-  if (/iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return 'ios';
-  if (/Android/i.test(ua)) return 'android';
-  return 'desktop';
+  if (/iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) {
+    if (/CriOS/.test(ua)) return 'iosChrome';
+    if (/FxiOS|EdgiOS|OPiOS/.test(ua)) return 'iosOther';
+    return 'iosSafari';
+  }
+  if (/Android/i.test(ua)) {
+    if (/SamsungBrowser/.test(ua)) return 'androidSamsung';
+    if (/Firefox/.test(ua)) return 'androidFirefox';
+    return 'androidChrome';
+  }
+  if (/Firefox/.test(ua)) return 'desktopFirefox';
+  if (/Safari/.test(ua) && !/Chrome|Chromium|Edg\//.test(ua)) return 'desktopSafari';
+  return 'desktopChromium';
+}
+
+// 'ios', 'android' o 'desktop' a partir de la clave del navegador.
+export const platformOf = (browser) => browser.replace(/[A-Z].*/, '');
+
+// Permite abrir la guía del botón "Instalar" desde los avisos iniciales.
+const guideListeners = new Set();
+export function openInstallGuide() { guideListeners.forEach((fn) => fn()); }
+export function onOpenInstallGuide(fn) {
+  guideListeners.add(fn);
+  return () => guideListeners.delete(fn);
 }
 
 // Abre el cuadro nativo de instalación. Devuelve 'accepted', 'dismissed' o

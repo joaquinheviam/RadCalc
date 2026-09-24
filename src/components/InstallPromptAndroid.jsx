@@ -1,6 +1,7 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { LangContext } from '../i18n/LangContext.js';
-import { useInstallState, promptInstall } from '../pwa/installPrompt.js';
+import { useInstallState, promptInstall, detectBrowser, platformOf } from '../pwa/installPrompt.js';
+import InstallStepsBanner from './InstallStepsBanner.jsx';
 
 // Icono simple de "instalar" (flecha hacia una bandeja), para no depender
 // de más iconos del proyecto en un componente tan pequeño.
@@ -15,8 +16,10 @@ const DownloadIcon = () => (
 // cuando la PWA es instalable (manifest + service worker ya los provee
 // vite-plugin-pwa). El evento se captura en src/pwa/installPrompt.js y aquí
 // se muestra un banner con el mismo estilo visual que el de iOS, en vez del
-// mini-infobar genérico del navegador. Firefox para Android no dispara este evento: en ese caso el
-// banner simplemente nunca aparece (no hay downgrade visible).
+// mini-infobar genérico del navegador.
+// Chrome no siempre dispara el evento (lo condiciona a cuánto se ha usado el
+// sitio) y Firefox nunca lo hace: si a los pocos segundos no llegó, se
+// muestran los pasos manuales del navegador detectado, como en iPhone.
 export default function InstallPromptAndroid() {
   const { t } = useContext(LangContext);
   const c = t.common.installAndroid;
@@ -25,6 +28,14 @@ export default function InstallPromptAndroid() {
     try { return Boolean(localStorage.getItem('radiocalc:android-prompt-dismissed')); } catch { return false; }
   });
   const showPrompt = canPrompt && !installed && !dismissed;
+  const [browser] = useState(detectBrowser);
+  const [waited, setWaited] = useState(false);
+  useEffect(() => {
+    if (platformOf(browser) !== 'android' || dismissed) return undefined;
+    const id = setTimeout(() => setWaited(true), 3500);
+    return () => clearTimeout(id);
+  }, [browser, dismissed]);
+  const showSteps = waited && !canPrompt && !installed && !dismissed;
 
   const handleDismiss = () => {
     setDismissed(true);
@@ -39,6 +50,9 @@ export default function InstallPromptAndroid() {
     handleDismiss();
   };
 
+  if (showSteps) {
+    return <InstallStepsBanner title={c.title} desc={c.descManual} browser={browser} dismissLabel={t.common.installIOS.dismiss} onDismiss={handleDismiss} />;
+  }
   if (!showPrompt) return null;
 
   return (
