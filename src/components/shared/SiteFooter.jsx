@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useLang } from '../../i18n/LangContext.js';
 import { copyToClipboard } from '../../utils/clipboard.js';
-import { buildMailto, REPORT_EMAIL, LINKEDIN_URL } from '../../utils/mailto.js';
-import { IconLinkedin, IconMail, IconCopy, IconInfo, IconClock, IconStar } from '../icons/index.js';
+import { buildMailto, REPORT_EMAIL, LINKEDIN_URL, INSTAGRAM_URL } from '../../utils/mailto.js';
+import { IconLinkedin, IconInstagram, IconMail, IconCopy, IconInfo, IconClock, IconStar } from '../icons/index.js';
 import DonationButton from './DonationButton.jsx';
 import Changelog from './Changelog.jsx';
 import AboutInfo from './AboutInfo.jsx';
@@ -62,6 +62,16 @@ export default function SiteFooter() {
         >
           <IconLinkedin size={16} />
           {t.common.createdBy} Dr. Joaquín Hevia M.
+        </a>
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t.common.instagramAria}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+        >
+          <IconInstagram size={16} />
+          @radiocalclinical
         </a>
         <a
           href={buildMailto(null, lang, 'bug')}

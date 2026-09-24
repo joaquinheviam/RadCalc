@@ -11,6 +11,7 @@ export { default as IconInfo } from './IconInfo.jsx';
 export { default as IconAlertCircle } from './IconAlertCircle.jsx';
 export { default as IconMail } from './IconMail.jsx';
 export { default as IconLinkedin } from './IconLinkedin.jsx';
+export { default as IconInstagram } from './IconInstagram.jsx';
 export { default as IconBookOpen } from './IconBookOpen.jsx';
 export { default as IconStethoscope } from './IconStethoscope.jsx';
 export { default as IconSearch } from './IconSearch.jsx';
