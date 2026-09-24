@@ -38,7 +38,7 @@ export default {
     reportBugGeneral: 'Reportar un error',
     suggestUpdate: 'Sugerir actualización',
     suggestGeneral: 'Sugerencia',
-    instagramAria: 'RadioCalc Clinical en Instagram (@radiocalclinical)',
+    instagramAria: 'RadioCalc Clinical en Instagram (@radiocalcclinical)',
     createdBy: 'Creado por',
     donateText: 'Ayúdame a mantener esta calculadora clínica gratis y sin publicidad',
     donateButton: 'Cómprame un café',

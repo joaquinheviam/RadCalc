@@ -216,7 +216,7 @@ function AppShell() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t.common.instagramAria}
-              title="@radiocalclinical"
+              title="@radiocalcclinical"
               className={`${activeEntry ? 'hidden sm:inline-flex' : 'inline-flex'} p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-colors`}
             >
               <IconInstagram size={18} />
