@@ -49,6 +49,9 @@ export default function SpleenSize() {
   const enlarged = showResult ? (lengthEnlarged || (volumeEnlarged === true)) : null;
 
   const getReportText = () => {
+    // El modal de vista previa pide el texto en cada render, también antes
+    // de ingresar datos: sin talla y longitud no hay informe.
+    if (!showResult) return '';
     const lines = [
       c.reportTitle,
       `${c.ulnLengthLabel}: ${ulnLength.toFixed(1)} cm`,
