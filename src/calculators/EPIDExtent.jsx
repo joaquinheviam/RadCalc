@@ -57,6 +57,9 @@ export default function EPIDExtent() {
   const hasResult = method === 'goh' ? gohHasResult : tschalerValid;
 
   const getReportText = () => {
+    // El modal de vista previa pide el texto en cada render, también antes
+    // de ingresar datos: sin resultado no hay informe.
+    if (!hasResult) return '';
     const text = method === 'goh'
       ? c.reportTextGoh(
           gohAvg.toFixed(1),
