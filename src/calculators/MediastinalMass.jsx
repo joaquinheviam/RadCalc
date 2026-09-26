@@ -116,7 +116,7 @@ export default function MediastinalMass() {
         <OptionList label={c.qCompartment} options={c.compartmentOpts} value={compartment} onChange={chooseCompartment} />
       </Card>
 
-      {/* Esquema de Gemini integrado tal cual; resalta el compartimento elegido. */}
+      {/* Esquema de Gemini (con ajustes de modo oscuro, pulmones y ancho); resalta el compartimento elegido. */}
       <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
         <ZoomableDiagram title={c.diagramTitle} labels={t.common.diagramZoom}>
           <ITMIGCompartmentsScheme labels={c.diagramLabels} highlight={compartment} />
