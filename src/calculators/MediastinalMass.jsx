@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { IconBookOpen } from '../components/icons/index.js';
+import { ItmigCompartmentsScheme } from '../components/schematics/ItmigCompartmentsScheme.jsx';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, ZoomableDiagram } from '../components/shared/index.js';
 
 // Masas mediastínicas: diferencial ordenado según compartimento ITMIG, edad,
 // sexo, hallazgos de imagen y datos clínicos. Cada regla suma o resta peso a
@@ -278,6 +280,13 @@ export default function MediastinalMass() {
           </div>
         </div>
       </Card>
+
+      {/* Esquema de compartimentos (Gemini, estilo Carter 2017; aorta, morado en oscuro y pulmones ajustados); resalta el compartimento elegido. */}
+      <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
+        <ZoomableDiagram title={c.diagramTitle} labels={t.common.diagramZoom}>
+          <ItmigCompartmentsScheme labels={c.diagramLabels} highlight={compartment} />
+        </ZoomableDiagram>
+      </Accordion>
 
       {groups && (
         <Card className="space-y-4">

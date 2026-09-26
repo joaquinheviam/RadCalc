@@ -1125,6 +1125,8 @@ export default {
     mediastinalMass: {
       title: 'Masas Mediastínicas: Diferencial por Compartimento, Edad y Sexo (ITMIG)',
       subtitle: 'Diagnóstico diferencial orientativo de una masa mediastínica que ordena las posibilidades según compartimento ITMIG, edad, sexo, hallazgos de TC y RM, marcadores y contexto clínico.',
+      diagramTitle: 'Ver esquema de compartimentos ITMIG',
+      diagramLabels: { sagittalTitle: 'Corte Sagital', axialTitle: 'Corte Axial', prevascular: 'Prevascular (Anterior)', visceral: 'Visceral (Medio)', paravertebral: 'Paravertebral (Posterior)', boundaryLine: '1 cm posterior al margen anterior' },
       ageLabel: 'Edad (años)',
       sexLabel: 'Sexo',
       sexLabels: { f: 'Mujer', m: 'Hombre' },
