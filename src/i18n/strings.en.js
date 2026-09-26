@@ -1124,6 +1124,8 @@ export default {
     mediastinalMass: {
       title: 'Mediastinal Masses: Differential by Compartment, Age and Sex (ITMIG)',
       subtitle: 'Guided differential diagnosis of a mediastinal mass that ranks the possibilities by ITMIG compartment, age, sex, CT and MRI findings, tumor markers and clinical context.',
+      diagramTitle: 'View ITMIG compartment diagram',
+      diagramLabels: { sagittalTitle: 'Sagittal View', axialTitle: 'Axial View', prevascular: 'Prevascular (Anterior)', visceral: 'Visceral (Middle)', paravertebral: 'Paravertebral (Posterior)', boundaryLine: '1 cm posterior to anterior margin' },
       ageLabel: 'Age (years)',
       sexLabel: 'Sex',
       sexLabels: { f: 'Female', m: 'Male' },
