@@ -281,7 +281,7 @@ export default function MediastinalMass() {
         </div>
       </Card>
 
-      {/* Esquema de compartimentos (Gemini, estilo Carter 2017), integrado sin cambios; resalta el compartimento elegido. */}
+      {/* Esquema de compartimentos (Gemini, estilo Carter 2017; aorta, morado en oscuro y pulmones ajustados); resalta el compartimento elegido. */}
       <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
         <ZoomableDiagram title={c.diagramTitle} labels={t.common.diagramZoom}>
           <ItmigCompartmentsScheme labels={c.diagramLabels} highlight={compartment} />

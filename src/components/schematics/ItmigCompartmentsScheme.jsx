@@ -25,7 +25,7 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
             {/* Prevascular (Morado) */}
             <path
               d="M 50,70 L 140,70 C 130,100 130,130 150,170 C 160,200 155,240 140,265 L 75,250 Q 60,150 50,70 Z"
-              fill="#a21caf"
+              className="fill-[#a21caf] dark:fill-[#e879f9]"
               opacity={getOpacity('prevascular')}
             />
             {/* Visceral (Azul) */}
@@ -83,7 +83,7 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
             {/* Prevascular (Morado) - Envuelve corazón anterior y lateralmente */}
             <path
               d="M 185,50 Q 200,45 215,50 C 270,60 290,110 270,170 C 265,185 255,190 245,190 C 255,170 250,140 250,140 C 250,80 150,80 150,140 C 150,140 145,170 155,190 C 145,190 135,185 130,170 C 110,110 130,60 185,50 Z"
-              fill="#a21caf"
+              className="fill-[#a21caf] dark:fill-[#e879f9]"
               opacity={getOpacity('prevascular')}
             />
             {/* Visceral (Azul) - Contiene corazón, aorta y esófago hasta la línea */}
@@ -112,13 +112,13 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
             {/* Corazón (Raíces e interior) */}
             <path d="M 200,90 C 240,100 245,135 235,165 L 175,160 C 155,140 160,100 200,90 Z" className="text-slate-400 dark:text-slate-500" />
 
-            {/* Aorta Descendente y Esófago */}
-            <circle cx="175" cy="195" r="12" className="text-slate-400 dark:text-slate-500" />
+            {/* Aorta descendente (a la derecha de la imagen = izquierda del paciente) y esófago */}
+            <circle cx="226" cy="198" r="12" className="text-slate-400 dark:text-slate-500" />
             <circle cx="200" cy="200" r="6" className="text-slate-400 dark:text-slate-500" />
 
-            {/* Pulmones (Líneas pleurales que empujan hacia adentro) */}
-            <path d="M 115,50 C 90,70 30,120 30,200 C 30,280 80,300 130,290 C 110,240 130,180 125,160" className="text-slate-300 dark:text-slate-600" strokeWidth="1.5" strokeDasharray="4 4" />
-            <path d="M 285,50 C 310,70 370,120 370,200 C 370,280 320,300 270,290 C 290,240 270,180 275,160" className="text-slate-300 dark:text-slate-600" strokeWidth="1.5" strokeDasharray="4 4" />
+            {/* Pulmones: el borde medial sigue el contorno del mediastino */}
+            <path d="M 175,48 C 120,50 30,110 30,200 C 30,280 80,305 140,295 C 138,270 140,245 145,232 C 140,210 130,195 125,185 C 112,160 110,110 128,75 C 140,58 158,50 175,48 Z" className="text-slate-400 dark:text-slate-500" strokeWidth="1.5" />
+            <path d="M 225,48 C 280,50 370,110 370,200 C 370,280 320,305 260,295 C 262,270 260,245 255,232 C 260,210 270,195 277,185 C 290,160 292,110 274,75 C 262,58 242,50 225,48 Z" className="text-slate-400 dark:text-slate-500" strokeWidth="1.5" />
           </g>
 
           {/* Línea Verde (Límite Visceral-Paravertebral en Y=230, 1cm tras el margen anterior) */}
@@ -132,8 +132,8 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
       <div className="flex flex-wrap gap-x-5 gap-y-2 justify-center text-xs text-slate-600 dark:text-slate-300 mt-2">
         <div className="flex items-center gap-1.5">
           <span
-            className="block w-3.5 h-3.5 rounded-full transition-opacity duration-300"
-            style={{ backgroundColor: '#a21caf', opacity: getOpacity('prevascular') }}
+            className="block w-3.5 h-3.5 rounded-full transition-opacity duration-300 bg-[#a21caf] dark:bg-[#e879f9]"
+            style={{ opacity: getOpacity('prevascular') }}
           ></span>
           <span>{labels.prevascular}</span>
         </div>
