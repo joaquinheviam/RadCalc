@@ -22,21 +22,22 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
 
           {/* ZONAS CLÍNICAS (Fondo) */}
           <g style={{ transition: 'opacity 0.3s ease' }}>
-            {/* Prevascular (Morado) */}
+            {/* Prevascular (Morado): banda retroesternal estrecha que rodea el borde
+                anterior del corazón, la aorta ascendente y la vena braquiocefálica */}
             <path
-              d="M 50,70 L 140,70 C 130,100 130,130 150,170 C 160,200 155,240 140,265 L 75,250 Q 60,150 50,70 Z"
+              d="M 50,52 L 73,52 C 71,75 74,95 84,114 C 87,130 88,148 86,162 C 80,185 78,215 84,238 C 88,250 93,257 98,261 L 76,262 Q 60,150 50,52 Z"
               className="fill-[#a21caf] dark:fill-[#e879f9]"
               opacity={getOpacity('prevascular')}
             />
             {/* Visceral (Azul) */}
             <path
-              d="M 140,70 L 260,70 L 260,300 C 210,290 160,275 140,265 C 155,240 160,200 150,170 C 130,130 130,100 140,70 Z"
+              d="M 73,52 L 260,52 L 260,300 C 215,292 150,272 98,261 C 93,257 88,250 84,238 C 78,215 80,185 86,162 C 88,148 87,130 84,114 C 74,95 71,75 73,52 Z"
               fill="#3b82f6"
               opacity={getOpacity('visceral')}
             />
             {/* Paravertebral (Amarillo) */}
             <path
-              d="M 260,70 L 330,70 L 330,335 C 300,320 280,310 260,300 Z"
+              d="M 260,52 L 330,52 L 330,335 C 300,320 280,310 260,300 Z"
               fill="#eab308"
               opacity={getOpacity('paravertebral')}
             />
@@ -55,9 +56,13 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
             <rect x="250" y="260" width="40" height="35" rx="3" fill="currentColor" opacity="0.2" />
 
             {/* Perfil del Corazón */}
-            <path d="M 150,160 C 145,210 160,255 210,260 C 240,260 250,220 235,170 C 220,140 170,120 150,160 Z" className="text-slate-400 dark:text-slate-500" />
-            {/* Arco Aórtico */}
-            <path d="M 170,130 C 165,95 190,80 220,95 C 240,110 240,150 240,150" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 92,168 C 84,215 104,258 162,262 C 207,262 228,225 218,178 C 208,142 124,128 92,168 Z" className="text-slate-400 dark:text-slate-500" />
+            {/* Aorta ascendente, cayado y descendente */}
+            <path d="M 94,160 C 86,110 110,76 160,74 C 215,74 242,108 242,190" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 110,156 C 106,114 124,92 160,90 C 206,90 226,114 226,190" className="text-slate-400 dark:text-slate-500" />
+            {/* Vena braquiocefálica (por delante del cayado) */}
+            <path d="M 76,42 C 74,70 78,92 88,112" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 88,42 C 86,66 90,84 100,102" className="text-slate-400 dark:text-slate-500" />
             {/* Tráquea */}
             <path d="M 190,40 L 210,40 L 205,110 L 185,110 Z" className="text-slate-400 dark:text-slate-500" />
             {/* Diafragma */}
