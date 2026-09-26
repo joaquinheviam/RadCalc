@@ -124,6 +124,17 @@ export const REFERENCES = {
     { text: 'St Pierre TG, Clark PR, Chua-Anusorn W, et al. Noninvasive measurement and imaging of liver iron concentrations using proton magnetic resonance. Blood. 2005;105(2):855-861.', doi: '10.1182/blood-2004-01-0177' },
     { text: 'Hankins JS, McCarville MB, Loeffler RB, et al. R2* magnetic resonance imaging of the liver in patients with iron overload. Blood. 2009;113(20):4853-4855.', doi: '10.1182/blood-2008-12-191643' },
   ],
+  mediastinalMass: [
+    { text: 'Carter BW, Benveniste MF, Madan R, Godoy MC, de Groot PM, Truong MT, Rosado-de-Christenson ML, Marom EM. ITMIG Classification of Mediastinal Compartments and Multidisciplinary Approach to Mediastinal Masses. Radiographics. 2017;37(2):413-436.', doi: '10.1148/rg.2017160095' },
+    { text: 'Expert Panel on Thoracic Imaging; Ackman JB, Chung JH, Walker CM, et al. ACR Appropriateness Criteria® Imaging of Mediastinal Masses. J Am Coll Radiol. 2021;18(5S):S37-S51.', doi: '10.1016/j.jacr.2021.01.007' },
+    { text: 'Taka M, Kobayashi S, Mizutomi K, Inoue D, Takamatsu S, Gabata T, et al. Diagnostic approach for mediastinal masses with radiopathological correlation. Eur J Radiol. 2023;162:110767.', doi: '10.1016/j.ejrad.2023.110767' },
+    { text: 'Jain V, Ahuja J, Strange CD, Agrawal R, Palacio DM, Truong MT, Marom EM. Imaging of Mediastinal Masses. Radiol Clin North Am. 2025;63(4):609-631.', doi: '10.1016/j.rcl.2024.12.006' },
+    { text: 'Mura R, Pochepnia S, Kifjak D, Khenkina N, Prosch H. A diagnostic approach to mediastinal masses in clinical practice. BJR Open. 2025;7(1):tzaf009.', doi: '10.1093/bjro/tzaf009' },
+    { text: 'Koyasu S. Imaging of thymic epithelial tumors—a clinical practice review. Mediastinum. 2024;8:41.', doi: '10.21037/med-23-66' },
+    { text: 'Riely GJ, Wood DE, Loo BW, et al. Thymomas and Thymic Carcinomas, Version 2.2025, NCCN Clinical Practice Guidelines in Oncology. J Natl Compr Canc Netw. 2025;23(6):255-269.', doi: '10.6004/jnccn.2025.0027' },
+    { text: 'Ackman JB, Verzosa S, Kovach AE, Louissaint A, Lanuti M, Wright CD, Shepard JO, Halpern EF. High rate of unnecessary thymectomy and its cause. Can computed tomography distinguish thymoma, lymphoma, thymic hyperplasia, and thymic cysts? Eur J Radiol. 2015;84(3):524-533.', doi: '10.1016/j.ejrad.2014.11.042' },
+    { text: 'Vo NH, Shashi KK, Winant AJ, Liszewski MC, Lee EY. Imaging evaluation of the pediatric mediastinum: new International Thymic Malignancy Interest Group classification system for children. Pediatr Radiol. 2022;52(10):1948-1962.', doi: '10.1007/s00247-022-05361-3' },
+  ],
   thymic: [
     { text: 'Inaoka T, Takahashi K, Mineta M, Yamada T, Shuke N, Okizaki A, Nagasawa K, Sugimori H, Aburano T. Thymic hyperplasia and thymus gland tumors: differentiation with chemical shift MR imaging. Radiology. 2007;243(3):869-876.', doi: '10.1148/radiol.2433060797' },
     { text: 'Priola AM, Priola SM, Ciccone G, et al. Differentiation of rebound and lymphoid thymic hyperplasia from anterior mediastinal tumors with dual-echo chemical-shift MR imaging in adulthood: reliability of the chemical-shift ratio and signal intensity index. Radiology. 2015;274(1):238-249.', doi: '10.1148/radiol.14132665' },

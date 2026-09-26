@@ -42,6 +42,7 @@ const PancreaticCyst = lazy(() => import('./PancreaticCyst.jsx'));
 const Cholangiocarcinoma = lazy(() => import('./Cholangiocarcinoma.jsx'));
 const SpleenSize = lazy(() => import('./SpleenSize.jsx'));
 const SplenicLesion = lazy(() => import('./SplenicLesion.jsx'));
+const MediastinalMass = lazy(() => import('./MediastinalMass.jsx'));
 const LIRADSUS = lazy(() => import('./LIRADSUS.jsx'));
 const AdrenalWashout = lazy(() => import('./AdrenalWashout.jsx'));
 const AdrenalCSI = lazy(() => import('./AdrenalCSI.jsx'));
@@ -75,6 +76,7 @@ export const calculators = [
   // Cabeza y cuello
   { id: 'tirads', catKey: 'cabezaCuello', component: TIRADS },
   // Tórax
+  { id: 'mediastinalMass', catKey: 'torax', component: MediastinalMass },
   { id: 'thymic', catKey: 'torax', component: ThymicFat },
   { id: 'ntmBcd', catKey: 'torax', component: NTMBcdScore },
   { id: 'peQanadli', catKey: 'torax', component: PEQanadli },

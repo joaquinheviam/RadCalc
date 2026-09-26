@@ -2,612 +2,622 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://radiocalc.app/es/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/tirads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://radiocalc.app/es/calc/mediastinalMass/</loc>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/thymic/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/ntmBcd/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/peQanadli/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/lungNodule/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/vdt/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/lungRads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/lungScreening/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/lungCysts/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/ildClassifier/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/epidExtent/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/thoracicglossary/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/pectusHallerCI/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/lungCancerTNM9/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/cadrads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/cardiacSiderosis/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/mriFf/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/siderosis/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/lirads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/liradsTr/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/liradsUs/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/pancreatitisAtlanta/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/pancreasResect/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/pancreaticCystDx/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/pancreaticCyst/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/cholangiocarcinoma/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/spleenSize/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/splenicLesion/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/adrenalCt/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/adrenalMri/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/aast2018/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/crads2023/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/rectalCancer/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/psad/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/pirads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/renalScore/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/bosniak/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/ccls/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/virads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/orads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/leiomyoma/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/adnexalIncidental/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/ovarianNeoplasmDx/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/mullerianAnomalies/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/adnexalRisk/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/biradsMammo/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/biradsUs/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/boneRads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/mirels/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/bactip/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/kellgrenLawrence/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/tlics/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/aspects/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/abc2Hematoma/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/nascetStenosis/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/fazekasScale/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/sahGrading/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/sins/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/pecarn/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/es/calc/brainAvm/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/tirads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://radiocalc.app/en/calc/mediastinalMass/</loc>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/thymic/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/ntmBcd/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/peQanadli/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/lungNodule/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/vdt/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/lungRads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/lungScreening/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/lungCysts/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/ildClassifier/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/epidExtent/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/thoracicglossary/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/pectusHallerCI/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/lungCancerTNM9/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/cadrads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/cardiacSiderosis/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/mriFf/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/siderosis/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/lirads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/liradsTr/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/liradsUs/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/pancreatitisAtlanta/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/pancreasResect/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/pancreaticCystDx/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/pancreaticCyst/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/cholangiocarcinoma/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/spleenSize/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/splenicLesion/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/adrenalCt/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/adrenalMri/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/aast2018/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/crads2023/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/rectalCancer/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/psad/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/pirads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/renalScore/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/bosniak/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/ccls/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/virads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/orads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/leiomyoma/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/adnexalIncidental/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/ovarianNeoplasmDx/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/mullerianAnomalies/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/adnexalRisk/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/biradsMammo/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/biradsUs/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/boneRads/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/mirels/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/bactip/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/kellgrenLawrence/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/tlics/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/aspects/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/abc2Hematoma/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/nascetStenosis/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/fazekasScale/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/sahGrading/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/sins/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/pecarn/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://radiocalc.app/en/calc/brainAvm/</loc>
-    <lastmod>2026-09-23</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
   </url>
 </urlset>
