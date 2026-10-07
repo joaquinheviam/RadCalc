@@ -3,41 +3,9 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
-
-function fleischnerRec(c, type, count, risk, size) {
-  if (type === 'solid') {
-    if (count === 'single') {
-      if (size < 6) return risk === 'high' ? c.recs.optionalCt12 : c.recs.none;
-      if (size <= 8) return risk === 'high' ? c.recs.soloSolid6to8High : c.recs.soloSolid6to8Low;
-      return c.recs.soloSolidOver8;
-    }
-    if (size < 6) return risk === 'high' ? c.recs.optionalCt12 : c.recs.none;
-    return risk === 'high' ? c.recs.multipleSolidGeq6High : c.recs.multipleSolidGeq6Low;
-  }
-  if (type === 'ggn') {
-    if (count === 'single') return size < 6 ? c.recs.none : c.recs.ggnFollow;
-    return size < 6 ? c.recs.multiSubsolidUnder6 : c.recs.multiSubsolidGeq6;
-  }
-  // partSolid
-  if (count === 'single') return size < 6 ? c.recs.none : c.recs.partSolidFollow;
-  return size < 6 ? c.recs.multiSubsolidUnder6 : c.recs.multiSubsolidGeq6;
-}
-
-function nccnRec(c, type, count, risk, size) {
-  if (type === 'solid') {
-    if (size < 6) return risk === 'high' ? c.nccnRecs.solidHighUnder6 : c.nccnRecs.none;
-    if (size <= 8) return risk === 'high' ? c.nccnRecs.solidHighMid : c.nccnRecs.solidLowMid;
-    return c.nccnRecs.solidOver8;
-  }
-  if (type === 'ggn') {
-    if (count === 'single') return size < 6 ? c.nccnRecs.none : c.nccnRecs.ggnSoloFollow;
-    return size < 6 ? c.nccnRecs.multiSubsolidUnder6 : c.nccnRecs.multiSubsolidGeq6;
-  }
-  // partSolid
-  if (count === 'single') return size < 6 ? c.nccnRecs.none : c.nccnRecs.partSolidSoloFollow;
-  return size < 6 ? c.nccnRecs.multiSubsolidUnder6 : c.nccnRecs.multiSubsolidGeq6;
-}
+import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, CriteriaReferences } from '../components/shared/index.js';
+import { PFN_FLOW, fleischnerRec, nccnRec } from './logic/lungNodule.js';
+import { buildLungNoduleCriteria } from '../criteria/lungNodule.js';
 
 export default function LungNodule() {
   const { t, lang } = useLang();
@@ -109,8 +77,8 @@ export default function LungNodule() {
             </ul>
             <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pfnGate1Q}</label>
             <div className="flex gap-2 mb-2">
-              <button onClick={() => goPfn('gate2')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
-              <button onClick={() => goPfn('result-notpfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
+              <button onClick={() => goPfn(PFN_FLOW.gate1.yes)} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
+              <button onClick={() => goPfn(PFN_FLOW.gate1.no)} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
             </div>
             <button onClick={() => goPfn('skipped')} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">{c.pfnSkip}</button>
           </>
@@ -122,8 +90,8 @@ export default function LungNodule() {
             </ul>
             <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pfnGate2Q}</label>
             <div className="flex gap-2">
-              <button onClick={() => goPfn('result-pfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
-              <button onClick={() => goPfn('gate3')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
+              <button onClick={() => goPfn(PFN_FLOW.gate2.yes)} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
+              <button onClick={() => goPfn(PFN_FLOW.gate2.no)} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
             </div>
           </>
         )}
@@ -134,8 +102,8 @@ export default function LungNodule() {
             </ul>
             <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pfnGate3Q}</label>
             <div className="flex gap-2">
-              <button onClick={() => goPfn('result-pfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
-              <button onClick={() => goPfn('result-notpfn')} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
+              <button onClick={() => goPfn(PFN_FLOW.gate3.yes)} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnYes}</button>
+              <button onClick={() => goPfn(PFN_FLOW.gate3.no)} className="flex-1 p-2.5 rounded-lg border text-sm transition-all border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-500">{c.pfnNo}</button>
             </div>
           </>
         )}
@@ -216,6 +184,7 @@ export default function LungNodule() {
       )}
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.lungNodule} />
+      <CriteriaReferences build={buildLungNoduleCriteria} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />

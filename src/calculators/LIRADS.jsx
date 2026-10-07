@@ -3,8 +3,10 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle, IconGitBranch } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema, CriteriaReferences } from '../components/shared/index.js';
 import { SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
+import { LIRADS_SIZES, LIRADS_FEATURES, computeLiRads, adjustLiRadsForAF, liradsFinalCategory } from './logic/lirads.js';
+import { buildLiradsCriteria } from '../criteria/lirads.js';
 
 // Mirrors the outer LR-TIV/LR-M gating verbatim. The size x APHE x feature-count
 // numeric matrix (computeLiRads) is a lookup table, not a sequential branch, so it
@@ -29,41 +31,6 @@ function buildLiradsTree(c, t) {
   };
 }
 
-function computeLiRads(size, aphe, feats) {
-  // size: 1 (<10mm) | 2 (10-19mm) | 3 (>=20mm)
-  const featCount = Object.values(feats).filter(Boolean).length;
-  if (!aphe) {
-    if (size === 3) return featCount >= 1 ? 'LR-4' : 'LR-3';
-    return featCount >= 2 ? 'LR-4' : 'LR-3';
-  }
-  // APHE presente
-  if (size === 1) return featCount >= 1 ? 'LR-4' : 'LR-3';
-  if (size === 2) {
-    // Celda diagonal de la tabla oficial CT/MRI LI-RADS v2018 CORE (10-19 mm + APHE):
-    // 0 características = LR-3; con exactamente 1 característica, la cápsula realzante
-    // por sí sola solo alcanza LR-4, mientras que el lavado no periférico o el crecimiento
-    // umbral por sí solos ya son LR-5; ≥2 características = LR-5.
-    if (featCount === 0) return 'LR-3';
-    if (featCount === 1) return feats.capsule ? 'LR-4' : 'LR-5';
-    return 'LR-5';
-  }
-  return featCount >= 1 ? 'LR-5' : 'LR-4';
-}
-
-function adjustLiRadsForAF(baseCat, hasMalignantAF, hasBenignAF) {
-  const order = ['LR-1', 'LR-2', 'LR-3', 'LR-4', 'LR-5'];
-  const idx = order.indexOf(baseCat);
-  if (idx === -1) return baseCat;
-  if (hasMalignantAF && hasBenignAF) return baseCat;
-  if (hasMalignantAF) {
-    if (baseCat === 'LR-5') return baseCat;
-    const capIdx = order.indexOf('LR-4');
-    return order[Math.min(idx + 1, capIdx)];
-  }
-  if (hasBenignAF) return order[Math.max(idx - 1, 0)];
-  return baseCat;
-}
-
 export default function LIRADS() {
   const { t, lang } = useLang();
   const [showPreview, setShowPreview] = useState(false);
@@ -86,7 +53,7 @@ export default function LIRADS() {
   const hasMalignantAF = showAfStep && Object.values(afMalignant).some(Boolean);
   const hasBenignAF = showAfStep && Object.values(afBenignSel).some(Boolean);
   const adjustedCat = showAfStep ? adjustLiRadsForAF(baseCat, hasMalignantAF, hasBenignAF) : baseCat;
-  const finalCat = lrTiv ? 'LR-TIV' : (lrM ? 'LR-M' : adjustedCat);
+  const finalCat = liradsFinalCategory(lrTiv, lrM, adjustedCat);
   const afApplied = hasMalignantAF || hasBenignAF;
   const afNote = !afApplied ? null
     : (hasMalignantAF && hasBenignAF) ? c.afConflictNote
@@ -159,7 +126,7 @@ export default function LIRADS() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.sizeLabel}</label>
             <div className="flex gap-2">
-              {[[1,c.size1],[2,c.size2],[3,c.size3]].map(([val,label]) => (
+              {LIRADS_SIZES.map(([val, labelKey]) => [val, c[labelKey]]).map(([val,label]) => (
                 <button key={val} onClick={() => setSize(val)} className={`flex-1 py-2 text-sm rounded-lg font-medium border ${size === val ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
               ))}
             </div>
@@ -174,7 +141,7 @@ export default function LIRADS() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.featuresLabel}</label>
             <div className="space-y-2">
-              {[['washout', c.featWashout],['capsule', c.featCapsule],['growth', c.featGrowth]].map(([key, label]) => (
+              {LIRADS_FEATURES.map(([key, labelKey]) => [key, c[labelKey]]).map(([key, label]) => (
                 <button key={key} onClick={() => toggleFeat(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${feats[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                   {feats[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
                 </button>
@@ -244,6 +211,7 @@ export default function LIRADS() {
         </Accordion>
       )}
       <References items={REFERENCES.lirads} />
+      <CriteriaReferences build={buildLiradsCriteria} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />

@@ -20,9 +20,11 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { calculators } from '../src/calculators/registry.js';
+import { calculators, categoryOrder } from '../src/calculators/registry.js';
 import { STRINGS } from '../src/i18n/strings.js';
 import { calcMetaDescription } from '../src/utils/calcMetaDescription.js';
+import { CRITERIA_BUILDERS, renderCriteriaHtml } from '../src/criteria/index.js';
+import { CRITERIA_META } from '../src/criteria/meta.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, '..', 'dist');
@@ -84,6 +86,30 @@ function buildHead(html, { lang, title, description, pathSuffix }) {
   return out;
 }
 
+function escapeText(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Contenido de referencia de la calculadora dentro de #root: título, subtítulo
+// y la sección "Criterios y referencias" (src/criteria), legibles sin
+// JavaScript. Al cargar, React reemplaza #root por la app, que vuelve a
+// mostrar la misma sección (CriteriaReferences.jsx, mismo renderer) al pie de
+// la calculadora: no es contenido solo para bots. Antes de que cargue el JS
+// puede verse un instante (solo en la primera visita: después el service
+// worker sirve la app desde index.html).
+function withCriteria(html, lang, id) {
+  const build = CRITERIA_BUILDERS[id];
+  if (!build) return html;
+  const t = STRINGS[lang];
+  const c = t.calc[id];
+  const body = `<div class="mx-auto p-4 max-w-md space-y-4">`
+    + `<h1 class="text-lg font-bold text-slate-800 dark:text-slate-100">${escapeText(c.title)}</h1>`
+    + `<p class="text-sm text-slate-500 dark:text-slate-400">${escapeText(c.subtitle)}</p>`
+    + renderCriteriaHtml(build(t), t.criteria)
+    + `</div>`;
+  return html.replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+}
+
 function writeRoute(relDir, html) {
   const outDir = join(distDir, relDir);
   mkdirSync(outDir, { recursive: true });
@@ -106,14 +132,44 @@ for (const lang of LANGS) {
   // Cada calculadora: /<lang>/calc/<id>/ (con barra final, ver App.jsx)
   for (const cc of calculators) {
     const entry = t.calc[cc.id];
-    writeRoute(`${lang}/calc/${cc.id}`, buildHead(template, {
+    writeRoute(`${lang}/calc/${cc.id}`, withCriteria(buildHead(template, {
       lang,
       title: `${entry.title} | RadioCalc Clinical`,
       description: calcMetaDescription(entry, t),
       pathSuffix: `calc/${cc.id}/`,
-    }));
+    }), lang, cc.id));
     count++;
   }
 }
 
 console.log(`prerender-seo: generadas ${count} páginas HTML con metadatos propios (${LANGS.length} idiomas x ${calculators.length + 1} rutas).`);
+console.log(`prerender-seo: sección "Criterios y referencias" en ${Object.keys(CRITERIA_BUILDERS).length} calculadoras (${Object.keys(CRITERIA_BUILDERS).join(', ')}).`);
+
+// /llms.txt: índice en texto plano para asistentes y agentes (formato
+// llmstxt.org): cada calculadora con su URL en ambos idiomas y, si ya tiene
+// ficha, sistema y versión. Público como cualquier otro archivo del sitio.
+const es = STRINGS.es, en = STRINGS.en;
+const llms = [
+  '# RadioCalc Clinical',
+  '',
+  `> ${es.metaDescription}`,
+  '',
+  `${en.metaDescription}`,
+  '',
+  'Cada página de calculadora está en español (/es/) e inglés (/en/). Las marcadas con "criterios en texto" incluyen en el HTML, sin necesidad de JavaScript, la sección "Criterios y referencias": sistema, versión, organismo, a quién aplica, variables, reglas completas, resultados posibles, referencias y fecha de última actualización.',
+  'Pages marked "criteria in text" include, in the HTML and without JavaScript, the "Criteria and references" section.',
+  '',
+];
+for (const catKey of categoryOrder) {
+  const items = calculators.filter((cc) => cc.catKey === catKey);
+  if (!items.length) continue;
+  llms.push(`## ${es.categories[catKey]} / ${en.categories[catKey]}`, '');
+  for (const cc of items) {
+    const meta = CRITERIA_META[cc.id];
+    const extra = CRITERIA_BUILDERS[cc.id] && meta ? ` — ${meta.system}, ${meta.version} — criterios en texto / criteria in text` : '';
+    llms.push(`- [${es.calc[cc.id].title}](${SEO_BASE_URL}/es/calc/${cc.id}/) · [${en.calc[cc.id].title}](${SEO_BASE_URL}/en/calc/${cc.id}/)${extra}`);
+  }
+  llms.push('');
+}
+writeFileSync(join(distDir, 'llms.txt'), llms.join('\n'));
+console.log(`prerender-seo: dist/llms.txt con ${calculators.length} calculadoras.`);
