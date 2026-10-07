@@ -4,14 +4,7 @@ import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
 import { StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
-
-const TIRADS_POINTS = {
-  composition: [0, 0, 1, 2],
-  echogenicity: [0, 1, 2, 3],
-  shape: [0, 3],
-  margin: [0, 0, 2, 3],
-  echogenicFoci: [0, 1, 2, 3],
-};
+import { TIRADS_POINTS, tiradsPoints, tiradsCategory, TIRADS_CATEGORY_COLOR } from './logic/tirads.js';
 
 export default function TIRADS() {
   const { t, lang } = useLang();
@@ -34,22 +27,9 @@ export default function TIRADS() {
     });
   };
 
-  const calculatePoints = () => {
-    let pts = 0;
-    ['composition', 'echogenicity', 'shape', 'margin'].forEach(cat => {
-      if (selections[cat] !== null) pts += TIRADS_POINTS[cat][selections[cat]];
-    });
-    selections.echogenicFoci.forEach(i => { pts += TIRADS_POINTS.echogenicFoci[i]; });
-    return pts;
-  };
-  const pts = calculatePoints();
-
-  let catKey = '', color = '';
-  if (pts === 0) { catKey = 'TR1'; color = 'text-emerald-500'; }
-  else if (pts <= 2) { catKey = 'TR2'; color = 'text-emerald-500'; }
-  else if (pts === 3) { catKey = 'TR3'; color = 'text-amber-500'; }
-  else if (pts <= 6) { catKey = 'TR4'; color = 'text-orange-500'; }
-  else { catKey = 'TR5'; color = 'text-red-500'; }
+  const pts = tiradsPoints(selections);
+  const catKey = tiradsCategory(pts);
+  const color = TIRADS_CATEGORY_COLOR[catKey];
   const catInfo = c.categories[catKey];
 
   const getReportText = () => {
