@@ -56,6 +56,13 @@ function partHtml(html, key) {
 const part = (html, key) => textOf(partHtml(html, key));
 
 async function main() {
+  // Una vista previa de Vercel con Deployment Protection redirige al login:
+  // avisar en vez de reportar todo como faltante.
+  const probe = await fetch(`${base}/es/`, { redirect: 'manual' });
+  if (probe.status >= 300 && probe.status < 400 || probe.status === 401) {
+    console.error(`${base} responde ${probe.status} (¿protegido con login de Vercel?). Un lector sin sesión no puede verlo; verifica contra localhost (vite preview) o una URL pública.`);
+    process.exit(2);
+  }
   const rows = [];
   let failed = false;
   const problems = [];
