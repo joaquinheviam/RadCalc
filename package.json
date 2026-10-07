@@ -6,7 +6,7 @@
   "description": "RadioCalc Clinical — calculadoras radiológicas para la práctica clínica diaria (PWA).",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-sitemap.mjs",
+    "prebuild": "node scripts/calc-dates.mjs && node scripts/generate-sitemap.mjs",
     "build": "vite build",
     "postbuild": "node scripts/prerender-seo.mjs && node scripts/postbuild.mjs",
     "preview": "vite preview",

@@ -3,8 +3,9 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, CopyButton, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, CriteriaReferences } from '../components/shared/index.js';
 import { PFN_FLOW, fleischnerRec, nccnRec } from './logic/lungNodule.js';
+import { buildLungNoduleCriteria } from '../criteria/lungNodule.js';
 
 export default function LungNodule() {
   const { t, lang } = useLang();
@@ -183,6 +184,7 @@ export default function LungNodule() {
       )}
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.lungNodule} />
+      <CriteriaReferences build={buildLungNoduleCriteria} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />

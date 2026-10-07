@@ -3,8 +3,9 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
-import { StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, CriteriaReferences } from '../components/shared/index.js';
 import { TIRADS_POINTS, tiradsPoints, tiradsCategory, TIRADS_CATEGORY_COLOR } from './logic/tirads.js';
+import { buildTiradsCriteria } from '../criteria/tirads.js';
 
 export default function TIRADS() {
   const { t, lang } = useLang();
@@ -99,6 +100,7 @@ export default function TIRADS() {
       </Accordion>
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.tirads} />
+      <CriteriaReferences build={buildTiradsCriteria} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />

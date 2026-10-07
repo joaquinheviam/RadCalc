@@ -3,9 +3,10 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle, IconGitBranch } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema } from '../components/shared/index.js';
+import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, Accordion, AlgorithmSchema, CriteriaReferences } from '../components/shared/index.js';
 import { SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js';
 import { LIRADS_SIZES, LIRADS_FEATURES, computeLiRads, adjustLiRadsForAF, liradsFinalCategory } from './logic/lirads.js';
+import { buildLiradsCriteria } from '../criteria/lirads.js';
 
 // Mirrors the outer LR-TIV/LR-M gating verbatim. The size x APHE x feature-count
 // numeric matrix (computeLiRads) is a lookup table, not a sequential branch, so it
@@ -210,6 +211,7 @@ export default function LIRADS() {
         </Accordion>
       )}
       <References items={REFERENCES.lirads} />
+      <CriteriaReferences build={buildLiradsCriteria} />
       <ReportBugLink calcTitle={c.title} />
       <DonationButton />
       <CalcDisclaimer />

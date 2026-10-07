@@ -23,3 +23,4 @@ export { default as Sponsors } from './Sponsors.jsx';
 export { default as ZoomableDiagram } from './ZoomableDiagram.jsx';
 export { default as PreviewIconButton } from './PreviewIconButton.jsx';
 export { default as ReportPreviewModal } from './ReportPreviewModal.jsx';
+export { default as CriteriaReferences } from './CriteriaReferences.jsx';
