@@ -187,6 +187,8 @@ const RULES = {
     ['meningocele', has('nf1'), 2, 'nf1Meningocele'],
     ['emh', has('bilateralLobulated'), 3, 'bilateralLobulated'],
     ['emh', has('hemolyticAnemia'), 4, 'hemolyticAnemia'],
+    // La hematopoyesis extramedular inactiva contiene grasa y/o hierro (Mura 2025).
+    ['emh', and(has('fat'), (s) => s.f.has('hemolyticAnemia') || s.f.has('bilateralLobulated')), 3, 'fatInactiveEmh'],
     ['spondylodiscitis', has('discEndplate'), 4, 'discEndplate'],
     ['spondylodiscitis', has('fever'), 2, 'fever'],
     ['vertebralMets', has('knownPrimary'), 3, 'knownPrimary'],
