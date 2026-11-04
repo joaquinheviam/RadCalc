@@ -24,18 +24,23 @@ const FINDINGS = {
     clinical: ['bSymptoms', 'knownPrimary', 'catecholamines'],
   },
   paravertebral: {
-    imaging: ['dumbbell', 'fusiformChain', 'calcification', 'csfCyst', 'bilateralLobulated', 'boneDestruction', 'discEndplate'],
+    imaging: ['dumbbell', 'fusiformChain', 'calcification', 'fat', 'csfCyst', 'bilateralLobulated', 'boneDestruction', 'discEndplate'],
     clinical: ['nf1', 'catecholamines', 'hemolyticAnemia', 'fever', 'knownPrimary'],
   },
 };
 
-// Patrón de la grasa macroscópica (prevascular): una sola opción, visible
-// solo si se marcó "fat". Criterios de Mura 2025 (BJR Open): nivel
-// grasa-líquido / grasa con líquido y calcio → teratoma maduro; grasa
-// encapsulada con bandas lineales de tejido tímico → timolipoma (o lipoma si es
-// homogénea y sin realce); componente de tejido blando, bandas fibrosas o
-// septos que realzan → liposarcoma.
-const FAT_PATTERNS = ['fatSebum', 'fatEncapsulated', 'fatSoftTissue'];
+// Patrón de la grasa macroscópica: una sola opción, visible solo si se marcó
+// "fat". Criterios de Mura 2025 (BJR Open): nivel grasa-líquido / grasa con
+// líquido y calcio → teratoma maduro; grasa encapsulada con bandas lineales de
+// tejido tímico → timolipoma; grasa encapsulada homogénea sin realce → lipoma;
+// componente de tejido blando, bandas fibrosas o septos que realzan →
+// liposarcoma. Los tumores lipomatosos aparecen en los compartimentos
+// prevascular y paravertebral; el teratoma y el timolipoma, en el prevascular.
+const FAT_PATTERNS = {
+  prevascular: ['fatSebum', 'fatEncapsulated', 'fatSoftTissue'],
+  paravertebral: ['fatHomogeneous', 'fatSoftTissue'],
+};
+const ALL_FAT_PATTERNS = [...new Set(Object.values(FAT_PATTERNS).flat())];
 
 // Reglas: dx afectado, condición, peso (+ a favor / − en contra) y motivo.
 // s = { age (número o null), sex ('f'|'m'|null), f: Set de hallazgos }.
@@ -186,6 +191,13 @@ const RULES = {
     ['spondylodiscitis', has('fever'), 2, 'fever'],
     ['vertebralMets', has('knownPrimary'), 3, 'knownPrimary'],
     ['vertebralMets', and(has('boneDestruction'), not(has('discEndplate'))), 2, 'boneDestruction'],
+    // Tumores lipomatosos paravertebrales: lipoma frente a liposarcoma.
+    ['lipoma', has('fat'), 2, 'fat'],
+    ['lipoma', has('fatHomogeneous'), 3, 'fatHomogeneous'],
+    ['lipoma', has('fatSoftTissue'), -4, 'fatSoftTissueNotLipoma'],
+    ['liposarcoma', has('fat'), 1, 'fatLiposarcomaPossible'],
+    ['liposarcoma', has('fatSoftTissue'), 5, 'fatSoftTissue'],
+    ['liposarcoma', and(has('fat'), adult40), 1, 'liposarcomaAge'],
   ],
 };
 
@@ -238,8 +250,8 @@ export default function MediastinalMass() {
     const next = new Set(prev);
     if (next.has(k)) next.delete(k); else next.add(k);
     // El patrón de la grasa es de una sola opción y depende de "fat".
-    if (FAT_PATTERNS.includes(k) && next.has(k)) FAT_PATTERNS.filter((p) => p !== k).forEach((p) => next.delete(p));
-    if (k === 'fat' && !next.has('fat')) FAT_PATTERNS.forEach((p) => next.delete(p));
+    if (ALL_FAT_PATTERNS.includes(k) && next.has(k)) ALL_FAT_PATTERNS.filter((p) => p !== k).forEach((p) => next.delete(p));
+    if (k === 'fat' && !next.has('fat')) ALL_FAT_PATTERNS.forEach((p) => next.delete(p));
     return next;
   });
   const resetAll = () => { setAge(''); setSex(null); setCompartment(null); setFindings(new Set()); };
@@ -260,6 +272,7 @@ export default function MediastinalMass() {
   }
   if (compartment === 'visceral' && ['cystSubcarinal', 'cystEsophageal', 'cystCardiophrenic'].some((k) => findings.has(k))) notes.push(['emerald', c.noteCysticMri]);
   if (compartment === 'paravertebral') notes.push(['slate', c.noteParavertebralMri]);
+  if (compartment === 'paravertebral' && findings.has('fat')) notes.push(['slate', c.noteFatParavertebral]);
 
   const reasonList = (keys) => keys.map((k) => c.reasons[k]).join('; ');
   const getReportText = () => {
@@ -320,10 +333,10 @@ export default function MediastinalMass() {
               {groups.imaging.map((k) => (
                 <Fragment key={k}>
                   <Chip active={findings.has(k)} onClick={() => toggle(k)}>{c.findings[k]}</Chip>
-                  {k === 'fat' && findings.has('fat') && (
+                  {k === 'fat' && findings.has('fat') && FAT_PATTERNS[compartment] && (
                     <div className="pl-4 border-l-2 border-blue-200 dark:border-blue-500/30 grid grid-cols-1 gap-2">
                       <span className="text-xs text-slate-500 dark:text-slate-400">{c.fatPatternQ}</span>
-                      {FAT_PATTERNS.map((p) => <Chip key={p} active={findings.has(p)} onClick={() => toggle(p)}>{c.findings[p]}</Chip>)}
+                      {FAT_PATTERNS[compartment].map((p) => <Chip key={p} active={findings.has(p)} onClick={() => toggle(p)}>{c.findings[p]}</Chip>)}
                     </div>
                   )}
                 </Fragment>
