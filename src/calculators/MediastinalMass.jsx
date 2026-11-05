@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
@@ -24,10 +24,23 @@ const FINDINGS = {
     clinical: ['bSymptoms', 'knownPrimary', 'catecholamines'],
   },
   paravertebral: {
-    imaging: ['dumbbell', 'fusiformChain', 'calcification', 'csfCyst', 'bilateralLobulated', 'boneDestruction', 'discEndplate'],
+    imaging: ['dumbbell', 'fusiformChain', 'calcification', 'fat', 'csfCyst', 'bilateralLobulated', 'boneDestruction', 'discEndplate'],
     clinical: ['nf1', 'catecholamines', 'hemolyticAnemia', 'fever', 'knownPrimary'],
   },
 };
+
+// Patrón de la grasa macroscópica: una sola opción, visible solo si se marcó
+// "fat". Criterios de Mura 2025 (BJR Open): nivel grasa-líquido / grasa con
+// líquido y calcio → teratoma maduro; grasa encapsulada con bandas lineales de
+// tejido tímico → timolipoma; grasa encapsulada homogénea sin realce → lipoma;
+// componente de tejido blando, bandas fibrosas o septos que realzan →
+// liposarcoma. Los tumores lipomatosos aparecen en los compartimentos
+// prevascular y paravertebral; el teratoma y el timolipoma, en el prevascular.
+const FAT_PATTERNS = {
+  prevascular: ['fatSebum', 'fatEncapsulated', 'fatSoftTissue'],
+  paravertebral: ['fatHomogeneous', 'fatSoftTissue'],
+};
+const ALL_FAT_PATTERNS = [...new Set(Object.values(FAT_PATTERNS).flat())];
 
 // Reglas: dx afectado, condición, peso (+ a favor / − en contra) y motivo.
 // s = { age (número o null), sex ('f'|'m'|null), f: Set de hallazgos }.
@@ -107,9 +120,20 @@ const RULES = {
     ['teratoma', has('calcification'), 2, 'calcification'],
     ['teratoma', has('cystSolid'), 2, 'cystSolidSepta'],
     ['teratoma', (s) => s.f.has('bhcg') || s.f.has('afp'), -2, 'markersUp'],
+    ['teratoma', has('fatSebum'), 3, 'fatSebum'],
     // Timolipoma / lipoma: grasa sin calcio.
     ['thymolipoma', and(has('fat'), not(has('calcification')), not(has('cystSolid'))), 3, 'fatNoCalcium'],
     ['thymolipoma', and(has('fat'), has('myasthenia')), 1, 'myasthenia'],
+    ['thymolipoma', has('fatEncapsulated'), 3, 'fatEncapsulated'],
+    ['thymolipoma', has('fatSebum'), -3, 'fatSebumNotLipoma'],
+    ['thymolipoma', has('fatSoftTissue'), -4, 'fatSoftTissueNotLipoma'],
+    // Liposarcoma: toda masa con grasa lo deja como posibilidad (el bien
+    // diferenciado puede ser indistinguible de un lipoma); lo sugiere el
+    // componente de tejido blando o los septos que realzan. 5ª-6ª década.
+    ['liposarcoma', has('fat'), 1, 'fatLiposarcomaPossible'],
+    ['liposarcoma', has('fatSoftTissue'), 5, 'fatSoftTissue'],
+    ['liposarcoma', and(has('fat'), adult40), 1, 'liposarcomaAge'],
+    ['liposarcoma', has('fatSebum'), -3, 'fatSebumTeratoma'],
     // Hiperplasia tímica: caída de señal en fase opuesta, gatillo de rebote.
     ['hyperplasia', has('opposedPhaseDrop'), 6, 'opposedPhaseDropFavors'],
     ['hyperplasia', has('reboundTrigger'), 3, 'reboundTrigger'],
@@ -163,17 +187,26 @@ const RULES = {
     ['meningocele', has('nf1'), 2, 'nf1Meningocele'],
     ['emh', has('bilateralLobulated'), 3, 'bilateralLobulated'],
     ['emh', has('hemolyticAnemia'), 4, 'hemolyticAnemia'],
+    // La hematopoyesis extramedular inactiva contiene grasa y/o hierro (Mura 2025).
+    ['emh', and(has('fat'), (s) => s.f.has('hemolyticAnemia') || s.f.has('bilateralLobulated')), 3, 'fatInactiveEmh'],
     ['spondylodiscitis', has('discEndplate'), 4, 'discEndplate'],
     ['spondylodiscitis', has('fever'), 2, 'fever'],
     ['vertebralMets', has('knownPrimary'), 3, 'knownPrimary'],
     ['vertebralMets', and(has('boneDestruction'), not(has('discEndplate'))), 2, 'boneDestruction'],
+    // Tumores lipomatosos paravertebrales: lipoma frente a liposarcoma.
+    ['lipoma', has('fat'), 2, 'fat'],
+    ['lipoma', has('fatHomogeneous'), 3, 'fatHomogeneous'],
+    ['lipoma', has('fatSoftTissue'), -4, 'fatSoftTissueNotLipoma'],
+    ['liposarcoma', has('fat'), 1, 'fatLiposarcomaPossible'],
+    ['liposarcoma', has('fatSoftTissue'), 5, 'fatSoftTissue'],
+    ['liposarcoma', and(has('fat'), adult40), 1, 'liposarcomaAge'],
   ],
 };
 
 // Motivos de apoyo (demográficos o clínicos inespecíficos): por sí solos no
 // bastan para listar un diagnóstico (p. ej., "hombre" no debe sugerir
 // seminoma, ni la miastenia sola una hiperplasia, sin un hallazgo propio).
-const DEMOGRAPHIC = new Set(['age40plus', 'age60plus', 'under40', 'youngWoman', 'maleUnder20', 'male', 'child', 'adultNerveSheath', 'castlemanAge', 'myastheniaFollicular']);
+const DEMOGRAPHIC = new Set(['liposarcomaAge', 'age40plus', 'age60plus', 'under40', 'youngWoman', 'maleUnder20', 'male', 'child', 'adultNerveSheath', 'castlemanAge', 'myastheniaFollicular']);
 
 function rankDifferential(compartment, s) {
   const byDx = {};
@@ -218,6 +251,9 @@ export default function MediastinalMass() {
   const toggle = (k) => setFindings((prev) => {
     const next = new Set(prev);
     if (next.has(k)) next.delete(k); else next.add(k);
+    // El patrón de la grasa es de una sola opción y depende de "fat".
+    if (ALL_FAT_PATTERNS.includes(k) && next.has(k)) ALL_FAT_PATTERNS.filter((p) => p !== k).forEach((p) => next.delete(p));
+    if (k === 'fat' && !next.has('fat')) ALL_FAT_PATTERNS.forEach((p) => next.delete(p));
     return next;
   });
   const resetAll = () => { setAge(''); setSex(null); setCompartment(null); setFindings(new Set()); };
@@ -232,11 +268,13 @@ export default function MediastinalMass() {
   if (compartment === 'prevascular') {
     if (findings.has('pureCyst') || findings.has('cystSolid')) notes.push(['emerald', c.noteCysticMri]);
     if (findings.has('calcification')) notes.push(['slate', c.noteCalcification]);
+    if (findings.has('fat')) notes.push(['slate', c.noteFat]);
     if (top[0]?.dx === 'thymoma' && !findings.has('lymphadenopathy') && !findings.has('bSymptoms')) notes.push(['amber', c.noteNccn]);
     if (!ageNum || !sex) notes.push(['slate', c.noteDemographics]);
   }
   if (compartment === 'visceral' && ['cystSubcarinal', 'cystEsophageal', 'cystCardiophrenic'].some((k) => findings.has(k))) notes.push(['emerald', c.noteCysticMri]);
   if (compartment === 'paravertebral') notes.push(['slate', c.noteParavertebralMri]);
+  if (compartment === 'paravertebral' && findings.has('fat')) notes.push(['slate', c.noteFatParavertebral]);
 
   const reasonList = (keys) => keys.map((k) => c.reasons[k]).join('; ');
   const getReportText = () => {
@@ -294,7 +332,17 @@ export default function MediastinalMass() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{c.imagingQ}</label>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.multiHint}</p>
             <div className="grid grid-cols-1 gap-2">
-              {groups.imaging.map((k) => <Chip key={k} active={findings.has(k)} onClick={() => toggle(k)}>{c.findings[k]}</Chip>)}
+              {groups.imaging.map((k) => (
+                <Fragment key={k}>
+                  <Chip active={findings.has(k)} onClick={() => toggle(k)}>{c.findings[k]}</Chip>
+                  {k === 'fat' && findings.has('fat') && FAT_PATTERNS[compartment] && (
+                    <div className="pl-4 border-l-2 border-blue-200 dark:border-blue-500/30 grid grid-cols-1 gap-2">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">{c.fatPatternQ}</span>
+                      {FAT_PATTERNS[compartment].map((p) => <Chip key={p} active={findings.has(p)} onClick={() => toggle(p)}>{c.findings[p]}</Chip>)}
+                    </div>
+                  )}
+                </Fragment>
+              ))}
             </div>
           </div>
           <div>
