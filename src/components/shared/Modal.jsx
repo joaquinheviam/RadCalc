@@ -14,7 +14,7 @@ export default function Modal({ title, onClose, closeLabel, children }) {
 
   useEffect(() => {
     const previouslyFocused = document.activeElement;
-    panelRef.current?.focus();
+    panelRef.current?.focus({ preventScroll: true });
     const onKey = (e) => {
       if (e.key === 'Escape') { onCloseRef.current(); return; }
       if (e.key !== 'Tab' || !panelRef.current) return;
@@ -29,7 +29,7 @@ export default function Modal({ title, onClose, closeLabel, children }) {
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
-      if (previouslyFocused && typeof previouslyFocused.focus === 'function') previouslyFocused.focus();
+      if (previouslyFocused && typeof previouslyFocused.focus === 'function') previouslyFocused.focus({ preventScroll: true });
     };
   }, []);
 
