@@ -16,7 +16,7 @@ const catColor = (cat) => {
   if (!cat) return '';
   if (cat === '1' || cat === '2') return 'text-emerald-500';
   if (cat === '3') return 'text-amber-500';
-  if (cat === '0') return 'text-slate-400';
+  if (cat === '0') return 'text-slate-500 dark:text-slate-400';
   if (cat === '6') return 'text-slate-500';
   return 'text-red-500';
 };
@@ -269,8 +269,8 @@ export default function BiradsUltrasound() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.posteriorLabel}</label>
             <OptionButtons options={c.posteriorOptions} value={posterior} onChange={setPosterior} />
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.posteriorCombinedRemovedNote}</p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-snug">{c.posteriorRefractiveNote}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.posteriorCombinedRemovedNote}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.posteriorRefractiveNote}</p>
           </div>
           <SuggestionNote suggestion={suggestion} c={c} />
         </Card>
@@ -360,7 +360,7 @@ export default function BiradsUltrasound() {
               {pseudocapsule ? <IconCheckCircle size={16} className="mt-0.5 shrink-0" /> : <span className="w-4 shrink-0" />}
               <span><span className="font-medium block">{c.pseudocapsuleLabel}</span><span className="text-xs opacity-80">{c.pseudocapsuleDesc}</span></span>
             </button>
-            {pseudocapsule && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.pseudocapsuleGuidance}</p>}
+            {pseudocapsule && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.pseudocapsuleGuidance}</p>}
           </div>
           <div>
             <button onClick={() => setEchogenicRind(!echogenicRind)} aria-pressed={!!(echogenicRind)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${echogenicRind ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
@@ -383,12 +383,12 @@ export default function BiradsUltrasound() {
                 </button>
               ))}
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.edemaDesc}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.edemaDesc}</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">{c.vascularityLabel}</label>
             <OptionButtons options={c.vascularityOptions} value={vascularity} onChange={setVascularity} />
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.vascularityNote}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.vascularityNote}</p>
           </div>
         </Card>
       )}

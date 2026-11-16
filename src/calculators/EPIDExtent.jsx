@@ -123,14 +123,14 @@ export default function EPIDExtent() {
             <div className="mt-1">
               <p className="text-[11px] text-amber-600 dark:text-amber-400 mb-1">{c.gohIndeterminateNote}</p>
               <NumberField label={c.fvcLabel} placeholder={c.fvcPh} value={fvc} onChange={setFvc} />
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">{c.fvcHint}</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{c.fvcHint}</p>
             </div>
           )}
         </Card>
       ) : (
         <Card>
           <p className="text-xs text-slate-500 dark:text-slate-400">{c.tschalerInstructions}</p>
-          <div className="flex items-center gap-2 text-[10px] text-slate-400 dark:text-slate-500 px-1">
+          <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 px-1">
             <span className="w-16 shrink-0">{c.sliceCol}</span>
             <span className="flex-1 text-center">{c.fibrosisAreaShort}</span>
             <span className="flex-1 text-center">{c.totalAreaShort}</span>
@@ -161,7 +161,7 @@ export default function EPIDExtent() {
             <div className="min-w-0 text-center">
               <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.gohResultLabel}</span>
               <span className="text-4xl font-black block mt-1 text-slate-700 dark:text-slate-200">{gohAvg.toFixed(1)}%</span>
-              <span className="text-xs text-slate-400 dark:text-slate-500 block">{c.gohAverageLabel} ({nGohFilled}/{N_GOH_LEVELS} {c.gohLevelsWord})</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block">{c.gohAverageLabel} ({nGohFilled}/{N_GOH_LEVELS} {c.gohLevelsWord})</span>
               {gohCategory ? (
                 <span className={`text-sm font-semibold block mt-2 ${gohCategory === 'extensive' ? 'text-red-500' : 'text-emerald-500'}`}>
                   {c[gohCategory + 'Label']}
@@ -177,7 +177,7 @@ export default function EPIDExtent() {
             <div className="min-w-0 text-center">
               <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.tschalerResultLabel} ({nSlicesFilled}/{N_SLICES} {c.slicesWord})</span>
               <span className={`text-4xl font-black block mt-1 ${tschalerPct >= 20 ? 'text-red-500' : 'text-emerald-500'}`}>{tschalerPct.toFixed(1)}%</span>
-              <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1">{c.tschalerGohRefNote}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">{c.tschalerGohRefNote}</span>
             </div>
           )}
           <div className="flex items-start gap-5 shrink-0">

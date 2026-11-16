@@ -179,7 +179,7 @@ export default function LungNodule() {
                 </div>
               ))}
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-3 leading-snug">{c.nccnCaveat}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-3 leading-snug">{c.nccnCaveat}</p>
           </Accordion>
         </>
       )}

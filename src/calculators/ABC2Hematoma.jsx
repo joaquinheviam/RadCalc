@@ -88,7 +88,7 @@ export default function ABC2Hematoma() {
               <NumberField small placeholder={c.sliceCountPh} value={sliceCount} onChange={setSliceCount} />
               <NumberField small placeholder={c.sliceThicknessPh} value={sliceThickness} onChange={setSliceThickness} />
             </div>
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{c.sliceCountHelp}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{c.sliceCountHelp}</p>
           </div>
         )}
 
@@ -96,7 +96,7 @@ export default function ABC2Hematoma() {
           <input type="checkbox" checked={isBasalGanglia} onChange={() => setIsBasalGanglia((v) => !v)} className="w-4 h-4 rounded mt-0.5" />
           <span>{c.isBasalGangliaLabel}</span>
         </label>
-        {isBasalGanglia && <p className="text-xs text-slate-400 dark:text-slate-500">{c.isBasalGangliaHelp}</p>}
+        {isBasalGanglia && <p className="text-xs text-slate-500 dark:text-slate-400">{c.isBasalGangliaHelp}</p>}
       </Card>
 
       {hasVolume && (

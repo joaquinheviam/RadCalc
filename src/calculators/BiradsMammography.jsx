@@ -19,7 +19,7 @@ const catColor = (cat) => {
   if (!cat) return '';
   if (cat === '1' || cat === '2') return 'text-emerald-500';
   if (cat === '3') return 'text-amber-500';
-  if (cat === '0') return 'text-slate-400';
+  if (cat === '0') return 'text-slate-500 dark:text-slate-400';
   if (cat === '6') return 'text-slate-500';
   return 'text-red-500'; // 4A/4B/4C/5
 };
@@ -246,7 +246,7 @@ export default function BiradsMammography() {
             </button>
           ))}
         </div>
-        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.densityNote}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.densityNote}</p>
       </Card>
 
       <Card>
@@ -273,7 +273,7 @@ export default function BiradsMammography() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.massMarginLabel}</label>
             <OptionButtons options={c.massMarginOptions} value={massMargin} onChange={setMassMargin} />
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.massMarginDbtNote}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.massMarginDbtNote}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.massDensityLabel}</label>
@@ -334,7 +334,7 @@ export default function BiradsMammography() {
               {globalStable === true && <SuggestionNote suggestion={suggestion} c={c} />}
             </div>
           )}
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.asymmetryRemovedNote}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.asymmetryRemovedNote}</p>
         </Card>
       )}
 
@@ -377,7 +377,7 @@ export default function BiradsMammography() {
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.assocFeaturesLabel}</label>
           <CheckButtons options={c.assocFeatures} values={assoc} onToggle={toggleAssoc} />
-          {assoc.nippleRetraction && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.nippleRetractionVsInversionNote}</p>}
+          {assoc.nippleRetraction && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.nippleRetractionVsInversionNote}</p>}
         </Card>
       )}
 

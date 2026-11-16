@@ -365,7 +365,7 @@ export default function MediastinalMass() {
             {top.map((d, i) => (
               <li key={d.dx} className={`rounded-xl border p-3 ${i === 0 ? 'border-blue-300 dark:border-blue-500/40 bg-blue-50/60 dark:bg-blue-500/10' : 'border-slate-100 dark:border-slate-700'}`}>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-xs font-bold ${i === 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`}>{i + 1}.</span>
+                  <span className={`text-xs font-bold ${i === 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`}>{i + 1}.</span>
                   <span className={`font-bold ${i === 0 ? 'text-base text-slate-800 dark:text-slate-100' : 'text-sm text-slate-700 dark:text-slate-200'}`}>{c.dx[d.dx]}</span>
                   {i === 0 && <span className="ml-auto text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400">{c.mostLikely}</span>}
                 </div>

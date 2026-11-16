@@ -67,8 +67,8 @@ export default function Mirels() {
             <span className="text-xs text-slate-500 dark:text-slate-400">{c.pointTotalLabel}: {pointTotal}</span>
           </div>
           <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{band.note}</p>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.thresholdComparisonNote}</p>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.sensitivitySpecificityNote}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.thresholdComparisonNote}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.sensitivitySpecificityNote}</p>
         </Card>
       )}
 

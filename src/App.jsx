@@ -5,7 +5,7 @@ import OldDomainBanner from './components/OldDomainBanner';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import { LangContext } from './i18n/LangContext.js';
-import { STRINGS } from './i18n/strings.js';
+import { getStrings, loadStrings } from './i18n/loadStrings.js';
 import { SEARCH_TERMS } from './i18n/searchTerms.js';
 import { normalizeSearchText } from './utils/searchNormalize.js';
 import { calculators, categoryOrder } from './calculators/registry.js';
@@ -46,11 +46,11 @@ function CalcListRow({ title, category, isFav, onToggleFav, favAddLabel, favRemo
       >
         <span className="flex flex-col min-w-0">
           <span className={`font-medium text-slate-700 dark:text-slate-200 ${singleLine ? 'truncate' : 'line-clamp-2'}`}>{title}</span>
-          {category && <span className="text-xs text-slate-400 dark:text-slate-500">{category}</span>}
+          {category && <span className="text-xs text-slate-500 dark:text-slate-400">{category}</span>}
         </span>
         <div className="flex items-center gap-1 shrink-0">
           {extra}
-          <IconChevronLeft className="text-slate-400 transform rotate-180 w-4 h-4 shrink-0" />
+          <IconChevronLeft className="text-slate-500 dark:text-slate-400 transform rotate-180 w-4 h-4 shrink-0" />
         </div>
       </button>
     </div>
@@ -72,7 +72,22 @@ function RootRedirect() {
 // (useParams) para que cada calculadora y cada idioma tengan su propia ruta
 // indexable, pero el resto de la lógica (favoritos, tema oscuro, búsqueda)
 // es exactamente la misma que antes.
+//
+// AppShell espera a que estén cargados los textos del idioma de la URL
+// (src/i18n/loadStrings.js) antes de montar la app.
 function AppShell() {
+  const { lang: rawLang } = useParams();
+  const lang = rawLang === 'en' ? 'en' : 'es';
+  const [, setLoadedTick] = useState(0);
+  const ready = !!getStrings(lang);
+  useEffect(() => {
+    if (!ready) loadStrings(lang).then(() => setLoadedTick((n) => n + 1), () => setLoadedTick((n) => n + 1));
+  }, [lang, ready]);
+  if (!ready) return <div className="min-h-screen bg-slate-50 dark:bg-slate-900" />;
+  return <AppShellLoaded />;
+}
+
+function AppShellLoaded() {
   const { lang: rawLang, calcId } = useParams();
   const lang = rawLang === 'en' ? 'en' : 'es';
   const navigate = useNavigate();
@@ -111,7 +126,22 @@ function AppShell() {
     setStoredLang(lang); // recuerda el idioma para la próxima visita a "/"
   }, [lang]);
 
-  const t = STRINGS[lang];
+  const t = getStrings(lang);
+
+  // Precarga el otro idioma en segundo plano: lo usan el buscador (títulos en
+  // ES y EN) y el botón de idioma (cambio sin pantalla en blanco).
+  const otherLang = lang === 'es' ? 'en' : 'es';
+  const [otherReady, setOtherReady] = useState(() => !!getStrings(otherLang));
+  useEffect(() => {
+    if (getStrings(otherLang)) { setOtherReady(true); return undefined; }
+    let cancelled = false;
+    const run = () => loadStrings(otherLang).then(() => { if (!cancelled) setOtherReady(true); }, () => {});
+    const idle = window.requestIdleCallback ? window.requestIdleCallback(run, { timeout: 3000 }) : setTimeout(run, 1500);
+    return () => {
+      cancelled = true;
+      if (window.cancelIdleCallback && window.requestIdleCallback) window.cancelIdleCallback(idle); else clearTimeout(idle);
+    };
+  }, [otherLang]);
 
   const activeEntry = calcId ? calculators.find((cc) => cc.id === calcId) : null;
   const activeTitle = activeEntry ? t.calc[activeEntry.id].title : null;
@@ -182,15 +212,17 @@ function AppShell() {
   const normalizedQuery = normalizeSearchText(searchQuery.trim());
   const searchResults = useMemo(() => {
     if (!normalizedQuery) return null;
+    const es = getStrings('es');
+    const en = getStrings('en');
     return calculators.filter((cc) => {
-      const titleEs = STRINGS.es.calc[cc.id] ? STRINGS.es.calc[cc.id].title : '';
-      const titleEn = STRINGS.en.calc[cc.id] ? STRINGS.en.calc[cc.id].title : '';
+      const titleEs = es && es.calc[cc.id] ? es.calc[cc.id].title : '';
+      const titleEn = en && en.calc[cc.id] ? en.calc[cc.id].title : '';
       const termsEs = (SEARCH_TERMS.es && SEARCH_TERMS.es[cc.id]) || [];
       const termsEn = (SEARCH_TERMS.en && SEARCH_TERMS.en[cc.id]) || [];
       const haystack = normalizeSearchText([titleEs, titleEn, ...termsEs, ...termsEn].join(' '));
       return haystack.includes(normalizedQuery);
     });
-  }, [normalizedQuery]);
+  }, [normalizedQuery, otherReady]);
 
   return (
     <LangContext.Provider value={{ lang, t, toggleLang }}>
@@ -241,7 +273,7 @@ function AppShell() {
         <main className={`mx-auto p-4 ${activeEntry ? 'max-w-md' : 'max-w-md md:max-w-4xl xl:max-w-6xl'}`}>
           {activeEntry ? (
             <ErrorBoundary resetKey={activeEntry.id} title={t.common.errorTitle} body={t.common.errorBody} reloadLabel={t.common.errorReload}>
-              <Suspense fallback={<div className="py-16 text-center text-sm text-slate-400 dark:text-slate-500">…</div>}>
+              <Suspense fallback={<div className="py-16 text-center text-sm text-slate-500 dark:text-slate-400">…</div>}>
                 <activeEntry.component />
               </Suspense>
             </ErrorBoundary>
@@ -263,7 +295,7 @@ function AppShell() {
                 </div>
               </div>
               <div className="relative md:max-w-xl md:mx-auto">
-                <IconSearch size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <IconSearch size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -276,7 +308,7 @@ function AppShell() {
                   <button
                     onClick={() => setSearchQuery('')}
                     aria-label={t.common.clearSearchAria}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full"
                   >
                     <IconX size={16} />
                   </button>
@@ -295,7 +327,7 @@ function AppShell() {
                     )}
                     <button
                       onClick={() => setTopModal('sponsors')}
-                      className="text-xs font-medium text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0"
+                      className="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0"
                     >
                       {t.common.sponsorsButton}
                     </button>
@@ -319,7 +351,7 @@ function AppShell() {
                               onClick={(e) => { e.stopPropagation(); moveFavorite(cc.id, -1); }}
                               disabled={i === 0}
                               aria-label={t.favorites.moveUpAria}
-                              className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-25 disabled:pointer-events-none"
+                              className="p-1 text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-25 disabled:pointer-events-none"
                             >
                               <IconChevronDown size={16} className="rotate-180" />
                             </button>
@@ -327,7 +359,7 @@ function AppShell() {
                               onClick={(e) => { e.stopPropagation(); moveFavorite(cc.id, 1); }}
                               disabled={i === favoriteCalcs.length - 1}
                               aria-label={t.favorites.moveDownAria}
-                              className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-25 disabled:pointer-events-none"
+                              className="p-1 text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-25 disabled:pointer-events-none"
                             >
                               <IconChevronDown size={16} />
                             </button>
@@ -363,7 +395,7 @@ function AppShell() {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-4 py-6">
-                    <p className="text-center text-sm text-slate-400 dark:text-slate-500">
+                    <p className="text-center text-sm text-slate-500 dark:text-slate-400">
                       {t.search.noResults} "{searchQuery}"
                     </p>
                     <div className="max-w-sm w-full bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-4 text-center">

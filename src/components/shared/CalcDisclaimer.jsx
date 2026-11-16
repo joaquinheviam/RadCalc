@@ -8,7 +8,7 @@ export default function CalcDisclaimer() {
   return (
     // data-nosnippet: sigue visible en la página, pero Google no lo usa como
     // resumen en los resultados de búsqueda (solo se respeta en div/span/section).
-    <div data-nosnippet="" className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed text-center max-w-sm mx-auto py-1">
+    <div data-nosnippet="" className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed text-center max-w-sm mx-auto py-1">
       {t.common.disclaimer}
     </div>
   );

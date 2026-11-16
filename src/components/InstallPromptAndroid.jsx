@@ -63,14 +63,14 @@ export default function InstallPromptAndroid() {
           <button
             onClick={handleDismiss}
             aria-label={c.dismiss}
-            className="text-slate-400 hover:text-white text-lg leading-none p-1"
+            className="text-slate-500 dark:text-slate-400 hover:text-white text-lg leading-none p-1"
           >
             ×
           </button>
         </div>
 
         <p className="text-xs text-slate-300">{c.desc}</p>
-        <p className="text-[11px] text-slate-400">{t.common.installGuide.later}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400">{t.common.installGuide.later}</p>
 
         <div className="flex justify-end gap-2">
           <button

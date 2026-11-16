@@ -870,10 +870,10 @@ export default function ILDClassifier() {
               <ul className="space-y-1">
                 {hpCriteriaBreakdown.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-xs">
-                    <span className={item.met ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-400 dark:text-slate-600'}>
+                    <span className={item.met ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-500 dark:text-slate-600'}>
                       {item.met ? '✓' : '—'}
                     </span>
-                    <span className={item.met ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'}>
+                    <span className={item.met ? 'text-slate-700 dark:text-slate-200' : 'text-slate-500 dark:text-slate-400'}>
                       {item.label}
                     </span>
                   </li>

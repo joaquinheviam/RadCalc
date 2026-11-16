@@ -40,7 +40,7 @@ export default function Sponsors({ onClose, onOpenAbout }) {
             ))}
           </ul>
         ) : (
-          <p className="text-xs italic text-slate-400 dark:text-slate-500">{s.emptyState}</p>
+          <p className="text-xs italic text-slate-500 dark:text-slate-400">{s.emptyState}</p>
         )}
 
         <div className="pt-3 border-t border-slate-100 dark:border-slate-700 space-y-3">
@@ -67,7 +67,7 @@ export default function Sponsors({ onClose, onOpenAbout }) {
         </div>
 
         <div className="pt-3 border-t border-slate-100 dark:border-slate-700">
-          <p className="text-[11px] text-slate-400 dark:text-slate-500">{s.disclaimer}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">{s.disclaimer}</p>
           <button
             onClick={onOpenAbout}
             className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"

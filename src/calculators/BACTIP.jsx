@@ -64,7 +64,7 @@ export default function BACTIP() {
           </button>
         ))}
       </div>
-      {caption && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{caption}</p>}
+      {caption && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{caption}</p>}
     </Card>
   );
 
@@ -103,7 +103,7 @@ export default function BACTIP() {
           <h3 className={`text-base font-bold mb-2 ${colorFor(typeKey)}`}>{type.title}</h3>
           <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{type.management}</p>
           {!forcedType3 && (
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.changeDefinitionNote}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.changeDefinitionNote}</p>
           )}
         </Card>
       )}

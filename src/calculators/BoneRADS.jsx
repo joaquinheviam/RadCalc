@@ -46,7 +46,7 @@ export default function BoneRADS() {
   const category = categoryKey !== null ? c.categories[categoryKey] : null;
 
   const colorFor = (key) => ({
-    0: 'text-slate-400',
+    0: 'text-slate-500 dark:text-slate-400',
     1: 'text-emerald-500',
     2: 'text-amber-500',
     3: 'text-orange-500',
@@ -119,7 +119,7 @@ export default function BoneRADS() {
           {notEvaluable ? <IconCheckCircle size={16} /> : <span className="w-4" />}
           <span className="font-semibold">{c.notEvaluableLabel}</span>
         </button>
-        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.notEvaluableCaption}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.notEvaluableCaption}</p>
       </Card>
       <OptionGroup label={c.marginLabel} options={c.marginOptions} value={margin} onChange={setMargin} />
       <OptionGroup label={c.periostealLabel} options={c.periostealOptions} value={periosteal} onChange={setPeriosteal} />

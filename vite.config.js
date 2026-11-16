@@ -129,7 +129,7 @@ export default defineConfig({
         navigateFallbackDenylist: [/\/sitemap\.xml$/, /\/robots\.txt$/, /\/llms(-full)?\.txt$/, /\/google[^/]*\.html$/],
         // Las capturas de pantalla solo las usa el diálogo de instalación
         // (manifest), no la app: no hace falta precachearlas.
-        globIgnores: ['**/screenshots/**', '**/google*.html'],
+        globIgnores: ['**/screenshots/**', '**/google*.html', 'og-image.png'],
         cleanupOutdatedCaches: true,
       },
       devOptions: {

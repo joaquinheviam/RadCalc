@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { IconX } from './icons/index.js';
 
-// Aviso para quienes lleguen desde el dominio anterior (rad-calc.vercel.app)
-// ahora que el sitio vive en radiocalc.app. Se oculta solo en ese dominio
-// antiguo; en radiocalc.app (o en desarrollo local) no se renderiza nada.
-const OLD_HOSTS = ['rad-calc.vercel.app'];
+// Aviso para quienes lleguen desde un dominio anterior (rad-calc.vercel.app o
+// la copia en GitHub Pages, joaquinheviam.github.io/RadCalc/) ahora que el
+// sitio vive en radiocalc.app. En radiocalc.app (o en desarrollo local) no se
+// renderiza nada.
+const OLD_HOSTS = ['rad-calc.vercel.app', 'joaquinheviam.github.io'];
+// Prefijo de la copia en GitHub Pages, que no existe en radiocalc.app.
+const OLD_BASE = /^\/RadCalc(?=\/|$)/i;
 
 export default function OldDomainBanner() {
   const { t } = useLang();
@@ -14,7 +17,7 @@ export default function OldDomainBanner() {
   if (dismissed) return null;
   if (typeof window === 'undefined' || !OLD_HOSTS.includes(window.location.hostname)) return null;
 
-  const newUrl = `https://radiocalc.app${window.location.pathname}${window.location.search}`;
+  const newUrl = `https://radiocalc.app${window.location.pathname.replace(OLD_BASE, '') || '/'}${window.location.search}`;
 
   return (
     <div className="bg-amber-500 text-amber-950 text-sm px-4 py-2 flex items-center justify-center gap-3 text-center flex-wrap">

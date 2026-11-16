@@ -105,7 +105,7 @@ export default function AAST2018() {
             <button onClick={() => setModifier('yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${modifier === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.yes}</button>
             <button onClick={() => setModifier('no')} aria-pressed={!!(modifier === 'no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${modifier === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.no}</button>
           </div>
-          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.modifierNote}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{c.modifierNote}</p>
         </Card>
       )}
 

@@ -270,7 +270,7 @@ export default function AdnexalIncidental() {
           <div className="min-w-0 w-full text-center space-y-1.5">
             <div className="text-xs text-slate-500 dark:text-slate-400">{c.stickyLabel}</div>
             <div className={`text-lg font-black leading-tight ${TONE_TEXT[result.tone]}`}>{c[result.sticky]}</div>
-            <div className="text-[11px] text-slate-400 dark:text-slate-500">{c.stickySeeMoreHint}</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400">{c.stickySeeMoreHint}</div>
           </div>
           <div className="flex items-start gap-5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />

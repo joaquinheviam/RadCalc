@@ -343,7 +343,7 @@ export default function UterineFibroids() {
           <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#3b82f6] mr-1 align-[-1px]"></span>{c.figoDiagramLabels.subserosal} (5-7)</span>
           <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#8b5cf6] mr-1 align-[-1px]"></span>{c.figoDiagramLabels.hybrid}</span>
         </div>
-        <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 mt-1">{c.figoDiagramHint}</p>
+        <p className="text-[11px] text-center text-slate-500 dark:text-slate-400 mt-1">{c.figoDiagramHint}</p>
       </Card>
 
       {figoQ1 !== null && (

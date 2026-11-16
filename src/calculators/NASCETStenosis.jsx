@@ -165,7 +165,7 @@ export default function NASCETStenosis() {
             <NumberField label={c.measure1Label} placeholder={c.measurePh} value={measure1} onChange={setMeasure1} />
             <NumberField label={c.measure2Label} placeholder={c.measurePh} value={measure2} onChange={setMeasure2} />
             <NumberField label={c.measure3Label} placeholder={c.measurePh} value={measure3} onChange={setMeasure3} />
-            <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{c.denominatorPrecisionNote}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{c.denominatorPrecisionNote}</p>
           </div>
         )}
       </Card>
@@ -180,7 +180,7 @@ export default function NASCETStenosis() {
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.eligLabel}</span>
           <span className={`text-2xl font-black ${CATEGORY_COLOR[catElig]}`}>{pctElig.toFixed(0)}%</span>
-          <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1">{categoryLabel(catElig)}</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">{categoryLabel(catElig)}</span>
         </Card>
       )}
 
@@ -188,7 +188,7 @@ export default function NASCETStenosis() {
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.analysisLabel}</span>
           <span className={`text-2xl font-black ${CATEGORY_COLOR[catAnalysis]}`}>{pctAnalysis.toFixed(0)}%</span>
-          <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1">{categoryLabel(catAnalysis)}</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">{categoryLabel(catAnalysis)}</span>
         </Card>
       )}
 
@@ -196,7 +196,7 @@ export default function NASCETStenosis() {
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.residualLabel}</span>
           <span className="text-2xl font-black text-slate-700 dark:text-slate-200">{M1.toFixed(1)} mm</span>
-          <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1 leading-snug">{c.residualNote}</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1 leading-snug">{c.residualNote}</span>
         </Card>
       )}
 

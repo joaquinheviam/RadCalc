@@ -264,7 +264,7 @@ export default function InstallGuide({ compact = false }) {
               <button onClick={installNow} className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors">
                 <IconInstall /> {c.installNow}
               </button>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">{c.orManual}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">{c.orManual}</p>
             </div>
           )}
           <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-2" role="tablist">
@@ -294,7 +294,7 @@ export default function InstallGuide({ compact = false }) {
               </button>
             ))}
           </div>
-          {browser === detected && <p className="text-center text-[11px] text-slate-400 dark:text-slate-500">{c.detected}</p>}
+          {browser === detected && <p className="text-center text-[11px] text-slate-500 dark:text-slate-400">{c.detected}</p>}
           <WhereIllustration browser={browser} label={info.where} menuText={info.steps[0]?.action} />
           {info.steps.length > 0 && <BrowserSteps browser={browser} steps={info.steps} />}
           <p className={`${info.steps.length ? 'mt-3 text-xs text-slate-500 dark:text-slate-400' : 'mt-3 text-sm text-slate-600 dark:text-slate-300'} leading-snug`}>{info.note}</p>

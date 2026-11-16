@@ -56,15 +56,15 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
             <rect x="250" y="260" width="40" height="35" rx="3" fill="currentColor" opacity="0.2" />
 
             {/* Perfil del Corazón */}
-            <path d="M 92,168 C 84,215 104,258 162,262 C 207,262 228,225 218,178 C 208,142 124,128 92,168 Z" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 92,168 C 84,215 104,258 162,262 C 207,262 228,225 218,178 C 208,142 124,128 92,168 Z" className="text-slate-500 dark:text-slate-400" />
             {/* Aorta ascendente, cayado y descendente */}
-            <path d="M 94,160 C 86,110 110,76 160,74 C 215,74 242,108 242,190" className="text-slate-400 dark:text-slate-500" />
-            <path d="M 110,156 C 106,114 124,92 160,90 C 206,90 226,114 226,190" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 94,160 C 86,110 110,76 160,74 C 215,74 242,108 242,190" className="text-slate-500 dark:text-slate-400" />
+            <path d="M 110,156 C 106,114 124,92 160,90 C 206,90 226,114 226,190" className="text-slate-500 dark:text-slate-400" />
             {/* Vena braquiocefálica (por delante del cayado) */}
-            <path d="M 76,42 C 74,70 78,92 88,112" className="text-slate-400 dark:text-slate-500" />
-            <path d="M 88,42 C 86,66 90,84 100,102" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 76,42 C 74,70 78,92 88,112" className="text-slate-500 dark:text-slate-400" />
+            <path d="M 88,42 C 86,66 90,84 100,102" className="text-slate-500 dark:text-slate-400" />
             {/* Tráquea */}
-            <path d="M 190,40 L 210,40 L 205,110 L 185,110 Z" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 190,40 L 210,40 L 205,110 L 185,110 Z" className="text-slate-500 dark:text-slate-400" />
             {/* Diafragma */}
             <path d="M 30,270 Q 150,250 330,330" />
           </g>
@@ -115,15 +115,15 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
             <circle cx="200" cy="255" r="7" className="text-slate-50 dark:text-slate-900" />
 
             {/* Corazón (Raíces e interior) */}
-            <path d="M 200,90 C 240,100 245,135 235,165 L 175,160 C 155,140 160,100 200,90 Z" className="text-slate-400 dark:text-slate-500" />
+            <path d="M 200,90 C 240,100 245,135 235,165 L 175,160 C 155,140 160,100 200,90 Z" className="text-slate-500 dark:text-slate-400" />
 
             {/* Aorta descendente (a la derecha de la imagen = izquierda del paciente) y esófago */}
-            <circle cx="226" cy="198" r="12" className="text-slate-400 dark:text-slate-500" />
-            <circle cx="200" cy="200" r="6" className="text-slate-400 dark:text-slate-500" />
+            <circle cx="226" cy="198" r="12" className="text-slate-500 dark:text-slate-400" />
+            <circle cx="200" cy="200" r="6" className="text-slate-500 dark:text-slate-400" />
 
             {/* Pulmones: el borde medial sigue el contorno del mediastino */}
-            <path d="M 175,48 C 120,50 30,110 30,200 C 30,280 80,305 140,295 C 138,270 140,245 145,232 C 140,210 130,195 125,185 C 112,160 110,110 128,75 C 140,58 158,50 175,48 Z" className="text-slate-400 dark:text-slate-500" strokeWidth="1.5" />
-            <path d="M 225,48 C 280,50 370,110 370,200 C 370,280 320,305 260,295 C 262,270 260,245 255,232 C 260,210 270,195 277,185 C 290,160 292,110 274,75 C 262,58 242,50 225,48 Z" className="text-slate-400 dark:text-slate-500" strokeWidth="1.5" />
+            <path d="M 175,48 C 120,50 30,110 30,200 C 30,280 80,305 140,295 C 138,270 140,245 145,232 C 140,210 130,195 125,185 C 112,160 110,110 128,75 C 140,58 158,50 175,48 Z" className="text-slate-500 dark:text-slate-400" strokeWidth="1.5" />
+            <path d="M 225,48 C 280,50 370,110 370,200 C 370,280 320,305 260,295 C 262,270 260,245 255,232 C 260,210 270,195 277,185 C 290,160 292,110 274,75 C 262,58 242,50 225,48 Z" className="text-slate-500 dark:text-slate-400" strokeWidth="1.5" />
           </g>
 
           {/* Línea Verde (Límite Visceral-Paravertebral en Y=230, 1cm tras el margen anterior) */}

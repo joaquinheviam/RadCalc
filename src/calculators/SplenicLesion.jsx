@@ -362,7 +362,7 @@ export default function SplenicLesion() {
             {conducta && (
               <div className="text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">{conducta}</div>
             )}
-            <div className="text-[11px] text-slate-400 dark:text-slate-500">{c.stickySeeMoreHint}</div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400">{c.stickySeeMoreHint}</div>
           </div>
           <div className="flex items-start gap-5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />

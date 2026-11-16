@@ -21,12 +21,12 @@ export default function InstallStepsBanner({ title, desc, browser, dismissLabel,
       <div className="fade-in p-4 rounded-2xl shadow-2xl border bg-slate-900/95 text-slate-100 border-slate-700 backdrop-blur-md space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h4 className="text-sm font-bold text-white">{title}</h4>
-          <button onClick={onDismiss} aria-label={dismissLabel} className="text-slate-400 hover:text-white text-lg leading-none p-1">×</button>
+          <button onClick={onDismiss} aria-label={dismissLabel} className="text-slate-500 dark:text-slate-400 hover:text-white text-lg leading-none p-1">×</button>
         </div>
         <p className="text-xs text-slate-300">{desc}</p>
         <p className="text-[11px] font-medium text-amber-400">{info.label} · {info.where}</p>
         <BrowserSteps browser={browser} steps={info.steps} compact />
-        <p className="text-[11px] text-slate-400">{g.later}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400">{g.later}</p>
         <div className="flex justify-end gap-2">
           <button onClick={seeGuide} className="text-xs font-semibold px-4 py-1.5 rounded-full text-slate-200 border border-slate-600 hover:bg-slate-800 transition-colors">
             {g.seeGuide}

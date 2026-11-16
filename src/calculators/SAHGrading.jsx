@@ -21,7 +21,7 @@ function GradeSelector({ label, value, onChange, options, defs, labels }) {
           </button>
         ))}
       </div>
-      {value !== null && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{defs[options.indexOf(value)]}</p>}
+      {value !== null && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{defs[options.indexOf(value)]}</p>}
     </div>
   );
 }
@@ -112,7 +112,7 @@ export default function SAHGrading() {
         <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{c.modFisherTitle}</p>
         <GradeSelector label={c.modFisherResultLabel} value={modFisher} onChange={setModFisher} options={[0, 1, 2, 3, 4]} defs={c.modFisherDefs} />
         {modFisherResult && <InfoBox tone={modFisher === 0 ? 'emerald' : modFisher === 4 ? 'red' : 'amber'}>{modFisherResult}</InfoBox>}
-        {modFisherResultAlt && <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{modFisherResultAlt}</p>}
+        {modFisherResultAlt && <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{modFisherResultAlt}</p>}
       </Card>
 
       <Card>
@@ -122,7 +122,7 @@ export default function SAHGrading() {
           <input type="checkbox" checked={huntHessModifier} onChange={() => setHuntHessModifier((v) => !v)} className="w-4 h-4 rounded mt-0.5" />
           <span>{c.huntHessModifierLabel}</span>
         </label>
-        {huntHessModifier && <p className="text-xs text-slate-400 dark:text-slate-500">{c.huntHessModifierNote}</p>}
+        {huntHessModifier && <p className="text-xs text-slate-500 dark:text-slate-400">{c.huntHessModifierNote}</p>}
         {huntHess !== null && huntHessModifier && (
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             {c.huntHessEffectiveLabel}: {HUNT_HESS_ROMAN[huntHessEffective - 1]}
@@ -133,7 +133,7 @@ export default function SAHGrading() {
 
       <Card className="space-y-3">
         <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{c.sebesTitle}</p>
-        <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{c.sebesCriteriaInfo}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{c.sebesCriteriaInfo}</p>
 
         <div>
           <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.sebesRightTitle}</h3>
@@ -155,7 +155,7 @@ export default function SAHGrading() {
           <>
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{c.sebesResultLabel}: {sebesScore}</p>
             <InfoBox tone={sebesScore <= 2 ? 'emerald' : 'red'}>{sebesResult}</InfoBox>
-            {sebesScore >= 3 && <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{c.sebesRiskFactorsNote}</p>}
+            {sebesScore >= 3 && <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{c.sebesRiskFactorsNote}</p>}
           </>
         )}
       </Card>

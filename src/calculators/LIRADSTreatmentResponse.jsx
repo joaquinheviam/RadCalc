@@ -10,7 +10,7 @@ function liradsTrCatColor(key) {
   if (key === 'equivocal') return 'text-amber-500';
   if (key === 'nonprogressing') return 'text-sky-500';
   if (key === 'nonviable') return 'text-emerald-500';
-  return 'text-slate-400';
+  return 'text-slate-500 dark:text-slate-400';
 }
 
 function liradsTrCatBorder(key, active) {
@@ -86,7 +86,7 @@ export default function LIRADSTreatmentResponse() {
               </button>
             ))}
           </div>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">{c.featureNote}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">{c.featureNote}</p>
         </Card>
       )}
       {showAfStep && (
@@ -103,7 +103,7 @@ export default function LIRADSTreatmentResponse() {
               {afT2 ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.afT2}
             </button>
           </div>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.afMriOnlyNote}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.afMriOnlyNote}</p>
         </Card>
       )}
       {finalCatObj && afApplied && (
@@ -112,7 +112,7 @@ export default function LIRADSTreatmentResponse() {
       {finalCatObj && (
         <InfoBox tone="emerald"><strong>{c.managementLabel}</strong> {c.management[finalCatObj.key]}</InfoBox>
       )}
-      {core && <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.tiebreakNote}</p>}
+      {core && <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.tiebreakNote}</p>}
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.liradsTr} />
       <ReportBugLink calcTitle={c.title} />

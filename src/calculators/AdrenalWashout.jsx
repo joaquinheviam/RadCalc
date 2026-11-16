@@ -170,8 +170,8 @@ export default function AdrenalWashout() {
         </div>
         <NumberField allowNegative label={protocol === 'p3' ? c.delayedAt3 : c.delayedAt(cfg.minutes)} value={del} onChange={setDel} />
         <NumberField label={c.sizeLabel} value={size} onChange={setSize} />
-        <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.roiTip}</p>
-        <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.heterogeneousNote}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.roiTip}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.heterogeneousNote}</p>
       </Card>
 
       {hasNc && !canPlr && (
@@ -216,9 +216,9 @@ export default function AdrenalWashout() {
                 {pla !== null ? pla.toFixed(1) + '%' : '—'}
               </span>
               {cfg.apwCut != null ? (
-                <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; {cfg.apwCut}%</span>
+                <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-1">{t.common.cutoff} &ge; {cfg.apwCut}%</span>
               ) : (
-                <span className="block text-[10px] text-slate-400 mt-1">{c.noAbsoluteCriterion}</span>
+                <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-1">{c.noAbsoluteCriterion}</span>
               )}
             </div>
             <div className="text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
@@ -226,11 +226,11 @@ export default function AdrenalWashout() {
               <span className={`text-xl font-bold ${isAdenomaPlr ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}`}>
                 {plr.toFixed(1) + '%'}
               </span>
-              <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; {cfg.rpwCut}%</span>
+              <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-1">{t.common.cutoff} &ge; {cfg.rpwCut}%</span>
             </div>
           </div>
           {!canPla && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.onlyRelativeNote}</p>}
-          {cfg.lowerEvidence && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.lowerEvidenceNote}</p>}
+          {cfg.lowerEvidence && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.lowerEvidenceNote}</p>}
           <div className="mt-2">
             <InfoBox tone={isAdenomaWashout ? 'emerald' : 'amber'}>
               {isAdenomaWashout ? c.adenomaCompatible : (ncHighSpecDespiteWashout ? c.washoutNotButNcHighSpecNote : c.adenomaNot)}
@@ -245,7 +245,7 @@ export default function AdrenalWashout() {
                 <li className={`flex items-center gap-2 ${kamiyama.pew ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>{kamiyama.pew ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.kamiyamaPew}</li>
                 <li className={`flex items-center gap-2 ${kamiyama.rpew ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500'}`}>{kamiyama.rpew ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.kamiyamaRpew}</li>
               </ul>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5">{c.kamiyamaMetCount(kamiyamaCount)}</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">{c.kamiyamaMetCount(kamiyamaCount)}</p>
             </div>
           )}
         </Card>

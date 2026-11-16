@@ -89,7 +89,7 @@ export default function AdrenalCSI() {
                 {c.referenceMuscle}
               </button>
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mb-3">{c.referenceMuscleNote}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug mb-3">{c.referenceMuscleNote}</p>
             <div className="grid grid-cols-2 gap-3">
               <NumberField small label={c.inPhase} value={refIn} onChange={setRefIn} />
               <NumberField small label={c.outPhase} value={refOut} onChange={setRefOut} />
@@ -112,7 +112,7 @@ export default function AdrenalCSI() {
         <StickyBar>
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{method === 'sii' ? c.siiIndex : c.csiIndex}</span>
-            <span className={`text-4xl font-black block mt-1 ${isValid ? (isAdenoma ? 'text-emerald-500' : 'text-amber-500') : 'text-slate-400'}`}>{isValid ? (method === 'sii' ? sii : asr).toFixed(1) + '%' : '—'}</span>
+            <span className={`text-4xl font-black block mt-1 ${isValid ? (isAdenoma ? 'text-emerald-500' : 'text-amber-500') : 'text-slate-500 dark:text-slate-400'}`}>{isValid ? (method === 'sii' ? sii : asr).toFixed(1) + '%' : '—'}</span>
             {isValid && (
               <span className={`text-sm font-semibold block mt-1 ${isAdenoma ? 'text-emerald-500' : 'text-amber-500'}`}>
                 {isAdenoma ? c.resultAdenoma : c.resultIndeterminate}

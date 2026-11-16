@@ -3,7 +3,8 @@
     { "source": "/", "destination": "/es/", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/:lang(es|en)", "destination": "/index.html" },
+    { "source": "/:lang(es|en)/:path*", "destination": "/index.html" }
   ],
   "headers": [
     {

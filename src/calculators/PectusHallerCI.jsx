@@ -11,7 +11,7 @@ function PectusScheme() {
       <svg viewBox="0 0 800 600" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Silueta cardiaca (referencia anatomica, discontinua) */}
         <path
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="6 6" strokeLinecap="round"
           d="M 400 290 C 480 290, 540 330, 540 380 C 540 420, 460 430, 420 410 C 380 430, 300 420, 300 380 C 300 330, 350 290, 400 290 Z"
         />
@@ -28,7 +28,7 @@ function PectusScheme() {
         {/* Canal medular */}
         <circle cx="400" cy="465" r="14" fill="none" stroke="currentColor" strokeWidth="6" />
         {/* Linea de correccion virtual (nivel de los arcos costales) */}
-        <line x1="200" y1="150" x2="600" y2="150" className="text-slate-400 dark:text-slate-500" stroke="currentColor" strokeWidth="3" strokeDasharray="8 6" strokeLinecap="round" />
+        <line x1="200" y1="150" x2="600" y2="150" className="text-slate-500 dark:text-slate-400" stroke="currentColor" strokeWidth="3" strokeDasharray="8 6" strokeLinecap="round" />
 
         {/* Linea A: diametro transverso */}
         <g stroke="#0ea5e9" strokeWidth="3" strokeLinecap="round">
@@ -124,7 +124,7 @@ export default function PectusHallerCI() {
         <NumberField label={c.apLabel} placeholder={c.apPh} value={apDepth} onChange={setApDepth} />
         <div>
           <NumberField label={c.correctedApLabel} placeholder={c.correctedApPh} value={apCorrected} onChange={setApCorrected} />
-          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{c.correctedApHelp}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{c.correctedApHelp}</p>
         </div>
       </Card>
 
@@ -132,19 +132,19 @@ export default function PectusHallerCI() {
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.hiLabel}</span>
           <span className={`text-2xl font-black ${hiSignificant ? 'text-red-500' : 'text-emerald-500'}`}>{hi.toFixed(2)}</span>
-          <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1">{hiVerdictLabel}</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">{hiVerdictLabel}</span>
         </Card>
       )}
 
       {hasHI && !hasCI && (
-        <p className="text-xs text-center text-slate-400 dark:text-slate-500 -mt-2">{c.ciPending}</p>
+        <p className="text-xs text-center text-slate-500 dark:text-slate-400 -mt-2">{c.ciPending}</p>
       )}
 
       {hasCI && (
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.ciLabel}</span>
           <span className={`text-2xl font-black ${ciSignificant ? 'text-red-500' : ciBorderline ? 'text-amber-500' : 'text-emerald-500'}`}>{ci.toFixed(1)}%</span>
-          <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1">{ciVerdictLabel}</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">{ciVerdictLabel}</span>
         </Card>
       )}
 

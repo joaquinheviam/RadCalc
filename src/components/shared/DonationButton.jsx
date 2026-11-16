@@ -72,7 +72,7 @@ function DonationMenu({ t }) {
 
         {isOpen && (
           <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-64 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl py-1.5 z-50 text-left overflow-hidden">
-            <p className="px-4 py-1.5 text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+            <p className="px-4 py-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
               {t.common.donateChooseMethod}
             </p>
             <a
@@ -84,9 +84,9 @@ function DonationMenu({ t }) {
             >
               <span>
                 <span className="block font-medium">Mercado Pago</span>
-                <span className="block text-xs text-slate-400 dark:text-slate-500">{t.common.donateClp}</span>
+                <span className="block text-xs text-slate-500 dark:text-slate-400">{t.common.donateClp}</span>
               </span>
-              <IconExternalLink size={14} className="text-slate-400 shrink-0" />
+              <IconExternalLink size={14} className="text-slate-500 dark:text-slate-400 shrink-0" />
             </a>
             <div className="border-t border-slate-100 dark:border-slate-700/80">
               <PaypalForm
@@ -121,9 +121,9 @@ function PaypalForm({ hostedButtonId, label, asMenuItem, onSubmitClick, subtitle
         >
           <span>
             <span className="block font-medium">PayPal</span>
-            {subtitle && <span className="block text-xs text-slate-400 dark:text-slate-500">{subtitle}</span>}
+            {subtitle && <span className="block text-xs text-slate-500 dark:text-slate-400">{subtitle}</span>}
           </span>
-          <IconGlobe size={14} className="text-slate-400 shrink-0" />
+          <IconGlobe size={14} className="text-slate-500 dark:text-slate-400 shrink-0" />
         </button>
       </form>
     );

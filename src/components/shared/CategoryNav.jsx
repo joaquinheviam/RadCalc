@@ -93,7 +93,7 @@ export default function CategoryNav({ categories, ariaLabel, onTogglePin, onRese
           >
             {cat.pinned && <IconStar size={11} filled className={active === cat.key ? 'text-amber-200' : 'text-amber-400'} />}
             {cat.label}
-            <span className={`text-[10px] font-bold ${active === cat.key ? 'text-blue-100' : 'text-slate-400 dark:text-slate-500'}`}>{cat.count}</span>
+            <span className={`text-[10px] font-bold ${active === cat.key ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'}`}>{cat.count}</span>
           </button>
         ))}
         <button
@@ -122,7 +122,7 @@ export default function CategoryNav({ categories, ariaLabel, onTogglePin, onRese
                 >
                   <IconStar size={18} filled={cat.pinned} className={cat.pinned ? 'text-amber-400' : 'text-slate-300 dark:text-slate-600'} />
                   <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200">{cat.label}</span>
-                  <span className="text-xs text-slate-400 dark:text-slate-500">{cat.count}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{cat.count}</span>
                 </button>
               </li>
             ))}

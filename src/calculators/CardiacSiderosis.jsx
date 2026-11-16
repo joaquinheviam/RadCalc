@@ -43,14 +43,14 @@ function CardiacSiderosisDiagram({ labels }) {
           {/* Contornos del VI para definición */}
           <path
             d="M 260,60 A 100,100 0 1,0 260,260 A 100,100 0 1,0 260,60 Z"
-            className="text-slate-400 dark:text-slate-500"
+            className="text-slate-500 dark:text-slate-400"
             stroke="currentColor"
             strokeWidth="1.5"
             fill="none"
           />
           <path
             d="M 260,110 A 50,50 0 1,1 260,210 A 50,50 0 1,1 260,110 Z"
-            className="text-slate-400 dark:text-slate-500"
+            className="text-slate-500 dark:text-slate-400"
             stroke="currentColor"
             strokeWidth="1.5"
             fill="none"
@@ -68,7 +68,7 @@ function CardiacSiderosisDiagram({ labels }) {
           {/* Contorno exterior (epicárdico) del VD */}
           <path
             d="M 210,73 A 120,87 0 0,0 210,247"
-            className="text-slate-400 dark:text-slate-500"
+            className="text-slate-500 dark:text-slate-400"
             stroke="currentColor"
             strokeWidth="1.5"
             fill="none"
@@ -76,7 +76,7 @@ function CardiacSiderosisDiagram({ labels }) {
           {/* Contorno interior (endocárdico) del VD */}
           <path
             d="M 210,247 A 110,87 0 0,1 210,73"
-            className="text-slate-400 dark:text-slate-500"
+            className="text-slate-500 dark:text-slate-400"
             stroke="currentColor"
             strokeWidth="1.5"
             fill="none"
@@ -150,7 +150,7 @@ function CardiacSiderosisDiagram({ labels }) {
         <text
           x="260"
           y="166"
-          className="text-slate-400 dark:text-slate-400"
+          className="text-slate-500 dark:text-slate-400"
           fill="currentColor"
           fontSize="18"
           fontWeight="bold"
@@ -163,7 +163,7 @@ function CardiacSiderosisDiagram({ labels }) {
         <text
           x="140"
           y="162"
-          className="text-slate-400 dark:text-slate-400"
+          className="text-slate-500 dark:text-slate-400"
           fill="currentColor"
           fontSize="16"
           fontWeight="bold"
@@ -180,10 +180,10 @@ function CardiacSiderosisDiagram({ labels }) {
           x2="150"
           y2="60"
           stroke="currentColor"
-          className="text-slate-400"
+          className="text-slate-500 dark:text-slate-400"
           strokeWidth="1.5"
         />
-        <circle cx="150" cy="60" r="3" className="text-slate-400" fill="currentColor" />
+        <circle cx="150" cy="60" r="3" className="text-slate-500 dark:text-slate-400" fill="currentColor" />
         <text
           x="142"
           y="56"
@@ -213,10 +213,10 @@ function CardiacSiderosisDiagram({ labels }) {
           x2="380"
           y2="60"
           stroke="currentColor"
-          className="text-slate-400"
+          className="text-slate-500 dark:text-slate-400"
           strokeWidth="1.5"
         />
-        <circle cx="380" cy="60" r="3" className="text-slate-400" fill="currentColor" />
+        <circle cx="380" cy="60" r="3" className="text-slate-500 dark:text-slate-400" fill="currentColor" />
         <text
           x="388"
           y="56"

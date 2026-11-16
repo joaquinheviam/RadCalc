@@ -119,7 +119,7 @@ export default function MRIFatFraction() {
                 {c[category]}
               </span>
             )}
-            {!isValid && <span className="text-sm text-slate-400 block mt-1">{t.common.notEvaluated}</span>}
+            {!isValid && <span className="text-sm text-slate-500 dark:text-slate-400 block mt-1">{t.common.notEvaluated}</span>}
           </div>
           <div className="flex items-start gap-5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />
