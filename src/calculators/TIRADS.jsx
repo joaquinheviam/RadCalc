@@ -68,7 +68,7 @@ export default function TIRADS() {
                 <button
                   key={i}
                   onClick={() => toggleSelection(key, i, multi)}
-                  className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'}`}
+                  aria-pressed={!!(isSelected)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'}`}
                 >
                   <div className="flex justify-between items-center gap-2">
                     <span>{label}</span>

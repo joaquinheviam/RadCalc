@@ -31,7 +31,7 @@ function YesNo({ label, value, onChange, yesLabel, noLabel }) {
         <button onClick={() => onChange('yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${value === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
           {yesLabel}
         </button>
-        <button onClick={() => onChange('no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${value === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+        <button onClick={() => onChange('no')} aria-pressed={!!(value === 'no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${value === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
           {noLabel}
         </button>
       </div>

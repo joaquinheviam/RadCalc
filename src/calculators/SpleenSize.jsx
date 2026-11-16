@@ -10,7 +10,7 @@ function OptionList({ label, options, value, onChange }) {
       {label && <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{label}</label>}
       <div className="flex gap-2">
         {options.map(opt => (
-          <button key={opt.key} onClick={() => onChange(opt.key)} className={`flex-1 text-center p-2.5 rounded-lg border text-sm font-medium transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+          <button key={opt.key} onClick={() => onChange(opt.key)} aria-pressed={!!(value === opt.key)} className={`flex-1 text-center p-2.5 rounded-lg border text-sm font-medium transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
         ))}
       </div>
     </div>

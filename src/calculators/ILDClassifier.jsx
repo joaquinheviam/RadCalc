@@ -26,7 +26,7 @@ function YesNo({ label, value, onChange, yesLabel, noLabel }) {
         <button
           type="button"
           onClick={() => onChange(true)}
-          className={`flex-1 py-2 rounded-lg font-medium border text-sm transition-all ${
+          aria-pressed={!!(value === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm transition-all ${
             value === true
               ? 'bg-amber-500 border-amber-500 text-white'
               : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800'
@@ -60,7 +60,7 @@ function OptionList({ label, options, value, onChange }) {
             key={opt.key}
             type="button"
             onClick={() => onChange(opt.key)}
-            className={`w-full text-left p-3 rounded-lg border text-sm transition-all ${
+            aria-pressed={!!(value === opt.key)} className={`w-full text-left p-3 rounded-lg border text-sm transition-all ${
               value === opt.key
                 ? 'bg-amber-500/10 border-amber-500 text-amber-900 dark:text-amber-200 font-medium'
                 : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800'

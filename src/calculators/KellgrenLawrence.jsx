@@ -72,7 +72,7 @@ export default function KellgrenLawrence() {
             <button
               key={j.name}
               onClick={() => setJointIdx(i)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${jointIdx === i ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              aria-pressed={!!(jointIdx === i)} className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${jointIdx === i ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
             >
               {j.name}
             </button>
@@ -94,7 +94,7 @@ export default function KellgrenLawrence() {
             <button
               key={g}
               onClick={() => setGrade(g)}
-              className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${grade === g ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              aria-pressed={!!(grade === g)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${grade === g ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
             >
               {g}
             </button>
@@ -125,7 +125,7 @@ export default function KellgrenLawrence() {
               <button
                 key={opt.key}
                 onClick={() => setReadingMethod(opt.key)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium text-left border transition-colors ${readingMethod === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                aria-pressed={!!(readingMethod === opt.key)} className={`px-3 py-2 rounded-lg text-sm font-medium text-left border transition-colors ${readingMethod === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
               >
                 {opt.label}
               </button>
@@ -139,7 +139,7 @@ export default function KellgrenLawrence() {
               <button
                 key={opt.key}
                 onClick={() => setRoaDef(opt.key)}
-                className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${roaDef === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                aria-pressed={!!(roaDef === opt.key)} className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${roaDef === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
               >
                 {opt.label}
               </button>

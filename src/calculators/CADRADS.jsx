@@ -40,7 +40,7 @@ export default function CADRADS() {
             <button
               key={opt.key}
               onClick={() => setStenosis(opt.key)}
-              className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-center ${stenosis === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              aria-pressed={!!(stenosis === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-center ${stenosis === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
             >
               <span>{opt.label}</span>
               <span className="text-xs font-bold shrink-0 ml-2">{opt.key}</span>
@@ -52,7 +52,7 @@ export default function CADRADS() {
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.modifiersLabel}</label>
         <div className="grid grid-cols-2 gap-2">
           {[['N', c.modN],['S', c.modS],['G', c.modG],['I', c.modI],['HRP', c.modHrp],['E', c.modE]].map(([key, label]) => (
-            <button key={key} onClick={() => toggleMod(key)} className={`text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${mods[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+            <button key={key} onClick={() => toggleMod(key)} aria-pressed={!!(mods[key])} className={`text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${mods[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               {mods[key] ? <IconCheckCircle size={14} /> : <span className="w-3.5" />} {label}
             </button>
           ))}
@@ -62,9 +62,9 @@ export default function CADRADS() {
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.pModifierLabel}</label>
         <div className="space-y-2">
-          <button onClick={() => setPMod('')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === '' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pNone}</button>
+          <button onClick={() => setPMod('')} aria-pressed={!!(pMod === '')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === '' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pNone}</button>
           {c.pOptions.map(opt => (
-            <button key={opt.key} onClick={() => setPMod(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+            <button key={opt.key} onClick={() => setPMod(opt.key)} aria-pressed={!!(pMod === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
           ))}
         </div>
         {pMod && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.pCaveat}</p>}

@@ -66,13 +66,13 @@ export default function ABC2Hematoma() {
           <div className="flex gap-2">
             <button
               onClick={() => setCMethod('coronal')}
-              className={`flex-1 py-2 px-2 rounded-lg text-xs font-semibold border transition-colors ${cMethod === 'coronal' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              aria-pressed={!!(cMethod === 'coronal')} className={`flex-1 py-2 px-2 rounded-lg text-xs font-semibold border transition-colors ${cMethod === 'coronal' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
             >
               {c.cMethodCoronal}
             </button>
             <button
               onClick={() => setCMethod('axial')}
-              className={`flex-1 py-2 px-2 rounded-lg text-xs font-semibold border transition-colors ${cMethod === 'axial' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              aria-pressed={!!(cMethod === 'axial')} className={`flex-1 py-2 px-2 rounded-lg text-xs font-semibold border transition-colors ${cMethod === 'axial' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
             >
               {c.cMethodAxial}
             </button>

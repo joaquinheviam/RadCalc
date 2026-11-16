@@ -55,8 +55,8 @@ export default function LungScreening() {
           {c.exclusionOptions.map((opt, i) => <li key={i}>{opt}</li>)}
         </ul>
         <div className="flex gap-2">
-          <button onClick={() => setExcluded(true)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${excluded === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.exclusionYes}</button>
-          <button onClick={() => setExcluded(false)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${excluded === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.exclusionNo}</button>
+          <button onClick={() => setExcluded(true)} aria-pressed={!!(excluded === true)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${excluded === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.exclusionYes}</button>
+          <button onClick={() => setExcluded(false)} aria-pressed={!!(excluded === false)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${excluded === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.exclusionNo}</button>
         </div>
       </Card>
       {excluded === false && (

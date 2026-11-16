@@ -87,13 +87,13 @@ export default function EPIDExtent() {
         <div className="space-y-2">
           <button
             onClick={() => setMethod('goh')}
-            className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${method === 'goh' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+            aria-pressed={!!(method === 'goh')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${method === 'goh' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
           >
             {c.methodGoh}
           </button>
           <button
             onClick={() => setMethod('tschaler')}
-            className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${method === 'tschaler' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+            aria-pressed={!!(method === 'tschaler')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${method === 'tschaler' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
           >
             {c.methodTschaler}
           </button>

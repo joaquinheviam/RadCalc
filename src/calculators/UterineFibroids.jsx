@@ -370,7 +370,7 @@ export default function UterineFibroids() {
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.figoQ2}</label>
           <div className="space-y-2">
             {c.figoQ2Options.map(opt => (
-              <button key={opt.key} onClick={() => handleFigoQ2(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${figoQ2 === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+              <button key={opt.key} onClick={() => handleFigoQ2(opt.key)} aria-pressed={!!(figoQ2 === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${figoQ2 === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
             ))}
           </div>
         </Card>
@@ -378,7 +378,7 @@ export default function UterineFibroids() {
 
       {(canHybridSubmucosal || canHybridSubserosal) && (
         <Card>
-          <button onClick={() => { setFigoHybrid(v => !v); setFigoHybridPick(null); }} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${figoHybrid ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+          <button onClick={() => { setFigoHybrid(v => !v); setFigoHybridPick(null); }} aria-pressed={!!(figoHybrid)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${figoHybrid ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
             {figoHybrid ? <IconCheckCircle size={14} /> : <span className="w-3.5 shrink-0" />}
             <span>{canHybridSubmucosal ? c.figoHybridQSubmucosal : c.figoHybridQSubserosal}</span>
           </button>
@@ -387,7 +387,7 @@ export default function UterineFibroids() {
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{canHybridSubmucosal ? c.figoHybridPickSerosal : c.figoHybridPickSubmucosal}</p>
               <div className="flex gap-2">
                 {(canHybridSubmucosal ? c.figoHybridOptions5 : c.figoHybridOptions2).map(opt => (
-                  <button key={opt.key} onClick={() => setFigoHybridPick(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${figoHybridPick === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                  <button key={opt.key} onClick={() => setFigoHybridPick(opt.key)} aria-pressed={!!(figoHybridPick === opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${figoHybridPick === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
                 ))}
               </div>
             </div>
@@ -428,7 +428,7 @@ export default function UterineFibroids() {
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step1Q}</label>
         <div className="space-y-2">
           <button onClick={() => handleStep1('yes')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${step1 === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step1Yes}</button>
-          <button onClick={() => handleStep1('no')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${step1 === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step1No}</button>
+          <button onClick={() => handleStep1('no')} aria-pressed={!!(step1 === 'no')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${step1 === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step1No}</button>
         </div>
       </Card>
 
@@ -436,8 +436,8 @@ export default function UterineFibroids() {
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step2Q}</label>
           <div className="space-y-2">
-            <button onClick={() => handleT2('low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t2 === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step2Low}</button>
-            <button onClick={() => handleT2('highInt')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t2 === 'highInt' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step2HighInt}</button>
+            <button onClick={() => handleT2('low')} aria-pressed={!!(t2 === 'low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t2 === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step2Low}</button>
+            <button onClick={() => handleT2('highInt')} aria-pressed={!!(t2 === 'highInt')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t2 === 'highInt' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step2HighInt}</button>
           </div>
         </Card>
       )}
@@ -446,8 +446,8 @@ export default function UterineFibroids() {
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step3Q}</label>
           <div className="space-y-2">
-            <button onClick={() => handleDw('low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${dw === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step3Low}</button>
-            <button onClick={() => handleDw('high')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${dw === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step3High}</button>
+            <button onClick={() => handleDw('low')} aria-pressed={!!(dw === 'low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${dw === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step3Low}</button>
+            <button onClick={() => handleDw('high')} aria-pressed={!!(dw === 'high')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${dw === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step3High}</button>
           </div>
         </Card>
       )}
@@ -457,8 +457,8 @@ export default function UterineFibroids() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.adcModeLabel}</label>
             <div className="flex gap-2">
-              <button onClick={() => { setAdcMode('quant'); setAdcQual(null); }} className={`flex-1 py-2 rounded-lg font-medium border text-xs transition-all ${adcMode === 'quant' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.adcModeQuant}</button>
-              <button onClick={() => { setAdcMode('qual'); setAdc(''); }} className={`flex-1 py-2 rounded-lg font-medium border text-xs transition-all ${adcMode === 'qual' ? 'border-amber-500 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.adcModeQual}</button>
+              <button onClick={() => { setAdcMode('quant'); setAdcQual(null); }} aria-pressed={!!(adcMode === 'quant')} className={`flex-1 py-2 rounded-lg font-medium border text-xs transition-all ${adcMode === 'quant' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.adcModeQuant}</button>
+              <button onClick={() => { setAdcMode('qual'); setAdc(''); }} aria-pressed={!!(adcMode === 'qual')} className={`flex-1 py-2 rounded-lg font-medium border text-xs transition-all ${adcMode === 'qual' ? 'border-amber-500 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.adcModeQual}</button>
             </div>
           </div>
           {adcMode === 'quant' ? (
@@ -466,8 +466,8 @@ export default function UterineFibroids() {
           ) : (
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{c.step4QualLabel}</label>
-              <button onClick={() => setAdcQual('low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${adcQual === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step4QualLow}</button>
-              <button onClick={() => setAdcQual('high')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${adcQual === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step4QualHigh}</button>
+              <button onClick={() => setAdcQual('low')} aria-pressed={!!(adcQual === 'low')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${adcQual === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step4QualLow}</button>
+              <button onClick={() => setAdcQual('high')} aria-pressed={!!(adcQual === 'high')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${adcQual === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step4QualHigh}</button>
               <InfoBox tone="amber">{c.step4QualWarning}</InfoBox>
             </div>
           )}
@@ -478,8 +478,8 @@ export default function UterineFibroids() {
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step5Q}</label>
           <div className="space-y-2">
-            <button onClick={() => handleMargins('smooth')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${margins === 'smooth' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step5Smooth}</button>
-            <button onClick={() => handleMargins('irregular')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${margins === 'irregular' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step5Irregular}</button>
+            <button onClick={() => handleMargins('smooth')} aria-pressed={!!(margins === 'smooth')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${margins === 'smooth' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step5Smooth}</button>
+            <button onClick={() => handleMargins('irregular')} aria-pressed={!!(margins === 'irregular')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${margins === 'irregular' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step5Irregular}</button>
           </div>
         </Card>
       )}
@@ -488,8 +488,8 @@ export default function UterineFibroids() {
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.step6Q}</label>
           <div className="flex gap-2">
-            <button onClick={() => setMenop('pre')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${menop === 'pre' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step6Pre}</button>
-            <button onClick={() => setMenop('post')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${menop === 'post' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step6Post}</button>
+            <button onClick={() => setMenop('pre')} aria-pressed={!!(menop === 'pre')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${menop === 'pre' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step6Pre}</button>
+            <button onClick={() => setMenop('post')} aria-pressed={!!(menop === 'post')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${menop === 'post' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.step6Post}</button>
           </div>
         </Card>
       )}
@@ -512,7 +512,7 @@ export default function UterineFibroids() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.t1SignalQ}</label>
             <div className="space-y-2">
               {c.t1SignalOpts.map(opt => (
-                <button key={opt.key} onClick={() => handleT1Signal(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t1Signal === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                <button key={opt.key} onClick={() => handleT1Signal(opt.key)} aria-pressed={!!(t1Signal === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${t1Signal === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
               ))}
             </div>
           </Card>
@@ -521,8 +521,8 @@ export default function UterineFibroids() {
             <Card className="mt-3">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.fatSatQ}</label>
               <div className="flex gap-2">
-                <button onClick={() => setFatSatLoss('yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${fatSatLoss === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
-                <button onClick={() => setFatSatLoss('no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${fatSatLoss === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+                <button onClick={() => setFatSatLoss('yes')} aria-pressed={!!(fatSatLoss === 'yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${fatSatLoss === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setFatSatLoss('no')} aria-pressed={!!(fatSatLoss === 'no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${fatSatLoss === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
             </Card>
           )}
@@ -532,7 +532,7 @@ export default function UterineFibroids() {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.enhancementQ}</label>
               <div className="space-y-2">
                 {c.enhancementOpts.map(opt => (
-                  <button key={opt.key} onClick={() => setEnhancement(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${enhancement === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                  <button key={opt.key} onClick={() => setEnhancement(opt.key)} aria-pressed={!!(enhancement === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${enhancement === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
                 ))}
               </div>
             </Card>

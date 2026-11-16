@@ -134,30 +134,30 @@ export default function LungNodule() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.frameworkLabel}</label>
             <div className="flex gap-2">
               <button onClick={() => setFramework('fleischner')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${framework === 'fleischner' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.frameworkFleischner}</button>
-              <button onClick={() => setFramework('nccn')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${framework === 'nccn' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.frameworkNccn}</button>
+              <button onClick={() => setFramework('nccn')} aria-pressed={!!(framework === 'nccn')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${framework === 'nccn' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.frameworkNccn}</button>
             </div>
           </Card>
           <Card>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.typeLabel}</label>
             <div className="space-y-2">
               {[['solid', c.typeSolid], ['partSolid', c.typePartSolid], ['ggn', c.typeGgn]].map(([key, label]) => (
-                <button key={key} onClick={() => setType(key)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${type === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
+                <button key={key} onClick={() => setType(key)} aria-pressed={!!(type === key)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${type === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
               ))}
             </div>
           </Card>
           <Card>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.countLabel}</label>
             <div className="flex gap-2">
-              <button onClick={() => setCount('single')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${count === 'single' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.countSingle}</button>
-              <button onClick={() => setCount('multiple')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${count === 'multiple' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.countMultiple}</button>
+              <button onClick={() => setCount('single')} aria-pressed={!!(count === 'single')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${count === 'single' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.countSingle}</button>
+              <button onClick={() => setCount('multiple')} aria-pressed={!!(count === 'multiple')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${count === 'multiple' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.countMultiple}</button>
             </div>
           </Card>
           {type === 'solid' && (
             <Card>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.riskLabel}</label>
               <div className="flex gap-2">
-                <button onClick={() => setRisk('low')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${risk === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.riskLow}</button>
-                <button onClick={() => setRisk('high')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${risk === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.riskHigh}</button>
+                <button onClick={() => setRisk('low')} aria-pressed={!!(risk === 'low')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${risk === 'low' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.riskLow}</button>
+                <button onClick={() => setRisk('high')} aria-pressed={!!(risk === 'high')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${risk === 'high' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.riskHigh}</button>
               </div>
             </Card>
           )}

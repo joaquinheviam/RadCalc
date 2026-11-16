@@ -53,7 +53,7 @@ export default function ASPECTS() {
   const RegionButton = ({ region }) => (
     <button
       onClick={() => toggle(region.key)}
-      className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all flex items-center gap-2 ${checked[region.key] ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+      aria-pressed={!!(checked[region.key])} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all flex items-center gap-2 ${checked[region.key] ? 'border-red-500 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
     >
       {checked[region.key] ? <IconCheckCircle size={14} /> : <span className="w-3.5" />} {region.label}
     </button>

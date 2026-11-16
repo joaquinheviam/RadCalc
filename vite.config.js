@@ -124,6 +124,12 @@ export default defineConfig({
         // precachea todo el build (JS/CSS/HTML/SVG/PNG) para que la app funcione sin conexión
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
         navigateFallback: `${BASE_PATH}index.html`,
+        // Archivos que no son la app: si se abren en el navegador con el SW
+        // instalado, deben llegar tal cual y no como la portada.
+        navigateFallbackDenylist: [/\/sitemap\.xml$/, /\/robots\.txt$/, /\/llms(-full)?\.txt$/, /\/google[^/]*\.html$/],
+        // Las capturas de pantalla solo las usa el diálogo de instalación
+        // (manifest), no la app: no hace falta precachearlas.
+        globIgnores: ['**/screenshots/**', '**/google*.html'],
         cleanupOutdatedCaches: true,
       },
       devOptions: {

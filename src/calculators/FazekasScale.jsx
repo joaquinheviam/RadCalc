@@ -14,7 +14,7 @@ function GradeSelector({ label, value, onChange, defs }) {
           <button
             key={g}
             onClick={() => onChange(g)}
-            className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${value === g ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+            aria-pressed={!!(value === g)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${value === g ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
           >
             {g}
           </button>
@@ -90,7 +90,7 @@ export default function FazekasScale() {
                 <button
                   key={opt.key}
                   onClick={() => setSubtype(opt.key)}
-                  className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${subtype === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                  aria-pressed={!!(subtype === opt.key)} className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${subtype === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
                 >
                   {opt.label}
                 </button>

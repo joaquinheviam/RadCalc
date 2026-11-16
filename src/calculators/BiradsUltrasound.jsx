@@ -70,7 +70,7 @@ function OptionButtons({ options, value, onChange }) {
         <button
           key={opt.key}
           onClick={() => onChange(value === opt.key ? null : opt.key)}
-          className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(value === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           <span className="font-semibold block mb-0.5">{opt.label}</span>
           {opt.desc && <span className="text-xs opacity-80">{opt.desc}</span>}
@@ -87,7 +87,7 @@ function CheckButtons({ options, values, onToggle }) {
         <button
           key={opt.key}
           onClick={() => onToggle(opt.key)}
-          className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${values[opt.key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(values[opt.key])} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${values[opt.key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           {values[opt.key] ? <IconCheckCircle size={16} className="shrink-0 mt-0.5" /> : <span className="w-4 shrink-0" />}
           <span className="font-medium">{opt.label}</span>
@@ -224,7 +224,7 @@ export default function BiradsUltrasound() {
             <button
               key={opt.key}
               onClick={() => setGtc(gtc === opt.key ? null : opt.key)}
-              className={`p-2.5 rounded-lg border text-xs font-medium transition-all ${gtc === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              aria-pressed={!!(gtc === opt.key)} className={`p-2.5 rounded-lg border text-xs font-medium transition-all ${gtc === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
             >
               {opt.label}
             </button>
@@ -239,7 +239,7 @@ export default function BiradsUltrasound() {
             <button
               key={opt.key}
               onClick={() => setFindingType(opt.key)}
-              className={`p-2.5 rounded-lg border text-sm font-medium transition-all ${findingType === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              aria-pressed={!!(findingType === opt.key)} className={`p-2.5 rounded-lg border text-sm font-medium transition-all ${findingType === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
             >
               {opt.label}
             </button>
@@ -306,7 +306,7 @@ export default function BiradsUltrasound() {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.microcystsToggleLabel}</label>
               <div className="flex gap-2">
-                <button onClick={() => setMicrocystsAbnormal(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${microcystsAbnormal === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setMicrocystsAbnormal(true)} aria-pressed={!!(microcystsAbnormal === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${microcystsAbnormal === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
                 <button onClick={() => setMicrocystsAbnormal(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${microcystsAbnormal === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
               {microcystsAbnormal !== null && <SuggestionNote suggestion={suggestion} c={c} />}
@@ -317,7 +317,7 @@ export default function BiradsUltrasound() {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.complicatedCystToggleLabel}</label>
               <div className="flex gap-2">
-                <button onClick={() => setComplicatedCystConfirmed(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${complicatedCystConfirmed === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setComplicatedCystConfirmed(true)} aria-pressed={!!(complicatedCystConfirmed === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${complicatedCystConfirmed === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
                 <button onClick={() => setComplicatedCystConfirmed(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${complicatedCystConfirmed === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
               {complicatedCystConfirmed === true && <SuggestionNote suggestion={suggestion} c={c} />}
@@ -329,7 +329,7 @@ export default function BiradsUltrasound() {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.fatNecrosisToggleLabel}</label>
               <div className="flex gap-2">
-                <button onClick={() => setFatNecrosisConfirmed(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${fatNecrosisConfirmed === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setFatNecrosisConfirmed(true)} aria-pressed={!!(fatNecrosisConfirmed === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${fatNecrosisConfirmed === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
                 <button onClick={() => setFatNecrosisConfirmed(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${fatNecrosisConfirmed === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
               {fatNecrosisConfirmed === true && <SuggestionNote suggestion={suggestion} c={c} />}
@@ -343,8 +343,8 @@ export default function BiradsUltrasound() {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.nodeNormalToggleLabel}</label>
               <div className="flex gap-2">
-                <button onClick={() => setNodeNormal(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${nodeNormal === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
-                <button onClick={() => setNodeNormal(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${nodeNormal === false ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+                <button onClick={() => setNodeNormal(true)} aria-pressed={!!(nodeNormal === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${nodeNormal === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setNodeNormal(false)} aria-pressed={!!(nodeNormal === false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${nodeNormal === false ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
               {nodeNormal !== null && <SuggestionNote suggestion={suggestion} c={c} />}
             </div>
@@ -356,20 +356,20 @@ export default function BiradsUltrasound() {
         <Card className="space-y-4">
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.assocFeaturesLabel}</label>
           <div>
-            <button onClick={() => setPseudocapsule(!pseudocapsule)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${pseudocapsule ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+            <button onClick={() => setPseudocapsule(!pseudocapsule)} aria-pressed={!!(pseudocapsule)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${pseudocapsule ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               {pseudocapsule ? <IconCheckCircle size={16} className="mt-0.5 shrink-0" /> : <span className="w-4 shrink-0" />}
               <span><span className="font-medium block">{c.pseudocapsuleLabel}</span><span className="text-xs opacity-80">{c.pseudocapsuleDesc}</span></span>
             </button>
             {pseudocapsule && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.pseudocapsuleGuidance}</p>}
           </div>
           <div>
-            <button onClick={() => setEchogenicRind(!echogenicRind)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${echogenicRind ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+            <button onClick={() => setEchogenicRind(!echogenicRind)} aria-pressed={!!(echogenicRind)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${echogenicRind ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               {echogenicRind ? <IconCheckCircle size={16} className="mt-0.5 shrink-0" /> : <span className="w-4 shrink-0" />}
               <span><span className="font-medium block">{c.echogenicRindLabel}</span><span className="text-xs opacity-80">{c.echogenicRindDesc}</span></span>
             </button>
           </div>
           <div>
-            <button onClick={() => setSkinChange(!skinChange)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${skinChange ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+            <button onClick={() => setSkinChange(!skinChange)} aria-pressed={!!(skinChange)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${skinChange ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               {skinChange ? <IconCheckCircle size={16} className="mt-0.5 shrink-0" /> : <span className="w-4 shrink-0" />}
               <span><span className="font-medium block">{c.skinChangeLabel}</span><span className="text-xs opacity-80">{c.skinChangeDesc}</span></span>
             </button>
@@ -378,7 +378,7 @@ export default function BiradsUltrasound() {
             <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">{c.edemaLabel}</label>
             <div className="flex gap-2 mb-1">
               {['unilateral', 'bilateral'].map(k => (
-                <button key={k} onClick={() => setEdema(edema === k ? null : k)} className={`flex-1 py-2 rounded-lg font-medium border text-xs ${edema === k ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                <button key={k} onClick={() => setEdema(edema === k ? null : k)} aria-pressed={!!(edema === k)} className={`flex-1 py-2 rounded-lg font-medium border text-xs ${edema === k ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                   {k === 'unilateral' ? c.edemaUnilateral : c.edemaBilateral}
                 </button>
               ))}
@@ -409,7 +409,7 @@ export default function BiradsUltrasound() {
             <button
               key={opt.key}
               onClick={() => setFinalCategory(opt.key)}
-              className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-center ${finalCategory === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'} ${suggestion && (suggestion.cat === opt.key || (suggestion.cat === '4' && ['4A', '4B', '4C'].includes(opt.key))) ? 'ring-2 ring-amber-400' : ''}`}
+              aria-pressed={!!(finalCategory === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-center ${finalCategory === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'} ${suggestion && (suggestion.cat === opt.key || (suggestion.cat === '4' && ['4A', '4B', '4C'].includes(opt.key))) ? 'ring-2 ring-amber-400' : ''}`}
             >
               <span>{opt.label}</span>
             </button>

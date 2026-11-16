@@ -686,7 +686,7 @@ export default function MullerianAnomalies() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.cervixCountQ}</label>
             <div className="flex gap-2">
               <button onClick={() => setCervixCount('one')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cervixCount === 'one' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.cervixCountOne}</button>
-              <button onClick={() => setCervixCount('two')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cervixCount === 'two' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.cervixCountTwo}</button>
+              <button onClick={() => setCervixCount('two')} aria-pressed={!!(cervixCount === 'two')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cervixCount === 'two' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.cervixCountTwo}</button>
             </div>
           </Card>
         </>
@@ -718,8 +718,8 @@ export default function MullerianAnomalies() {
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.tshapeQ}</label>
           <div className="flex gap-2">
-            <button onClick={() => handleTshape('yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${tshape === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.tshapeYes}</button>
-            <button onClick={() => handleTshape('no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${tshape === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.tshapeNo}</button>
+            <button onClick={() => handleTshape('yes')} aria-pressed={!!(tshape === 'yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${tshape === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.tshapeYes}</button>
+            <button onClick={() => handleTshape('no')} aria-pressed={!!(tshape === 'no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${tshape === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.tshapeNo}</button>
           </div>
         </Card>
       )}
@@ -780,8 +780,8 @@ export default function MullerianAnomalies() {
                   <div className="mt-2">
                     <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">{c.septumExtentQ}</label>
                     <div className="flex gap-2">
-                      <button onClick={() => setSeptumExtent('partial')} className={`flex-1 p-2 rounded-lg border text-xs transition-all ${septumExtent === 'partial' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.septumExtentPartial}</button>
-                      <button onClick={() => setSeptumExtent('complete')} className={`flex-1 p-2 rounded-lg border text-xs transition-all ${septumExtent === 'complete' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.septumExtentComplete}</button>
+                      <button onClick={() => setSeptumExtent('partial')} aria-pressed={!!(septumExtent === 'partial')} className={`flex-1 p-2 rounded-lg border text-xs transition-all ${septumExtent === 'partial' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.septumExtentPartial}</button>
+                      <button onClick={() => setSeptumExtent('complete')} aria-pressed={!!(septumExtent === 'complete')} className={`flex-1 p-2 rounded-lg border text-xs transition-all ${septumExtent === 'complete' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.septumExtentComplete}</button>
                     </div>
                   </div>
                 )}

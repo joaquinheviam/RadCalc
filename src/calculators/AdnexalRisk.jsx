@@ -12,7 +12,7 @@ function OptionButtons({ options, value, onChange }) {
         <button
           key={opt.key}
           onClick={() => onChange(opt.key)}
-          className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(value === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           {opt.label}
         </button>
@@ -28,7 +28,7 @@ function CheckButtons({ options, values, onToggle }) {
         <button
           key={opt.key}
           onClick={() => onToggle(opt.key)}
-          className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-start gap-2 ${values[opt.key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(values[opt.key])} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-start gap-2 ${values[opt.key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           {values[opt.key] ? <IconCheckCircle size={15} className="shrink-0 mt-0.5" /> : <span className="w-[15px] shrink-0" />}
           <span>{opt.label}</span>
@@ -40,8 +40,8 @@ function CheckButtons({ options, values, onToggle }) {
 
 const YES_NO = (value, onChange, yesLabel, noLabel) => (
   <div className="flex gap-2">
-    <button onClick={() => onChange('yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${value === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{yesLabel}</button>
-    <button onClick={() => onChange('no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${value === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{noLabel}</button>
+    <button onClick={() => onChange('yes')} aria-pressed={!!(value === 'yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${value === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{yesLabel}</button>
+    <button onClick={() => onChange('no')} aria-pressed={!!(value === 'no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${value === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{noLabel}</button>
   </div>
 );
 

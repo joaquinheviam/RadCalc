@@ -53,7 +53,7 @@ export default function RenalScore() {
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.exoLabel}</label>
         <div className="space-y-2">
           {c.exoOptions.map(opt => (
-            <button key={opt.key} onClick={() => setExo(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${exo === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+            <button key={opt.key} onClick={() => setExo(opt.key)} aria-pressed={!!(exo === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${exo === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
           ))}
         </div>
       </Card>
@@ -64,7 +64,7 @@ export default function RenalScore() {
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.locLabel}</label>
         <div className="space-y-2">
           {c.locOptions.map(opt => (
-            <button key={opt.key} onClick={() => setLoc(opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${loc === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+            <button key={opt.key} onClick={() => setLoc(opt.key)} aria-pressed={!!(loc === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${loc === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
           ))}
         </div>
       </Card>
@@ -72,15 +72,15 @@ export default function RenalScore() {
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.anteriorLabel}</label>
         <div className="flex gap-2">
           {c.anteriorOptions.map(opt => (
-            <button key={opt.key} onClick={() => setAnt(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${ant === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+            <button key={opt.key} onClick={() => setAnt(opt.key)} aria-pressed={!!(ant === opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${ant === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
           ))}
         </div>
       </Card>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.hilarLabel}</label>
         <div className="flex gap-2">
-          <button onClick={() => setHilar(true)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${hilar === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
-          <button onClick={() => setHilar(false)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${hilar === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+          <button onClick={() => setHilar(true)} aria-pressed={!!(hilar === true)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${hilar === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+          <button onClick={() => setHilar(false)} aria-pressed={!!(hilar === false)} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${hilar === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
         </div>
       </Card>
       {canCompute ? (
