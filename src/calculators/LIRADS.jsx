@@ -65,10 +65,14 @@ export default function LIRADS() {
   const toggleAfBen = (key) => setAfBenignSel(prev => ({ ...prev, [key]: !prev[key] }));
 
   const getReportText = () => {
-    if (!finalCat) return;
-    const sizeLabel = size === 1 ? c.size1 : size === 2 ? c.size2 : c.size3;
+    if (!finalCat) return '';
+    // Solo se informan los datos efectivamente ingresados: en la vía LR-TIV/LR-M el
+    // tamaño y el APHE pueden no haberse marcado, y no deben aparecer como "≥ 20 mm" / "No".
+    const sizeLabel = size === 1 ? c.size1 : size === 2 ? c.size2 : size === 3 ? c.size3 : '';
+    const apheLabel = aphe === null ? '' : (aphe ? t.common.yes : t.common.no);
     const featLabels = Object.entries(feats).filter(([,v]) => v).map(([k]) => k === 'washout' ? c.featWashout : k === 'capsule' ? c.featCapsule : c.featGrowth);
-    const override = lrTiv ? c.lrTiv : (lrM ? c.lrM : '');
+    const featsLabel = featLabels.length ? featLabels.join(', ') : (hasBasics ? t.common.none : '');
+    const override = lrTiv ? c.lrTivReport : (lrM ? c.lrMReport : '');
     const contPhrase = (lrTiv && lrTivCont) ? c.lrTivContinuity[lrTivCont] : '';
     const catLabel = `${finalCat} — ${c.categories[finalCat]}` + (contPhrase ? ', ' + contPhrase.charAt(0).toLowerCase() + contPhrase.slice(1) : '');
     let afSummary = '';
@@ -80,7 +84,7 @@ export default function LIRADS() {
       const benLabels = c.afBenign.map((l, i) => ({ l, k: 'b' + i })).filter(x => afBenignSel[x.k]).map(x => x.l);
       afSummary = c.afSummaryText(baseCat, malLabels.length ? malLabels.join(', ') : t.common.none, benLabels.length ? benLabels.join(', ') : t.common.none);
     }
-    const text = c.reportText(sizeLabel, aphe ? t.common.yes : t.common.no, featLabels.length ? featLabels.join(', ') : t.common.none, override, catLabel, afSummary);
+    const text = c.reportText(sizeLabel, apheLabel, featsLabel, override, catLabel, afSummary);
     return text;
   };
   const handleCopy = () => {

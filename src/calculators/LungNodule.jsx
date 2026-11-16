@@ -28,9 +28,12 @@ export default function LungNodule() {
     pfnReset(); setType('solid'); setCount('single'); setRisk('low'); setSize(''); setFramework('fleischner');
   };
 
+  const showFleischnerForm = pfnStage === 'result-notpfn' || pfnStage === 'skipped';
   const sizeNum = parseFloat(size);
-  const hasSize = size !== '' && !isNaN(sizeNum);
-  const rec = hasSize ? (framework === 'nccn' ? nccnRec(c, type, count, risk, sizeNum) : fleischnerRec(c, type, count, risk, sizeNum)) : null;
+  const hasSize = size !== '' && !isNaN(sizeNum) && sizeNum > 0;
+  // La recomendación solo existe mientras el formulario Fleischner/NCCN está visible:
+  // si el usuario vuelve al cribado PFN, no debe quedar una recomendación previa en la barra.
+  const rec = (showFleischnerForm && hasSize) ? (framework === 'nccn' ? nccnRec(c, type, count, risk, sizeNum) : fleischnerRec(c, type, count, risk, sizeNum)) : null;
   const resultLabel = framework === 'nccn' ? c.nccnResult : c.fleischnerResult;
   const frameworkLabel = framework === 'nccn' ? c.frameworkNccn : c.frameworkFleischner;
 
@@ -39,7 +42,7 @@ export default function LungNodule() {
   const riskLabelText = risk === 'high' ? c.riskHigh : c.riskLow;
 
   const getReportText = () => {
-    if (!rec) return;
+    if (!rec) return '';
     const text = c.reportText(typeLabelText, countLabelText, size, type === 'solid' ? riskLabelText : '', rec, frameworkLabel);
     return text;
   };
@@ -57,8 +60,6 @@ export default function LungNodule() {
     if (!text) return;
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
-
-  const showFleischnerForm = pfnStage === 'result-notpfn' || pfnStage === 'skipped';
 
   return (
     <div className={`space-y-4 animate-in fade-in ${rec ? 'pb-56' : ''}`}>
