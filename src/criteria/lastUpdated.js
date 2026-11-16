@@ -1,11 +1,11 @@
 // Generado por scripts/calc-dates.mjs (corre en `npm run build`). No editar a mano.
 export const LAST_UPDATED = {
   "tirads": "2026-09-21",
-  "mediastinalMass": "2026-09-26",
+  "mediastinalMass": "2026-11-04",
   "thymic": "2026-09-21",
   "ntmBcd": "2026-09-21",
   "peQanadli": "2026-09-21",
-  "lungNodule": "2026-09-21",
+  "lungNodule": "2026-11-16",
   "vdt": "2026-09-21",
   "lungRads": "2026-09-21",
   "lungScreening": "2026-09-21",
@@ -19,7 +19,7 @@ export const LAST_UPDATED = {
   "cardiacSiderosis": "2026-09-23",
   "mriFf": "2026-09-21",
   "siderosis": "2026-09-23",
-  "lirads": "2026-09-21",
+  "lirads": "2026-11-16",
   "liradsTr": "2026-09-21",
   "liradsUs": "2026-09-21",
   "pancreatitisAtlanta": "2026-09-21",
