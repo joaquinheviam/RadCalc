@@ -193,7 +193,7 @@ export default function BiradsUltrasound() {
   };
 
   const getReportText = () => {
-    if (!finalCategory) return;
+    if (!finalCategory) return '';
     const compositionLabel = composition ? c.compositionOptions.find(o => o.key === composition)?.label : '';
     const finding = findingLabel();
     const assocText = assocLabelsList().length ? assocLabelsList().join(', ') : t.common.none;

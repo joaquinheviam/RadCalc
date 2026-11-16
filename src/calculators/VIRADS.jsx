@@ -109,7 +109,7 @@ export default function VIRADS() {
   else if (final > 0) interp = c.interpretation.low;
 
   const getReportText = () => {
-    if (!final) return;
+    if (!final) return '';
     const text = mode === 'classic'
       ? c.reportText(t2 || t.common.notEvaluated, dwi || t.common.notEvaluated, dce || t.common.notEvaluated, final)
       : `${c.algoTitle}\n${c.finalCategory}: VI-RADS ${final}\n${c.categoryDesc[final - 1]}`;

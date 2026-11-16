@@ -58,7 +58,7 @@ export default function AAST2018() {
   const resetAll = () => { setOrgan(null); setGrade(null); setModifier(null); };
 
   const getReportText = () => {
-    if (!answered) return;
+    if (!answered) return '';
     const lines = [`${c.resultLabel}: ${c.finalGradeLabel(finalGrade)}`];
     if (modifierApplied) lines.push(c.modifierAppliedNote);
     lines.push(c.treatmentCaveat);

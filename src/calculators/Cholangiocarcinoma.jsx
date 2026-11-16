@@ -100,7 +100,7 @@ export default function Cholangiocarcinoma() {
   const statusDesc = status === 'unresectable' ? c.unresectableDesc : status === 'borderline' ? c.borderlineDesc : c.resectableDesc;
 
   const getReportText = () => {
-    if (!status) return;
+    if (!status) return '';
     const locText = location === 'perihilar' ? c.locPerihilar : c.locDistal;
     const morphText = morphology === 'periductal' ? c.morphInfiltrating : morphology === 'intraductal' ? c.morphIntraductal : c.morphMass;
     const artText = artery === 'none' ? c.arteryNone : artery === 'abutment' ? c.arteryAbutment : c.arteryEncasement;

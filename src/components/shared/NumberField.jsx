@@ -3,10 +3,12 @@
 // iPhone ni en varios Android, así que sin este botón no hay forma de
 // ingresar valores negativos (p. ej. densidades en UH bajo 0). El botón va a
 // la izquierda del campo, donde se escribe el signo, con una línea de ayuda.
+import { useId } from 'react';
 import { useLang } from '../../i18n/LangContext.js';
 
 export default function NumberField({ label, value, onChange, placeholder, small, allowNegative }) {
   const { t } = useLang();
+  const id = useId();
   const handleChange = (raw) => {
     const normalized = raw.replace(',', '.');
     if (normalized === '' || /^-?\d*\.?\d*$/.test(normalized)) {
@@ -19,6 +21,7 @@ export default function NumberField({ label, value, onChange, placeholder, small
   };
   const input = (
     <input
+      id={id}
       type="text"
       inputMode="decimal"
       placeholder={placeholder}
@@ -29,7 +32,7 @@ export default function NumberField({ label, value, onChange, placeholder, small
   );
   return (
     <div>
-      {label && <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{label}</label>}
+      {label && <label htmlFor={id} className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{label}</label>}
       {allowNegative ? (
         <div className="flex gap-2">
           <button

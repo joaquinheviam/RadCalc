@@ -643,7 +643,7 @@ export default function LungCancerTNM9() {
   };
 
   const getReportText = () => {
-    if (!isComplete) return;
+    if (!isComplete) return '';
     const lines = [
       c.reportTitle,
       `T: ${tVal} — ${tOptions.find((o) => o.key === tVal)?.label}`,

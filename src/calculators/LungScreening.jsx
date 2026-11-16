@@ -32,7 +32,7 @@ export default function LungScreening() {
   }
 
   const getReportText = () => {
-    if (!result) return;
+    if (!result) return '';
     const text = c.reportText(age, packYears, smokingYears, result.label, result.desc);
     return text;
   };

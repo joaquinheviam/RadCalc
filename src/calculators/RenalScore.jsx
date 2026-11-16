@@ -31,7 +31,7 @@ export default function RenalScore() {
   const suffix = hilar ? 'h' : '';
 
   const getReportText = () => {
-    if (!canCompute) return;
+    if (!canCompute) return '';
     const text = c.reportText(formula + suffix, total, risk);
     return text;
   };

@@ -214,7 +214,7 @@ export default function BiradsMammography() {
   const assocLabelsList = () => c.assocFeatures.filter(a => assoc[a.key]).map(a => a.label);
 
   const getReportText = () => {
-    if (!finalCategory) return;
+    if (!finalCategory) return '';
     const densityLabel = density ? c.densityOptions.find(o => o.key === density)?.label : '';
     const finding = findingLabel();
     const assocText = assocLabelsList().length ? assocLabelsList().join(', ') : t.common.none;

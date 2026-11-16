@@ -73,6 +73,13 @@ export default {
     changelogButton: 'Update log',
     sponsorsButton: 'Acknowledgments',
     closeAria: 'Close',
+    toggleLangAria: 'Switch language to Spanish',
+    toggleThemeAria: 'Toggle light/dark theme',
+    searchAria: 'Search calculators',
+    clearSearchAria: 'Clear search',
+    errorTitle: 'Something went wrong while showing this page.',
+    errorBody: 'This may be caused by an app update or an unstable connection. Reload to try again.',
+    errorReload: 'Reload',
     installGuide: {
       button: 'Install',
       buttonAria: 'How to install RadioCalc as an app',
@@ -242,6 +249,8 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-11-16', text: 'Fix in the Incidental Pulmonary Nodule (Fleischner / NCCN) calculator: if, after entering the size, the nodule was re-evaluated as perifissural and turned out to be consistent with a PFN, the bottom bar kept showing (and copying) the previous follow-up recommendation. The recommendation now disappears when returning to the perifissural nodule evaluation, and a size of 0 or a negative size no longer produces a recommendation.' },
+      { date: '2026-11-16', text: 'Fix in the LI-RADS v2018 (CT/MRI Liver) calculator: when the category is set by LR-TIV or LR-M, the report included "Size: ≥ 20 mm" and "Nonrim APHE: No" even if those data had not been entered, and repeated the question text. The report now includes only the data actually selected and states the finding ("Definite tumor in vein (LR-TIV): present." / "Features of malignancy not specific to HCC (LR-M): present."). The calculated category does not change.' },
       { date: '2026-11-04', text: 'In the Mediastinal Masses calculator: liposarcoma is now part of the differential of every fat-containing mass. In the prevascular compartment, when macroscopic fat is selected its appearance can be specified: fat-fluid level or fat with fluid and calcium (points to mature teratoma), encapsulated fat with thin linear strands (thymolipoma or lipoma), or fat with a soft-tissue component, fibrous bands or enhancing septa (liposarcoma). The paravertebral compartment adds macroscopic fat, with lipoma (encapsulated homogeneous non-enhancing fat) versus liposarcoma (soft tissue or enhancing septa); with hemolytic anemia, thalassemia or myelofibrosis, or with bilateral masses, fat supports (inactive) extramedullary hematopoiesis. Notes list the differential of fat-containing lesions (lipomatosis, fat necrosis, Morgagni and Bochdalek hernias). Source: Mura R, et al. BJR Open. 2025;7(1):tzaf009.' },
       { date: '2026-09-26', text: 'Adds the Mediastinal Masses: Differential by Compartment, Age and Sex (ITMIG) calculator (new calculator, Thorax category): it ranks the differential diagnosis of a mediastinal mass by ITMIG compartment (prevascular, visceral or paravertebral), age, sex, CT and MRI findings (fat, calcification, cyst, opposed-phase signal drop, lymphadenopathy, invasion) and clinical context (myasthenia gravis, B symptoms, β-hCG, AFP, hypercalcemia, NF1, hemolytic anemia), showing the reasons for and against each diagnosis. It incorporates the demographic keys of the prevascular mediastinum (thymoma and thymic carcinoma > 40 years; lymphoma, teratoma and germ cell tumors < 40 years; seminoma and non-seminomatous tumors almost exclusively in young men) and calcification as a finding pointing to thymoma in adults. Based on Carter et al. (RadioGraphics 2017), Taka et al. (Eur J Radiol 2023), Jain et al. (Radiol Clin North Am 2025), Mura et al. (BJR Open 2025), the 2021 ACR Appropriateness Criteria and the NCCN guideline.' },
       { date: '2026-09-23', text: 'The home page adds a row of quick links by specialty (Abdomen, Neuroradiology, Chest, etc.) that stays pinned while scrolling and jumps straight to each section. With the "Customize" button, the most-used specialties can be pinned so they appear first, both in that row and in the calculator list; the preference is saved on the device itself.' },
@@ -1754,6 +1763,8 @@ export default {
       featGrowth: 'Threshold growth (≥ 50% in ≤ 6 months)',
       lrM: 'Features of malignancy not specific to HCC ("LR-M": rim APHE, marked diffusion restriction in a rim, marked necrosis/ischemia, infiltrative morphology)?',
       lrTiv: 'Definite tumor in vein (macrovascular tumor invasion, "LR-TIV")?',
+      lrTivReport: 'Definite tumor in vein (LR-TIV): present.',
+      lrMReport: 'Features of malignancy not specific to HCC (LR-M): present.',
       lrTivContinuityLabel: 'Continuity of the tumor in vein with the hepatic lesion:',
       lrTivContinuity: {
         lr5: 'Continuous with an LR-5 lesion',
@@ -1809,7 +1820,7 @@ export default {
       },
       algoMatrixNote: 'Apply the size × APHE × additional-feature-count matrix (see the interactive calculator above for the full table): result LR-1 to LR-5.',
       reportText: (size, aphe, feats, override, cat, afSummary) =>
-        `LI-RADS v2018 (CT/MRI):\nSize: ${size}\nNonrim APHE: ${aphe}\nAdditional features: ${feats}\n${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Category: ${cat}`,
+        `LI-RADS v2018 (CT/MRI):\n${size ? 'Size: ' + size + '\n' : ''}${aphe ? 'Nonrim APHE: ' + aphe + '\n' : ''}${feats ? 'Additional features: ' + feats + '\n' : ''}${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Category: ${cat}`,
       usage: [
         'LI-RADS v2018 applies to hepatic observations in patients at established risk for hepatocellular carcinoma (HCC): cirrhosis, chronic hepatitis B, or prior HCC.',
         'LR-TIV and LR-M take priority over the numeric category: if there is tumor in vein or non-HCC-specific malignant features, that category replaces the LR-1 to 5 category computed from size/APHE/features.',
@@ -3764,6 +3775,9 @@ export default {
       cumeNotApplicableCleft: 'CUME criteria (Ludwin 2018) were derived and validated exclusively for the normal/arcuate vs. septate differential; the study explicitly excluded bicornuate/didelphys uteri, so it does not provide a validated cut-off for this branch.',
       extConfirmAsrm: (mm) => `External cleft ${mm} mm ${parseFloat(mm) > 10 ? '(> 10 mm, consistent with bicornuate by ASRM criteria)' : '(≤ 10 mm — verify whether this contour truly corresponds to bicornuate/bicorporeal rather than septate)'}`,
       extConfirmEshre: (ratio) => `ESHRE/ESGE external/wall index: ${ratio}% ${ratio > 50 ? '(> 50%, consistent with Class U3 bicorporeal)' : '(≤ 50% — verify whether this contour truly corresponds to bicornuate/bicorporeal rather than septate)'}`,
+
+      tshapeDiagramTitle: 'Teaching guide: T-shaped cavity (optional)',
+      tshapeDiagramIntro: 'The T-shaped uterus is a problem of the cavity, not of the external contour: thickening of the lateral walls narrows the endometrial canal and the cornual horns become short and straight, while the external fundal contour stays flat or minimally convex (unlike the septate uterus, where the external contour is normal but there is an internal indentation).',
 
       tshapeQ: 'Is the endometrial cavity T-shaped (thickened lateral walls, narrow cavity, without significant fundal indentation)?',
       tshapeYes: 'Yes',

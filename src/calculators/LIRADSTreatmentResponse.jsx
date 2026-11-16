@@ -43,7 +43,7 @@ export default function LIRADSTreatmentResponse() {
   const handleCategoryChange = (key) => { setCategory(key); setAfDiffusion(false); setAfT2(false); };
 
   const getReportText = () => {
-    if (!finalCatObj) return;
+    if (!finalCatObj) return '';
     const coreLabel = core === 'nonradiation' ? c.coreNonradiation : c.coreRadiation;
     const afNote = afApplied ? c.afUpgradedNote(selectedCatObj.label) : '';
     const text = c.reportText(coreLabel, finalCatObj.label, afNote);

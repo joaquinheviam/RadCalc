@@ -73,6 +73,13 @@ export default {
     changelogButton: 'Historial de actualizaciones',
     sponsorsButton: 'Agradecimientos',
     closeAria: 'Cerrar',
+    toggleLangAria: 'Cambiar idioma a inglés',
+    toggleThemeAria: 'Cambiar tema claro/oscuro',
+    searchAria: 'Buscar calculadora',
+    clearSearchAria: 'Limpiar búsqueda',
+    errorTitle: 'Algo salió mal al mostrar esta página.',
+    errorBody: 'Puede deberse a una actualización de la app o a una conexión inestable. Recarga para intentarlo de nuevo.',
+    errorReload: 'Recargar',
     installGuide: {
       button: 'Instalar',
       buttonAria: 'Cómo instalar RadioCalc como aplicación',
@@ -242,6 +249,8 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-11-16', text: 'Corrección en la calculadora Nódulo Pulmonar Incidental (Fleischner / NCCN): si después de ingresar el tamaño se volvía a evaluar el nódulo como perifisural y resultaba compatible con PFN, la barra inferior seguía mostrando (y copiando) la recomendación de seguimiento anterior. Ahora la recomendación desaparece al volver a la evaluación de nódulo perifisural, y un tamaño de 0 o negativo ya no genera recomendación.' },
+      { date: '2026-11-16', text: 'Corrección en la calculadora LI-RADS v2018 (TC/RM de Hígado): cuando la categoría la define LR-TIV o LR-M, el informe incluía "Tamaño: ≥ 20 mm" y "APHE no periférico: No" aunque esos datos no se hubieran ingresado, y repetía el texto de la pregunta. Ahora el informe solo incluye los datos efectivamente marcados y describe el hallazgo ("Tumor evidente en vena (LR-TIV): presente." / "Rasgos de malignidad no específica de CHC (LR-M): presentes."). La categoría calculada no cambia.' },
       { date: '2026-11-04', text: 'En la calculadora Masas Mediastínicas: el liposarcoma pasa a formar parte del diferencial de toda masa con grasa. En el compartimento prevascular, al marcar grasa macroscópica se puede indicar su aspecto: nivel grasa-líquido o grasa con líquido y calcio (orienta a teratoma maduro), grasa encapsulada con bandas lineales finas (timolipoma o lipoma) o grasa con tejido blando, bandas fibrosas o septos que realzan (liposarcoma). En el compartimento paravertebral se agrega la grasa macroscópica, con lipoma (grasa encapsulada homogénea, sin realce) frente a liposarcoma (tejido blando o septos que realzan); con anemia hemolítica, talasemia o mielofibrosis, o con masas bilaterales, la grasa refuerza la hematopoyesis extramedular (inactiva). Se agregan notas con los diagnósticos diferenciales de las lesiones grasas (lipomatosis, necrosis grasa, hernias de Morgagni y Bochdalek). Fuente: Mura R, et al. BJR Open. 2025;7(1):tzaf009.' },
       { date: '2026-09-26', text: 'Se agrega la calculadora Masas Mediastínicas: Diferencial por Compartimento, Edad y Sexo (ITMIG) (nueva calculadora, categoría Tórax): ordena el diagnóstico diferencial de una masa mediastínica según el compartimento ITMIG (prevascular, visceral o paravertebral), la edad, el sexo, los hallazgos de TC y RM (grasa, calcificación, quiste, caída de señal en fase opuesta, adenopatías, invasión) y el contexto clínico (miastenia gravis, síntomas B, β-hCG, AFP, hipercalcemia, NF1, anemia hemolítica), mostrando los motivos a favor y en contra de cada diagnóstico. Incorpora las claves demográficas del mediastino prevascular (timoma y carcinoma tímico > 40 años; linfoma, teratoma y tumores germinales < 40 años; seminoma y no seminomatoso casi exclusivos de hombres jóvenes) y la calcificación como hallazgo orientador a timoma en adultos. Basado en Carter et al. (RadioGraphics 2017), Taka et al. (Eur J Radiol 2023), Jain et al. (Radiol Clin North Am 2025), Mura et al. (BJR Open 2025), los ACR Appropriateness Criteria 2021 y la guía NCCN.' },
       { date: '2026-09-23', text: 'En la portada se agrega una fila de accesos rápidos por especialidad (Abdomen, Neurorradiología, Tórax, etc.) que queda fija al desplazarse y lleva directo a cada sección. Con el botón "Personalizar" se pueden fijar las especialidades que más se usan para que aparezcan primero, tanto en esa fila como en el listado de calculadoras; la preferencia se guarda en el propio dispositivo.' },
@@ -1755,6 +1764,8 @@ export default {
       featGrowth: 'Crecimiento umbral (≥ 50% en ≤ 6 meses)',
       lrM: '¿Rasgos de malignidad no específica de CHC ("LR-M": realce en anillo, restricción difusa marcada en anillo, necrosis/isquemia marcada, morfología infiltrativa)?',
       lrTiv: '¿Tumor evidente en vena (invasión macrovascular tumoral, "LR-TIV")?',
+      lrTivReport: 'Tumor evidente en vena (LR-TIV): presente.',
+      lrMReport: 'Rasgos de malignidad no específica de CHC (LR-M): presentes.',
       lrTivContinuityLabel: 'Continuidad del tumor en vena con la lesión hepática:',
       lrTivContinuity: {
         lr5: 'En continuidad con una lesión LR-5',
@@ -1810,7 +1821,7 @@ export default {
       },
       algoMatrixNote: 'Se aplica la matriz de tamaño × APHE × número de características adicionales (ver la calculadora interactiva más arriba para la tabla completa): resultado LR-1 a LR-5.',
       reportText: (size, aphe, feats, override, cat, afSummary) =>
-        `LI-RADS v2018 (TC/RM):\nTamaño: ${size}\nAPHE no periférico: ${aphe}\nCaracterísticas adicionales: ${feats}\n${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Categoría: ${cat}`,
+        `LI-RADS v2018 (TC/RM):\n${size ? 'Tamaño: ' + size + '\n' : ''}${aphe ? 'APHE no periférico: ' + aphe + '\n' : ''}${feats ? 'Características adicionales: ' + feats + '\n' : ''}${override ? override + '\n' : ''}${afSummary ? afSummary + '\n' : ''}Categoría: ${cat}`,
       usage: [
         'LI-RADS v2018 se aplica a observaciones hepáticas en pacientes con riesgo establecido de carcinoma hepatocelular (CHC): cirrosis, hepatitis B crónica, o CHC previo.',
         'LR-TIV y LR-M tienen prioridad sobre la categoría numérica: si hay tumor en vena o rasgos no específicos de CHC, esa categoría reemplaza al LR-1 a 5 calculado por tamaño/APHE/características.',

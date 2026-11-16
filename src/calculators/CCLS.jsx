@@ -223,7 +223,7 @@ export default function CCLS() {
   const cmpLabel = cmp ? c.cmpOptions.find(o => o.key === cmp).label : null;
 
   const getReportText = () => {
-    if (!result) return;
+    if (!result) return '';
     const parts = [t2Label, cmpLabel];
     if (fat !== null) parts.push(`${c.fatQ.split('?')[0]}? ${fat === 'y' ? t.common.yes : t.common.no}`);
     if (sei !== null) parts.push(`${c.seiQ.split('?')[0]}? ${sei === 'y' ? t.common.yes : t.common.no}`);

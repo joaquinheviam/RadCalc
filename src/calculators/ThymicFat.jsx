@@ -306,7 +306,7 @@ export default function ThymicFat() {
   const result = scenarioMap ? scenarioMap[scenario] : null;
 
   const getReportText = () => {
-    if (!result) return;
+    if (!result) return '';
     const text = c.reportText(
       thymusIn,
       thymusOut,

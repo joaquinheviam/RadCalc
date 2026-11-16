@@ -7,6 +7,7 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { calculators } from '../src/calculators/registry.js';
+import { LAST_UPDATED } from '../src/criteria/lastUpdated.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BASE_URL = 'https://radiocalc.app';
@@ -21,19 +22,24 @@ const LANGS = ['es', 'en'];
 // quedar sin ninguna fecha (como estaba antes), que es lo que le impedía a
 // Google priorizar qué tan reciente es el contenido.
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
+// Cada calculadora usa su propia fecha de última actualización
+// (src/criteria/lastUpdated.js, que scripts/calc-dates.mjs genera desde el
+// historial de git justo antes de este script). Si no hay fecha, se usa la
+// de la build. La portada usa la fecha de la build.
+const calcDate = (id) => (LAST_UPDATED && LAST_UPDATED[id]) || BUILD_DATE;
 
 const urls = [];
 for (const lang of LANGS) {
-  urls.push(`${BASE_URL}/${lang}/`);
+  urls.push({ loc: `${BASE_URL}/${lang}/`, lastmod: BUILD_DATE });
   for (const cc of calculators) {
     // Barra final a propósito: mismo motivo que en App.jsx / seoHead.js —
     // asegura que el archivo estático .../calc/<id>/index.html se resuelva.
-    urls.push(`${BASE_URL}/${lang}/calc/${cc.id}/`);
+    urls.push({ loc: `${BASE_URL}/${lang}/calc/${cc.id}/`, lastmod: calcDate(cc.id) });
   }
 }
 
 const body = urls
-  .map((loc) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${BUILD_DATE}</lastmod>\n    <changefreq>monthly</changefreq>\n  </url>`)
+  .map(({ loc, lastmod }) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n  </url>`)
   .join('\n');
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;

@@ -92,7 +92,7 @@ export default function Pecarn() {
   }[verdict];
 
   const getReportText = () => {
-    if (!verdictMeta) return;
+    if (!verdictMeta) return '';
     const lines = [verdictMeta.title, verdictMeta.risk];
     if (verdict === 'intermediate') lines.push(c.verdictIntNote);
     if (verdict === 'low') lines.push(c.verdictLowNote);

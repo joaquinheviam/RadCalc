@@ -38,7 +38,7 @@ export default function TLICS() {
   const resetAll = () => { setMorph(null); setPlc(null); setNeuro(null); };
 
   const getReportText = () => {
-    if (!band || total === null) return;
+    if (!band || total === null) return '';
     const lines = [c.reportText(total, band.title)];
     if (approachText) lines.push(`${c.approachLabel}: ${approachText}`);
     if (showCompleteNote) lines.push(c.approachCompleteNote);
