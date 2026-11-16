@@ -50,6 +50,7 @@ export const LAST_UPDATED = {
   "biradsUs": "2026-09-21",
   "boneRads": "2026-09-21",
   "mirels": "2026-09-21",
+  "altLipoma": "2026-11-16",
   "bactip": "2026-09-21",
   "kellgrenLawrence": "2026-09-21",
   "tlics": "2026-09-21",
