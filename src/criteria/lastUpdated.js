@@ -29,7 +29,7 @@ export const LAST_UPDATED = {
   "cholangiocarcinoma": "2026-09-21",
   "spleenSize": "2026-09-25",
   "splenicLesion": "2026-09-21",
-  "adrenalCt": "2026-09-23",
+  "adrenalCt": "2026-11-16",
   "adrenalMri": "2026-09-21",
   "aast2018": "2026-09-21",
   "crads2023": "2026-09-21",
