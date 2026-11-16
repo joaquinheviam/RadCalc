@@ -54,7 +54,8 @@ Patrón de UI de cada calculadora: StickyBar con Reiniciar, **Ver informe** (Rep
 - Modales dentro de elementos con `backdrop-blur`: montarlos con `createPortal(…, document.body)`.
 
 ## Verificar
-- **No hay suite de tests automatizados.** La verificación es:
+- `npm test` (node:test, `tests/logic/`): lógica de TI-RADS/LI-RADS/Fleischner, fichas de criterios, paridad de claves ES/EN y plantillas de informe. Corre en GitHub Actions (`.github/workflows/test.yml`) en cada push y PR.
+- Además:
   - `npm run build` sin errores.
   - Pruebas con Playwright contra `npx vite preview --port 4173`, en ancho de celular (375 px) y en modo oscuro (`localStorage['radiocalc:darkMode'] = 'true'`).
 - En la nube, Playwright está instalado de forma global (`import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs'`) y Chromium en `/opt/pw-browsers`. No ejecutar `playwright install`.

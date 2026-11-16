@@ -33,7 +33,7 @@ export default function BACTIP() {
   const resetAll = () => { setFracture(null); setAggressive(null); setLength(null); setScalloping(null); };
 
   const getReportText = () => {
-    if (!type) return;
+    if (!type) return '';
     return c.reportText(typeKey, type.title);
   };
   const handleCopy = () => {

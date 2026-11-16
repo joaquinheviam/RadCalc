@@ -60,7 +60,7 @@ export default function BoneRADS() {
   };
 
   const getReportText = () => {
-    if (!category) return;
+    if (!category) return '';
     return c.reportText(category.title, notEvaluable ? null : pointTotal);
   };
   const handleCopy = () => {

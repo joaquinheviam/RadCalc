@@ -24,7 +24,7 @@ export default function PancreasResect() {
   const resultObj = resultKey ? c[resultKey] : null;
 
   const getReportText = () => {
-    if (!resultObj) return;
+    if (!resultObj) return '';
     const text = c.reportText(arterialObj.label, venousObj.label, resultObj.label, resultObj.mgmt);
     return text;
   };

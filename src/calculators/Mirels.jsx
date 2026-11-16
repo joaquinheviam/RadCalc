@@ -26,7 +26,7 @@ export default function Mirels() {
   const resetAll = () => { setSite(null); setPain(null); setLesionType(null); setSize(null); };
 
   const getReportText = () => {
-    if (!band || pointTotal === null) return;
+    if (!band || pointTotal === null) return '';
     return c.reportText(pointTotal, band.title);
   };
   const handleCopy = () => {

@@ -75,7 +75,7 @@ export default function PIRADS() {
   }
 
   const getReportText = () => {
-    if (!finalScore) return;
+    if (!finalScore) return '';
     const txtZone = zone === 'pz' ? c.pz : c.tz;
     const text = c.reportText(
       txtZone,

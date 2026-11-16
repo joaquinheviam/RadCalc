@@ -28,7 +28,7 @@ export default function SINS() {
   const resetAll = () => { setLoc(null); setPain(null); setBone(null); setAlign(null); setCollapse(null); setPost(null); };
 
   const getReportText = () => {
-    if (!band || total === null) return;
+    if (!band || total === null) return '';
     return c.reportText(total, band.title);
   };
   const handleCopy = () => {

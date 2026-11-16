@@ -13,6 +13,7 @@ import { updateSeoHead } from './utils/seoHead.js';
 import { calcMetaDescription } from './utils/calcMetaDescription.js';
 import { Logo, SiteFooter, Sponsors, AboutInfo } from './components/shared/index.js';
 import DonationPrompt from './components/shared/DonationPrompt.jsx';
+import ErrorBoundary from './components/shared/ErrorBoundary.jsx';
 import CategoryNav from './components/shared/CategoryNav.jsx';
 import LanguageRequestPrompt from './components/shared/LanguageRequestPrompt.jsx';
 import { useLanguageRequestPrompt } from './hooks/useLanguageRequestPrompt.js';
@@ -224,12 +225,12 @@ function AppShell() {
             <InstallGuide compact={Boolean(activeEntry)} />
             <button
               onClick={toggleLang}
-              aria-label="Toggle language"
+              aria-label={t.common.toggleLangAria}
               className="px-2.5 py-1.5 text-xs font-bold rounded-full hover:bg-white/20 transition-colors border border-white/30"
             >
               {lang === 'es' ? 'EN' : 'ES'}
             </button>
-            <button onClick={() => setDarkMode(!darkMode)} aria-label="Toggle theme" className="p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-colors">
+            <button onClick={() => setDarkMode(!darkMode)} aria-label={t.common.toggleThemeAria} aria-pressed={darkMode} className="p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-colors">
               {darkMode ? <IconSun /> : <IconMoon />}
             </button>
           </div>
@@ -239,9 +240,11 @@ function AppShell() {
             cada calculadora se mantiene la columna angosta de siempre. */}
         <main className={`mx-auto p-4 ${activeEntry ? 'max-w-md' : 'max-w-md md:max-w-4xl xl:max-w-6xl'}`}>
           {activeEntry ? (
-            <Suspense fallback={<div className="py-16 text-center text-sm text-slate-400 dark:text-slate-500">…</div>}>
-              <activeEntry.component />
-            </Suspense>
+            <ErrorBoundary resetKey={activeEntry.id} title={t.common.errorTitle} body={t.common.errorBody} reloadLabel={t.common.errorReload}>
+              <Suspense fallback={<div className="py-16 text-center text-sm text-slate-400 dark:text-slate-500">…</div>}>
+                <activeEntry.component />
+              </Suspense>
+            </ErrorBoundary>
           ) : (
             <div className="space-y-6">
               {!searchResults && (
@@ -266,12 +269,13 @@ function AppShell() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t.search.placeholder}
+                  aria-label={t.common.searchAria}
                   className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    aria-label={lang === 'es' ? 'Limpiar búsqueda' : 'Clear search'}
+                    aria-label={t.common.clearSearchAria}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full"
                   >
                     <IconX size={16} />

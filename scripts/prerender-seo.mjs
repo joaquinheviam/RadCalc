@@ -54,6 +54,12 @@ function buildHead(html, { lang, title, description, pathSuffix }) {
   out = out.replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${t}">`);
   out = out.replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${d}">`);
   out = out.replace(/<meta property="og:locale" content="[^"]*">/, `<meta property="og:locale" content="${lang === 'en' ? 'en_US' : 'es_CL'}">`);
+  // El JSON-LD de index.html trae la descripción de la app en español: en las
+  // páginas en inglés se reemplaza por la meta descripción de la portada EN.
+  if (lang === 'en' && STRINGS.en.metaDescription) {
+    const jsonDesc = JSON.stringify(STRINGS.en.metaDescription).slice(1, -1).replace(/\$/g, '$$$$');
+    out = out.replace(/("@type": "WebApplication"[\s\S]*?"description": ")(?:[^"\\]|\\.)*(")/, `$1${jsonDesc}$2`);
+  }
 
   const hreflangTags =
     `  <link rel="alternate" href="${escapeAttr(urlEs)}" hreflang="es">\n` +

@@ -18,7 +18,7 @@ export default function CADRADS() {
   const resultString = stenosis ? `CAD-RADS ${stenosis}${modString ? '/' + modString : ''}` : '';
 
   const getReportText = () => {
-    if (!stenosis) return;
+    if (!stenosis) return '';
     const text = c.reportText(stenosis, modString);
     return text;
   };
