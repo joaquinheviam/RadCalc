@@ -41,8 +41,8 @@ export default function NTMBcdScore() {
             <div key={l} className="flex items-center justify-between gap-2 p-2 rounded-lg bg-slate-50 dark:bg-slate-900">
               <span className="text-sm font-medium w-16 shrink-0">{c.lobeLabels[l]}</span>
               <div className="flex gap-2 flex-1">
-                <button onClick={() => toggle(l, 'cavity')} className={`flex-1 text-[11px] p-2 rounded-lg border transition-all ${lobes[l].cavity ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>{c.cavityLabel}</button>
-                <button onClick={() => toggle(l, 'be')} className={`flex-1 text-[11px] p-2 rounded-lg border transition-all ${lobes[l].be ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>{c.beLabel}</button>
+                <button onClick={() => toggle(l, 'cavity')} aria-pressed={!!(lobes[l].cavity)} className={`flex-1 text-[11px] p-2 rounded-lg border transition-all ${lobes[l].cavity ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>{c.cavityLabel}</button>
+                <button onClick={() => toggle(l, 'be')} aria-pressed={!!(lobes[l].be)} className={`flex-1 text-[11px] p-2 rounded-lg border transition-all ${lobes[l].be ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>{c.beLabel}</button>
               </div>
             </div>
           ))}

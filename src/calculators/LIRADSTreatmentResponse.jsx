@@ -62,11 +62,11 @@ export default function LIRADSTreatmentResponse() {
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.coreLabel}</label>
         <div className="space-y-2">
-          <button onClick={() => handleCoreChange('nonradiation')} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${core === 'nonradiation' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+          <button onClick={() => handleCoreChange('nonradiation')} aria-pressed={!!(core === 'nonradiation')} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${core === 'nonradiation' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
             <span className="font-semibold block mb-0.5">{c.coreNonradiation}</span>
             <span className="text-xs opacity-80">{c.coreNonradiationDesc}</span>
           </button>
-          <button onClick={() => handleCoreChange('radiation')} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${core === 'radiation' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+          <button onClick={() => handleCoreChange('radiation')} aria-pressed={!!(core === 'radiation')} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${core === 'radiation' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
             <span className="font-semibold block mb-0.5">{c.coreRadiation}</span>
             <span className="text-xs opacity-80">{c.coreRadiationDesc}</span>
           </button>
@@ -99,7 +99,7 @@ export default function LIRADSTreatmentResponse() {
             <button onClick={() => setAfDiffusion(v => !v)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afDiffusion ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               {afDiffusion ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.afDiffusion}
             </button>
-            <button onClick={() => setAfT2(v => !v)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afT2 ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+            <button onClick={() => setAfT2(v => !v)} aria-pressed={!!(afT2)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afT2 ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               {afT2 ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.afT2}
             </button>
           </div>

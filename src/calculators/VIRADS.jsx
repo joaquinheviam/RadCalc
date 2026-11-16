@@ -128,7 +128,7 @@ export default function VIRADS() {
         <button
           type="button"
           onClick={() => setMode('algo')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
+          aria-pressed={!!(mode === 'algo')} className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
             mode === 'algo'
               ? 'bg-blue-600 text-white shadow-md'
               : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700/50'
@@ -140,7 +140,7 @@ export default function VIRADS() {
         <button
           type="button"
           onClick={() => setMode('classic')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
+          aria-pressed={!!(mode === 'classic')} className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-medium transition-all ${
             mode === 'classic'
               ? 'bg-blue-600 text-white shadow-md'
               : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700/50'

@@ -80,7 +80,7 @@ export default function BACTIP() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.lengthLabel}</label>
             <div className="grid grid-cols-2 gap-2">
               {c.lengthOptions.map((opt) => (
-                <button key={opt.key} onClick={() => setLength(opt.key)} className={`p-2.5 rounded-lg border text-sm transition-all ${length === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                <button key={opt.key} onClick={() => setLength(opt.key)} aria-pressed={!!(length === opt.key)} className={`p-2.5 rounded-lg border text-sm transition-all ${length === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
               ))}
             </div>
           </Card>
@@ -88,7 +88,7 @@ export default function BACTIP() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.scallopingLabel}</label>
             <div className="space-y-2">
               {c.scallopingOptions.map((opt) => (
-                <button key={opt.key} onClick={() => setScalloping(opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${scalloping === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                <button key={opt.key} onClick={() => setScalloping(opt.key)} aria-pressed={!!(scalloping === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${scalloping === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                   <span className="font-semibold">{opt.label}</span>
                   <p className="text-xs mt-0.5 opacity-80 leading-snug">{opt.caption}</p>
                 </button>

@@ -12,7 +12,7 @@ function OptionButtons({ options, value, onChange }) {
         <button
           key={opt.key}
           onClick={() => onChange(opt.key)}
-          className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-start gap-2 ${
+          aria-pressed={!!(value === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-start gap-2 ${
             value === opt.key
               ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300'
               : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
@@ -38,7 +38,7 @@ function YesNoButtons({ value, onChange, yesLabel, noLabel }) {
         <button
           key={key}
           onClick={() => onChange(key)}
-          className={`flex-1 p-3 rounded-xl border text-sm font-semibold transition-all ${
+          aria-pressed={!!(value === key)} className={`flex-1 p-3 rounded-xl border text-sm font-semibold transition-all ${
             value === key
               ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300'
               : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
@@ -61,7 +61,7 @@ function CheckButtons({ options, values, onToggle }) {
         <button
           key={opt.key}
           onClick={() => onToggle(opt.key)}
-          className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-start gap-2 ${
+          aria-pressed={!!(values[opt.key])} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-start gap-2 ${
             values[opt.key]
               ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300'
               : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'

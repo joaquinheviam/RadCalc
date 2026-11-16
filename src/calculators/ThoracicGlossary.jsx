@@ -74,7 +74,7 @@ export default function ThoracicGlossary() {
               key={f.key}
               type="button"
               onClick={() => setSelectedCat(f.key)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
+              aria-pressed={!!(selectedCat === f.key)} className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
                 selectedCat === f.key
                   ? 'bg-amber-500 border-amber-500 text-white'
                   : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300'

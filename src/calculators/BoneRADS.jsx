@@ -114,7 +114,7 @@ export default function BoneRADS() {
       <Card>
         <button
           onClick={() => setNotEvaluable((v) => !v)}
-          className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${notEvaluable ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(notEvaluable)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${notEvaluable ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           {notEvaluable ? <IconCheckCircle size={16} /> : <span className="w-4" />}
           <span className="font-semibold">{c.notEvaluableLabel}</span>

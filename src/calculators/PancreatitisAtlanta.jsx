@@ -69,15 +69,15 @@ export default function PancreatitisAtlanta() {
         <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.morphTitle}</h3>
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.morphQ}</p>
         <div className="space-y-2">
-          <button onClick={() => setNecrosis(false)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${necrosis === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.morphNo}</button>
-          <button onClick={() => setNecrosis('combined')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${isNecrotizing ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.morphYes}</button>
+          <button onClick={() => setNecrosis(false)} aria-pressed={!!(necrosis === false)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${necrosis === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.morphNo}</button>
+          <button onClick={() => setNecrosis('combined')} aria-pressed={!!(isNecrotizing)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${isNecrotizing ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.morphYes}</button>
         </div>
         {isNecrotizing && (
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.necrosisSubtypeQ}</p>
             <div className="space-y-2">
               {Object.entries(c.necrosisSubtypes).map(([key, opt]) => (
-                <button key={key} onClick={() => setNecrosis(key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${necrosis === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                <button key={key} onClick={() => setNecrosis(key)} aria-pressed={!!(necrosis === key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${necrosis === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                   <span className="font-semibold block">{opt.label}</span>
                   <span className="opacity-80">{opt.desc}</span>
                 </button>
@@ -89,8 +89,8 @@ export default function PancreatitisAtlanta() {
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.necrosisExtentQ}</p>
             <div className="flex gap-2">
-              <button onClick={() => setNecrosisExtent('under30')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${necrosisExtent === 'under30' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.necrosisExtentUnder30}</button>
-              <button onClick={() => setNecrosisExtent('over30')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${necrosisExtent === 'over30' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.necrosisExtentOver30}</button>
+              <button onClick={() => setNecrosisExtent('under30')} aria-pressed={!!(necrosisExtent === 'under30')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${necrosisExtent === 'under30' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.necrosisExtentUnder30}</button>
+              <button onClick={() => setNecrosisExtent('over30')} aria-pressed={!!(necrosisExtent === 'over30')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${necrosisExtent === 'over30' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.necrosisExtentOver30}</button>
             </div>
           </div>
         )}
@@ -103,16 +103,16 @@ export default function PancreatitisAtlanta() {
           <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-2 text-sm">{c.collectionTitle}</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.collectionQ}</p>
           <div className="space-y-2">
-            <button onClick={() => setCollection('none')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'none' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionNone}</button>
-            <button onClick={() => setCollection('early')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'early' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionEarly}</button>
-            <button onClick={() => setCollection('late')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'late' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionLate}</button>
+            <button onClick={() => setCollection('none')} aria-pressed={!!(collection === 'none')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'none' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionNone}</button>
+            <button onClick={() => setCollection('early')} aria-pressed={!!(collection === 'early')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'early' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionEarly}</button>
+            <button onClick={() => setCollection('late')} aria-pressed={!!(collection === 'late')} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${collection === 'late' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.collectionLate}</button>
           </div>
           {(collection === 'early' || collection === 'late') && (
             <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.multiplicityQ}</p>
               <div className="flex gap-2">
-                <button onClick={() => setMultiplicity('single')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${multiplicity === 'single' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.multiplicitySingle}</button>
-                <button onClick={() => setMultiplicity('multiple')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${multiplicity === 'multiple' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.multiplicityMultiple}</button>
+                <button onClick={() => setMultiplicity('single')} aria-pressed={!!(multiplicity === 'single')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${multiplicity === 'single' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.multiplicitySingle}</button>
+                <button onClick={() => setMultiplicity('multiple')} aria-pressed={!!(multiplicity === 'multiple')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${multiplicity === 'multiple' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.multiplicityMultiple}</button>
               </div>
             </div>
           )}
@@ -135,16 +135,16 @@ export default function PancreatitisAtlanta() {
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{c.severityIntro}</p>
         <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.organFailureQ}</label>
         <div className="space-y-2 mb-3">
-          <button onClick={() => setOrganFailure('none')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'none' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailureNone}</button>
-          <button onClick={() => setOrganFailure('transient')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'transient' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailureTransient}</button>
-          <button onClick={() => setOrganFailure('persistent')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'persistent' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailurePersistent}</button>
+          <button onClick={() => setOrganFailure('none')} aria-pressed={!!(organFailure === 'none')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'none' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailureNone}</button>
+          <button onClick={() => setOrganFailure('transient')} aria-pressed={!!(organFailure === 'transient')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'transient' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailureTransient}</button>
+          <button onClick={() => setOrganFailure('persistent')} aria-pressed={!!(organFailure === 'persistent')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${organFailure === 'persistent' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.organFailurePersistent}</button>
         </div>
         {organFailure === 'none' && (
           <>
             <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.localComplicationsQ}</label>
             <div className="flex gap-2">
-              <button onClick={() => setLocalComplications(true)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${localComplications === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes || 'Sí'}</button>
-              <button onClick={() => setLocalComplications(false)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${localComplications === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no || 'No'}</button>
+              <button onClick={() => setLocalComplications(true)} aria-pressed={!!(localComplications === true)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${localComplications === true ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes || 'Sí'}</button>
+              <button onClick={() => setLocalComplications(false)} aria-pressed={!!(localComplications === false)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${localComplications === false ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no || 'No'}</button>
             </div>
           </>
         )}

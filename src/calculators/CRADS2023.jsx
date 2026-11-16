@@ -11,7 +11,7 @@ function OptionButtons({ options, value, onChange }) {
         <button
           key={opt.key}
           onClick={() => onChange(opt.key)}
-          className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-start gap-2 ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(value === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-start gap-2 ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           <span>
             <span className="font-semibold block mb-0.5">{opt.label}</span>
@@ -100,8 +100,8 @@ export default function CRADS2023() {
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
             <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">{c.c2bCertaintyQ}</label>
             <div className="flex gap-2">
-              <button onClick={() => setC2bCertainty('likely')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${c2bCertainty === 'likely' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.c2bLikelyLabel}</button>
-              <button onClick={() => setC2bCertainty('uncertain')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${c2bCertainty === 'uncertain' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.c2bUncertainLabel}</button>
+              <button onClick={() => setC2bCertainty('likely')} aria-pressed={!!(c2bCertainty === 'likely')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${c2bCertainty === 'likely' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.c2bLikelyLabel}</button>
+              <button onClick={() => setC2bCertainty('uncertain')} aria-pressed={!!(c2bCertainty === 'uncertain')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${c2bCertainty === 'uncertain' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.c2bUncertainLabel}</button>
             </div>
           </div>
         )}

@@ -137,7 +137,7 @@ export default function LungRADS() {
             </Card>
           )}
           <Card>
-            <button onClick={() => setSMod(s => !s)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${sMod ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+            <button onClick={() => setSMod(s => !s)} aria-pressed={!!(sMod)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center gap-1.5 ${sMod ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               {sMod ? <IconCheckCircle size={14} /> : <span className="w-3.5 shrink-0" />} <span>{c.sLabel}</span>
             </button>
           </Card>

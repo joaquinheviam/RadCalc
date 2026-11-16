@@ -15,7 +15,7 @@ function GradeSelector({ label, value, onChange, options, defs, labels }) {
           <button
             key={opt}
             onClick={() => onChange(opt)}
-            className={`flex-1 min-w-[2.5rem] py-2 rounded-lg font-bold border transition-colors ${value === opt ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+            aria-pressed={!!(value === opt)} className={`flex-1 min-w-[2.5rem] py-2 rounded-lg font-bold border transition-colors ${value === opt ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
           >
             {labels ? labels[i] : opt}
           </button>
@@ -33,13 +33,13 @@ function YesNoRow({ label, value, onChange, yesLabel, noLabel }) {
       <div className="flex gap-1.5 shrink-0">
         <button
           onClick={() => onChange(false)}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${value === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+          aria-pressed={!!(value === false)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${value === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
         >
           {noLabel}
         </button>
         <button
           onClick={() => onChange(true)}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${value === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+          aria-pressed={!!(value === true)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${value === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
         >
           {yesLabel}
         </button>

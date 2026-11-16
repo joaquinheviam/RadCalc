@@ -98,13 +98,13 @@ export default function PIRADS() {
       <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex">
         <button
           onClick={() => { setZone('pz'); setDwi(0); setT2(0); setDce(''); }}
-          className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'pz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
+          aria-pressed={!!(zone === 'pz')} className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'pz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
         >
           {c.pz}
         </button>
         <button
           onClick={() => { setZone('tz'); setDwi(0); setT2(0); setDce(''); }}
-          className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'tz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
+          aria-pressed={!!(zone === 'tz')} className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${zone === 'tz' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-500'}`}
         >
           {c.tz}
         </button>
@@ -116,7 +116,7 @@ export default function PIRADS() {
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.dwiDominant}</h3>
               <div className="flex gap-2">
                 {[1,2,3,4,5].map(s => (
-                  <button key={`dwi-${s}`} onClick={() => setDwi(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                  <button key={`dwi-${s}`} onClick={() => setDwi(s)} aria-pressed={!!(dwi === s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
                     {s}
                   </button>
                 ))}
@@ -127,10 +127,10 @@ export default function PIRADS() {
               <div className="animate-in fade-in slide-in-from-top-2">
                 <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.dceStep}</h3>
                 <div className="flex gap-2">
-                  <button onClick={() => setDce('-')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '-' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                  <button onClick={() => setDce('-')} aria-pressed={!!(dce === '-')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '-' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
                     {c.dceNeg}
                   </button>
-                  <button onClick={() => setDce('+')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '+' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                  <button onClick={() => setDce('+')} aria-pressed={!!(dce === '+')} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dce === '+' ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
                     {c.dcePos}
                   </button>
                 </div>
@@ -146,7 +146,7 @@ export default function PIRADS() {
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.t2Dominant}</h3>
               <div className="flex gap-2">
                 {[1,2,3,4,5].map(s => (
-                  <button key={`t2-${s}`} onClick={() => setT2(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${t2 === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                  <button key={`t2-${s}`} onClick={() => setT2(s)} aria-pressed={!!(t2 === s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${t2 === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
                     {s}
                   </button>
                 ))}
@@ -158,7 +158,7 @@ export default function PIRADS() {
                 <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">{c.dwiStep}</h3>
                 <div className="flex gap-2">
                   {[1,2,3,4,5].map(s => (
-                    <button key={`dwitz-${s}`} onClick={() => setDwi(s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                    <button key={`dwitz-${s}`} onClick={() => setDwi(s)} aria-pressed={!!(dwi === s)} className={`flex-1 py-2 rounded-lg font-bold border transition-colors ${dwi === s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
                       {s}
                     </button>
                   ))}
@@ -174,7 +174,7 @@ export default function PIRADS() {
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.epeLabel}</label>
         <div className="space-y-2">
           {c.epeOptions.map(opt => (
-            <button key={opt.key} onClick={() => setEpe(epe === opt.key ? '' : opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${epe === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+            <button key={opt.key} onClick={() => setEpe(epe === opt.key ? '' : opt.key)} aria-pressed={!!(epe === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${epe === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
               <span className="font-semibold block mb-0.5">{opt.label}</span>
               <span className="text-xs opacity-80">{opt.desc}</span>
             </button>

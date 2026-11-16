@@ -449,8 +449,8 @@ export default function RectalCancerMRI() {
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.modeQ}</label>
         <div className="flex gap-2">
-          <button onClick={() => switchMode('primary')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${mode === 'primary' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.primaryStaging}</button>
-          <button onClick={() => switchMode('restaging')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${mode === 'restaging' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restaging}</button>
+          <button onClick={() => switchMode('primary')} aria-pressed={!!(mode === 'primary')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${mode === 'primary' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.primaryStaging}</button>
+          <button onClick={() => switchMode('restaging')} aria-pressed={!!(mode === 'restaging')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${mode === 'restaging' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restaging}</button>
         </div>
       </Card>
 
@@ -472,7 +472,7 @@ export default function RectalCancerMRI() {
               <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">{c.morphologyLbl}</label>
               <div className="space-y-1.5">
                 {['polypoid', 'annular', 'partlyAnnular'].map((key) => (
-                  <button key={key} onClick={() => setMorphology(key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${morphology === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  <button key={key} onClick={() => setMorphology(key)} aria-pressed={!!(morphology === key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${morphology === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                     {c.morphOpts.find((o) => o.key === key).label}
                   </button>
                 ))}
@@ -482,7 +482,7 @@ export default function RectalCancerMRI() {
               <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">{c.mucinLbl}</label>
               <div className="space-y-1.5">
                 {['none', 'some', 'mostly'].map((key) => (
-                  <button key={key} onClick={() => setMucin(key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${mucin === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  <button key={key} onClick={() => setMucin(key)} aria-pressed={!!(mucin === key)} className={`w-full text-left p-2 rounded-lg border text-[11px] transition-all ${mucin === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                     {c.mucinOpts.find((o) => o.key === key).label}
                   </button>
                 ))}
@@ -543,8 +543,8 @@ export default function RectalCancerMRI() {
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.emviQ}</label>
         <div className="flex gap-2">
-          <button onClick={() => setEmvi('yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${emvi === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.yes}</button>
-          <button onClick={() => setEmvi('no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${emvi === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.no}</button>
+          <button onClick={() => setEmvi('yes')} aria-pressed={!!(emvi === 'yes')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${emvi === 'yes' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.yes}</button>
+          <button onClick={() => setEmvi('no')} aria-pressed={!!(emvi === 'no')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${emvi === 'no' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.no}</button>
         </div>
       </Card>
 
@@ -572,8 +572,8 @@ export default function RectalCancerMRI() {
           <OptionButtons options={nodesPrimaryOptions} value={nodesPrimary} onChange={setNodesPrimary} />
         ) : (
           <div className="flex gap-2">
-            <button onClick={() => setNodesRestaging('negative')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${nodesRestaging === 'negative' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.nodesRestagingNegative}</button>
-            <button onClick={() => setNodesRestaging('positive')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${nodesRestaging === 'positive' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.nodesRestagingPositive}</button>
+            <button onClick={() => setNodesRestaging('negative')} aria-pressed={!!(nodesRestaging === 'negative')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${nodesRestaging === 'negative' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.nodesRestagingNegative}</button>
+            <button onClick={() => setNodesRestaging('positive')} aria-pressed={!!(nodesRestaging === 'positive')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${nodesRestaging === 'positive' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.nodesRestagingPositive}</button>
           </div>
         )}
         {mode === 'primary' && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.nodesPrimaryMorphNote}</p>}
@@ -584,8 +584,8 @@ export default function RectalCancerMRI() {
         <Card>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.restagingSystemQ}</label>
           <div className="flex gap-2">
-            <button onClick={() => setRestagingSystem('mrtrg')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${restagingSystem === 'mrtrg' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restagingSystemMrtrg}</button>
-            <button onClick={() => setRestagingSystem('simplified')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${restagingSystem === 'simplified' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restagingSystemSimplified}</button>
+            <button onClick={() => setRestagingSystem('mrtrg')} aria-pressed={!!(restagingSystem === 'mrtrg')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${restagingSystem === 'mrtrg' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restagingSystemMrtrg}</button>
+            <button onClick={() => setRestagingSystem('simplified')} aria-pressed={!!(restagingSystem === 'simplified')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${restagingSystem === 'simplified' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.restagingSystemSimplified}</button>
           </div>
         </Card>
       )}

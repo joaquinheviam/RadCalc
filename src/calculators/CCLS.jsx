@@ -244,8 +244,8 @@ export default function CCLS() {
 
   const YesNo = ({ value, onChange }) => (
     <div className="flex gap-2">
-      <button onClick={() => onChange('y')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${value === 'y' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
-      <button onClick={() => onChange('n')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${value === 'n' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+      <button onClick={() => onChange('y')} aria-pressed={!!(value === 'y')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${value === 'y' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+      <button onClick={() => onChange('n')} aria-pressed={!!(value === 'n')} className={`flex-1 p-2.5 rounded-lg border text-sm transition-all ${value === 'n' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
     </div>
   );
 
@@ -254,9 +254,9 @@ export default function CCLS() {
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.gateQ}</label>
         <div className="space-y-2">
-          <button onClick={() => handleGate('fat')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'fat' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateFat}</button>
-          <button onClick={() => handleGate('cystic')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'cystic' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateCystic}</button>
-          <button onClick={() => handleGate('proceed')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'proceed' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateProceed}</button>
+          <button onClick={() => handleGate('fat')} aria-pressed={!!(gate === 'fat')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'fat' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateFat}</button>
+          <button onClick={() => handleGate('cystic')} aria-pressed={!!(gate === 'cystic')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'cystic' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateCystic}</button>
+          <button onClick={() => handleGate('proceed')} aria-pressed={!!(gate === 'proceed')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${gate === 'proceed' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.gateProceed}</button>
         </div>
       </Card>
 
@@ -279,7 +279,7 @@ export default function CCLS() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.t2Label}</label>
             <div className="flex gap-2">
               {c.t2Options.map(opt => (
-                <button key={opt.key} onClick={() => handleT2(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${t2 === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                <button key={opt.key} onClick={() => handleT2(opt.key)} aria-pressed={!!(t2 === opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${t2 === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
               ))}
             </div>
           </Card>
@@ -289,7 +289,7 @@ export default function CCLS() {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.cmpLabel}</label>
               <div className="flex gap-2">
                 {c.cmpOptions.map(opt => (
-                  <button key={opt.key} onClick={() => handleCmp(opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cmp === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+                  <button key={opt.key} onClick={() => handleCmp(opt.key)} aria-pressed={!!(cmp === opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cmp === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
                 ))}
               </div>
               <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mt-2">{c.cmpVisualNote}</p>

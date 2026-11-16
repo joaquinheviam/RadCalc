@@ -95,7 +95,7 @@ function OptionButtons({ options, value, onChange }) {
         <button
           key={opt.key}
           onClick={() => onChange(value === opt.key ? null : opt.key)}
-          className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(value === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${value === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           <span className="font-semibold block mb-0.5">{opt.label}</span>
           {opt.desc && <span className="text-xs opacity-80">{opt.desc}</span>}
@@ -112,7 +112,7 @@ function CheckButtons({ options, values, onToggle }) {
         <button
           key={opt.key}
           onClick={() => onToggle(opt.key)}
-          className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${values[opt.key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+          aria-pressed={!!(values[opt.key])} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-start gap-2 ${values[opt.key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
         >
           {values[opt.key] ? <IconCheckCircle size={16} className="shrink-0 mt-0.5" /> : <span className="w-4 shrink-0" />}
           <span>
@@ -239,7 +239,7 @@ export default function BiradsMammography() {
             <button
               key={opt.key}
               onClick={() => setDensity(density === opt.key ? null : opt.key)}
-              className={`text-left p-2.5 rounded-lg border text-xs transition-all ${density === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              aria-pressed={!!(density === opt.key)} className={`text-left p-2.5 rounded-lg border text-xs transition-all ${density === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
             >
               <span className="font-semibold block">{opt.label}</span>
               {opt.desc && <span className="opacity-80">{opt.desc}</span>}
@@ -256,7 +256,7 @@ export default function BiradsMammography() {
             <button
               key={opt.key}
               onClick={() => setFindingType(opt.key)}
-              className={`p-2.5 rounded-lg border text-sm font-medium transition-all ${findingType === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+              aria-pressed={!!(findingType === opt.key)} className={`p-2.5 rounded-lg border text-sm font-medium transition-all ${findingType === opt.key ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
             >
               {opt.label}
             </button>
@@ -317,8 +317,8 @@ export default function BiradsMammography() {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.focalUsCorrelateLabel}</label>
               <div className="flex gap-2">
-                <button onClick={() => setFocalUsCorrelate(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${focalUsCorrelate === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.focalUsCorrelateYes}</button>
-                <button onClick={() => setFocalUsCorrelate(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${focalUsCorrelate === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.focalUsCorrelateNo}</button>
+                <button onClick={() => setFocalUsCorrelate(true)} aria-pressed={!!(focalUsCorrelate === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${focalUsCorrelate === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.focalUsCorrelateYes}</button>
+                <button onClick={() => setFocalUsCorrelate(false)} aria-pressed={!!(focalUsCorrelate === false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${focalUsCorrelate === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.focalUsCorrelateNo}</button>
               </div>
               {focalUsCorrelate === false && <SuggestionNote suggestion={suggestion} c={c} />}
             </div>
@@ -327,8 +327,8 @@ export default function BiradsMammography() {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.asymmetryGlobalStableLabel}</label>
               <div className="flex gap-2 mb-2">
-                <button onClick={() => setGlobalStable(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${globalStable === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
-                <button onClick={() => setGlobalStable(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${globalStable === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+                <button onClick={() => setGlobalStable(true)} aria-pressed={!!(globalStable === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${globalStable === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setGlobalStable(false)} aria-pressed={!!(globalStable === false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${globalStable === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
               <InfoBox tone="amber">{c.globalGuidance}</InfoBox>
               {globalStable === true && <SuggestionNote suggestion={suggestion} c={c} />}
@@ -348,8 +348,8 @@ export default function BiradsMammography() {
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.ductMultipleExpectedLabel}</label>
               <div className="flex gap-2 mb-2">
-                <button onClick={() => setDuctMultipleExpected(true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${ductMultipleExpected === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
-                <button onClick={() => setDuctMultipleExpected(false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${ductMultipleExpected === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+                <button onClick={() => setDuctMultipleExpected(true)} aria-pressed={!!(ductMultipleExpected === true)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${ductMultipleExpected === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+                <button onClick={() => setDuctMultipleExpected(false)} aria-pressed={!!(ductMultipleExpected === false)} className={`flex-1 py-2 rounded-lg font-medium border text-sm ${ductMultipleExpected === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
               </div>
               <InfoBox tone="amber">{c.ductMultipleGuidance}</InfoBox>
               {ductMultipleExpected === true && <SuggestionNote suggestion={suggestion} c={c} />}
@@ -359,7 +359,7 @@ export default function BiradsMammography() {
             <div className="space-y-2">
               <button
                 onClick={() => setDuctStable(!ductStable)}
-                className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${ductStable ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+                aria-pressed={!!(ductStable)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${ductStable ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
               >
                 {ductStable ? <IconCheckCircle size={16} /> : <span className="w-4" />} {c.ductSolitaryStableLabel}
               </button>
@@ -399,7 +399,7 @@ export default function BiradsMammography() {
               <button
                 key={opt.key}
                 onClick={() => setFinalCategory(opt.key)}
-                className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-center ${finalCategory === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'} ${ring ? 'ring-2 ring-amber-400' : ''}`}
+                aria-pressed={!!(finalCategory === opt.key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex justify-between items-center ${finalCategory === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'} ${ring ? 'ring-2 ring-amber-400' : ''}`}
               >
                 <span>{opt.label}</span>
               </button>

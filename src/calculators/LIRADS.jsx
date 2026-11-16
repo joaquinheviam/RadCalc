@@ -102,7 +102,7 @@ export default function LIRADS() {
       <Card>
         <InfoBox tone="amber">{c.lrTiv}</InfoBox>
         <div className="flex gap-2">
-          <button onClick={() => setLrTiv(true)} className={`flex-1 py-2 rounded-lg font-medium border ${lrTiv === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+          <button onClick={() => setLrTiv(true)} aria-pressed={!!(lrTiv === true)} className={`flex-1 py-2 rounded-lg font-medium border ${lrTiv === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
           <button onClick={() => setLrTiv(false)} className={`flex-1 py-2 rounded-lg font-medium border ${lrTiv === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
         </div>
       </Card>
@@ -111,7 +111,7 @@ export default function LIRADS() {
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.lrTivContinuityLabel}</label>
           <div className="space-y-2">
             {Object.entries(c.lrTivContinuity).map(([key, label]) => (
-              <button key={key} onClick={() => setLrTivCont(key)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${lrTivCont === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
+              <button key={key} onClick={() => setLrTivCont(key)} aria-pressed={!!(lrTivCont === key)} className={`w-full text-left p-2.5 rounded-lg border text-sm transition-all ${lrTivCont === key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
             ))}
           </div>
         </Card>
@@ -120,7 +120,7 @@ export default function LIRADS() {
         <Card>
           <InfoBox tone="amber">{c.lrM}</InfoBox>
           <div className="flex gap-2">
-            <button onClick={() => setLrM(true)} className={`flex-1 py-2 rounded-lg font-medium border ${lrM === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+            <button onClick={() => setLrM(true)} aria-pressed={!!(lrM === true)} className={`flex-1 py-2 rounded-lg font-medium border ${lrM === true ? 'bg-red-600 border-red-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
             <button onClick={() => setLrM(false)} className={`flex-1 py-2 rounded-lg font-medium border ${lrM === false ? 'bg-slate-600 border-slate-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
           </div>
         </Card>
@@ -131,22 +131,22 @@ export default function LIRADS() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.sizeLabel}</label>
             <div className="flex gap-2">
               {LIRADS_SIZES.map(([val, labelKey]) => [val, c[labelKey]]).map(([val,label]) => (
-                <button key={val} onClick={() => setSize(val)} className={`flex-1 py-2 text-sm rounded-lg font-medium border ${size === val ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
+                <button key={val} onClick={() => setSize(val)} aria-pressed={!!(size === val)} className={`flex-1 py-2 text-sm rounded-lg font-medium border ${size === val ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{label}</button>
               ))}
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.apheLabel}</label>
             <div className="flex gap-2">
-              <button onClick={() => setAphe(true)} className={`flex-1 py-2 rounded-lg font-medium border ${aphe === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
-              <button onClick={() => setAphe(false)} className={`flex-1 py-2 rounded-lg font-medium border ${aphe === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
+              <button onClick={() => setAphe(true)} aria-pressed={!!(aphe === true)} className={`flex-1 py-2 rounded-lg font-medium border ${aphe === true ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.yes}</button>
+              <button onClick={() => setAphe(false)} aria-pressed={!!(aphe === false)} className={`flex-1 py-2 rounded-lg font-medium border ${aphe === false ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{t.common.no}</button>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.featuresLabel}</label>
             <div className="space-y-2">
               {LIRADS_FEATURES.map(([key, labelKey]) => [key, c[labelKey]]).map(([key, label]) => (
-                <button key={key} onClick={() => toggleFeat(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${feats[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                <button key={key} onClick={() => toggleFeat(key)} aria-pressed={!!(feats[key])} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${feats[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                   {feats[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
                 </button>
               ))}
@@ -166,7 +166,7 @@ export default function LIRADS() {
               {c.afMalignantGeneral.map((label, i) => {
                 const key = 'g' + i;
                 return (
-                  <button key={key} onClick={() => toggleAfMal(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afMalignant[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  <button key={key} onClick={() => toggleAfMal(key)} aria-pressed={!!(afMalignant[key])} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afMalignant[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                     {afMalignant[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
                   </button>
                 );
@@ -179,7 +179,7 @@ export default function LIRADS() {
               {c.afMalignantHcc.map((label, i) => {
                 const key = 'h' + i;
                 return (
-                  <button key={key} onClick={() => toggleAfMal(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afMalignant[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  <button key={key} onClick={() => toggleAfMal(key)} aria-pressed={!!(afMalignant[key])} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afMalignant[key] ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                     {afMalignant[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
                   </button>
                 );
@@ -192,7 +192,7 @@ export default function LIRADS() {
               {c.afBenign.map((label, i) => {
                 const key = 'b' + i;
                 return (
-                  <button key={key} onClick={() => toggleAfBen(key)} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afBenignSel[key] ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
+                  <button key={key} onClick={() => toggleAfBen(key)} aria-pressed={!!(afBenignSel[key])} className={`w-full text-left p-3 rounded-xl border text-sm transition-all flex items-center gap-2 ${afBenignSel[key] ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>
                     {afBenignSel[key] ? <IconCheckCircle size={16} /> : <span className="w-4" />} {label}
                   </button>
                 );
