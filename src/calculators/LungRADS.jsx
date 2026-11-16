@@ -8,7 +8,7 @@ import { buildWizardTree, SHOW_ALGORITHM_VIEW } from '../utils/algorithmTree.js'
 
 function lungRadsCatColor(key) {
   if (key === '1' || key === '2') return 'text-emerald-500';
-  if (key === '0') return 'text-slate-400';
+  if (key === '0') return 'text-slate-500 dark:text-slate-400';
   if (key === '3') return 'text-amber-500';
   return 'text-red-500'; // 4A, 4B, 4X
 }
@@ -116,7 +116,7 @@ export default function LungRADS() {
                   className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center"
                 >
                   <span>{opt.label}</span>
-                  <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+                  <IconArrowRight size={16} className="text-slate-500 dark:text-slate-400 shrink-0 ml-2" />
                 </button>
               ))}
             </div>
@@ -151,7 +151,7 @@ export default function LungRADS() {
               <span className="text-xs text-slate-500 block mb-1">{c.managementLabel}</span>
               <p className="text-sm text-slate-700 dark:text-slate-200 leading-snug">{effectiveCatObj.mgmt}</p>
             </div>
-            <p className="text-xs text-slate-400 dark:text-slate-500">{c.prevalenceLabel}: {effectiveCatObj.prevalence}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{c.prevalenceLabel}: {effectiveCatObj.prevalence}</p>
           </div>
         </div>
       )}

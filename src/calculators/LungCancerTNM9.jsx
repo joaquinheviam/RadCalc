@@ -631,7 +631,7 @@ export default function LungCancerTNM9() {
   const findLabel = (options, key) => options.find((o) => o.key === key)?.badge || key;
 
   const getStageColor = (s) => {
-    if (!s) return 'text-slate-400';
+    if (!s) return 'text-slate-500 dark:text-slate-400';
     if (s === '0' || s.startsWith('I') && !s.startsWith('IV')) return 'text-emerald-500';
     if (s.startsWith('IV')) return 'text-red-500';
     return 'text-amber-500';
@@ -696,7 +696,7 @@ export default function LungCancerTNM9() {
                   <div>
                     <h4 className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{c.t1miQ}</h4>
                     <YesNoButtons value={t1miFlag} onChange={setT1miFlag} yesLabel={t.common.yes} noLabel={t.common.no} />
-                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.t1miHint}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{c.t1miHint}</p>
                   </div>
                 )}
 
@@ -713,7 +713,7 @@ export default function LungCancerTNM9() {
                 {hasInvasion === 'yes' && (
                   <div className="space-y-3 pl-3 border-l-2 border-blue-200 dark:border-blue-900">
                     <div>
-                      <h5 className="text-[11px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-1.5">{c.structGroupT2a}</h5>
+                      <h5 className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-1.5">{c.structGroupT2a}</h5>
                       <CheckButtons
                         options={t2aStructureOptions}
                         values={invasionStructures}
@@ -721,7 +721,7 @@ export default function LungCancerTNM9() {
                       />
                     </div>
                     <div>
-                      <h5 className="text-[11px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-1.5">{c.structGroupT3}</h5>
+                      <h5 className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-1.5">{c.structGroupT3}</h5>
                       <CheckButtons
                         options={t3StructureOptions}
                         values={invasionStructures}
@@ -729,7 +729,7 @@ export default function LungCancerTNM9() {
                       />
                     </div>
                     <div>
-                      <h5 className="text-[11px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-1.5">{c.structGroupT4}</h5>
+                      <h5 className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400 mb-1.5">{c.structGroupT4}</h5>
                       <CheckButtons
                         options={t4StructureOptions}
                         values={invasionStructures}
@@ -742,7 +742,7 @@ export default function LungCancerTNM9() {
                 <div>
                   <h4 className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{c.atelectasisQ}</h4>
                   <YesNoButtons value={hasAtelectasis} onChange={setHasAtelectasis} yesLabel={t.common.yes} noLabel={t.common.no} />
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.atelectasisHint}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{c.atelectasisHint}</p>
                 </div>
 
                 <div>

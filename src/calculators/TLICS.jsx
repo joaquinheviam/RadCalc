@@ -88,7 +88,7 @@ export default function TLICS() {
             </p>
           )}
           {showCompleteNote && (
-            <p className="text-xs text-slate-400 dark:text-slate-500 leading-snug">{c.approachCompleteNote}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{c.approachCompleteNote}</p>
           )}
         </Card>
       )}

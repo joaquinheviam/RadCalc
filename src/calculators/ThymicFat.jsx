@@ -81,11 +81,11 @@ function GreenishTriage({ g }) {
           <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">{g.q1}</h4>
           <button className={OPTION_BTN} onClick={() => setStep('q2')}>
             <span>{g.q1Yes}</span>
-            <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+            <IconArrowRight size={16} className="text-slate-500 dark:text-slate-400 shrink-0 ml-2" />
           </button>
           <button className={OPTION_BTN} onClick={() => setStep('proceed')}>
             <span>{g.q1No}</span>
-            <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+            <IconArrowRight size={16} className="text-slate-500 dark:text-slate-400 shrink-0 ml-2" />
           </button>
 
           <div className="pt-1">
@@ -151,11 +151,11 @@ function GreenishTriage({ g }) {
           <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">{g.q2}</h4>
           <button className={OPTION_BTN} onClick={() => setStep('cyst')}>
             <span>{g.q2No}</span>
-            <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+            <IconArrowRight size={16} className="text-slate-500 dark:text-slate-400 shrink-0 ml-2" />
           </button>
           <button className={OPTION_BTN} onClick={() => setStep('complex')}>
             <span>{g.q2Yes}</span>
-            <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+            <IconArrowRight size={16} className="text-slate-500 dark:text-slate-400 shrink-0 ml-2" />
           </button>
           <button onClick={() => setStep('q1')} className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 pt-1">
             <IconChevronLeft size={14} />{g.back}
@@ -208,7 +208,7 @@ function AggressiveAdc({ a }) {
       <p className="text-xs text-slate-500 dark:text-slate-400">{a.adcMinHint}</p>
 
       {!hasMean && !hasMin && (
-        <p className="text-xs italic text-slate-400 dark:text-slate-500">{a.emptyHint}</p>
+        <p className="text-xs italic text-slate-500 dark:text-slate-400">{a.emptyHint}</p>
       )}
 
       {hasMean && (
@@ -361,7 +361,7 @@ export default function ThymicFat() {
               {csr !== null ? (
                 <span className={`text-2xl font-bold ${csrZone === 'benign' ? 'text-emerald-500' : csrZone === 'indet' ? 'text-amber-500' : 'text-red-500'}`}>{csr.toFixed(2)}</span>
               ) : (
-                <span className="block text-xs text-slate-400 dark:text-slate-500 italic pt-2">{c.csrPending}</span>
+                <span className="block text-xs text-slate-500 dark:text-slate-400 italic pt-2">{c.csrPending}</span>
               )}
             </div>
             <div className="text-center">

@@ -259,7 +259,7 @@ export default function VDT() {
               <span className={`text-lg font-bold ${summaryToneClass}`}>{c.resultStableLabel}</span>
             )}
             {summaryNote && <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 pt-2">{summaryNote}</p>}
-            <p className="text-xs text-slate-400 dark:text-slate-500 pt-1">{c.crossCheckNote(volumePercent.toFixed(1), diameterPercent.toFixed(1))}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 pt-1">{c.crossCheckNote(volumePercent.toFixed(1), diameterPercent.toFixed(1))}</p>
           </Card>
 
           {isGrowth && (
@@ -268,12 +268,12 @@ export default function VDT() {
               <div className="flex gap-2">
                 {projections.map(p => (
                   <div key={p.days} className="flex-1 text-center bg-slate-50 dark:bg-slate-900 rounded-lg py-2">
-                    <span className="block text-xs text-slate-400">{p.days} d</span>
+                    <span className="block text-xs text-slate-500 dark:text-slate-400">{p.days} d</span>
                     <span className="block text-sm font-bold text-slate-600 dark:text-slate-300">×{p.fold.toFixed(1)}</span>
                   </div>
                 ))}
               </div>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 pt-2">{c.growthProjectionNote}</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-2">{c.growthProjectionNote}</p>
             </Card>
           )}
 
@@ -295,33 +295,33 @@ export default function VDT() {
               <Accordion icon={<IconClock size={16} />} title={c.classicFrameTitle}>
                 <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                   <p className={classicFlag ? 'font-semibold text-amber-600 dark:text-amber-400' : ''}>{classicNote}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-700">{c.classicTransientShrinkageNote}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{c.subsolidStabilityNote}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 italic">{c.classicFrameCitation}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-700">{c.classicTransientShrinkageNote}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{c.subsolidStabilityNote}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">{c.classicFrameCitation}</p>
                 </div>
               </Accordion>
 
               <Accordion icon={<IconClock size={16} />} title={c.jiangFrameTitle}>
                 <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{c.jiangPooledMeanNote}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{c.jiangPooledMeanNote}</p>
                   <p><span className="font-medium">{c.jiangPooledByTypeLabel}</span> {c.jiangPooledByTypeValues}</p>
                   <p><span className="font-medium">{c.jiangPooledByHistologyLabel}</span> {c.jiangPooledByHistologyValues}</p>
                   <p className={jiangFlag ? 'font-semibold text-amber-600 dark:text-amber-400' : ''}>{jiangThresholdNote}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-700">{c.jiangIndolentDefNote}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{c.jiangSmokingCaveatNote}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 italic">{c.jiangFrameCitation}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-700">{c.jiangIndolentDefNote}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{c.jiangSmokingCaveatNote}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">{c.jiangFrameCitation}</p>
                 </div>
               </Accordion>
 
               <Accordion icon={<IconClock size={16} />} title={c.estiFrameTitle}>
                 <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{c.estiContextNote}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{c.estiIntervalRationaleNote}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{c.estiContextNote}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{c.estiIntervalRationaleNote}</p>
                   <p className={estiBucket === '3mo' ? (estiFlag ? 'font-semibold text-amber-600 dark:text-amber-400' : 'font-semibold') : ''}>{c.esti3moThresholdNote}</p>
                   <p className={estiBucket === '6mo' ? (estiFlag ? 'font-semibold text-amber-600 dark:text-amber-400' : 'font-semibold') : ''}>{c.esti6moThresholdNote}</p>
                   <p className={estiBucket === '12mo' ? (estiFlag ? 'font-semibold text-amber-600 dark:text-amber-400' : 'font-semibold') : ''}>{c.esti12moThresholdNote}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-700">{c.estiFixedThresholdCritiqueNote}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 italic">{c.estiFrameCitation}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-700">{c.estiFixedThresholdCritiqueNote}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">{c.estiFrameCitation}</p>
                 </div>
               </Accordion>
 
@@ -330,7 +330,7 @@ export default function VDT() {
                   <p className={btsBand === 1 ? 'font-semibold text-red-600 dark:text-red-400' : ''}>{c.btsBand1Note}</p>
                   <p className={btsBand === 2 ? 'font-semibold text-amber-600 dark:text-amber-400' : ''}>{c.btsBand2Note}</p>
                   <p className={btsBand === 3 ? 'font-semibold text-emerald-600 dark:text-emerald-400' : ''}>{c.btsBand3Note}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 italic">{c.btsFrameCitation}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">{c.btsFrameCitation}</p>
                 </div>
               </Accordion>
             </>

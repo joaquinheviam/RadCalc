@@ -45,7 +45,7 @@ export default function LungScreening() {
     setExcluded(null); setAge(''); setPackYears(''); setSmokingYears('');
   };
 
-  const toneClass = !result ? '' : result.tone === 'red' ? 'text-red-500' : result.tone === 'emerald' ? 'text-emerald-500' : 'text-slate-400';
+  const toneClass = !result ? '' : result.tone === 'red' ? 'text-red-500' : result.tone === 'emerald' ? 'text-emerald-500' : 'text-slate-500 dark:text-slate-400';
 
   return (
     <div className={`space-y-4 animate-in fade-in ${result ? 'pb-56' : ''}`}>
@@ -70,7 +70,7 @@ export default function LungScreening() {
         <Card className="text-center">
           <span className={`text-xl font-black ${toneClass}`}>{result.label}</span>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-snug">{result.desc}</p>
-          {result.note && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{result.note}</p>}
+          {result.note && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{result.note}</p>}
         </Card>
       )}
       <UsageNotes paragraphs={c.usage} />

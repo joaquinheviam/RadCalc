@@ -250,7 +250,7 @@ export default function VIRADS() {
           <ScoreSelector5 label={c.step1} value={t2} onChange={setT2} defs={c.t2Defs} />
           <ScoreSelector5 label={c.step2} value={dwi} onChange={setDwi} defs={c.dwiDefs} />
           <ScoreSelector5 label={c.step3} value={dce} onChange={setDce} defs={c.dceDefs} />
-          <p className="text-[11px] text-slate-400 dark:text-slate-500">{c.dominantNote}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">{c.dominantNote}</p>
         </Card>
       )}
 

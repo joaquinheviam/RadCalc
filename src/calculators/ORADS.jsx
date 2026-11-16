@@ -59,7 +59,7 @@ export default function ORADS() {
         <Card>
           <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">{currentNode.q}</h3>
           {currentNode.hint && (
-            <p className="text-xs text-slate-400 dark:text-slate-500 mb-3 leading-snug">{currentNode.hint}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 leading-snug">{currentNode.hint}</p>
           )}
           <div className="space-y-2">
             {currentNode.options.map((opt, i) => (
@@ -69,7 +69,7 @@ export default function ORADS() {
                 className="w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-800 dark:hover:bg-blue-900/30 transition-colors flex justify-between items-center"
               >
                 <span>{opt.label}</span>
-                <IconArrowRight size={16} className="text-slate-400 shrink-0 ml-2" />
+                <IconArrowRight size={16} className="text-slate-500 dark:text-slate-400 shrink-0 ml-2" />
               </button>
             ))}
           </div>

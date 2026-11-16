@@ -62,7 +62,7 @@ export default function PSADCalculator() {
         <Card className="text-center">
           <span className="text-xs text-slate-500 block mb-1">{c.volume}</span>
           <span className="text-2xl font-black text-slate-700 dark:text-slate-200">{vol.toFixed(1)} cc</span>
-          <span className="text-xs text-slate-400 dark:text-slate-500 block mt-1">{volCatLabel}</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">{volCatLabel}</span>
         </Card>
       )}
       <UsageNotes paragraphs={c.usage} />
@@ -75,7 +75,7 @@ export default function PSADCalculator() {
           <div className="min-w-0 text-center">
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.volume}:</span>
             <span className="text-3xl font-black text-slate-700 dark:text-slate-200 block leading-tight">{Math.round(vol)} cc</span>
-            <span className="text-xs text-slate-400 dark:text-slate-500 block mt-0.5">{volCatLabel}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">{volCatLabel}</span>
             {showPsad ? (
               <>
                 <span className="text-sm text-slate-500 dark:text-slate-400 block mt-2">{c.antigenDensityLabel}:</span>
@@ -85,7 +85,7 @@ export default function PSADCalculator() {
                 </span>
               </>
             ) : (
-              <span className="text-sm text-slate-400 dark:text-slate-500 block mt-2">{c.psaPending}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400 block mt-2">{c.psaPending}</span>
             )}
           </div>
           <div className="flex items-start gap-5 shrink-0">

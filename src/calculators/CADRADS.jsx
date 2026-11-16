@@ -28,7 +28,7 @@ export default function CADRADS() {
     copyToClipboard(text, t.common.copiedOk, t.common.copiedErr);
   };
 
-  const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-400' : 'text-red-500';
+  const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-500 dark:text-slate-400' : 'text-red-500';
   const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMod(''); };
 
   return (
@@ -57,7 +57,7 @@ export default function CADRADS() {
             </button>
           ))}
         </div>
-        {mods.HRP && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.modHrpHint}</p>}
+        {mods.HRP && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.modHrpHint}</p>}
       </Card>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.pModifierLabel}</label>
@@ -67,7 +67,7 @@ export default function CADRADS() {
             <button key={opt.key} onClick={() => setPMod(opt.key)} aria-pressed={!!(pMod === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
           ))}
         </div>
-        {pMod && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.pCaveat}</p>}
+        {pMod && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.pCaveat}</p>}
       </Card>
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.cadrads} />

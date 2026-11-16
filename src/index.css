@@ -37,3 +37,9 @@ input[type='number']::-webkit-outer-spin-button {
 /* Fila deslizable sin barra de desplazamiento visible (accesos por especialidad). */
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Con el zoom habilitado, iOS amplía la página al enfocar un campo con letra
+   < 16 px. En pantallas táctiles los campos usan al menos 16 px para evitarlo. */
+@media (pointer: coarse) {
+  :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not(.text-base):not(.text-lg):not(.text-xl):not(.text-2xl) { font-size: 16px; }
+}

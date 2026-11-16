@@ -220,8 +220,8 @@ function NodalDistributionScheme() {
         {/* Eje vascular: aorta distal → bifurcación ilíaca común → ilíaca
             externa (lateral, trazo grueso) e ilíaca interna (medial, trazo
             fino, rama propia) */}
-        <path d="M 130,8 L 130,55 L 58,165 L 28,275 M 130,55 L 202,165 L 232,275" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 dark:text-slate-500" />
-        <path d="M 88,115 L 100,205 M 172,115 L 160,205" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
+        <path d="M 130,8 L 130,55 L 58,165 L 28,275 M 130,55 L 202,165 L 232,275" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500 dark:text-slate-400" />
+        <path d="M 88,115 L 100,205 M 172,115 L 160,205" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" className="text-slate-500 dark:text-slate-400" />
 
         {/* Recto esquemático */}
         <path d="M 110,170 Q 130,183 150,170 L 145,250 Q 130,236 115,250 Z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
@@ -576,8 +576,8 @@ export default function RectalCancerMRI() {
             <button onClick={() => setNodesRestaging('positive')} aria-pressed={!!(nodesRestaging === 'positive')} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${nodesRestaging === 'positive' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.nodesRestagingPositive}</button>
           </div>
         )}
-        {mode === 'primary' && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.nodesPrimaryMorphNote}</p>}
-        {mode === 'restaging' && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{c.nodesRestagingNote}</p>}
+        {mode === 'primary' && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{c.nodesPrimaryMorphNote}</p>}
+        {mode === 'restaging' && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{c.nodesRestagingNote}</p>}
       </Card>
 
       {mode === 'restaging' && (

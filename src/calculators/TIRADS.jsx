@@ -59,7 +59,7 @@ export default function TIRADS() {
       {Object.entries(c.criteria).map(([key, data]) => (
         <div key={key} className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
           <h3 className="font-semibold text-slate-800 dark:text-slate-200 mb-1 text-sm">{data.title}</h3>
-          {data.hint && <p className="text-xs text-slate-400 dark:text-slate-500 mb-3 leading-snug">{data.hint}</p>}
+          {data.hint && <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 leading-snug">{data.hint}</p>}
           <div className="space-y-2">
             {data.options.map((label, i) => {
               const multi = key === 'echogenicFoci';
@@ -84,7 +84,7 @@ export default function TIRADS() {
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead>
-              <tr className="text-slate-400 border-b border-slate-100 dark:border-slate-700">
+              <tr className="text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">
                 {c.managementHeaders.map((h, i) => <th key={i} className="pb-2 pr-2 font-medium">{h}</th>)}
               </tr>
             </thead>

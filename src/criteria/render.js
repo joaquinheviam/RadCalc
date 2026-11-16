@@ -29,7 +29,7 @@ function table({ headers, rows }) {
       ? `<th scope="row" class="py-1.5 pr-2 font-medium text-slate-700 dark:text-slate-200">${esc(cell)}</th>`
       : `<td class="py-1.5 pr-2">${esc(cell)}</td>`)).join('')
   }</tr>`).join('');
-  return `<div class="overflow-x-auto"><table class="w-full text-xs text-left border-collapse"><thead><tr class="text-slate-400 border-b border-slate-100 dark:border-slate-700">${th}</tr></thead><tbody>${body}</tbody></table></div>`;
+  return `<div class="overflow-x-auto"><table class="w-full text-xs text-left border-collapse"><thead><tr class="text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">${th}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 function list(items, ordered) {

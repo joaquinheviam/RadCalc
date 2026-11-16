@@ -160,7 +160,7 @@ export default function PEQanadli() {
               type="button"
               onClick={() => setSegGrade(id, g)}
               title={g === 0 ? c.qanadliGrade0 : g === 1 ? c.qanadliGrade1 : c.qanadliGrade2}
-              className={`w-7 h-7 rounded-md text-xs font-bold transition-all ${grade === g ? (g === 0 ? 'bg-emerald-500 text-white shadow-sm' : g === 1 ? 'bg-amber-500 text-white shadow-sm' : 'bg-red-500 text-white shadow-sm') : 'text-slate-400 dark:text-slate-500'}`}
+              className={`w-7 h-7 rounded-md text-xs font-bold transition-all ${grade === g ? (g === 0 ? 'bg-emerald-500 text-white shadow-sm' : g === 1 ? 'bg-amber-500 text-white shadow-sm' : 'bg-red-500 text-white shadow-sm') : 'text-slate-500 dark:text-slate-400'}`}
             >{g}</button>
           ))}
         </div>
@@ -245,7 +245,7 @@ export default function PEQanadli() {
         ) : (
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">{c.qanadliSegmentHint}</p>
-            <div className="flex items-center gap-3 text-[10px] text-slate-400 dark:text-slate-500">
+            <div className="flex items-center gap-3 text-[10px] text-slate-500 dark:text-slate-400">
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>{c.qanadliGrade0}</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>{c.qanadliGrade1}</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>{c.qanadliGrade2}</span>
@@ -257,7 +257,7 @@ export default function PEQanadli() {
                   <div className="space-y-3">
                     {lung.groups.map(group => (
                       <div key={group.labelKey + lung.key}>
-                        <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{c[group.labelKey]}</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{c[group.labelKey]}</span>
                         <div className="mt-1 divide-y divide-slate-100 dark:divide-slate-700">
                           {group.ids.map(id => renderSegmentRow(id))}
                         </div>
@@ -267,7 +267,7 @@ export default function PEQanadli() {
                 </Accordion>
               );
             })}
-            <button type="button" onClick={resetSegments} className="text-xs text-slate-400 hover:text-red-500 transition-colors underline">{c.qanadliResetLabel}</button>
+            <button type="button" onClick={resetSegments} className="text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors underline">{c.qanadliResetLabel}</button>
           </div>
         )}
         <Accordion title={c.qanadliHowTitle}>

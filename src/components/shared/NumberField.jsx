@@ -47,7 +47,7 @@ export default function NumberField({ label, value, onChange, placeholder, small
           {input}
         </div>
       ) : input}
-      {allowNegative && <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{t.common.negativeHint}</p>}
+      {allowNegative && <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">{t.common.negativeHint}</p>}
     </div>
   );
 }

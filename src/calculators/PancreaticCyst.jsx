@@ -595,11 +595,11 @@ export default function PancreaticCyst() {
                     </p>
                   )}
                   {kyotoStopOrContinueApplies && (
-                    <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug pt-1">{c.kyotoStopOrContinueNote}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug pt-1">{c.kyotoStopOrContinueNote}</p>
                   )}
                 </div>
               )}
-              {sizeGe3Alone && <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug pt-1">{c.sizeGe3Note}</p>}
+              {sizeGe3Alone && <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug pt-1">{c.sizeGe3Note}</p>}
             </Card>
           )}
 

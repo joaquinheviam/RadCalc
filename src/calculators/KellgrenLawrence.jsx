@@ -78,7 +78,7 @@ export default function KellgrenLawrence() {
             </button>
           ))}
         </div>
-        <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">{c.projectionLabel}: {joint.projection}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{c.projectionLabel}: {joint.projection}</p>
       </Card>
 
       <Accordion icon={<IconInfo size={16} />} title={c.featuresTitle}>
@@ -100,8 +100,8 @@ export default function KellgrenLawrence() {
             </button>
           ))}
         </div>
-        {grade !== null && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.gradeDefs[grade]}</p>}
-        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.gradeDefsNote}</p>
+        {grade !== null && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.gradeDefs[grade]}</p>}
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.gradeDefsNote}</p>
       </Card>
 
       {showManagement && (
@@ -155,7 +155,7 @@ export default function KellgrenLawrence() {
         <Card>
           <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">{c.arthroplastyTitle}</h3>
           <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{c.arthroplastyText(arthroplastyHR, joint.name, readingMethodLabel(readingMethod))}</p>
-          {readingMethod === 'paired' && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.arthroplastyPairedCaveat}</p>}
+          {readingMethod === 'paired' && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.arthroplastyPairedCaveat}</p>}
         </Card>
       )}
 

@@ -10,7 +10,7 @@ export default function ReportBugLink({ calcTitle }) {
     copyToClipboard(REPORT_EMAIL, t.common.emailCopiedOk, t.common.copiedErr);
   };
   return (
-    <div className="flex items-center justify-center gap-x-3 gap-y-1 text-xs text-slate-400 py-1 flex-wrap">
+    <div className="flex items-center justify-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 py-1 flex-wrap">
       <a href={buildMailto(calcTitle, lang, 'bug')} className="flex items-center gap-1.5 hover:text-blue-500 dark:hover:text-blue-400 transition-colors py-1">
         <IconMail size={14} /> {t.common.reportBug}
       </a>

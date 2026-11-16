@@ -199,7 +199,7 @@ export default function LIRADS() {
               })}
             </div>
           </div>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{c.afRuleNote}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.afRuleNote}</p>
         </Card>
       )}
       {finalCat && lrTiv && lrTivCont && (

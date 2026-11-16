@@ -9,7 +9,7 @@ export default function ScoreSelector5({ label, value, onChange, defs }) {
           </button>
         ))}
       </div>
-      {value > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{defs[value - 1]}</p>}
+      {value > 0 && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{defs[value - 1]}</p>}
     </div>
   );
 }

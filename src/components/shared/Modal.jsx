@@ -53,7 +53,7 @@ export default function Modal({ title, onClose, closeLabel, children }) {
           <button
             onClick={onClose}
             aria-label={closeLabel}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            className="p-1.5 rounded-full text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
             <IconX size={18} />
           </button>

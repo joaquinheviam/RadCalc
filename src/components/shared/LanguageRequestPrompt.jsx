@@ -46,7 +46,7 @@ export default function LanguageRequestPrompt({ prompt, onClose }) {
           <button
             onClick={() => onClose('dismiss')}
             aria-label={c.closeAria}
-            className="shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl leading-none px-1 -mt-1"
+            className="shrink-0 text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl leading-none px-1 -mt-1"
           >
             ×
           </button>

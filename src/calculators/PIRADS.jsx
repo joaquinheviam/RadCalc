@@ -121,7 +121,7 @@ export default function PIRADS() {
                   </button>
                 ))}
               </div>
-              {dwi > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.dwiDefs[dwi - 1]}</p>}
+              {dwi > 0 && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.dwiDefs[dwi - 1]}</p>}
             </div>
             {dwi === 3 && (
               <div className="animate-in fade-in slide-in-from-top-2">
@@ -135,7 +135,7 @@ export default function PIRADS() {
                   </button>
                 </div>
                 <p className="text-xs text-slate-500 mt-2">{c.dceNote}</p>
-                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-snug">{c.dceDef}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.dceDef}</p>
               </div>
             )}
           </>
@@ -151,7 +151,7 @@ export default function PIRADS() {
                   </button>
                 ))}
               </div>
-              {t2 > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.t2Defs[t2 - 1]}</p>}
+              {t2 > 0 && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.t2Defs[t2 - 1]}</p>}
             </div>
             {(t2 === 2 || t2 === 3) && (
               <div className="animate-in fade-in slide-in-from-top-2">
@@ -164,7 +164,7 @@ export default function PIRADS() {
                   ))}
                 </div>
                 <p className="text-xs text-slate-500 mt-2">{t2 === 2 ? c.dwiNoteT2_2 : c.dwiNote}</p>
-                {dwi > 0 && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 leading-snug">{c.dwiDefs[dwi - 1]}</p>}
+                {dwi > 0 && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.dwiDefs[dwi - 1]}</p>}
               </div>
             )}
           </>
@@ -180,7 +180,7 @@ export default function PIRADS() {
             </button>
           ))}
         </div>
-        {epe && <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.epeCaveat}</p>}
+        {epe && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.epeCaveat}</p>}
       </Card>
       <UsageNotes paragraphs={c.usage} />
       {SHOW_ALGORITHM_VIEW && (

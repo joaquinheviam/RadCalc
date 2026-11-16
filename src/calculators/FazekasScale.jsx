@@ -20,7 +20,7 @@ function GradeSelector({ label, value, onChange, defs }) {
           </button>
         ))}
       </div>
-      {value !== null && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{defs[value]}</p>}
+      {value !== null && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{defs[value]}</p>}
     </div>
   );
 }
@@ -96,7 +96,7 @@ export default function FazekasScale() {
                 </button>
               ))}
             </div>
-            {subtype && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 leading-snug">{c.subtypeTexts[subtype]}</p>}
+            {subtype && <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.subtypeTexts[subtype]}</p>}
           </div>
 
           <NumberField label={c.stageLabel} placeholder={c.stagePh} value={stage} onChange={setStage} />

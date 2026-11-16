@@ -80,7 +80,7 @@ export default function ASPECTS() {
           <span className="text-xs text-slate-500 dark:text-slate-400">{c.scoreLabel}: {score}/10</span>
         </div>
         <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">{band.note}</p>
-        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.interobserverNote}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.interobserverNote}</p>
       </Card>
 
       <Card>
@@ -130,7 +130,7 @@ export default function ASPECTS() {
             )}
 
             <UsageNotes paragraphs={c.preUsage} />
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 pt-2 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.preLimitationsNote}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-700 leading-snug">{c.preLimitationsNote}</p>
           </div>
         )}
       </Card>

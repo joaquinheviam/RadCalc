@@ -292,10 +292,10 @@ export default function CCLS() {
                   <button key={opt.key} onClick={() => handleCmp(opt.key)} aria-pressed={!!(cmp === opt.key)} className={`flex-1 p-2.5 rounded-lg border text-xs transition-all ${cmp === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
                 ))}
               </div>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mt-2">{c.cmpVisualNote}</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug mt-2">{c.cmpVisualNote}</p>
               <div className="mt-3">
                 <Accordion title={c.cmpCalcTitle}>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug mb-3">{c.cmpCalcIntro}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug mb-3">{c.cmpCalcIntro}</p>
                   <div className="grid grid-cols-2 gap-2">
                     <NumberField label={c.cmpCalcTumorPre} value={cmpTumorPre} onChange={setCmpTumorPre} small />
                     <NumberField label={c.cmpCalcTumorCmp} value={cmpTumorCmp} onChange={setCmpTumorCmp} small />
@@ -306,7 +306,7 @@ export default function CCLS() {
                     <div className="mt-3 text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
                       <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.cmpCalcResultLabel}</span>
                       <span className="text-xl font-bold text-slate-700 dark:text-slate-200">{cmpRelPct.toFixed(0)}%</span>
-                      <span className="block text-[11px] text-slate-400 mt-1">&rarr; {c.cmpCalcBucketLabels[cmpCalcBucket]}</span>
+                      <span className="block text-[11px] text-slate-500 dark:text-slate-400 mt-1">&rarr; {c.cmpCalcBucketLabels[cmpCalcBucket]}</span>
                       <button onClick={applyCmpCalc} className="mt-2 w-full py-2 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors">
                         {c.cmpCalcApply}
                       </button>
@@ -350,7 +350,7 @@ export default function CCLS() {
                     <div className="mt-3 text-center p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
                       <span className="block text-xs text-slate-500 dark:text-slate-400 mb-1">{c.aderCalcResultLabel}</span>
                       <span className="text-xl font-bold text-slate-700 dark:text-slate-200">{aderValue.toFixed(2)}</span>
-                      <span className="block text-[10px] text-slate-400 mt-1">{t.common.cutoff} &ge; 1.5</span>
+                      <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-1">{t.common.cutoff} &ge; 1.5</span>
                       <button onClick={applyAderCalc} className="mt-2 w-full py-2 rounded-lg text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 transition-colors">
                         {c.aderCalcApply} ({aderCalcAnswer === 'y' ? t.common.yes : t.common.no})
                       </button>

@@ -28,11 +28,11 @@ function SeptateScheme() {
             parte de la medición del ángulo, para no duplicar la línea. */}
         <path
           fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           d="M 200,230 L 200,340"
         />
         {/* Línea intercornual (referencia externa, discontinua) */}
-        <line x1="80" y1="110" x2="320" y2="110" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
+        <line x1="80" y1="110" x2="320" y2="110" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" strokeLinecap="round" className="text-slate-500 dark:text-slate-400" />
 
         {/* w: grosor de pared en el fondo */}
         <g stroke="#059669" strokeWidth="3" strokeLinecap="round">
@@ -113,7 +113,7 @@ function DevelopmentScheme() {
         />
         <path
           fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           d="M 82,100 L 110,150 L 138,100 M 110,150 L 110,220"
         />
 
@@ -131,7 +131,7 @@ function DevelopmentScheme() {
         />
         <path
           fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           d="M 340,105 Q 366,150 344,212"
         />
 
@@ -159,13 +159,13 @@ function BicorneScheme() {
         {/* Cavidades endometriales (dos cuernos convergiendo hacia el istmo) */}
         <path
           fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           d="M 140,90 Q 150,200 197,276 M 260,90 Q 250,200 203,276 M 200,278 L 200,340"
         />
         {/* Línea entre los ápices externos (referencia, discontinua) */}
-        <line x1="140" y1="50" x2="260" y2="50" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" strokeLinecap="round" className="text-slate-400 dark:text-slate-500" />
-        <circle cx="140" cy="50" r="4" fill="currentColor" className="text-slate-400 dark:text-slate-500" />
-        <circle cx="260" cy="50" r="4" fill="currentColor" className="text-slate-400 dark:text-slate-500" />
+        <line x1="140" y1="50" x2="260" y2="50" stroke="currentColor" strokeWidth="3" strokeDasharray="7 6" strokeLinecap="round" className="text-slate-500 dark:text-slate-400" />
+        <circle cx="140" cy="50" r="4" fill="currentColor" className="text-slate-500 dark:text-slate-400" />
+        <circle cx="260" cy="50" r="4" fill="currentColor" className="text-slate-500 dark:text-slate-400" />
 
         {/* w: grosor de pared a nivel del cuerno (ápice externo a la cavidad) */}
         <g stroke="#059669" strokeWidth="3" strokeLinecap="round">
@@ -206,7 +206,7 @@ function TshapeScheme() {
             cortas y rectas */}
         <path
           fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           d="M 130,115 L 270,115 M 200,115 L 200,300"
         />
         {/* Paredes laterales engrosadas (llaves indicando el grosor a cada lado
@@ -236,7 +236,7 @@ function HemiuterusScheme() {
         />
         <path
           fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           d="M 130,50 Q 156,95 134,157"
         />
         {/* Cérvix único, continuando el cuerno desarrollado */}
@@ -255,7 +255,7 @@ function HemiuterusScheme() {
         />
         <path
           fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-          className="text-slate-400 dark:text-slate-500"
+          className="text-slate-500 dark:text-slate-400"
           d="M 322,45 Q 338,68 324,97"
         />
         {/* Línea discontinua tenue: la cavidad puede comunicar o no con la
@@ -413,7 +413,7 @@ export default function MullerianAnomalies() {
   const cumeRatio = (hasDepth && hasWall) ? ((intDepthNum / wallThicknessNum) * 100).toFixed(0) : null;
 
   const verdictLabel = (v) => v === VERDICT_SEPTATE ? c.verdictSeptate : v === VERDICT_NORMAL ? c.verdictNormal : v === VERDICT_GRAY ? c.verdictGrayZone : '—';
-  const verdictColor = (v) => v === VERDICT_SEPTATE ? 'text-red-500' : v === VERDICT_NORMAL ? 'text-emerald-500' : v === VERDICT_GRAY ? 'text-amber-500' : 'text-slate-400';
+  const verdictColor = (v) => v === VERDICT_SEPTATE ? 'text-red-500' : v === VERDICT_NORMAL ? 'text-emerald-500' : v === VERDICT_GRAY ? 'text-amber-500' : 'text-slate-500 dark:text-slate-400';
 
   const quantVerdicts = [asrmMac2021Verdict, eshreVerdict, cumeVerdict].filter(Boolean);
   const quantDiscrepancy = new Set(quantVerdicts).size > 1;

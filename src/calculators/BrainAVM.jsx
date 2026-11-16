@@ -78,7 +78,7 @@ function BrainAvmDiagram({ labels, activeHighlight }) {
             stroke="currentColor"
             strokeWidth="3.5"
             strokeLinecap="round"
-            className="text-slate-400 dark:text-slate-500"
+            className="text-slate-500 dark:text-slate-400"
           />
           {/* Surcos cerebrales penetrantes */}
           <path
