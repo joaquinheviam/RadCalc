@@ -66,8 +66,10 @@ export default function AdrenalWashout() {
   const kamiyama = (cfg.hasKamiyama && canPla && !showMyelolipoma) ? {
     nc: hNc <= 19,
     delayed: hDel <= 50,
-    pew: plr >= 45,
-    rpew: pla >= 31,
+    // Kamiyama 2009: PEW = lavado absoluto (PLA) ≥ 45 %; RPEW = lavado relativo (PLR) ≥ 31 %
+    // (PEW = "percentage enhancement washout" absoluto, como en Caoili 2002).
+    pew: pla >= 45,
+    rpew: plr >= 31,
   } : null;
   const kamiyamaCount = kamiyama ? Object.values(kamiyama).filter(Boolean).length : 0;
 
