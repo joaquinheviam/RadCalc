@@ -62,6 +62,7 @@ const BiradsMammography = lazy(() => import('./BiradsMammography.jsx'));
 const BiradsUltrasound = lazy(() => import('./BiradsUltrasound.jsx'));
 const BoneRADS = lazy(() => import('./BoneRADS.jsx'));
 const Mirels = lazy(() => import('./Mirels.jsx'));
+const AltLipoma = lazy(() => import('./AltLipoma.jsx'));
 const BACTIP = lazy(() => import('./BACTIP.jsx'));
 const ASPECTS = lazy(() => import('./ASPECTS.jsx'));
 const TLICS = lazy(() => import('./TLICS.jsx'));
@@ -131,6 +132,7 @@ export const calculators = [
   // Musculoesquelética
   { id: 'boneRads', catKey: 'msk', component: BoneRADS },
   { id: 'mirels', catKey: 'msk', component: Mirels },
+  { id: 'altLipoma', catKey: 'msk', component: AltLipoma },
   { id: 'bactip', catKey: 'msk', component: BACTIP },
   { id: 'kellgrenLawrence', catKey: 'msk', component: KellgrenLawrence },
   { id: 'tlics', catKey: 'msk', component: TLICS },

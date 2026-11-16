@@ -1,6 +1,7 @@
 export default {
   boneRads: ['bone-rads', 'bone rads', 'boneRads', 'bone lesion', 'bone tumor', 'lodwick', 'lodwick-madewell', 'lesion margin', 'periosteal reaction', 'endosteal erosion', 'codman triangle', 'acr bone-rads', 'bone radiograph'],
   bactip: ['bactip', 'cartilaginous tumour', 'cartilaginous tumor', 'atypical cartilaginous tumour', 'enchondroma', 'chondrosarcoma', 'endosteal scalloping', 'birmingham protocol', 'central cartilage tumor'],
+  altLipoma: ['lipoma', 'atypical lipomatous tumor', 'alt', 'liposarcoma', 'well-differentiated liposarcoma', 'fatty mass', 'nagano', 'alt score'],
   mirels: ['mirels', "mirels' criteria", 'mirels score', 'pathologic fracture', 'bone metastasis', 'prophylactic fixation', 'fracture risk'],
   aspects: ['aspects', 'alberta stroke', 'stroke score', 'ischemic stroke', 'non-contrast ct brain', 'thrombectomy', 'thrombolysis', 'ischemic core', 'middle cerebral artery', 'mca territory', 'pre score', 'pittsburgh', 'nihss'],
   abc2Hematoma: ['abc2', 'abc/2', 'hematoma volume', 'hemorrhage volume', 'intracerebral hemorrhage', 'intracranial hemorrhage', 'ich', 'kothari', 'abc method', 'basal ganglia', 'basal ganglia hemorrhage', 'chaisawasthomrong'],

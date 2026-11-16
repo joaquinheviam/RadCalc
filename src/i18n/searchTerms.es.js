@@ -1,6 +1,7 @@
 export default {
   boneRads: ['bone-rads', 'bone rads', 'boneRads', 'lesion osea', 'lesión ósea', 'tumor oseo', 'tumor óseo', 'lodwick', 'lodwick-madewell', 'margen lesion osea', 'reaccion periostica', 'reacción perióstica', 'erosion endostica', 'triangulo de codman', 'acr bone-rads', 'radiografia hueso'],
   bactip: ['bactip', 'tumor cartilaginoso', 'tumor cartilaginoso atipico', 'tumor cartilaginoso atípico', 'encondroma', 'condrosarcoma', 'escalonamiento endostico', 'endosteal scalloping', 'birmingham', 'tumor condroide', 'cartilaginous tumour'],
+  altLipoma: ['lipoma', 'tumor lipomatoso atipico', 'tumor lipomatoso atípico', 'alt', 'liposarcoma', 'liposarcoma bien diferenciado', 'masa grasa', 'nagano', 'alt score'],
   mirels: ['mirels', 'criterios de mirels', 'fractura patologica', 'fractura patológica', 'metastasis osea', 'metástasis ósea', 'fijacion profilactica', 'fijación profiláctica', 'riesgo de fractura'],
   aspects: ['aspects', 'alberta stroke', 'acv', 'ictus', 'accidente cerebrovascular', 'stroke score', 'tc cerebro sin contraste', 'trombectomia', 'trombectomía', 'trombolisis', 'trombólisis', 'nucleo isquemico', 'núcleo isquémico', 'aca media', 'territorio de acm', 'pre score', 'pittsburgh', 'score pre', 'nihss'],
   abc2Hematoma: ['abc2', 'abc/2', 'volumen de hematoma', 'volumen de hemorragia', 'hemorragia intracerebral', 'hemorragia intracraneal', 'hic', 'kothari', 'metodo abc', 'método abc', 'ganglios basales', 'hemorragia ganglios basales', 'chaisawasthomrong'],

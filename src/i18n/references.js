@@ -40,6 +40,10 @@ export const REFERENCES = {
   bactip: [
     { text: 'Davies AM, Patel A, Azzopardi C, James SL, Botchu R. Birmingham atypical cartilaginous tumour imaging protocol (BACTIP) revisited. Clin Radiol. 2025;83:106837.', doi: '10.1016/j.crad.2025.106837' },
   ],
+  altLipoma: [
+    { text: 'Nagano S, Yokouchi M, Setoguchi T, Ishidou Y, Sasaki H, Shimada H, Komiya S. Differentiation of lipoma and atypical lipomatous tumor by a scoring system: implication of increased vascularity on pathogenesis of liposarcoma. BMC Musculoskelet Disord. 2015;16:36.', doi: '10.1186/s12891-015-0491-8' },
+    { text: 'Wilson MP, Haidey J, Murad MH, Sept L, Low G. Diagnostic accuracy of CT and MR features for detecting atypical lipomatous tumors and malignant liposarcomas: a systematic review and meta-analysis. Eur Radiol. 2023;33(12):8605-8616.', doi: '10.1007/s00330-023-09916-2' },
+  ],
   mirels: [
     'Mirels H. Metastatic disease in long bones: a proposed scoring system for diagnosing impending pathologic fractures. Clin Orthop Relat Res. 1989;(249):256-264.',
     { text: "Meschini C, El Motassime A, El Ezzo O, Ziranu A, Maccauro G, Vitiello R. Advancements in Assessing Pathological Fracture Risk: News on Mirels' Score. Cancers. 2025;17(6):973.", doi: '10.3390/cancers17060973' },
