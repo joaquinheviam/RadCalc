@@ -1,6 +1,7 @@
 export default {
   boneRads: ['bone-rads', 'bone rads', 'boneRads', 'lesion osea', 'lesión ósea', 'tumor oseo', 'tumor óseo', 'lodwick', 'lodwick-madewell', 'margen lesion osea', 'reaccion periostica', 'reacción perióstica', 'erosion endostica', 'triangulo de codman', 'acr bone-rads', 'radiografia hueso'],
   bactip: ['bactip', 'tumor cartilaginoso', 'tumor cartilaginoso atipico', 'tumor cartilaginoso atípico', 'encondroma', 'condrosarcoma', 'escalonamiento endostico', 'endosteal scalloping', 'birmingham', 'tumor condroide', 'cartilaginous tumour'],
+  ecv: ['ecv', 'volumen extracelular', 'fraccion de volumen extracelular', 'fracción de volumen extracelular', 'mapeo t1', 't1 mapping', 'molli', 'shmolli', 'fibrosis miocardica', 'fibrosis miocárdica', 'amiloidosis cardiaca', 'amiloidosis cardíaca', 'rm cardiaca', 'rm cardíaca', 'coeficiente de particion', 'hematocrito'],
   altLipoma: ['lipoma', 'tumor lipomatoso atipico', 'tumor lipomatoso atípico', 'alt', 'liposarcoma', 'liposarcoma bien diferenciado', 'masa grasa', 'nagano', 'alt score'],
   mirels: ['mirels', 'criterios de mirels', 'fractura patologica', 'fractura patológica', 'metastasis osea', 'metástasis ósea', 'fijacion profilactica', 'fijación profiláctica', 'riesgo de fractura'],
   aspects: ['aspects', 'alberta stroke', 'acv', 'ictus', 'accidente cerebrovascular', 'stroke score', 'tc cerebro sin contraste', 'trombectomia', 'trombectomía', 'trombolisis', 'trombólisis', 'nucleo isquemico', 'núcleo isquémico', 'aca media', 'territorio de acm', 'pre score', 'pittsburgh', 'score pre', 'nihss'],
