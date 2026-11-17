@@ -17,6 +17,7 @@ export const LAST_UPDATED = {
   "lungCancerTNM9": "2026-09-21",
   "cadrads": "2026-09-21",
   "cardiacSiderosis": "2026-09-23",
+  "ecv": "2026-11-17",
   "mriFf": "2026-09-21",
   "siderosis": "2026-09-23",
   "lirads": "2026-11-16",
