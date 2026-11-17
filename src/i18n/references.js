@@ -40,6 +40,10 @@ export const REFERENCES = {
   bactip: [
     { text: 'Davies AM, Patel A, Azzopardi C, James SL, Botchu R. Birmingham atypical cartilaginous tumour imaging protocol (BACTIP) revisited. Clin Radiol. 2025;83:106837.', doi: '10.1016/j.crad.2025.106837' },
   ],
+  ecv: [
+    { text: 'Sardanelli F, Schiaffino S, Zanardo M, Secchi F, Cannaò PM, Ambrogi F, Di Leo G. Point estimate and reference normality interval of MRI-derived myocardial extracellular volume in healthy subjects: a systematic review and meta-analysis. Eur Radiol. 2019;29(12):6620-6633.', doi: '10.1007/s00330-019-06185-w' },
+    { text: 'Gottbrecht M, Kramer CM, Salerno M. Native T1 and extracellular volume measurements by cardiac MRI in healthy adults: a meta-analysis. Radiology. 2019;290(2):317-326.', doi: '10.1148/radiol.2018180226' },
+  ],
   altLipoma: [
     { text: 'Nagano S, Yokouchi M, Setoguchi T, Ishidou Y, Sasaki H, Shimada H, Komiya S. Differentiation of lipoma and atypical lipomatous tumor by a scoring system: implication of increased vascularity on pathogenesis of liposarcoma. BMC Musculoskelet Disord. 2015;16:36.', doi: '10.1186/s12891-015-0491-8' },
     { text: 'Wilson MP, Haidey J, Murad MH, Sept L, Low G. Diagnostic accuracy of CT and MR features for detecting atypical lipomatous tumors and malignant liposarcomas: a systematic review and meta-analysis. Eur Radiol. 2023;33(12):8605-8616.', doi: '10.1007/s00330-023-09916-2' },
