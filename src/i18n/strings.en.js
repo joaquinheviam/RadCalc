@@ -912,7 +912,8 @@ export default {
     psad: {
       title: 'PSAD and Prostate Volume',
       subtitle: 'Calculation of prostate volume using the ellipsoid formula and estimation of prostate-specific antigen density (PSAD).',
-      dims: 'Dimensions (cm)',
+      dimsLabel: (u) => `Dimensions (${u})`,
+      unitCm: 'cm', unitMm: 'mm',
       ap: 'AP', tr: 'TR', long: 'LONG',
       psaLabel: 'Total PSA (ng/mL)',
       psaPh: 'E.g.: 5.4',
