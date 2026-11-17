@@ -15,5 +15,6 @@
 // agradecimiento voluntario, no un espacio publicitario.
 export const SPONSORS = [
   // { name: 'Nombre o institución', since: '2026-09-13' },
+  { name: 'Catalina Alarcón', since: '2026-11-17' },
   { name: 'V.B.', since: '2026-09-23' }, // donante anónimo, solo iniciales
 ];
