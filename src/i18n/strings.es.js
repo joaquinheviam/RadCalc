@@ -1920,7 +1920,10 @@ export default {
       cacLabel: 'Score de calcio de Agatston (CAC)',
       sisLabel: 'SIS: segmentos coronarios con placa (0-16)',
       sisHint: 'Sume 1 punto por cada uno de los 16 segmentos coronarios con cualquier placa detectable (máximo 16).',
-      pRanges: { cac: 'P1 1-100 · P2 101-300 · P3 301-999 · P4 > 1000', sis: 'P1 ≤ 2 · P2 3-4 · P3 5-7 · P4 ≥ 8' },
+      pRanges: {
+        cac: ['P1, carga de placa leve: Agatston de 1 a 100.', 'P2, carga de placa moderada: Agatston de 101 a 300.', 'P3, carga de placa severa: Agatston de 301 a 999.', 'P4, carga de placa extensa: Agatston mayor de 1000.'],
+        sis: ['P1, carga de placa leve: hasta 2 segmentos con placa.', 'P2, carga de placa moderada: 3 a 4 segmentos.', 'P3, carga de placa severa: 5 a 7 segmentos.', 'P4, carga de placa extensa: 8 o más segmentos.'],
+      },
       pVisualOptions: [
         { key: 'P1', label: 'P1 (leve): 1-2 vasos con cantidad leve de placa' },
         { key: 'P2', label: 'P2 (moderada): 1-2 vasos con cantidad moderada, o 3 vasos con cantidad leve de placa' },
