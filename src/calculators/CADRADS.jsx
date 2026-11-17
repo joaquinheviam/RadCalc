@@ -12,7 +12,7 @@ export default function CADRADS() {
   const c = t.calc.cadrads;
   const [stenosis, setStenosis] = useState(null);
   const [mods, setMods] = useState({ N: false, S: false, G: false, I: false, HRP: false, E: false });
-  const [pMethod, setPMethod] = useState('none');
+  const [pMethod, setPMethod] = useState('cac');
   const [cac, setCac] = useState('');
   const [sis, setSis] = useState('');
   const [pVisual, setPVisual] = useState('');
@@ -42,7 +42,7 @@ ${c.reportP(pMod, c.pLevel[pMod], pDetail)}` : text;
   };
 
   const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-500 dark:text-slate-400' : 'text-red-500';
-  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMethod('none'); setCac(''); setSis(''); setPVisual(''); };
+  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMethod('cac'); setCac(''); setSis(''); setPVisual(''); };
 
   return (
     <div className={`space-y-4 animate-in fade-in ${stenosis ? 'pb-56' : ''}`}>
@@ -82,13 +82,14 @@ ${c.reportP(pMod, c.pLevel[pMod], pDetail)}` : text;
         {pMethod === 'cac' && (
           <div className="mt-3">
             <NumberField label={c.cacLabel} value={cac} onChange={setCac} />
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.pRanges.cac}</p>
+            <ul className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug space-y-0.5">{c.pRanges.cac.map((r) => <li key={r}>{r}</li>)}</ul>
           </div>
         )}
         {pMethod === 'sis' && (
           <div className="mt-3">
             <NumberField label={c.sisLabel} value={sis} onChange={setSis} />
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.sisHint} {c.pRanges.sis}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.sisHint}</p>
+            <ul className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug space-y-0.5">{c.pRanges.sis.map((r) => <li key={r}>{r}</li>)}</ul>
           </div>
         )}
         {pMethod === 'visual' && (

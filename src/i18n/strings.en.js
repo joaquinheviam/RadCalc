@@ -1919,7 +1919,10 @@ export default {
       cacLabel: 'Agatston coronary artery calcium score (CAC)',
       sisLabel: 'SIS: coronary segments with plaque (0-16)',
       sisHint: 'Score 1 point for each of the 16 coronary segments with any detectable plaque (maximum 16).',
-      pRanges: { cac: 'P1 1-100 · P2 101-300 · P3 301-999 · P4 > 1000', sis: 'P1 ≤ 2 · P2 3-4 · P3 5-7 · P4 ≥ 8' },
+      pRanges: {
+        cac: ['P1, mild plaque burden: Agatston 1 to 100.', 'P2, moderate plaque burden: Agatston 101 to 300.', 'P3, severe plaque burden: Agatston 301 to 999.', 'P4, extensive plaque burden: Agatston above 1000.'],
+        sis: ['P1, mild plaque burden: up to 2 segments with plaque.', 'P2, moderate plaque burden: 3 to 4 segments.', 'P3, severe plaque burden: 5 to 7 segments.', 'P4, extensive plaque burden: 8 or more segments.'],
+      },
       pVisualOptions: [
         { key: 'P1', label: 'P1 (mild): 1-2 vessels with a mild amount of plaque' },
         { key: 'P2', label: 'P2 (moderate): 1-2 vessels with a moderate amount, or 3 vessels with a mild amount of plaque' },
