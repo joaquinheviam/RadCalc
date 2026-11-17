@@ -3,7 +3,8 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
-import { Card, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { pFromCac, pFromSis } from './logic/cadradsP.js';
 
 export default function CADRADS() {
   const { t, lang } = useLang();
@@ -11,16 +12,28 @@ export default function CADRADS() {
   const c = t.calc.cadrads;
   const [stenosis, setStenosis] = useState(null);
   const [mods, setMods] = useState({ N: false, S: false, G: false, I: false, HRP: false, E: false });
-  const [pMod, setPMod] = useState('');
+  const [pMethod, setPMethod] = useState('none');
+  const [cac, setCac] = useState('');
+  const [sis, setSis] = useState('');
+  const [pVisual, setPVisual] = useState('');
 
   const toggleMod = (key) => setMods(prev => ({ ...prev, [key]: !prev[key] }));
+  // Modificador P (CAD-RADS 2.0, tabla 2): por CAC, SIS o evaluación visual.
+  const pRaw = pMethod === 'cac' ? (cac === '' ? null : pFromCac(parseFloat(cac)))
+    : pMethod === 'sis' ? (sis === '' ? null : pFromSis(Number(sis)))
+    : pMethod === 'visual' ? (pVisual || null) : null;
+  const pValid = /^P[1-4]$/.test(pRaw || '');
+  // CAD-RADS 0 = sin placa: P no se informa.
+  const pMod = pValid && stenosis !== '0' ? pRaw : '';
+  const pDetail = pMethod === 'cac' ? c.reportPDetail.cac(cac) : pMethod === 'sis' ? c.reportPDetail.sis(sis) : c.reportPDetail.visual();
   const modString = [...Object.entries(mods).filter(([,v]) => v).map(([k]) => k), ...(pMod ? [pMod] : [])].join('/');
   const resultString = stenosis ? `CAD-RADS ${stenosis}${modString ? '/' + modString : ''}` : '';
 
   const getReportText = () => {
     if (!stenosis) return '';
     const text = c.reportText(stenosis, modString);
-    return text;
+    return pMod ? `${text}
+${c.reportP(pMod, c.pLevel[pMod], pDetail)}` : text;
   };
   const handleCopy = () => {
     const text = getReportText();
@@ -29,7 +42,7 @@ export default function CADRADS() {
   };
 
   const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-500 dark:text-slate-400' : 'text-red-500';
-  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMod(''); };
+  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMethod('none'); setCac(''); setSis(''); setPVisual(''); };
 
   return (
     <div className={`space-y-4 animate-in fade-in ${stenosis ? 'pb-56' : ''}`}>
@@ -61,13 +74,36 @@ export default function CADRADS() {
       </Card>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.pModifierLabel}</label>
-        <div className="space-y-2">
-          <button onClick={() => setPMod('')} aria-pressed={!!(pMod === '')} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === '' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pNone}</button>
-          {c.pOptions.map(opt => (
-            <button key={opt.key} onClick={() => setPMod(opt.key)} aria-pressed={!!(pMod === opt.key)} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pMod === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+        <div className="grid grid-cols-2 gap-2" role="group" aria-label={c.pMethodLabel}>
+          {['none', 'cac', 'sis', 'visual'].map((k) => (
+            <button key={k} type="button" onClick={() => setPMethod(k)} aria-pressed={pMethod === k} className={`p-2.5 rounded-lg border text-xs transition-all ${pMethod === k ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pMethods[k]}</button>
           ))}
         </div>
-        {pMod && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.pCaveat}</p>}
+        {pMethod === 'cac' && (
+          <div className="mt-3">
+            <NumberField label={c.cacLabel} value={cac} onChange={setCac} />
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.pRanges.cac}</p>
+          </div>
+        )}
+        {pMethod === 'sis' && (
+          <div className="mt-3">
+            <NumberField label={c.sisLabel} value={sis} onChange={setSis} />
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.sisHint} {c.pRanges.sis}</p>
+          </div>
+        )}
+        {pMethod === 'visual' && (
+          <div className="space-y-2 mt-3">
+            {c.pVisualOptions.map(opt => (
+              <button key={opt.key} type="button" onClick={() => setPVisual(opt.key)} aria-pressed={pVisual === opt.key} className={`w-full text-left p-2.5 rounded-lg border text-xs transition-all ${pVisual === opt.key ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{opt.label}</button>
+            ))}
+          </div>
+        )}
+        {pValid && stenosis !== '0' && <p className="text-sm font-semibold text-blue-700 dark:text-blue-300 mt-3">{pRaw} ({c.pLevel[pRaw]})</p>}
+        {pValid && stenosis === '0' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.pNotForZero}</p>}
+        {pRaw === 'zero' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.pZero}</p>}
+        {pRaw === 'boundary' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.pBoundary}</p>}
+        {pMethod === 'sis' && sis !== '' && pRaw === null && <p className="text-[11px] text-red-500 mt-2 leading-snug">{c.pSisInvalid}</p>}
+        {pMethod !== 'none' && <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.pCaveat}</p>}
       </Card>
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.cadrads} />
