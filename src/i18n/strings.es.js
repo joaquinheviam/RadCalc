@@ -912,7 +912,8 @@ export default {
     psad: {
       title: 'PSAD y Volumen Prostático',
       subtitle: 'Cálculo del volumen prostático por fórmula elipsoide y estimación de la densidad de antígeno prostático específico (PSAD).',
-      dims: 'Dimensiones (cm)',
+      dimsLabel: (u) => `Dimensiones (${u})`,
+      unitCm: 'cm', unitMm: 'mm',
       ap: 'AP', tr: 'TR', long: 'LONG',
       psaLabel: 'PSA Total (ng/mL)',
       psaPh: 'Ej: 5.4',

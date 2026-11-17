@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
-import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
+import { IconAlertTriangle, IconCheckCircle, IconRefresh } from '../components/icons/index.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+
+const UNIT_KEY = 'radiocalc:psadUnit';
 
 export default function PSADCalculator() {
   const { t, lang } = useLang();
@@ -14,7 +16,11 @@ export default function PSADCalculator() {
   const [long, setLong] = useState('');
   const [psa, setPsa] = useState('');
   const [factor, setFactor] = useState(0.52);
-  const vol = (parseFloat(ap) || 0) * (parseFloat(tr) || 0) * (parseFloat(long) || 0) * factor;
+  // La unidad elegida (cm/mm) se recuerda en este dispositivo.
+  const [unit, setUnitState] = useState(() => { try { return localStorage.getItem(UNIT_KEY) === 'mm' ? 'mm' : 'cm'; } catch { return 'cm'; } });
+  const setUnit = (u) => { setUnitState(u); try { localStorage.setItem(UNIT_KEY, u); } catch { /* sin almacenamiento */ } };
+  const unitDivisor = unit === 'mm' ? 1000 : 1;
+  const vol = (parseFloat(ap) || 0) * (parseFloat(tr) || 0) * (parseFloat(long) || 0) * factor / unitDivisor;
   const hasVolume = ap && tr && long && vol > 0;
   const psaVal = parseFloat(psa);
   const hasPsa = psa !== '' && !isNaN(psaVal);
@@ -26,6 +32,7 @@ export default function PSADCalculator() {
   const volCatLabel = c[volCatKey];
 
   const getReportText = () => {
+    if (!showVolume) return '';
     const text = showPsad
       ? c.reportText(vol.toFixed(1), volCatLabel, psa, psad.toFixed(2), isHighRisk ? c.highRisk : c.normal)
       : c.reportTextVolOnly(vol.toFixed(1), volCatLabel);
@@ -42,7 +49,14 @@ export default function PSADCalculator() {
     <div className={`space-y-4 animate-in fade-in ${showVolume ? 'pb-56' : ''}`}>
       <Card>
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{c.dims}</label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">{c.dimsLabel(unit === 'mm' ? c.unitMm : c.unitCm)}</label>
+            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg text-sm">
+              {[['cm', c.unitCm], ['mm', c.unitMm]].map(([u, text]) => (
+                <button key={u} type="button" aria-pressed={unit === u} onClick={() => setUnit(u)} className={`px-3 py-1 rounded-md ${unit === u ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>{text}</button>
+              ))}
+            </div>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             <NumberField small placeholder={c.ap} value={ap} onChange={setAp} />
             <NumberField small placeholder={c.tr} value={tr} onChange={setTr} />
@@ -50,11 +64,16 @@ export default function PSADCalculator() {
           </div>
         </div>
         <NumberField label={c.psaLabel} placeholder={c.psaPh} value={psa} onChange={setPsa} />
-        <div className="flex items-center justify-between mt-2 text-sm text-slate-500">
+        <button type="button" onClick={resetAll} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-[0.99] transition-colors">
+          <IconRefresh size={16} />
+          {t.common.reset}
+        </button>
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
           <span>{c.formulaFactor}:</span>
-          <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
-            <button onClick={() => setFactor(0.52)} className={`px-3 py-1 rounded-md ${factor === 0.52 ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : ''}`}>0.52</button>
-            <button onClick={() => setFactor(0.523)} className={`px-3 py-1 rounded-md ${factor === 0.523 ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : ''}`}>0.523</button>
+          <div className="flex bg-slate-100 dark:bg-slate-900 p-0.5 rounded-lg">
+            {[0.52, 0.523].map(f => (
+              <button key={f} type="button" aria-pressed={factor === f} onClick={() => setFactor(f)} className={`px-2.5 py-0.5 rounded-md ${factor === f ? 'bg-white dark:bg-slate-700 shadow-sm font-medium text-slate-900 dark:text-white' : ''}`}>{f}</button>
+            ))}
           </div>
         </div>
       </Card>
