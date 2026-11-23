@@ -37,6 +37,7 @@ export const LAST_UPDATED = {
   "rectalCancer": "2026-09-21",
   "psad": "2026-09-21",
   "pirads": "2026-09-21",
+  "precise": "2026-11-23",
   "renalScore": "2026-09-21",
   "bosniak": "2026-09-21",
   "ccls": "2026-09-21",

@@ -49,6 +49,7 @@ const AdrenalWashout = lazy(() => import('./AdrenalWashout.jsx'));
 const AdrenalCSI = lazy(() => import('./AdrenalCSI.jsx'));
 const PSADCalculator = lazy(() => import('./PSADCalculator.jsx'));
 const PIRADS = lazy(() => import('./PIRADS.jsx'));
+const PRECISE = lazy(() => import('./PRECISE.jsx'));
 const RenalScore = lazy(() => import('./RenalScore.jsx'));
 const Bosniak = lazy(() => import('./Bosniak.jsx'));
 const CCLS = lazy(() => import('./CCLS.jsx'));
@@ -117,6 +118,7 @@ export const calculators = [
   // Genitourinario (próstata, riñón, vejiga)
   { id: 'psad', catKey: 'gu', component: PSADCalculator },
   { id: 'pirads', catKey: 'gu', component: PIRADS },
+  { id: 'precise', catKey: 'gu', component: PRECISE },
   { id: 'renalScore', catKey: 'gu', component: RenalScore },
   { id: 'bosniak', catKey: 'gu', component: Bosniak },
   { id: 'ccls', catKey: 'gu', component: CCLS },

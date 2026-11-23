@@ -168,6 +168,11 @@ export const REFERENCES = {
     { text: 'Mehralivand S, Shih JH, Harmon S, et al. A Grading System for the Assessment of Risk of Extraprostatic Extension of Prostate Cancer at Multiparametric MRI. Radiology. 2019;290(3):709-719.', doi: '10.1148/radiol.2018181278' },
     { text: 'Park KJ, Kim MH, Kim JK. Extraprostatic Tumor Extension: Comparison of Preoperative Multiparametric MRI Criteria and Histopathologic Correlation after Radical Prostatectomy. Radiology. 2020;296(1):87-95.', doi: '10.1148/radiol.2020192133' },
   ],
+  precise: [
+    { text: 'Englman C, Maffei D, Allen C, et al. PRECISE Version 2: Updated Recommendations for Reporting Prostate Magnetic Resonance Imaging in Patients on Active Surveillance for Prostate Cancer. Eur Urol. 2024;86(3):240-255.', doi: '10.1016/j.eururo.2024.03.014' },
+    { text: 'Moore CM, Giganti F, Albertsen P, et al. Reporting Magnetic Resonance Imaging in Men on Active Surveillance for Prostate Cancer: The PRECISE Recommendations—A Report of a European School of Oncology Task Force. Eur Urol. 2017;71(4):648-655.', doi: '10.1016/j.eururo.2016.06.011' },
+    { text: 'Lee CH, Tan TW, Tan CH. Multiparametric MRI in Active Surveillance of Prostate Cancer: An Overview and a Practical Approach. Korean J Radiol. 2021;22(7):1087-1099.', doi: '10.3348/kjr.2020.1224' },
+  ],
   virads: [
     { text: 'Panebianco V, Narumi Y, Altun E, et al. Multiparametric magnetic resonance imaging for bladder cancer: development of VI-RADS (Vesical Imaging-Reporting And Data System). Eur Urol. 2018;74(3):294-306.', doi: '10.1016/j.eururo.2018.04.029' },
     'Woo S, Panebianco V, Narumi Y, et al. Diagnostic performance of vesical imaging reporting and data system for the prediction of muscle-invasive bladder cancer: a systematic review and meta-analysis. Eur Urol Oncol. 2020;3(3):306-315.',
