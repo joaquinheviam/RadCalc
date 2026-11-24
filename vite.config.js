@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -22,9 +23,26 @@ import { VitePWA } from 'vite-plugin-pwa';
 // Ver INSTRUCCIONES.md, paso 5, para más detalle.
 const BASE_PATH = process.env.VITE_BASE_PATH || '/';
 
+// Versión para intranet (scripts/build-intranet.mjs, docs/INTRANET.md): rutas
+// relativas, sin service worker y sin los <script> de analítica de index.html.
+const INTRANET = process.env.VITE_INTRANET === '1';
+const intranetHtml = {
+  name: 'intranet-html',
+  transformIndexHtml: {
+    order: 'pre',
+    handler: (html) => html
+      .replace(/\s*<!-- Google Analytics[\s\S]*?-->/, '')
+      .replace(/\s*<script[^>]*(googletagmanager|ga-init)[^>]*><\/script>/g, ''),
+  },
+};
+
 export default defineConfig({
-  base: BASE_PATH,
+  base: INTRANET ? './' : BASE_PATH,
+  resolve: INTRANET
+    ? { alias: { '@vercel/analytics/react': fileURLToPath(new URL('./src/utils/noopAnalytics.js', import.meta.url)) } }
+    : {},
   build: {
+    ...(INTRANET ? { outDir: 'dist-intranet/radiocalc' } : {}),
     rollupOptions: {
       output: {
         // Separa las librerías de terceros (React, React Router) del código
@@ -47,7 +65,9 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    INTRANET && intranetHtml,
     VitePWA({
+      disable: INTRANET,
       registerType: 'prompt', // no actualiza solo: avisa y espera que el usuario confirme
       includeAssets: ['favicon.svg', 'robots.txt'],
       manifest: {

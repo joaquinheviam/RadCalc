@@ -9,6 +9,7 @@
     "prebuild": "node scripts/calc-dates.mjs && node scripts/generate-sitemap.mjs",
     "build": "vite build",
     "postbuild": "node scripts/prerender-seo.mjs && node scripts/postbuild.mjs",
+    "build:intranet": "node scripts/build-intranet.mjs",
     "preview": "vite preview",
     "test": "node --test \"tests/logic/*.test.mjs\""
   },

@@ -2,8 +2,9 @@ import InstallPromptIOS from './components/InstallPromptIOS';
 import InstallPromptAndroid from './components/InstallPromptAndroid';
 import InstallGuide from './components/InstallGuide';
 import OldDomainBanner from './components/OldDomainBanner';
+import IntranetNotice from './components/IntranetNotice.jsx';
 import { Suspense, useEffect, useMemo, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import { LangContext } from './i18n/LangContext.js';
 import { getStrings, loadStrings } from './i18n/loadStrings.js';
 import { SEARCH_TERMS } from './i18n/searchTerms.js';
@@ -20,6 +21,7 @@ import { useLanguageRequestPrompt } from './hooks/useLanguageRequestPrompt.js';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy, IconInstagram } from './components/icons/index.js';
 import { buildMailto, buildMailTextForClipboard, INSTAGRAM_URL } from './utils/mailto.js';
 import { copyToClipboard } from './utils/clipboard.js';
+import { IS_INTRANET } from './utils/buildTarget.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
 
 // Fila de una calculadora en el listado (favoritas, resultados de búsqueda o
@@ -254,7 +256,7 @@ function AppShellLoaded() {
             >
               <IconInstagram size={18} />
             </a>
-            <InstallGuide compact={Boolean(activeEntry)} />
+            {!IS_INTRANET && <InstallGuide compact={Boolean(activeEntry)} />}
             <button
               onClick={toggleLang}
               aria-label={t.common.toggleLangAria}
@@ -267,6 +269,7 @@ function AppShellLoaded() {
             </button>
           </div>
         </header>
+        {IS_INTRANET && <IntranetNotice />}
         {/* En el inicio, desde tablet (md) la lista se reparte en 2 columnas
             (3 desde xl) y el contenedor se ensancha; en celular y dentro de
             cada calculadora se mantiene la columna angosta de siempre. */}
@@ -450,23 +453,32 @@ function AppShellLoaded() {
       </div>
 
       {/* Prompts y notificaciones PWA */}
-      <InstallPromptIOS />
-      <InstallPromptAndroid />
-      <DonationPrompt />
+      {!IS_INTRANET && (
+        <>
+          <InstallPromptIOS />
+          <InstallPromptAndroid />
+          <DonationPrompt />
+        </>
+      )}
       <LanguageRequestPrompt prompt={langPrompt} onClose={closeLangPrompt} />
     </LangContext.Provider>
   );
 }
 
+// Intranet: rutas con # para que funcione en cualquier carpeta del servidor
+// sin reglas de reescritura.
+const Router = IS_INTRANET ? HashRouter : BrowserRouter;
+const routerProps = IS_INTRANET ? {} : { basename: import.meta.env.BASE_URL };
+
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <Router {...routerProps}>
       <Routes>
         <Route path="/" element={<RootRedirect />} />
         <Route path="/:lang/calc/:calcId" element={<AppShell />} />
         <Route path="/:lang/" element={<AppShell />} />
         <Route path="*" element={<RootRedirect />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }

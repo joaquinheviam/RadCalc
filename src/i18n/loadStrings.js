@@ -4,6 +4,8 @@
 // botón ES/EN). El service worker precachea ambos archivos, así que el
 // funcionamiento sin conexión no cambia.
 // Los scripts de build y las pruebas siguen usando ./strings.js (ambos idiomas).
+import { IS_INTRANET } from '../utils/buildTarget.js';
+
 const loaders = {
   es: () => import('./strings.es.js'),
   en: () => import('./strings.en.js'),
@@ -34,7 +36,7 @@ export function loadStrings(lang) {
 export function initialLang() {
   try {
     const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-    const path = window.location.pathname.startsWith(base) ? window.location.pathname.slice(base.length) : window.location.pathname;
+    const path = IS_INTRANET ? window.location.hash.slice(1) : window.location.pathname.startsWith(base) ? window.location.pathname.slice(base.length) : window.location.pathname;
     const seg = path.split('/').filter(Boolean)[0];
     if (seg === 'en' || seg === 'es') return seg;
     const stored = JSON.parse(window.localStorage.getItem('radiocalc:lang') || '"es"');
