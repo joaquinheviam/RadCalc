@@ -5,6 +5,7 @@ import App from './App.jsx';
 import UpdateToast from './pwa/UpdateToast.jsx';
 import './pwa/installPrompt.js';
 import './index.css';
+import { IS_INTRANET } from './utils/buildTarget.js';
 import { initialLang, loadStrings } from './i18n/loadStrings.js';
 
 // Empieza a descargar los textos del idioma de la URL de inmediato, en
@@ -14,7 +15,7 @@ loadStrings(initialLang()).catch(() => {});
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-    <UpdateToast />
-    <Analytics />
+    {!IS_INTRANET && <UpdateToast />}
+    {!IS_INTRANET && <Analytics />}
   </StrictMode>
 );

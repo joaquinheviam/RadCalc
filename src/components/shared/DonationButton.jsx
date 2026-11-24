@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../../i18n/LangContext.js';
 import { DONATION_URL, PAYPAL_HOSTED_BUTTON_ID } from '../../utils/donation.js';
+import { IS_INTRANET } from '../../utils/buildTarget.js';
+import IntranetQr from './IntranetQr.jsx';
 import { IconCoffee, IconChevronDown, IconExternalLink, IconGlobe } from '../icons/index.js';
 
 // Botón de donación del final de la página. Si solo hay un método
 // configurado (ver src/utils/donation.js) se muestra un botón simple;
 // si hay dos, se despliega un menú para elegir Mercado Pago o PayPal.
 // Si no hay ninguno configurado, no se muestra nada.
+// En la versión para intranet se muestra un QR a radiocalc.app.
 export default function DonationButton() {
+  return IS_INTRANET ? <IntranetQr /> : <OnlineDonation />;
+}
+
+function OnlineDonation() {
   const { t } = useLang();
   const hasMercadoPago = !!DONATION_URL;
   const hasPaypal = !!PAYPAL_HOSTED_BUTTON_ID;

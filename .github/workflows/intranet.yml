@@ -1,0 +1,57 @@
+name: Publicar versión intranet
+
+# Se lanza solo a mano: pestaña "Actions" -> "Publicar versión intranet" ->
+# "Run workflow". Compila el ZIP y lo publica en Releases; GitHub avisa por
+# correo a quienes siguen las versiones del repositorio. Ver docs/INTRANET.md.
+on:
+  workflow_dispatch:
+    inputs:
+      tipo:
+        description: 'Tipo de versión'
+        type: choice
+        options: [Programada, Corrección urgente]
+        default: Programada
+      nota:
+        description: 'Mensaje para el equipo de intranet (opcional)'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: intranet-release
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:intranet
+      - name: Publicar la versión
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TIPO: ${{ inputs.tipo }}
+          NOTA: ${{ inputs.nota }}
+        run: |
+          set -euo pipefail
+          prev=$(gh release list --limit 50 --json tagName,publishedAt --jq '[.[] | select(.tagName | startswith("intranet-"))][0].publishedAt // ""')
+          zip=$(ls dist-intranet/*.zip)
+          hoy=$(date -u +%Y-%m-%d)
+          tag="intranet-$hoy-$(git rev-parse --short=7 HEAD)"
+          title="RadioCalc intranet $hoy"
+          if [ "$TIPO" = "Corrección urgente" ]; then title="[URGENTE] $title"; fi
+          {
+            if [ "$TIPO" = "Corrección urgente" ]; then printf '**Corrección urgente: reemplazar la copia instalada lo antes posible.**\n\n'; fi
+            if [ -n "$NOTA" ]; then printf '%s\n\n' "$NOTA"; fi
+            printf 'Descargar el ZIP adjunto y reemplazar completa la carpeta `radiocalc` (instrucciones en LEEME.txt). Si la red permite llegar a radiocalc.app, preferir el enlace directo.\n\n'
+            node scripts/intranet-notes.mjs "${prev:0:10}"
+          } > notas.md
+          gh release create "$tag" "$zip" --target "$GITHUB_SHA" --title "$title" --notes-file notas.md
