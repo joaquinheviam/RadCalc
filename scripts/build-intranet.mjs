@@ -42,6 +42,7 @@ if (!existsSync(join(out, 'index.html'))) throw new Error('build-intranet: falta
 
 const zip = `radiocalc-intranet-${date}-${commit}.zip`;
 copyFileSync(join(root, 'docs', 'INTRANET.md'), join(outRoot, 'LEEME.txt'));
+copyFileSync(join(root, 'LICENSE'), join(out, 'LICENSE.txt'));
 writeFileSync(join(out, 'version.txt'), `RadioCalc Clinical, versión intranet ${version}\n`);
 if (process.platform === 'win32') {
   // bsdtar de Windows: escribe rutas con "/" (Compress-Archive no siempre).

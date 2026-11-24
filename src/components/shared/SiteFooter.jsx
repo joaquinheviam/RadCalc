@@ -102,6 +102,7 @@ export default function SiteFooter() {
           {t.common.copyEmail}
         </button>
       </div>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{t.common.copyright}</p>
       <p className="text-[11px] text-slate-300 dark:text-slate-600">{REPORT_EMAIL} · RadioCalc Clinical</p>
     </footer>
   );

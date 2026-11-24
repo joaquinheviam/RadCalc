@@ -45,8 +45,9 @@ GitHub avisa de cada versión, con el ZIP y los cambios clínicos.
 Sin cuenta: suscribirse por RSS a
 https://github.com/joaquinheviam/RadCalc/releases.atom
 
-## 5. Lo que se pide mantener
+## 5. Condiciones de uso
 
+Instalar una copia requiere autorización escrita del autor (ver LICENSE.txt).
 Usar la carpeta completa y sin modificar: fórmulas, textos, referencias, logo,
 autoría, agradecimientos y advertencia de uso. Es material de apoyo y no
 reemplaza el juicio clínico. Errores o dudas: drjoaquinhevia@gmail.com

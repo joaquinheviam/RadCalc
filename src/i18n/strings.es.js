@@ -73,6 +73,7 @@ export default {
     changelogButton: 'Historial de actualizaciones',
     sponsorsButton: 'Agradecimientos',
     closeAria: 'Cerrar',
+    copyright: '© 2026 Dr. Joaquín Hevia Morel. Todos los derechos reservados.',
     intranetVersion: 'Versión intranet',
     intranetVerify: 'Copia local sin actualización automática: verifique la versión vigente en radiocalc.app',
     intranetQrText: 'Escanee con su celular para abrir la versión vigente y apoyar el proyecto',
