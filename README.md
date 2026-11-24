@@ -4,6 +4,8 @@ Calculadoras radiológicas para la práctica clínica diaria — PSAD, TI-RADS, 
 
 Si buscás cómo instalar, compilar y publicar el sitio paso a paso (sin necesidad de saber programar), leé **[INSTRUCCIONES.md](./INSTRUCCIONES.md)**. Este documento es sobre cómo está organizado el código y cómo agregarle una calculadora nueva.
 
+© 2026 Dr. Joaquín Hevia Morel. Todos los derechos reservados: el repositorio es visible, pero copiar, modificar o instalar RadioCalc en otros sitios requiere autorización escrita. Ver [LICENSE](./LICENSE).
+
 ## Stack técnico
 
 - [Vite](https://vite.dev/) + [React 19](https://react.dev/) — sin backend, todo corre en el navegador.

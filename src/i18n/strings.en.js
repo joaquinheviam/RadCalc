@@ -73,6 +73,7 @@ export default {
     changelogButton: 'Update log',
     sponsorsButton: 'Acknowledgments',
     closeAria: 'Close',
+    copyright: '© 2026 Dr. Joaquín Hevia Morel. All rights reserved.',
     intranetVersion: 'Intranet version',
     intranetVerify: 'Local copy without automatic updates: check the current version at radiocalc.app',
     intranetQrText: 'Scan with your phone to open the current version and support the project',
