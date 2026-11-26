@@ -4864,6 +4864,7 @@ export default {
       rightLabel: 'Riñón derecho (cm)',
       leftLabel: 'Riñón izquierdo (cm)',
       lengthHint: 'Longitud máxima polo a polo. Puede ingresar uno o ambos riñones.',
+      mmWarn: 'La medida debe ir en centímetros (ej. 7,3 y no 73).',
       sides: { right: 'Riñón derecho', left: 'Riñón izquierdo' },
       sidesShort: { right: 'Der.', left: 'Izq.' },
       bands: { small: 'pequeño para la edad (< −2 DE)', normal: 'dentro de ±2 DE para la edad', large: 'aumentado para la edad (> +2 DE)' },
@@ -4875,7 +4876,7 @@ export default {
       reportTitle: (age) => `Longitud renal por ecografía (${age}):`,
       usage: [
         'Viteri et al. (Radiology: Artificial Intelligence 2026) analizaron 24 664 ecografías de 18 769 niños de 0 a 18 años sin patología renal, con procesamiento de lenguaje natural de los informes, y publicaron la media y la DE de la longitud renal por edad.',
-        'Se usa la longitud máxima polo a polo. La diferencia entre riñón derecho e izquierdo (0,09 cm) y entre sexos (hasta 0,06 cm) no fue clínicamente relevante, por lo que la referencia es la misma para ambos riñones y sexos.',
+        'Se usa la longitud máxima polo a polo. La diferencia entre riñón derecho e izquierdo (0,09 cm) y entre sexos (hasta 0,06 cm) no fue clínicamente relevante, por lo que la referencia es la misma para ambos riñones y sexos. La media y la DE del estudio corresponden al promedio de ambos riñones de cada ecografía; aplicadas a un riñón por separado, el Z puede quedar levemente sobrestimado.',
         'El estudio considera riñón pequeño o aumentado a más de 2 DE de la media. Un riñón pequeño se asocia a deterioro más rápido de la función en prematuros; el aumento se ve en enfermedad infiltrativa y poliquística, y es el crecimiento compensatorio esperado en riñón único funcionante.',
         'Excluyó prematuros y riñones con hallazgos patológicos; es una cohorte de un centro terciario de EE. UU. Los valores fueron algo menores que los de Rosenbaum 1984 en la mayoría de las edades.',
       ],

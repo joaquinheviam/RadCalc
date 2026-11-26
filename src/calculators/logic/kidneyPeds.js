@@ -25,12 +25,16 @@ export function normCdf(z) {
   return z >= 0 ? 1 - p : p;
 }
 
+// Sobre este valor la medida probablemente está en mm.
+export const MAX_LENGTH = 20;
+
 // Devuelve { mean, sd, z, pct, band } o null. band: 'small' (z < −2), 'normal', 'large' (z > +2).
 export function kidneyZ(group, length) {
   const row = KIDNEY_LENGTH.find((r) => r[0] === group);
-  if (!row || typeof length !== 'number' || !Number.isFinite(length) || length <= 0) return null;
+  if (!row || typeof length !== 'number' || !Number.isFinite(length) || length <= 0 || length > MAX_LENGTH) return null;
   const [, mean, sd] = row;
-  const z = (length - mean) / sd;
+  // Redondeo para que un valor exactamente a 2 DE no dependa del error de punto flotante.
+  const z = Math.round(((length - mean) / sd) * 1e6) / 1e6;
   const band = z < -2 ? 'small' : z > 2 ? 'large' : 'normal';
   return { mean, sd, z, pct: normCdf(z) * 100, band };
 }

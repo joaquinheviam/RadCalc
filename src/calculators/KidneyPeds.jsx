@@ -3,7 +3,7 @@ import { useLang } from '../i18n/LangContext.js';
 import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
-import { KIDNEY_LENGTH, kidneyZ } from './logic/kidneyPeds.js';
+import { KIDNEY_LENGTH, kidneyZ, MAX_LENGTH } from './logic/kidneyPeds.js';
 
 const COLOR = { small: 'text-amber-500', normal: 'text-emerald-500', large: 'text-red-500' };
 
@@ -16,12 +16,15 @@ export default function KidneyPeds() {
   const [left, setLeft] = useState('');
 
   const num = (x, d) => x.toLocaleString(lang === 'es' ? 'es-CL' : 'en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
-  const sgn = (z) => (z >= 0 ? '+' : '−') + num(Math.abs(z), 1);
+  const sgn = (z) => { const r = Math.round(z * 100) / 100; return (r >= 0 ? '+' : '−') + num(Math.abs(r), 2); };
+  const pctText = (p) => (p < 1 ? '< 1' : p > 99 ? '> 99' : String(Math.round(p)));
+  const shown = (v) => (lang === 'es' ? String(v).replace('.', ',') : String(v));
+  const mmWarn = [right, left].some((v) => v !== '' && parseFloat(v) > MAX_LENGTH);
   const rr = group && right !== '' ? kidneyZ(group, parseFloat(right)) : null;
   const rl = group && left !== '' ? kidneyZ(group, parseFloat(left)) : null;
   const row = KIDNEY_LENGTH.find((r) => r[0] === group);
-  const refText = row ? c.refLine(c.ages[group], num(row[1], 2), num(row[2], 2), num(row[1] - 2 * row[2], 1), num(row[1] + 2 * row[2], 1)) : '';
-  const side = (k, r, v) => r && c.sideLine(c.sides[k], num(parseFloat(v), 1), sgn(r.z), Math.round(r.pct), c.bands[r.band]);
+  const refText = row ? c.refLine(c.ages[group], num(row[1], 2), num(row[2], 2), num(row[1] - 2 * row[2], 2), num(row[1] + 2 * row[2], 2)) : '';
+  const side = (k, r, v) => r && c.sideLine(c.sides[k], shown(v), sgn(r.z), pctText(r.pct), c.bands[r.band]);
   const worst = [rr, rl].filter(Boolean).sort((a, b) => Math.abs(b.z) - Math.abs(a.z))[0];
 
   const getReportText = () => {
@@ -49,6 +52,7 @@ export default function KidneyPeds() {
           <NumberField label={c.leftLabel} value={left} onChange={setLeft} />
         </div>
         <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.lengthHint}</p>
+        {mmWarn && <p role="alert" className="text-xs text-amber-700 dark:text-amber-400 mt-2 leading-snug">{c.mmWarn}</p>}
       </Card>
       {worst && (
         <Card>

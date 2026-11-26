@@ -74,6 +74,14 @@ test('Riñón pediátrico: tabla de Viteri 2026 (Tabla 3) y puntaje Z', async ()
   assert.equal(kidneyZ('y3', 7.31 + 2.01 * 0.84).band, 'large');
   near(normCdf(1.96), 0.975, 1e-4);
   assert.equal(kidneyZ('y3', 0), null);
+  assert.equal(kidneyZ('y3', 73), null);
+  // Exactamente en ±2 DE queda dentro (normal), sin depender del punto flotante.
+  for (const [k, m, sd] of KIDNEY_LENGTH) {
+    assert.equal(kidneyZ(k, m - 2 * sd).band, 'normal', k);
+    assert.equal(kidneyZ(k, m + 2 * sd).band, 'normal', k);
+  }
+  assert.equal(kidneyZ('y2', 5.2).band, 'normal');
+  assert.equal(kidneyZ('y13', 12.8).band, 'normal');
   for (const lang of ['es', 'en']) {
     const c = STRINGS[lang].calc.kidneyPeds;
     for (const [k] of KIDNEY_LENGTH) assert.ok(c.ages[k], k);

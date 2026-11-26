@@ -4862,6 +4862,7 @@ export default {
       rightLabel: 'Right kidney (cm)',
       leftLabel: 'Left kidney (cm)',
       lengthHint: 'Maximum pole-to-pole length. Enter one or both kidneys.',
+      mmWarn: 'Enter the length in centimeters (e.g., 7.3, not 73).',
       sides: { right: 'Right kidney', left: 'Left kidney' },
       sidesShort: { right: 'R', left: 'L' },
       bands: { small: 'small for age (< −2 SD)', normal: 'within ±2 SD for age', large: 'enlarged for age (> +2 SD)' },
@@ -4873,7 +4874,7 @@ export default {
       reportTitle: (age) => `Ultrasound kidney length (${age}):`,
       usage: [
         'Viteri et al. (Radiology: Artificial Intelligence 2026) analyzed 24,664 ultrasound reports from 18,769 children aged 0 to 18 years without kidney pathology, using natural language processing, and published the mean and SD of kidney length by age.',
-        'Use the maximum pole-to-pole length. The right-left difference (0.09 cm) and the sex difference (up to 0.06 cm) were not clinically relevant, so the same reference applies to both kidneys and sexes.',
+        'Use the maximum pole-to-pole length. The right-left difference (0.09 cm) and the sex difference (up to 0.06 cm) were not clinically relevant, so the same reference applies to both kidneys and sexes. The study mean and SD refer to the average of both kidneys per ultrasound; applied to a single kidney, the Z score may be slightly overestimated.',
         'The study considers a kidney small or enlarged when more than 2 SD from the mean. Small kidneys are associated with faster function decline in premature children; enlargement is seen in infiltrative and polycystic disease, and is the expected compensatory growth of a solitary functioning kidney.',
         'Premature children and kidneys with pathological findings were excluded; it is a single tertiary-center US cohort. Values were somewhat smaller than Rosenbaum 1984 at most ages.',
       ],
