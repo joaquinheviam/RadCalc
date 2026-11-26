@@ -86,16 +86,35 @@ test('MESA: % con CAC 0 igual al P25 (redondeo) → en torno al P25', () => {
 
 test('Textos del percentil en ES/EN', () => {
   for (const lang of ['es', 'en']) {
-    const p = STRINGS[lang].calc.cadrads.pct;
-    const a = p.result(cacPercentile({ age: 36, sex: 'male', group: 'white', cac: 8 }), 36, 'male', '8');
-    assert.match(a, /Agatston (CAC )?8/);
+    const p = STRINGS[lang].cacPercentile;
+    const a = p.result(cacPercentile({ age: 36, sex: 'male', group: 'white', cac: 8 }), 36, 'male');
     assert.match(a, /Javaid 2022/);
     assert.match(a, lang === 'es' ? /entre el P90 y el P95/ : /between the P90 and the P95/);
-    const b = p.result(cacPercentile({ age: 60, sex: 'female', group: 'hispanic', cac: 0 }), 60, 'female', '0');
+    const b = p.result(cacPercentile({ age: 60, sex: 'female', group: 'hispanic', cac: 0 }), 60, 'female');
     assert.match(b, /MESA/);
     assert.match(b, /CAC 0/);
-    assert.match(p.result(cacPercentile({ age: 64, sex: 'male', group: 'white', cac: 1 }), 64, 'male', '1'), lang === 'es' ? /en torno al P25/ : /approximately at the P25/);
-    const c = p.result(cacPercentile({ age: 44, sex: 'male', group: 'white', cac: 500 }), 44, 'male', '500');
+    assert.match(p.result(cacPercentile({ age: 64, sex: 'male', group: 'white', cac: 1 }), 64, 'male'), lang === 'es' ? /en torno al P25/ : /approximately at the P25/);
+    const c = p.result(cacPercentile({ age: 44, sex: 'male', group: 'white', cac: 500 }), 44, 'male');
     assert.match(c, lang === 'es' ? /en o sobre el P97,5/ : /at or above the P97\.5/);
+  }
+});
+
+test('CAC-DRS: categorías por Agatston y código A/V con N', async () => {
+  const { cacDrsFromAgatston, cacDrsCode } = await import('../../src/calculators/logic/cacDrs.js');
+  assert.equal(cacDrsFromAgatston(0), 0);
+  assert.equal(cacDrsFromAgatston(1), 1);
+  assert.equal(cacDrsFromAgatston(99), 1);
+  assert.equal(cacDrsFromAgatston(100), 2);
+  assert.equal(cacDrsFromAgatston(299), 2);
+  assert.equal(cacDrsFromAgatston(300), 'boundary');
+  assert.equal(cacDrsFromAgatston(301), 3);
+  assert.equal(cacDrsFromAgatston(-1), null);
+  assert.equal(cacDrsCode('A', 1, 2), 'A1/N2');
+  assert.equal(cacDrsCode('V', 3, 4), 'V3/N4');
+  assert.equal(cacDrsCode('A', 2, 0), 'A2');
+  assert.equal(cacDrsCode('A', 0, 0), 'A0');
+  for (const lang of ['es', 'en']) {
+    const c = STRINGS[lang].calc.cacdrs;
+    for (const k of ['risk', 'treatment', 'visualOptions', 'visualGrade']) assert.equal(c[k].length, 4, `${lang} ${k}`);
   }
 });

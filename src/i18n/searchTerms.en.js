@@ -26,6 +26,7 @@ export default {
   lungScreening: ['lung cancer screening criteria', 'screening eligibility', 'nlst', 'nelson', 'smoker', 'eligibility', 'screening', 'nccn screening', 'ldct candidate', 'lung cancer screening', 'pack years', 'high risk smoker'],
   lungCysts: ['pulmonary cysts', 'cystic lung disease', 'lam', 'histiocytosis', 'birt-hogg-dube', 'cyst mimic', 'alveolar macrophage pneumonia', 'amp', 'dip', 'emphysema', 'cysts', 'cystic', 'cystic lung', 'lch', 'bip', 'bhds', 'ipf', 'lymphangioleiomyomatosis', 'hrct cysts'],
   cadrads: ['ca-rads', 'cadrads', 'coronary', 'coronary calcium', 'coronary ct angiography', 'coronary stenosis', 'coronary plaque', 'cad rads', 'cad-rads', 'cadrads 2.0', 'coronary cta', 'coronary artery', 'plaque burden', 'calcium score', 'ccta', 'cac percentile', 'calcium percentile', 'mesa'],
+  cacdrs: ['cac-drs', 'cacdrs', 'calcium score', 'coronary calcium', 'agatston', 'cac score', 'cac percentile', 'mesa', 'coronary calcification'],
   mriFf: ['fat fraction', 'fatty liver', 'hepatic steatosis', 'proton density fat fraction', 'pdff', 'mri ff', 'dixon', 'hepatic fat', 'steatosis', 'dixon liver', 'liver fat mri', 'mri pdff'],
   cardiacSiderosis: ['cardiac siderosis', 'myocardial iron', 'iron overload cardiomyopathy', 'iron overload', 'thalassemia', 'hemochromatosis', 't2*', 't2 star', 'r2*', 'cardiac t2*', 'cardiac mri iron', 'iron', 'siderosis', 'chelation'],
   siderosis: ['hepatic siderosis', 'iron overload', 'hemochromatosis', 'r2*', 't2 star', 'ferriscan', 'siderosis', 'iron', 'hepatic iron', 'lic', 't2*', 'mri liver iron'],

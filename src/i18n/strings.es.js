@@ -254,6 +254,8 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-11-26', text: 'Nueva calculadora Score de calcio coronario (CAC-DRS), categoría Cardiovascular: categoría CAC-DRS 0-3 por score de Agatston o evaluación visual, modificador N por número de arterias con calcio, recomendación de tratamiento propuesta por el documento (opcional en el informe) y percentil por edad, sexo y grupo (Javaid 2022 y MESA). Según Hecht et al., J Cardiovasc Comput Tomogr 2018, y Kumar y Bhatia, J Cardiovasc Imaging 2023.' },
+      { date: '2026-11-26', text: 'CAD-RADS 2.0: el código sigue el orden del documento (estenosis, P y luego N, HRP, I, S, G, E; antes la P iba al final). El modificador de isquemia ahora distingue I+, I- e I± (TC-FFR o perfusión por TC), y el informe agrega el score de calcio de Agatston cuando se ingresa. Según Cury et al., Radiol Cardiothorac Imaging 2022.' },
       { date: '2026-11-26', text: 'CAD-RADS 2.0: con el score de calcio (Agatston) se puede agregar la edad, el sexo y el grupo poblacional para obtener el percentil del CAC, que se suma al informe. De 30 a 44 años usa Javaid et al., J Am Coll Cardiol 2022 (solo blancos y negros); de 45 a 84 años, MESA (McClelland et al., Circulation 2006, valores del calculador oficial de MESA). Por defecto: blanco en 30-44 años e hispano desde los 45; ninguna cohorte incluye población fuera de EE. UU.' },
       { date: '2026-11-23', text: 'Nueva calculadora PRECISE v2 para RM de próstata en vigilancia activa de cáncer de próstata (puntajes 1–5, 3-V/3-NonV y X), según Englman et al., Eur Urol 2024.' },
       { date: '2026-11-17', text: 'CAD-RADS 2.0: el modificador de carga de placa (P) ahora se puede asignar por cualquiera de los tres métodos de la Tabla 2 del consenso: score de calcio de Agatston (P1 1-100, P2 101-300, P3 301-999, P4 > 1000), score de involucramiento segmentario (SIS: P1 ≤ 2, P2 3-4, P3 5-7, P4 ≥ 8) o evaluación visual por número de vasos y cantidad de placa. La calculadora asigna la categoría según el valor ingresado, no informa P en CAD-RADS 0 y lo indica en el informe. Referencia: Cury RC, et al. JACC Cardiovasc Imaging. 2022;15:1974-2001.' },
@@ -395,6 +397,33 @@ export default {
         recsTitle: (framework) => `Recomendaciones posibles — ${framework}`,
         unitMm: 'mm',
       },
+    },
+  },
+  cacPercentile: {
+    title: 'Percentil del CAC para edad, sexo y grupo (opcional)',
+    ageLabel: 'Edad (años cumplidos, 30-84)',
+    ageOut: 'Hay percentiles de referencia solo entre los 30 y 84 años (años cumplidos, sin decimales).',
+    sexLabel: 'Sexo',
+    sex: { female: 'Mujer', male: 'Hombre' },
+    groupLabel: 'Grupo poblacional de referencia',
+    group: { white: 'Blanco', black: 'Negro', hispanic: 'Hispano', chinese: 'Chino' },
+    sourceName: { javaid: 'Javaid 2022, 30-44 años', mesa: 'MESA, 45-84 años' },
+    groupHint: {
+      javaid: 'Este estudio solo tiene personas blancas y negras de EE. UU.: no hay categoría hispana ni latinoamericana. Por defecto, blanco.',
+      mesa: 'MESA incluye personas blancas, negras, hispanas y chino-americanas residentes en EE. UU. Por defecto, hispano.',
+    },
+    caveat: 'Compara el CAC con personas de igual edad, sexo y grupo sin enfermedad cardiovascular sintomática. No reemplaza el valor absoluto del CAC ni equivale a riesgo absoluto, y ninguna de las cohortes incluye población chilena ni latinoamericana fuera de EE. UU.',
+    result: (r, age, sex) => {
+      const P = (k) => `P${String(k).replace('.', ',')}`;
+      const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; población ${({ white: 'blanca', black: 'negra', hispanic: 'hispana', chinese: 'china' })[r.group]}; ${sex === 'female' ? 'mujer' : 'hombre'} de ${age} años`;
+      const head = `Percentil del CAC (${who})`;
+      if (r.zero) {
+        return r.pPositive !== null
+          ? `${head}: en esta referencia, el ${Math.round(100 - r.pPositive)} % tiene CAC 0.`
+          : `${head}: sin percentil asignable.`;
+      }
+      const band = r.lower === null ? `bajo el ${P(r.upper)}` : r.upper === null ? `en o sobre el ${P(r.lower)}` : r.lower === r.upper ? `en torno al ${P(r.lower)}` : `entre el ${P(r.lower)} y el ${P(r.upper)}`;
+      return `${head}: ${band}.`;
     },
   },
   calc: {
@@ -1973,7 +2002,13 @@ export default {
       modN: 'N — Segmento no diagnóstico',
       modS: 'S — Stent',
       modG: 'G — Injerto (bypass)',
-      modI: 'I — Isquemia (estudio funcional positivo)',
+      modILabel: 'I — Isquemia por TC-FFR o perfusión miocárdica por TC',
+      modIOptions: [
+        { key: '', label: 'No evaluada' },
+        { key: '+', label: 'I+ (positiva)' },
+        { key: '-', label: 'I- (negativa)' },
+        { key: '±', label: 'I± (limítrofe)' },
+      ],
       modHrp: 'HRP — Placa de alto riesgo',
       modHrpHint: 'Se considera placa de alto riesgo (HRP) cuando cumple ≥ 2 de: atenuación baja (< 30 UH), remodelación positiva (índice de remodelación ≥ 1.10), signo del "anillo de servilleta" (napkin-ring), o calcificación "punteada" (spotty calcification). Verifique esta definición contra el documento CAD-RADS 2.0 vigente antes de usarla como criterio único.',
       modE: 'E — Excepción (ej. trasplante, coronaria anómala)',
@@ -2000,42 +2035,51 @@ export default {
       pNotForZero: 'CAD-RADS 0 indica ausencia de placa: el modificador P no se informa (P0 no existe).',
       pCaveat: 'Rangos según la Tabla 2 del consenso CAD-RADS 2.0. No hay un único método recomendado: use el que considere más apropiado en su institución. Las categorías pueden no coincidir entre métodos; si difieren, el documento indica usar el CAC o la cuantificación de carga total de placa, si está disponible.',
       reportP: (p, level, detail) => `Carga de placa: ${p} (${level}; ${detail}).`,
-      pct: {
-        title: 'Percentil del CAC para edad, sexo y grupo (opcional)',
-        ageLabel: 'Edad (años cumplidos, 30-84)',
-        ageOut: 'Hay percentiles de referencia solo entre los 30 y 84 años (años cumplidos, sin decimales).',
-        sexLabel: 'Sexo',
-        sex: { female: 'Mujer', male: 'Hombre' },
-        groupLabel: 'Grupo poblacional de referencia',
-        group: { white: 'Blanco', black: 'Negro', hispanic: 'Hispano', chinese: 'Chino' },
-        sourceName: { javaid: 'Javaid 2022, 30-44 años', mesa: 'MESA, 45-84 años' },
-        groupHint: {
-          javaid: 'Este estudio solo tiene personas blancas y negras de EE. UU.: no hay categoría hispana ni latinoamericana. Por defecto, blanco.',
-          mesa: 'MESA incluye personas blancas, negras, hispanas y chino-americanas residentes en EE. UU. Por defecto, hispano.',
-        },
-        caveat: 'Compara el CAC con personas de igual edad, sexo y grupo sin enfermedad cardiovascular sintomática. No reemplaza el valor absoluto del CAC ni equivale a riesgo absoluto, y ninguna de las cohortes incluye población chilena ni latinoamericana fuera de EE. UU.',
-        result: (r, age, sex, cac) => {
-          const P = (k) => `P${String(k).replace('.', ',')}`;
-          const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; población ${({ white: 'blanca', black: 'negra', hispanic: 'hispana', chinese: 'china' })[r.group]}; ${sex === 'female' ? 'mujer' : 'hombre'} de ${age} años`;
-          const head = `Percentil del CAC de Agatston ${cac} (${who})`;
-          if (r.zero) {
-            return r.pPositive !== null
-              ? `${head}: en esta referencia, el ${Math.round(100 - r.pPositive)} % tiene CAC 0.`
-              : `${head}: sin percentil asignable.`;
-          }
-          const band = r.lower === null ? `bajo el ${P(r.upper)}` : r.upper === null ? `en o sobre el ${P(r.lower)}` : r.lower === r.upper ? `en torno al ${P(r.lower)}` : `entre el ${P(r.lower)} y el ${P(r.upper)}`;
-          return `${head}: ${band}.`;
-        },
-      },
-      reportPDetail: { cac: (v) => `score de calcio de Agatston ${v}`, sis: (v) => `SIS ${v}`, visual: () => 'evaluación visual' },
+      reportCac: (v) => `Score de calcio coronario (Agatston): ${v}.`,
+      reportPDetail: { cac: () => 'por score de calcio de Agatston', sis: (v) => `SIS ${v}`, visual: () => 'evaluación visual' },
       resultLabel: 'Resultado CAD-RADS',
-      reportText: (cadrads, mods) =>
-        `CAD-RADS 2.0:\nCategoría: ${cadrads}${mods ? '/' + mods : ''}`,
+      reportText: (code) => `CAD-RADS 2.0:\nCategoría: ${code}`,
       usage: [
         'CAD-RADS clasifica la enfermedad coronaria por angio-TC según el grado de estenosis del segmento más afectado, de CAD-RADS 0 (ausencia de placa) a 5 (oclusión total), más la categoría N para estudios no diagnósticos.',
-        'Los modificadores se agregan tras la categoría principal (ej. "CAD-RADS 3/HRP" o "CAD-RADS 4B/I"): N (segmento no evaluable), S (stent), G (injerto), I (isquemia en estudio funcional), HRP (placa de alto riesgo), E (excepción, ej. trasplante cardíaco o coronaria anómala) y P1-P4 (carga de placa por score de calcio de Agatston, SIS o evaluación visual).',
+        'El código sigue el orden de CAD-RADS 2.0: estenosis, luego la carga de placa (P1-P4, por score de calcio de Agatston, SIS o evaluación visual) y después los modificadores N (segmento no diagnóstico), HRP (placa de alto riesgo), I (isquemia por TC-FFR o perfusión miocárdica por TC: I+ positiva, I- negativa, I± limítrofe), S (stent), G (injerto) y E (excepción, ej. trasplante cardíaco o coronaria anómala), separados por "/" (ej. "CAD-RADS 3/P3/HRP/S" o "CAD-RADS 4A/I+/E").',
         'CAD-RADS 0-2 generalmente no requiere tratamiento adicional; CAD-RADS 3 amerita evaluación clínica y posible tratamiento médico; CAD-RADS 4A-4B suele requerir evaluación de isquemia o angiografía invasiva; CAD-RADS 5 amerita revascularización urgente según contexto clínico.',
         'Percentil del CAC (opcional, con el método de score de calcio): se elige la referencia según la edad. De 30 a 44 años, Javaid et al. 2022: 19.725 adultos asintomáticos de EE. UU. (cohortes CARDIA, CAC Consortium y Walter Reed), con percentiles solo para personas blancas y negras. De 45 a 84 años, MESA: 6110 participantes de seis comunidades de EE. UU., sin enfermedad cardiovascular clínica ni diabetes tratada, blancos, negros, hispanos y chino-americanos; se usan los valores del calculador oficial de MESA. A los 45 años hay datos de ambos estudios; se usa MESA.',
+        'Ninguna de estas cohortes incluye población de Chile ni de otros países fuera de EE. UU. "Hispano" en MESA corresponde a población hispana residente en EE. UU. Por defecto se usa blanco entre 30 y 44 años (no hay categoría hispana) e hispano desde los 45; elija el grupo más cercano al paciente e interprete el percentil con cautela en otras poblaciones. Se informa el rango entre los percentiles publicados (Javaid: 75, 90, 95 y 97,5; MESA: 25, 50, 75 y 90); en MESA, todo CAC mayor de 0 queda además sobre el porcentaje de personas con CAC 0 (por ejemplo, sobre el P32 si el 68 % tiene CAC mayor de 0). En Javaid, cualquier CAC mayor de 0 en mujeres de 30 a 45 años queda sobre el percentil 90.',
+      ],
+    },
+    cacdrs: {
+      title: 'Score de calcio coronario (CAC-DRS)',
+      subtitle: 'Categoría CAC-DRS (SCCT 2018) por score de Agatston o evaluación visual, con número de arterias con calcio y percentil por edad, sexo y grupo poblacional.',
+      methodLabel: 'Método',
+      methods: { A: 'Score de Agatston', V: 'Evaluación visual' },
+      cacLabel: 'Score de calcio de Agatston total',
+      ranges: ['CAC-DRS 0: Agatston 0 (riesgo muy bajo).', 'CAC-DRS 1: Agatston 1 a 99 (riesgo leve).', 'CAC-DRS 2: Agatston 100 a 299 (riesgo moderado).', 'CAC-DRS 3: Agatston mayor de 300 (riesgo moderado a severo).'],
+      boundary: 'Un score de exactamente 300 no está en la tabla de la revisión usada (CAC-DRS 2 llega a 299 y CAC-DRS 3 es mayor de 300). Defina la categoría según el documento original de la SCCT.',
+      visualOptions: ['Ausente: sin calcio coronario', 'Leve: solo focos aislados de calcio dentro de un segmento coronario', 'Moderado: más calcio que en el grado leve, pero menos que en el severo', 'Severo: depósitos continuos de calcio dentro de un segmento coronario'],
+      visualGrade: ['ausente', 'leve', 'moderado', 'severo'],
+      visualHint: 'La evaluación visual es subjetiva y no tiene un estándar de referencia. Los grados siguen el criterio de Chiles et al., descrito en la revisión de Kumar y Bhatia (2023).',
+      vesselsLabel: 'Arterias con calcio (modificador N)',
+      vessels: { LM: 'Tronco común izquierdo', LAD: 'Descendente anterior', LCX: 'Circunfleja', RCA: 'Coronaria derecha' },
+      vesselsHint: 'N1 a N4 según cuántas de estas 4 arterias tienen calcio.',
+      needVessels: 'Marque las arterias con calcio para agregar el modificador N.',
+      zeroVessels: 'Sin calcio no se asigna N: desmarque las arterias o revise el score.',
+      treatmentTitle: 'Recomendación de tratamiento propuesta por CAC-DRS',
+      treatment: ['Estatina generalmente no recomendada', 'Estatina de intensidad moderada', 'Estatina de intensidad moderada a alta + AAS 81 mg', 'Estatina de alta intensidad + AAS 81 mg'],
+      treatmentCaveat: 'El documento CAC-DRS (2018) basó estas recomendaciones en las guías de prevención ACC/AHA 2013 y SCCT 2017. Aplican a personas de 40 a 75 años con riesgo ASCVD a 10 años de 5 a 20 %, o menor de 5 % con historia familiar de enfermedad coronaria; no se pueden generalizar a todas las edades ni se basan en ensayos clínicos. Considere las guías vigentes y el contexto clínico.',
+      includeTreatment: 'Incluir la recomendación de tratamiento en el informe',
+      risk: ['Muy bajo', 'Leve', 'Moderado', 'Moderado a severo'],
+      riskLabel: 'Riesgo',
+      resultLabel: 'Resultado CAC-DRS',
+      reportCac: (v) => `Score de calcio coronario (Agatston): ${v}.`,
+      reportVisual: (g) => `Calcio coronario por evaluación visual: ${g}.`,
+      reportVessels: (list) => `Arterias con calcio: ${list}.`,
+      reportCategory: (code, risk) => `CAC-DRS ${code} (riesgo ${risk.toLowerCase()}).`,
+      reportTreatment: (tx) => `Recomendación CAC-DRS: ${tx}.`,
+      usage: [
+        'CAC-DRS (Hecht et al., SCCT 2018) estandariza el informe del calcio coronario en cualquier TC sin contraste, gatillada o no, sea cual sea su indicación. Se aplica por paciente y combina el score total con el número de arterias con calcio.',
+        'Categorías por Agatston: 0 (score 0), 1 (1 a 99), 2 (100 a 299) y 3 (mayor de 300). Con evaluación visual, ausente, leve, moderado y severo corresponden a 0, 1, 2 y 3. El código lleva A (Agatston) o V (visual) y N1 a N4 según las arterias con calcio entre tronco común izquierdo, descendente anterior, circunfleja y coronaria derecha (ej. "CAC-DRS A1/N2").',
+        'Se recomienda informar también, sin categoría CAC-DRS, el calcio de la aorta torácica, la válvula aórtica, el anillo mitral y el pericardio, como ninguno, leve, moderado o severo.',
+        'Percentil del CAC (opcional, solo con Agatston): se elige la referencia según la edad. De 30 a 44 años, Javaid et al. 2022: 19.725 adultos asintomáticos de EE. UU. (cohortes CARDIA, CAC Consortium y Walter Reed), con percentiles solo para personas blancas y negras. De 45 a 84 años, MESA: 6110 participantes de seis comunidades de EE. UU., sin enfermedad cardiovascular clínica ni diabetes tratada, blancos, negros, hispanos y chino-americanos; se usan los valores del calculador oficial de MESA. A los 45 años hay datos de ambos estudios; se usa MESA.',
         'Ninguna de estas cohortes incluye población de Chile ni de otros países fuera de EE. UU. "Hispano" en MESA corresponde a población hispana residente en EE. UU. Por defecto se usa blanco entre 30 y 44 años (no hay categoría hispana) e hispano desde los 45; elija el grupo más cercano al paciente e interprete el percentil con cautela en otras poblaciones. Se informa el rango entre los percentiles publicados (Javaid: 75, 90, 95 y 97,5; MESA: 25, 50, 75 y 90); en MESA, todo CAC mayor de 0 queda además sobre el porcentaje de personas con CAC 0 (por ejemplo, sobre el P32 si el 68 % tiene CAC mayor de 0). En Javaid, cualquier CAC mayor de 0 en mujeres de 30 a 45 años queda sobre el percentil 90.',
       ],
     },
