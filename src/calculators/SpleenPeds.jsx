@@ -42,6 +42,7 @@ export default function SpleenPeds() {
           <option value="">{c.agePlaceholder}</option>
           {SPLEEN_GROUPS.map((k) => <option key={k} value={k}>{c.ages[k]}</option>)}
         </select>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.ageHint}</p>
         <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mt-4 mb-1.5">{c.sexLabel}</p>
         <div className="flex gap-2" role="group" aria-label={c.sexLabel}>
           {['female', 'male'].map((k) => <button key={k} type="button" aria-pressed={sex === k} onClick={() => setSex(k)} className={btn(sex === k)}>{c.sex[k]}</button>)}

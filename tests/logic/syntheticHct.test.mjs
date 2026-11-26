@@ -100,5 +100,7 @@ test('Bazo pediátrico: Megremis 2004 (Tabla 1) por edad y sexo', async () => {
   assert.equal(spleenZ('y6', 'male', 8.9 + 2 * 0.91).band, 'normal');
   assert.equal(spleenZ('y6', 'male', 11.0).band, 'large');
   assert.equal(spleenZ('y6', 'male', 85), null);
+  assert.equal(spleenZ('y6', 'male', 6.9).band, 'small');
+  assert.equal(spleenZ('y6', 'other', 8.9), null);
   for (const lang of ['es', 'en']) for (const k of SPLEEN_GROUPS) assert.ok(STRINGS[lang].calc.spleenPeds.ages[k]);
 });
