@@ -32,6 +32,7 @@ const CADRADS = lazy(() => import('./CADRADS.jsx'));
 const CACDRS = lazy(() => import('./CACDRS.jsx'));
 const CardiacSiderosis = lazy(() => import('./CardiacSiderosis.jsx'));
 const MyocardialECV = lazy(() => import('./MyocardialECV.jsx'));
+const SyntheticHematocrit = lazy(() => import('./SyntheticHematocrit.jsx'));
 const ThoracicGlossary = lazy(() => import('./ThoracicGlossary.jsx'));
 const MRIFatFraction = lazy(() => import('./MRIFatFraction.jsx'));
 const HepaticSiderosis = lazy(() => import('./HepaticSiderosis.jsx'));
@@ -99,6 +100,7 @@ export const calculators = [
   { id: 'cacdrs', catKey: 'cardio', component: CACDRS },
   { id: 'cardiacSiderosis', catKey: 'cardio', component: CardiacSiderosis },
   { id: 'ecv', catKey: 'cardio', component: MyocardialECV },
+  { id: 'synHct', catKey: 'cardio', component: SyntheticHematocrit },
   // Abdomen (hepatobiliopancreático y suprarrenal)
   { id: 'mriFf', catKey: 'abdomen', component: MRIFatFraction },
   { id: 'siderosis', catKey: 'abdomen', component: HepaticSiderosis },

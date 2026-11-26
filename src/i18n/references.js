@@ -43,6 +43,14 @@ export const REFERENCES = {
   ecv: [
     { text: 'Sardanelli F, Schiaffino S, Zanardo M, Secchi F, Cannaò PM, Ambrogi F, Di Leo G. Point estimate and reference normality interval of MRI-derived myocardial extracellular volume in healthy subjects: a systematic review and meta-analysis. Eur Radiol. 2019;29(12):6620-6633.', doi: '10.1007/s00330-019-06185-w' },
     { text: 'Gottbrecht M, Kramer CM, Salerno M. Native T1 and extracellular volume measurements by cardiac MRI in healthy adults: a meta-analysis. Radiology. 2019;290(2):317-326.', doi: '10.1148/radiol.2018180226' },
+    { text: 'Chen W, Doeblin P, Al-Tabatabaee S, et al. Synthetic extracellular volume in cardiac magnetic resonance without blood sampling: a reliable tool to replace conventional extracellular volume. Circ Cardiovasc Imaging. 2022;15(4):e013745.', doi: '10.1161/CIRCIMAGING.121.013745' },
+    { text: 'Liu CY, Heckbert SR, Lai S, et al. Association of elevated NT-proBNP with myocardial fibrosis in the Multi-Ethnic Study of Atherosclerosis (MESA). J Am Coll Cardiol. 2017;70(25):3102-3109.', doi: '10.1016/j.jacc.2017.10.044' },
+    { text: 'Reiter C, Puseljic M, Fuchsjäger M, Schmid J. Estimating synthetic hematocrit and extracellular volume from native blood pool T1 times at 3 Tesla CMR: derivation of a conversion equation, accuracy and comparison with published formulas. Eur J Radiol. 2024;178:111659.', doi: '10.1016/j.ejrad.2024.111659' },
+  ],
+  synHct: [
+    { text: 'Chen W, Doeblin P, Al-Tabatabaee S, et al. Synthetic extracellular volume in cardiac magnetic resonance without blood sampling: a reliable tool to replace conventional extracellular volume. Circ Cardiovasc Imaging. 2022;15(4):e013745.', doi: '10.1161/CIRCIMAGING.121.013745' },
+    { text: 'Liu CY, Heckbert SR, Lai S, et al. Association of elevated NT-proBNP with myocardial fibrosis in the Multi-Ethnic Study of Atherosclerosis (MESA). J Am Coll Cardiol. 2017;70(25):3102-3109.', doi: '10.1016/j.jacc.2017.10.044' },
+    { text: 'Reiter C, Puseljic M, Fuchsjäger M, Schmid J. Estimating synthetic hematocrit and extracellular volume from native blood pool T1 times at 3 Tesla CMR: derivation of a conversion equation, accuracy and comparison with published formulas. Eur J Radiol. 2024;178:111659.', doi: '10.1016/j.ejrad.2024.111659' },
   ],
   altLipoma: [
     { text: 'Nagano S, Yokouchi M, Setoguchi T, Ishidou Y, Sasaki H, Shimada H, Komiya S. Differentiation of lipoma and atypical lipomatous tumor by a scoring system: implication of increased vascularity on pathogenesis of liposarcoma. BMC Musculoskelet Disord. 2015;16:36.', doi: '10.1186/s12891-015-0491-8' },

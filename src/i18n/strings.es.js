@@ -254,6 +254,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-11-26', text: 'Nueva calculadora Hematocrito Sintético (RM cardíaca), categoría Cardiovascular, también disponible dentro de ECV Miocárdico: estima el hematocrito desde el T1 nativo de la sangre con las ecuaciones de Chen et al., Circ Cardiovasc Imaging 2022 (modelos común y específico), MESA (Liu et al., J Am Coll Cardiol 2017), Reiter et al., Eur J Radiol 2024, o una ecuación local.' },
       { date: '2026-11-26', text: 'Nueva calculadora Score de calcio coronario (CAC-DRS), categoría Cardiovascular: categoría CAC-DRS 0-3 por score de Agatston o evaluación visual, modificador N por número de arterias con calcio, recomendación de tratamiento propuesta por el documento (opcional en el informe) y percentil por edad, sexo y grupo (Javaid 2022 y MESA). Según Hecht et al., J Cardiovasc Comput Tomogr 2018, y Kumar y Bhatia, J Cardiovasc Imaging 2023.' },
       { date: '2026-11-26', text: 'CAD-RADS 2.0: el código sigue el orden del documento (estenosis, P y luego N, HRP, I, S, G, E; antes la P iba al final). El modificador de isquemia ahora distingue I+, I- e I± (TC-FFR o perfusión por TC), y el informe agrega el score de calcio de Agatston cuando se ingresa. Según Cury et al., Radiol Cardiothorac Imaging 2022.' },
       { date: '2026-11-26', text: 'CAD-RADS 2.0: con el score de calcio (Agatston) se puede agregar la edad, el sexo y el grupo poblacional para obtener el percentil del CAC, que se suma al informe. De 30 a 44 años usa Javaid et al., J Am Coll Cardiol 2022 (solo blancos y negros); de 45 a 84 años, MESA (McClelland et al., Circulation 2006, valores del calculador oficial de MESA). Por defecto: blanco en 30-44 años e hispano desde los 45; ninguna cohorte incluye población fuera de EE. UU.' },
@@ -437,6 +438,33 @@ export default {
       }
       const band = r.lower === null ? `bajo el ${P(r.upper)}` : r.upper === null ? `en o sobre el ${P(r.lower)}` : r.lower === r.upper ? `en torno al ${P(r.lower)}` : `entre el ${P(r.lower)} y el ${P(r.upper)}`;
       return `${head}: ${band}.`;
+    },
+  },
+  synHct: {
+    modelLabel: 'Ecuación',
+    models: {
+      chenCommon: { name: 'Chen 2022, modelo común', desc: 'Philips 1,5 T y 3 T, MOLLI 5s(3s)3s. Ajusta por campo, sexo y cavidad.' },
+      chenSpecific: { name: 'Chen 2022, modelo específico', desc: 'Igual equipo y secuencia; una ecuación por campo, sexo y cavidad. Menor sesgo en anemia.' },
+      mesa: { name: 'MESA (Liu 2017)', desc: '1,5 T, MOLLI. Sangre en cavidad del VI.' },
+      reiter: { name: 'Reiter 2024', desc: 'Siemens Skyra 3 T, MOLLI 5(3)3, VI medio en telesístole.' },
+      local: { name: 'Ecuación local', desc: 'Coeficientes calibrados en su propio equipo y secuencia (recomendado).' },
+    },
+    fieldLabel: 'Campo magnético',
+    sexLabel: 'Sexo',
+    sex: { female: 'Mujer', male: 'Hombre' },
+    poolLabel: 'Cavidad donde se midió la sangre',
+    pool: { lv: 'Ventrículo izquierdo', rv: 'Ventrículo derecho' },
+    aLabel: 'Pendiente (a)',
+    bLabel: 'Intercepto (b)',
+    localHint: 'Hematocrito (fracción 0-1) = a × (1/T1 en ms) + b.',
+    fieldOnly: (f) => `Esta ecuación se derivó solo a ${f}.`,
+    resultLine: (v) => `Hematocrito sintético: ${v} %`,
+    outOfRange: 'Valor fuera de lo fisiológico habitual: revise el T1, el campo y la ecuación elegida.',
+    caveat: 'Cada ecuación vale para el equipo y la secuencia en que se derivó. Con fórmulas de otros centros, Reiter 2024 clasificó mal el ECV hasta en el 60 % de los casos; lo ideal es una ecuación local.',
+    modelReport: ({ model, field, sex, pool }) => {
+      const f = field === '1.5' ? '1,5 T' : '3 T';
+      const extra = (model === 'chenCommon' || model === 'chenSpecific') ? `, ${f}, ${sex === 'male' ? 'hombre' : 'mujer'}, ${pool === 'lv' ? 'VI' : 'VD'}` : '';
+      return ({ chenCommon: 'Chen 2022, modelo común', chenSpecific: 'Chen 2022, modelo específico', mesa: 'ecuación MESA, Liu 2017', reiter: 'ecuación de Reiter 2024', local: 'ecuación local' })[model] + extra;
     },
   },
   calc: {
@@ -4763,6 +4791,11 @@ export default {
       bloodTitle: 'Sangre (cavidad del VI)',
       preLabel: 'T1 nativo (ms)',
       postLabel: 'T1 post-contraste (ms)',
+      hctSourceLabel: 'Hematocrito',
+      hctSource: { measured: 'Medido', synthetic: 'Sintético (por T1 de la sangre)' },
+      hctSynNote: 'Se calcula con el T1 nativo de la sangre ingresado arriba. Los intervalos de normalidad de Sardanelli 2019 se obtuvieron con hematocrito de laboratorio: si dispone de un hematocrito reciente, prefiéralo.',
+      hctMeasuredReport: (v) => `Hematocrito: ${v} %`,
+      hctSynReport: (v, model) => `Hematocrito sintético: ${v} % (${model})`,
       hctLabel: 'Hematocrito (%)',
       hctNote: 'Idealmente de una muestra del mismo día del examen. Los estudios del metaanálisis de Sardanelli usaron hematocrito de laboratorio (se excluyeron los que usaban hematocrito sintético).',
       orderError: 'El T1 post-contraste debe ser menor que el pre-contraste, tanto en miocardio como en sangre. Revise los valores.',
@@ -4798,9 +4831,23 @@ export default {
         `ECV miocárdico (RM, ${seq}): ${ecv} %. ${bandTitle}.`,
         `- Miocardio: T1 nativo ${myoPre} ms; T1 post-contraste ${myoPost} ms.`,
         `- Sangre: T1 nativo ${bloodPre} ms; T1 post-contraste ${bloodPost} ms.`,
-        `- Hematocrito: ${hct} %. Coeficiente de partición (λ): ${lambda}.`,
+        `- ${hct}. Coeficiente de partición (λ): ${lambda}.`,
         refLine,
       ].join('\n'),
+    },
+    synHct: {
+      title: 'Hematocrito Sintético (RM cardíaca)',
+      subtitle: 'Estima el hematocrito a partir del T1 nativo de la sangre, para calcular el ECV sin muestra de sangre.',
+      t1Label: 'T1 nativo de la sangre (ms)',
+      t1Hint: 'ROI en la cavidad, centrada y sin músculos papilares, en el mapa T1 nativo.',
+      resultLabel: 'Hematocrito sintético',
+      reportText: (v, t1, model) => `Hematocrito sintético: ${v} % (T1 nativo de la sangre ${t1} ms; ${model}).`,
+      usage: [
+        'El hematocrito se relaciona inversamente con el T1 de la sangre: más glóbulos rojos acortan el T1. Por eso se puede estimar con una regresión lineal sobre 1/T1 nativo de la sangre y usarlo para calcular el ECV sin muestra de sangre.',
+        'Chen 2022 (1101 pacientes, Philips 1,5 y 3 T): el ECV sintético concordó con el medido (sesgo de −0,10 a −0,21 %) y se correlacionó con la fibrosis histológica igual que el ECV medido. En anemia, todos los modelos subestimaron el ECV; el modelo específico redujo ese sesgo.',
+        'Una saturación de oxígeno venosa o arterial anormalmente baja acorta el T1 de la sangre con independencia del hematocrito y puede sobrestimar el hematocrito sintético (Chen 2022).',
+        'Las ecuaciones dependen del equipo, el campo y la secuencia. Reiter 2024 derivó una ecuación local (Siemens 3 T) con un 8,8 % de ECV mal clasificados, similar al 7,5 % que produce repetir el hematocrito venoso; con fórmulas publicadas de otros centros, hasta el 60 %. Si dispone de un hematocrito reciente, úselo.',
+      ],
     },
     aspects: {
       title: 'ASPECTS (Alberta Stroke Program Early CT Score)',

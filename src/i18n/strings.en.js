@@ -254,6 +254,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-11-26', text: 'New calculator Synthetic Hematocrit (Cardiac MRI), Cardiovascular category, also available inside Myocardial ECV: estimates hematocrit from native blood T1 with the equations of Chen et al., Circ Cardiovasc Imaging 2022 (common and specific models), MESA (Liu et al., J Am Coll Cardiol 2017), Reiter et al., Eur J Radiol 2024, or a local equation.' },
       { date: '2026-11-26', text: 'New calculator Coronary Artery Calcium Score (CAC-DRS), Cardiovascular category: CAC-DRS category 0-3 by Agatston score or visual assessment, N modifier by number of arteries with calcium, treatment recommendation proposed by the document (optional in the report) and percentile by age, sex and group (Javaid 2022 and MESA). Based on Hecht et al., J Cardiovasc Comput Tomogr 2018, and Kumar and Bhatia, J Cardiovasc Imaging 2023.' },
       { date: '2026-11-26', text: 'CAD-RADS 2.0: the code now follows the order of the document (stenosis, P, then N, HRP, I, S, G, E; P used to go last). The ischemia modifier now distinguishes I+, I- and I± (CT-FFR or CT perfusion), and the report adds the Agatston calcium score when entered. Based on Cury et al., Radiol Cardiothorac Imaging 2022.' },
       { date: '2026-11-26', text: 'CAD-RADS 2.0: with the calcium score (Agatston), age, sex and population group can be added to obtain the CAC percentile, which is added to the report. Ages 30-44 use Javaid et al., J Am Coll Cardiol 2022 (White and Black only); ages 45-84 use MESA (McClelland et al., Circulation 2006, values from the official MESA calculator). Defaults: White at 30-44 and Hispanic from 45; neither cohort includes populations outside the US.' },
@@ -435,6 +436,33 @@ export default {
       }
       const band = r.lower === null ? `below the ${P(r.upper)}` : r.upper === null ? `at or above the ${P(r.lower)}` : r.lower === r.upper ? `approximately at the ${P(r.lower)}` : `between the ${P(r.lower)} and the ${P(r.upper)}`;
       return `${head}: ${band}.`;
+    },
+  },
+  synHct: {
+    modelLabel: 'Equation',
+    models: {
+      chenCommon: { name: 'Chen 2022, common model', desc: 'Philips 1.5 T and 3 T, MOLLI 5s(3s)3s. Adjusts for field, sex and blood pool.' },
+      chenSpecific: { name: 'Chen 2022, specific model', desc: 'Same scanner and sequence; one equation per field, sex and blood pool. Less bias in anemia.' },
+      mesa: { name: 'MESA (Liu 2017)', desc: '1.5 T, MOLLI. Left ventricular blood pool.' },
+      reiter: { name: 'Reiter 2024', desc: 'Siemens Skyra 3 T, MOLLI 5(3)3, mid-LV end-systole.' },
+      local: { name: 'Local equation', desc: 'Coefficients calibrated on your own scanner and sequence (recommended).' },
+    },
+    fieldLabel: 'Field strength',
+    sexLabel: 'Sex',
+    sex: { female: 'Female', male: 'Male' },
+    poolLabel: 'Blood pool measured',
+    pool: { lv: 'Left ventricle', rv: 'Right ventricle' },
+    aLabel: 'Slope (a)',
+    bLabel: 'Intercept (b)',
+    localHint: 'Hematocrit (fraction 0-1) = a × (1/T1 in ms) + b.',
+    fieldOnly: (f) => `This equation was derived only at ${f}.`,
+    resultLine: (v) => `Synthetic hematocrit: ${v}%`,
+    outOfRange: 'Value outside the usual physiological range: check the T1, field and chosen equation.',
+    caveat: 'Each equation applies to the scanner and sequence it was derived on. With formulas from other centers, Reiter 2024 misclassified ECV in up to 60% of cases; a local equation is ideal.',
+    modelReport: ({ model, field, sex, pool }) => {
+      const f = field === '1.5' ? '1.5 T' : '3 T';
+      const extra = (model === 'chenCommon' || model === 'chenSpecific') ? `, ${f}, ${sex === 'male' ? 'male' : 'female'}, ${pool === 'lv' ? 'LV' : 'RV'}` : '';
+      return ({ chenCommon: 'Chen 2022, common model', chenSpecific: 'Chen 2022, specific model', mesa: 'MESA equation, Liu 2017', reiter: 'Reiter 2024 equation', local: 'local equation' })[model] + extra;
     },
   },
   calc: {
@@ -4761,6 +4789,11 @@ export default {
       bloodTitle: 'Blood (LV cavity)',
       preLabel: 'Native T1 (ms)',
       postLabel: 'Post-contrast T1 (ms)',
+      hctSourceLabel: 'Hematocrit',
+      hctSource: { measured: 'Measured', synthetic: 'Synthetic (from blood T1)' },
+      hctSynNote: 'Calculated from the native blood T1 entered above. The Sardanelli 2019 normal ranges were obtained with laboratory hematocrit: if a recent hematocrit is available, prefer it.',
+      hctMeasuredReport: (v) => `Hematocrit: ${v}%`,
+      hctSynReport: (v, model) => `Synthetic hematocrit: ${v}% (${model})`,
       hctLabel: 'Hematocrit (%)',
       hctNote: 'Ideally from a blood sample drawn on the day of the scan. The studies in the Sardanelli meta-analysis used laboratory hematocrit (studies using synthetic hematocrit were excluded).',
       orderError: 'Post-contrast T1 must be lower than pre-contrast T1, for both myocardium and blood. Check the values.',
@@ -4796,9 +4829,23 @@ export default {
         `Myocardial ECV (MRI, ${seq}): ${ecv}%. ${bandTitle}.`,
         `- Myocardium: native T1 ${myoPre} ms; post-contrast T1 ${myoPost} ms.`,
         `- Blood: native T1 ${bloodPre} ms; post-contrast T1 ${bloodPost} ms.`,
-        `- Hematocrit: ${hct}%. Partition coefficient (λ): ${lambda}.`,
+        `- ${hct}. Partition coefficient (λ): ${lambda}.`,
         refLine,
       ].join('\n'),
+    },
+    synHct: {
+      title: 'Synthetic Hematocrit (Cardiac MRI)',
+      subtitle: 'Estimates hematocrit from native blood T1, to calculate ECV without a blood sample.',
+      t1Label: 'Native blood T1 (ms)',
+      t1Hint: 'ROI in the cavity, centered and avoiding papillary muscles, on the native T1 map.',
+      resultLabel: 'Synthetic hematocrit',
+      reportText: (v, t1, model) => `Synthetic hematocrit: ${v}% (native blood T1 ${t1} ms; ${model}).`,
+      usage: [
+        'Hematocrit is inversely related to blood T1: more red cells shorten T1. It can therefore be estimated with a linear regression on 1/native blood T1 and used to calculate ECV without a blood sample.',
+        'Chen 2022 (1101 patients, Philips 1.5 and 3 T): synthetic ECV agreed with measured ECV (bias −0.10 to −0.21%) and correlated with histological fibrosis as well as measured ECV. In anemia, all models underestimated ECV; the specific model reduced that bias.',
+        'Abnormally low venous or arterial oxygen saturation shortens blood T1 independently of hematocrit and may overestimate synthetic hematocrit (Chen 2022).',
+        'Equations depend on the scanner, field strength and sequence. Reiter 2024 derived a local equation (Siemens 3 T) with 8.8% of ECV misclassified, similar to the 7.5% caused by repeating venous hematocrit; with published formulas from other centers, up to 60%. If a recent hematocrit is available, use it.',
+      ],
     },
     aspects: {
       title: 'ASPECTS (Alberta Stroke Program Early CT Score)',
