@@ -2052,8 +2052,7 @@ export default {
       methodLabel: 'Method',
       methods: { A: 'Agatston score', V: 'Visual assessment' },
       cacLabel: 'Total Agatston calcium score',
-      ranges: ['CAC-DRS 0: Agatston 0 (very low risk).', 'CAC-DRS 1: Agatston 1 to 99 (mild risk).', 'CAC-DRS 2: Agatston 100 to 299 (moderate risk).', 'CAC-DRS 3: Agatston above 300 (moderate to severe risk).'],
-      boundary: 'A score of exactly 300 is not in the table of the review used (CAC-DRS 2 goes up to 299 and CAC-DRS 3 is above 300). Assign the category according to the original SCCT document.',
+      ranges: ['CAC-DRS 0: Agatston 0 (very low risk).', 'CAC-DRS 1: Agatston 1 to 99 (mild risk).', 'CAC-DRS 2: Agatston 100 to 299 (moderate risk).', 'CAC-DRS 3: Agatston 300 or higher (moderate to severe risk).'],
       visualOptions: ['None: no coronary calcium', 'Mild: only isolated flecks of calcium within a coronary segment', 'Moderate: more calcium than mild, but less than severe', 'Severe: continuous deposits of calcium within a coronary segment'],
       visualGrade: ['none', 'mild', 'moderate', 'severe'],
       visualHint: 'Visual assessment is subjective and has no reference standard. Grades follow the Chiles et al. criteria, described in the Kumar and Bhatia (2023) review.',
@@ -2076,7 +2075,7 @@ export default {
       reportTreatment: (tx) => `CAC-DRS recommendation: ${tx}.`,
       usage: [
         'CAC-DRS (Hecht et al., SCCT 2018) standardizes reporting of coronary calcium on any noncontrast CT, gated or not, whatever its indication. It is applied per patient and combines the total score with the number of arteries with calcium.',
-        'Agatston categories: 0 (score 0), 1 (1 to 99), 2 (100 to 299) and 3 (above 300). With visual assessment, none, mild, moderate and severe correspond to 0, 1, 2 and 3. The code carries A (Agatston) or V (visual) and N1 to N4 according to the arteries with calcium among left main, left anterior descending, circumflex and right coronary artery (e.g., "CAC-DRS A1/N2").',
+        'Agatston categories: 0 (score 0), 1 (1 to 99), 2 (100 to 299) and 3 (300 or higher). With visual assessment, none, mild, moderate and severe correspond to 0, 1, 2 and 3. The code carries A (Agatston) or V (visual) and N1 to N4 according to the arteries with calcium among left main, left anterior descending, circumflex and right coronary artery (e.g., "CAC-DRS A1/N2").',
         'Calcium of the thoracic aorta, aortic valve, mitral annulus and pericardium should also be reported, without a CAC-DRS category, as none, mild, moderate or severe.',
         'CAC percentile (optional, Agatston only): the reference is chosen by age. From 30 to 44 years, Javaid et al. 2022: 19,725 asymptomatic US adults (CARDIA, CAC Consortium and Walter Reed cohorts), with percentiles for White and Black individuals only. From 45 to 84 years, MESA: 6110 participants from six US communities, free of clinical cardiovascular disease and treated diabetes, White, Black, Hispanic and Chinese-American; values come from the official MESA calculator. At age 45 both studies have data; MESA is used.',
         'Neither cohort includes populations from outside the US. "Hispanic" in MESA refers to Hispanic individuals living in the US. By default, White is used from 30 to 44 years (there is no Hispanic category) and Hispanic from 45; choose the group closest to the patient and interpret the percentile with caution in other populations. The range between the published percentiles is reported (Javaid: 75, 90, 95 and 97.5; MESA: 25, 50, 75 and 90); in MESA, any CAC above 0 is also above the percentage of people with CAC 0 (for example, above the P32 if 68% have CAC above 0). In Javaid, any CAC above 0 in women aged 30 to 45 is above the 90th percentile.',

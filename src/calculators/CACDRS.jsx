@@ -61,7 +61,6 @@ export default function CACDRS() {
           <div className="mt-3">
             <NumberField label={c.cacLabel} value={cac} onChange={setCac} />
             <ul className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug space-y-0.5">{c.ranges.map((r) => <li key={r}>{r}</li>)}</ul>
-            {raw === 'boundary' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.boundary}</p>}
           </div>
         ) : (
           <div className="space-y-2 mt-3">

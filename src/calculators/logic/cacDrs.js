@@ -5,11 +5,11 @@
 //   0: Agatston 0        visual ausente   riesgo muy bajo
 //   1: Agatston 1-99     visual leve      riesgo leve
 //   2: Agatston 100-299  visual moderado  riesgo moderado
-//   3: Agatston > 300    visual severo    riesgo moderado a severo
+//   3: Agatston ≥ 300    visual severo    riesgo moderado a severo
 // Código: A (Agatston) o V (visual) + categoría, y /N1-N4 = número de arterias con
 // calcio entre tronco común izquierdo, descendente anterior, circunfleja y coronaria
-// derecha (ej. "A1/N2"). Exactamente 300 no está en la tabla (2 llega a 299 y
-// 3 es > 300): se devuelve 'boundary' para que el usuario lo defina.
+// derecha (ej. "A1/N2"). La tabla de Kumar dice "> 300" para la categoría 3 y
+// 100-299 para la 2; el autor decidió asignar 300 a la categoría 3 (≥ 300).
 export const VESSELS = ['LM', 'LAD', 'LCX', 'RCA'];
 
 export function cacDrsFromAgatston(cac) {
@@ -17,7 +17,6 @@ export function cacDrsFromAgatston(cac) {
   if (cac === 0) return 0;
   if (cac < 100) return 1;
   if (cac < 300) return 2;
-  if (cac === 300) return 'boundary';
   return 3;
 }
 

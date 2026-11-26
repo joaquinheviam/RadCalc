@@ -106,7 +106,7 @@ test('CAC-DRS: categorías por Agatston y código A/V con N', async () => {
   assert.equal(cacDrsFromAgatston(99), 1);
   assert.equal(cacDrsFromAgatston(100), 2);
   assert.equal(cacDrsFromAgatston(299), 2);
-  assert.equal(cacDrsFromAgatston(300), 'boundary');
+  assert.equal(cacDrsFromAgatston(300), 3);
   assert.equal(cacDrsFromAgatston(301), 3);
   assert.equal(cacDrsFromAgatston(-1), null);
   assert.equal(cacDrsCode('A', 1, 2), 'A1/N2');
