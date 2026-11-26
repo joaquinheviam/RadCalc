@@ -118,3 +118,14 @@ test('CAC-DRS: categorías por Agatston y código A/V con N', async () => {
     for (const k of ['risk', 'treatment', 'visualOptions', 'visualGrade']) assert.equal(c[k].length, 4, `${lang} ${k}`);
   }
 });
+
+test('Impresión del score de calcio: frase de percentil y rango corto', () => {
+  const r = cacPercentile({ age: 55, sex: 'male', group: 'hispanic', cac: 150 });
+  const es = STRINGS.es, en = STRINGS.en;
+  assert.equal(es.calc.cacdrs.reportCac(150, es.cacPercentile.inline(r)), 'Score de calcio (Agatston): 150, equivalente a un percentil entre 75 y 90 según edad, sexo y etnia (referencia MESA, población hispana).');
+  assert.equal(es.calc.cacdrs.summaryCac(150, es.cacPercentile.short(r)), 'Score Ca: 150 (Agatston); percentil 75–90');
+  assert.equal(es.calc.cacdrs.reportCac(0, es.cacPercentile.inline(cacPercentile({ age: 55, sex: 'male', group: 'hispanic', cac: 0 }))), 'Score de calcio (Agatston): 0.');
+  assert.equal(es.calc.cacdrs.summaryCac(12.5, ''), 'Score Ca: 12,5 (Agatston)');
+  assert.equal(es.cacPercentile.short(cacPercentile({ age: 44, sex: 'male', group: 'white', cac: 500 })), '≥ 97,5');
+  assert.match(en.calc.cacdrs.reportCac(150, en.cacPercentile.inline(r)), /corresponding to a percentile between 75 and 90 for age, sex and ethnicity \(MESA, Hispanic population reference\)/);
+});

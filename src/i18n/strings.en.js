@@ -413,6 +413,17 @@ export default {
       mesa: 'MESA includes White, Black, Hispanic and Chinese-American individuals living in the US. Default: Hispanic.',
     },
     caveat: 'Compares the CAC with people of the same age, sex and group without symptomatic cardiovascular disease. It does not replace the absolute CAC value or equal absolute risk, and neither cohort includes populations outside the US.',
+    // Phrase for the impression and short range for the summary box ('' with CAC 0).
+    inline: (r) => {
+      if (!r || r.zero) return '';
+      const band = r.lower === null ? `below ${r.upper}` : r.upper === null ? `of ${r.lower} or higher` : r.lower === r.upper ? `close to ${r.lower}` : `between ${r.lower} and ${r.upper}`;
+      const ref = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}, ${({ white: 'White', black: 'Black', hispanic: 'Hispanic', chinese: 'Chinese' })[r.group]} population`;
+      return `corresponding to a percentile ${band} for age, sex and ethnicity (${ref} reference)`;
+    },
+    short: (r) => {
+      if (!r || r.zero) return '';
+      return r.lower === null ? `< ${r.upper}` : r.upper === null ? `≥ ${r.lower}` : r.lower === r.upper ? `≈ ${r.lower}` : `${r.lower}–${r.upper}`;
+    },
     result: (r, age, sex) => {
       const P = (k) => `P${k}`;
       const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; ${({ white: 'White', black: 'Black', hispanic: 'Hispanic', chinese: 'Chinese' })[r.group]} reference population; ${sex === 'female' ? 'female' : 'male'}, ${age} years`;
@@ -2068,7 +2079,8 @@ export default {
       risk: ['Very low', 'Mild', 'Moderate', 'Moderate to severe'],
       riskLabel: 'Risk',
       resultLabel: 'CAC-DRS result',
-      reportCac: (v) => `Coronary artery calcium score (Agatston): ${v}.`,
+      reportCac: (v, pct) => `Calcium score (Agatston): ${v}${pct ? `, ${pct}` : ''}.`,
+      summaryCac: (v, p) => `Ca score: ${v} (Agatston)${p ? `; percentile ${p}` : ''}`,
       reportVisual: (g) => `Coronary calcium on visual assessment: ${g}.`,
       reportVessels: (list) => `Arteries with calcium: ${list}.`,
       reportCategory: (code, risk) => `CAC-DRS ${code} (${risk.toLowerCase()} risk).`,

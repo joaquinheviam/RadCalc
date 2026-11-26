@@ -27,10 +27,9 @@ export default function CACDRS() {
 
   const getReportText = () => {
     if (category === null) return '';
-    const lines = [method === 'A' ? c.reportCac(cacNum) : c.reportVisual(c.visualGrade[category])];
+    const lines = [method === 'A' ? c.reportCac(cacNum, t.cacPercentile.inline(pct.pct)) : c.reportVisual(c.visualGrade[category])];
     if (category > 0 && n > 0) lines.push(c.reportVessels(vesselList));
     lines.push(c.reportCategory(code, c.risk[category]));
-    if (method === 'A' && pct.text) lines.push(pct.text);
     if (includeTreatment) lines.push(c.reportTreatment(c.treatment[category]));
     return lines.join('\n');
   };
@@ -106,6 +105,7 @@ export default function CACDRS() {
             <span className="text-sm text-slate-500 dark:text-slate-400 block">{c.resultLabel}</span>
             <span className={`text-3xl font-black block mt-1 leading-tight ${riskColor}`}>CAC-DRS {code}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">{c.riskLabel}: {c.risk[category]}</span>
+            {method === 'A' && <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 block mt-0.5">{c.summaryCac(cacNum, t.cacPercentile.short(pct.pct))}</span>}
           </div>
           <div className="flex items-start gap-5 shrink-0">
             <ResetIconButton onClick={resetAll} label={t.common.reset} caption={t.common.reset} />

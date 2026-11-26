@@ -413,6 +413,19 @@ export default {
       mesa: 'MESA incluye personas blancas, negras, hispanas y chino-americanas residentes en EE. UU. Por defecto, hispano.',
     },
     caveat: 'Compara el CAC con personas de igual edad, sexo y grupo sin enfermedad cardiovascular sintomática. No reemplaza el valor absoluto del CAC ni equivale a riesgo absoluto, y ninguna de las cohortes incluye población chilena ni latinoamericana fuera de EE. UU.',
+    // Frase para la impresión y rango corto para el cuadro resumen ('' con CAC 0).
+    inline: (r) => {
+      if (!r || r.zero) return '';
+      const n = (k) => String(k).replace('.', ',');
+      const band = r.lower === null ? `menor a ${n(r.upper)}` : r.upper === null ? `de ${n(r.lower)} o mayor` : r.lower === r.upper ? `cercano a ${n(r.lower)}` : `entre ${n(r.lower)} y ${n(r.upper)}`;
+      const ref = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}, población ${({ white: 'blanca', black: 'negra', hispanic: 'hispana', chinese: 'china' })[r.group]}`;
+      return `equivalente a un percentil ${band} según edad, sexo y etnia (referencia ${ref})`;
+    },
+    short: (r) => {
+      if (!r || r.zero) return '';
+      const n = (k) => String(k).replace('.', ',');
+      return r.lower === null ? `< ${n(r.upper)}` : r.upper === null ? `≥ ${n(r.lower)}` : r.lower === r.upper ? `≈ ${n(r.lower)}` : `${n(r.lower)}–${n(r.upper)}`;
+    },
     result: (r, age, sex) => {
       const P = (k) => `P${String(k).replace('.', ',')}`;
       const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; población ${({ white: 'blanca', black: 'negra', hispanic: 'hispana', chinese: 'china' })[r.group]}; ${sex === 'female' ? 'mujer' : 'hombre'} de ${age} años`;
@@ -2069,7 +2082,8 @@ export default {
       risk: ['Muy bajo', 'Leve', 'Moderado', 'Moderado a severo'],
       riskLabel: 'Riesgo',
       resultLabel: 'Resultado CAC-DRS',
-      reportCac: (v) => `Score de calcio coronario (Agatston): ${String(v).replace('.', ',')}.`,
+      reportCac: (v, pct) => `Score de calcio (Agatston): ${String(v).replace('.', ',')}${pct ? `, ${pct}` : ''}.`,
+      summaryCac: (v, p) => `Score Ca: ${String(v).replace('.', ',')} (Agatston)${p ? `; percentil ${p}` : ''}`,
       reportVisual: (g) => `Calcio coronario por evaluación visual: ${g}.`,
       reportVessels: (list) => `Arterias con calcio: ${list}.`,
       reportCategory: (code, risk) => `CAC-DRS ${code} (riesgo ${risk.toLowerCase()}).`,
