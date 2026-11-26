@@ -84,7 +84,7 @@ function thresholds(source, group, sex, age) {
  *   { source, group, zero: true, pPositive }                 con CAC 0
  *   { source, group, zero: false, lower, upper, pPositive }  con CAC > 0
  * lower/upper: percentiles que acotan el CAC (lower null = bajo el primero;
- * upper null = sobre el último). pPositive: % con CAC > 0 (solo MESA; null en Javaid).
+ * upper null = sobre el último; lower === upper = en torno a ese percentil). pPositive: % con CAC > 0 (solo MESA; null en Javaid).
  */
 export function cacPercentile({ age, sex, group, cac }) {
   const source = cacSource(age);
@@ -105,6 +105,8 @@ export function cacPercentile({ age, sex, group, cac }) {
   if (pPositive !== null) {
     const floor = 100 - pPositive;
     if (floor > (lower ?? 0) && (upper === null || floor < upper)) lower = floor;
+    // Redondeo del calculador: % con CAC 0 igual al percentil siguiente → en torno a él.
+    else if (floor === upper) lower = floor;
   }
   return { source, group, zero: false, lower, upper, pPositive };
 }

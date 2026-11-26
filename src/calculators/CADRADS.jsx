@@ -20,7 +20,8 @@ export default function CADRADS() {
   // Percentil del CAC (opcional): edad, sexo y grupo poblacional.
   const [pctAge, setPctAge] = useState('');
   const [pctSex, setPctSex] = useState('');
-  const [pctGroup, setPctGroup] = useState('');
+  // Grupo elegido por fuente: el defecto (blanco 30-44, hispano ≥ 45) se aplica en cada una.
+  const [pctGroup, setPctGroup] = useState({ javaid: '', mesa: '' });
 
   const toggleMod = (key) => setMods(prev => ({ ...prev, [key]: !prev[key] }));
   // Modificador P (CAD-RADS 2.0, tabla 2): por CAC, SIS o evaluación visual.
@@ -35,17 +36,18 @@ export default function CADRADS() {
   const ageNum = pctAge === '' ? null : Number(pctAge);
   const pctSource = Number.isInteger(ageNum) ? cacSource(ageNum) : null;
   const pctGroups = groupsFor(pctSource);
-  const pctGroupEff = pctSource ? (pctGroups.includes(pctGroup) ? pctGroup : DEFAULT_GROUP[pctSource]) : '';
+  const pctGroupEff = pctSource ? (pctGroup[pctSource] || DEFAULT_GROUP[pctSource]) : '';
   const pct = pMethod === 'cac' && cac !== '' && pctSource && pctSex
     ? cacPercentile({ age: ageNum, sex: pctSex, group: pctGroupEff, cac: parseFloat(cac) }) : null;
-  const pctText = pct ? c.pct.result(pct, ageNum, pctSex) : '';
+  const pctText = pct ? c.pct.result(pct, ageNum, pctSex, cac) : '';
   const resultString = stenosis ? `CAD-RADS ${stenosis}${modString ? '/' + modString : ''}` : '';
 
   const getReportText = () => {
     if (!stenosis) return '';
     const lines = [c.reportText(stenosis, modString)];
     if (pMod) lines.push(c.reportP(pMod, c.pLevel[pMod], pDetail));
-    if (pctText) lines.push(pctText);
+    // CAD-RADS 0 (sin placa) con CAC > 0 es contradictorio: la UI ya lo advierte y el informe omite el percentil.
+    if (pctText && !(stenosis === '0' && pct && !pct.zero)) lines.push(pctText);
     return lines.join('\n');
   };
   const handleCopy = () => {
@@ -55,7 +57,7 @@ export default function CADRADS() {
   };
 
   const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-500 dark:text-slate-400' : 'text-red-500';
-  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMethod('cac'); setCac(''); setSis(''); setPVisual(''); setPctAge(''); setPctSex(''); setPctGroup(''); };
+  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMethod('cac'); setCac(''); setSis(''); setPVisual(''); setPctAge(''); setPctSex(''); setPctGroup({ javaid: '', mesa: '' }); };
 
   return (
     <div className={`space-y-4 animate-in fade-in ${stenosis ? 'pb-56' : ''}`}>
@@ -110,7 +112,7 @@ export default function CADRADS() {
                   <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pct.groupLabel} ({c.pct.sourceName[pctSource]})</p>
                   <div className="grid grid-cols-2 gap-2" role="group" aria-label={c.pct.groupLabel}>
                     {pctGroups.map((k) => (
-                      <button key={k} type="button" onClick={() => setPctGroup(k)} aria-pressed={pctGroupEff === k} className={`p-2.5 rounded-lg border text-xs transition-all ${pctGroupEff === k ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pct.group[k]}</button>
+                      <button key={k} type="button" onClick={() => setPctGroup((prev) => ({ ...prev, [pctSource]: k }))} aria-pressed={pctGroupEff === k} className={`p-2.5 rounded-lg border text-xs transition-all ${pctGroupEff === k ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pct.group[k]}</button>
                     ))}
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">{c.pct.groupHint[pctSource]}</p>

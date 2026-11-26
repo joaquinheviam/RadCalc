@@ -2013,17 +2013,18 @@ export default {
           javaid: 'Este estudio solo tiene personas blancas y negras de EE. UU.: no hay categoría hispana ni latinoamericana. Por defecto, blanco.',
           mesa: 'MESA incluye personas blancas, negras, hispanas y chino-americanas residentes en EE. UU. Por defecto, hispano.',
         },
-        caveat: 'Compara el CAC con personas de igual edad, sexo y grupo sin enfermedad cardiovascular clínica. No reemplaza el valor absoluto del CAC ni equivale a riesgo absoluto, y ninguna de las cohortes incluye población chilena ni latinoamericana fuera de EE. UU.',
-        result: (r, age, sex) => {
+        caveat: 'Compara el CAC con personas de igual edad, sexo y grupo sin enfermedad cardiovascular sintomática. No reemplaza el valor absoluto del CAC ni equivale a riesgo absoluto, y ninguna de las cohortes incluye población chilena ni latinoamericana fuera de EE. UU.',
+        result: (r, age, sex, cac) => {
           const P = (k) => `P${String(k).replace('.', ',')}`;
-          const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; ${({ white: 'blanco', black: 'negro', hispanic: 'hispano', chinese: 'chino' })[r.group]}, ${sex === 'female' ? 'mujer' : 'hombre'}, ${age} años`;
+          const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; población ${({ white: 'blanca', black: 'negra', hispanic: 'hispana', chinese: 'china' })[r.group]}; ${sex === 'female' ? 'mujer' : 'hombre'} de ${age} años`;
+          const head = `Percentil del CAC de Agatston ${cac} (${who})`;
           if (r.zero) {
             return r.pPositive !== null
-              ? `Percentil del CAC (${who}): CAC 0; en esta referencia, el ${Math.round(100 - r.pPositive)} % tiene CAC 0.`
-              : `Percentil del CAC (${who}): CAC 0, sin percentil asignable.`;
+              ? `${head}: en esta referencia, el ${Math.round(100 - r.pPositive)} % tiene CAC 0.`
+              : `${head}: sin percentil asignable.`;
           }
-          const band = r.lower === null ? `bajo el ${P(r.upper)}` : r.upper === null ? `en o sobre el ${P(r.lower)}` : `entre el ${P(r.lower)} y el ${P(r.upper)}`;
-          return `Percentil del CAC (${who}): ${band}.`;
+          const band = r.lower === null ? `bajo el ${P(r.upper)}` : r.upper === null ? `en o sobre el ${P(r.lower)}` : r.lower === r.upper ? `en torno al ${P(r.lower)}` : `entre el ${P(r.lower)} y el ${P(r.upper)}`;
+          return `${head}: ${band}.`;
         },
       },
       reportPDetail: { cac: (v) => `score de calcio de Agatston ${v}`, sis: (v) => `SIS ${v}`, visual: () => 'evaluación visual' },

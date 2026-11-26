@@ -79,16 +79,23 @@ test('MESA: con CAC > 0 el límite inferior es el % con CAC 0 si es mayor', () =
   assert.deepEqual(band(cacPercentile({ age: 60, sex: 'male', group: 'white', cac: 28 })), [50, 75]);
 });
 
+test('MESA: % con CAC 0 igual al P25 (redondeo) → en torno al P25', () => {
+  assert.deepEqual(MESA.white.male[64 - 45].slice(0, 2), [75, 2]);
+  assert.deepEqual(band(cacPercentile({ age: 64, sex: 'male', group: 'white', cac: 1 })), [25, 25]);
+});
+
 test('Textos del percentil en ES/EN', () => {
   for (const lang of ['es', 'en']) {
     const p = STRINGS[lang].calc.cadrads.pct;
-    const a = p.result(cacPercentile({ age: 36, sex: 'male', group: 'white', cac: 8 }), 36, 'male');
+    const a = p.result(cacPercentile({ age: 36, sex: 'male', group: 'white', cac: 8 }), 36, 'male', '8');
+    assert.match(a, /Agatston (CAC )?8/);
     assert.match(a, /Javaid 2022/);
     assert.match(a, lang === 'es' ? /entre el P90 y el P95/ : /between the P90 and the P95/);
-    const b = p.result(cacPercentile({ age: 60, sex: 'female', group: 'hispanic', cac: 0 }), 60, 'female');
+    const b = p.result(cacPercentile({ age: 60, sex: 'female', group: 'hispanic', cac: 0 }), 60, 'female', '0');
     assert.match(b, /MESA/);
     assert.match(b, /CAC 0/);
-    const c = p.result(cacPercentile({ age: 44, sex: 'male', group: 'white', cac: 500 }), 44, 'male');
+    assert.match(p.result(cacPercentile({ age: 64, sex: 'male', group: 'white', cac: 1 }), 64, 'male', '1'), lang === 'es' ? /en torno al P25/ : /approximately at the P25/);
+    const c = p.result(cacPercentile({ age: 44, sex: 'male', group: 'white', cac: 500 }), 44, 'male', '500');
     assert.match(c, lang === 'es' ? /en o sobre el P97,5/ : /at or above the P97\.5/);
   }
 });

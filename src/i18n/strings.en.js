@@ -2012,17 +2012,18 @@ export default {
           javaid: 'This study only includes White and Black individuals from the US: there is no Hispanic or Latin American category. Default: White.',
           mesa: 'MESA includes White, Black, Hispanic and Chinese-American individuals living in the US. Default: Hispanic.',
         },
-        caveat: 'Compares the CAC with people of the same age, sex and group without clinical cardiovascular disease. It does not replace the absolute CAC value or equal absolute risk, and neither cohort includes populations outside the US.',
-        result: (r, age, sex) => {
+        caveat: 'Compares the CAC with people of the same age, sex and group without symptomatic cardiovascular disease. It does not replace the absolute CAC value or equal absolute risk, and neither cohort includes populations outside the US.',
+        result: (r, age, sex, cac) => {
           const P = (k) => `P${k}`;
-          const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; ${({ white: 'White', black: 'Black', hispanic: 'Hispanic', chinese: 'Chinese' })[r.group]} ${sex === 'female' ? 'female' : 'male'}, ${age} years`;
+          const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; ${({ white: 'White', black: 'Black', hispanic: 'Hispanic', chinese: 'Chinese' })[r.group]} reference population; ${sex === 'female' ? 'female' : 'male'}, ${age} years`;
+          const head = `Percentile of Agatston CAC ${cac} (${who})`;
           if (r.zero) {
             return r.pPositive !== null
-              ? `CAC percentile (${who}): CAC 0; in this reference, ${Math.round(100 - r.pPositive)}% have CAC 0.`
-              : `CAC percentile (${who}): CAC 0, no percentile assignable.`;
+              ? `${head}: in this reference, ${Math.round(100 - r.pPositive)}% have CAC 0.`
+              : `${head}: no percentile assignable.`;
           }
-          const band = r.lower === null ? `below the ${P(r.upper)}` : r.upper === null ? `at or above the ${P(r.lower)}` : `between the ${P(r.lower)} and the ${P(r.upper)}`;
-          return `CAC percentile (${who}): ${band}.`;
+          const band = r.lower === null ? `below the ${P(r.upper)}` : r.upper === null ? `at or above the ${P(r.lower)}` : r.lower === r.upper ? `approximately at the ${P(r.lower)}` : `between the ${P(r.lower)} and the ${P(r.upper)}`;
+          return `${head}: ${band}.`;
         },
       },
       reportPDetail: { cac: (v) => `Agatston calcium score ${v}`, sis: (v) => `SIS ${v}`, visual: () => 'visual assessment' },
