@@ -41,7 +41,7 @@ export default function CADRADS() {
     const lines = [c.reportText(code)];
     if (pMod) lines.push(c.reportP(pMod, c.pLevel[pMod], pDetail));
     if (cacReportable) {
-      lines.push(c.reportCac(cac));
+      lines.push(c.reportCac(cacNum));
       if (pct.text) lines.push(pct.text);
     }
     return lines.join('\n');
@@ -118,7 +118,7 @@ export default function CADRADS() {
           </div>
         )}
         {pValid && stenosis !== '0' && <p className="text-sm font-semibold text-blue-700 dark:text-blue-300 mt-3">{pRaw} ({c.pLevel[pRaw]})</p>}
-        {pValid && stenosis === '0' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.pNotForZero}</p>}
+        {(pValid || pRaw === 'boundary') && stenosis === '0' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.pNotForZero}</p>}
         {pRaw === 'zero' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.pZero}</p>}
         {pRaw === 'boundary' && <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-2 leading-snug">{c.pBoundary}</p>}
         {pMethod === 'sis' && sis !== '' && pRaw === null && <p className="text-[11px] text-red-500 mt-2 leading-snug">{c.pSisInvalid}</p>}

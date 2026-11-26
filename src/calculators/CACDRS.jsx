@@ -27,7 +27,7 @@ export default function CACDRS() {
 
   const getReportText = () => {
     if (category === null) return '';
-    const lines = [method === 'A' ? c.reportCac(cac) : c.reportVisual(c.visualGrade[category])];
+    const lines = [method === 'A' ? c.reportCac(cacNum) : c.reportVisual(c.visualGrade[category])];
     if (category > 0 && n > 0) lines.push(c.reportVessels(vesselList));
     lines.push(c.reportCategory(code, c.risk[category]));
     if (method === 'A' && pct.text) lines.push(pct.text);
@@ -63,7 +63,7 @@ export default function CACDRS() {
             <ul className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug space-y-0.5">{c.ranges.map((r) => <li key={r}>{r}</li>)}</ul>
           </div>
         ) : (
-          <div className="space-y-2 mt-3">
+          <div className="space-y-2 mt-3" role="group" aria-label={c.methods.V}>
             {c.visualOptions.map((o, i) => (
               <button key={o} type="button" onClick={() => setVisual(i)} aria-pressed={visual === i} className={`w-full text-left ${btn(visual === i)}`}>{o}</button>
             ))}
@@ -73,7 +73,7 @@ export default function CACDRS() {
       </Card>
       <Card>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{c.vesselsLabel}</label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2" role="group" aria-label={c.vesselsLabel}>
           {VESSELS.map((v) => (
             <button key={v} type="button" onClick={() => setVessels((p) => ({ ...p, [v]: !p[v] }))} aria-pressed={vessels[v]} className={`text-left flex items-center gap-1.5 ${btn(vessels[v])}`}>
               {vessels[v] ? <IconCheckCircle size={14} /> : <span className="w-3.5" />} {c.vessels[v]}
