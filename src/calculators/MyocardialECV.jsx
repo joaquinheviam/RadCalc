@@ -5,6 +5,7 @@ import { REFERENCES } from '../i18n/references.js';
 import { IconInfo } from '../components/icons/index.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, Accordion, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 import { REFERENCE, GOTTBRECHT, ecvCalc, ecvBand } from './logic/ecv.js';
+import { useSyntheticHct } from '../components/shared/SyntheticHct.jsx';
 
 const SEQS = ['molli', 'shmolli', 'all'];
 const BAND_COLOR = { high: 'text-red-500', normal: 'text-emerald-500', low: 'text-amber-500' };
@@ -15,11 +16,15 @@ export default function MyocardialECV() {
   const [showPreview, setShowPreview] = useState(false);
   const [seq, setSeq] = useState('molli');
   const [vals, setVals] = useState({ myoPre: '', myoPost: '', bloodPre: '', bloodPost: '', hct: '' });
+  // Hematocrito medido o sintético (por T1 nativo de la sangre).
+  const [hctSource, setHctSource] = useState('measured');
+  const syn = useSyntheticHct(vals.bloodPre, { lockPool: 'lv' });
 
   const num = (x, d) => x.toLocaleString(lang === 'es' ? 'es-CL' : 'en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
   const set = (k) => (v) => setVals((prev) => ({ ...prev, [k]: v }));
   const parsed = Object.fromEntries(Object.entries(vals).map(([k, v]) => [k, v === '' ? NaN : parseFloat(v)]));
-  const allFilled = Object.values(vals).every((v) => v !== '');
+  if (hctSource === 'synthetic') parsed.hct = syn.value === null ? NaN : syn.value;
+  const allFilled = Object.entries(vals).every(([k, v]) => (k === 'hct' && hctSource === 'synthetic') || v !== '');
   const res = ecvCalc(parsed);
   const orderError = allFilled && !res && (parsed.myoPost >= parsed.myoPre || parsed.bloodPost >= parsed.bloodPre);
 
@@ -30,13 +35,14 @@ export default function MyocardialECV() {
   const pct = lang === 'es' ? ' %' : '%';
   const refLine = c.refLine(c.seq[seq], num(ref.range[0], 1), num(ref.range[1], 1), num(ref.mean, 1));
 
-  const resetAll = () => { setVals({ myoPre: '', myoPost: '', bloodPre: '', bloodPost: '', hct: '' }); setSeq('molli'); };
+  const resetAll = () => { setVals({ myoPre: '', myoPost: '', bloodPre: '', bloodPost: '', hct: '' }); setSeq('molli'); setHctSource('measured'); syn.reset(); };
 
   const getReportText = () => {
     if (!res) return '';
     return c.reportText({
       ecv: ecvText, lambda: num(res.lambda, 2), seq: c.seq[seq], bandTitle: bandInfo.title,
-      myoPre: vals.myoPre, myoPost: vals.myoPost, bloodPre: vals.bloodPre, bloodPost: vals.bloodPost, hct: vals.hct, refLine,
+      myoPre: vals.myoPre, myoPost: vals.myoPost, bloodPre: vals.bloodPre, bloodPost: vals.bloodPost, refLine,
+      hct: hctSource === 'synthetic' ? c.hctSynReport(syn.valueText, syn.modelText) : c.hctMeasuredReport(vals.hct),
     });
   };
   const handleCopy = () => {
@@ -75,8 +81,23 @@ export default function MyocardialECV() {
           <NumberField label={c.postLabel} value={vals.bloodPost} onChange={set('bloodPost')} />
         </div>
         <div className="mt-4">
-          <NumberField label={c.hctLabel} value={vals.hct} onChange={set('hct')} />
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug mt-1">{c.hctNote}</p>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{c.hctSourceLabel}</p>
+          <div className="flex gap-2 mb-3" role="group" aria-label={c.hctSourceLabel}>
+            {['measured', 'synthetic'].map((k) => (
+              <button key={k} type="button" aria-pressed={hctSource === k} onClick={() => setHctSource(k)} className={btn(hctSource === k)}>{c.hctSource[k]}</button>
+            ))}
+          </div>
+          {hctSource === 'measured' ? (
+            <>
+              <NumberField label={c.hctLabel} value={vals.hct} onChange={set('hct')} />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug mt-1">{c.hctNote}</p>
+            </>
+          ) : (
+            <>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug mb-3">{c.hctSynNote}</p>
+              {syn.fields}
+            </>
+          )}
         </div>
       </Card>
 

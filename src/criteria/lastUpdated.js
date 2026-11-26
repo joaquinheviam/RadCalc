@@ -18,7 +18,8 @@ export const LAST_UPDATED = {
   "cadrads": "2026-11-26",
   "cacdrs": "2026-11-26",
   "cardiacSiderosis": "2026-09-23",
-  "ecv": "2026-11-17",
+  "ecv": "2026-11-26",
+  "synHct": "2026-11-26",
   "mriFf": "2026-09-21",
   "siderosis": "2026-09-23",
   "lirads": "2026-11-16",
@@ -64,5 +65,7 @@ export const LAST_UPDATED = {
   "sahGrading": "2026-09-21",
   "sins": "2026-09-21",
   "pecarn": "2026-09-21",
-  "brainAvm": "2026-09-22"
+  "brainAvm": "2026-09-22",
+  "kidneyPeds": "2026-11-26",
+  "spleenPeds": "2026-11-26"
 };
