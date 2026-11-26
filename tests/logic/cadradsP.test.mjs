@@ -38,3 +38,14 @@ test('CAD-RADS: textos del modificador P en ES/EN', () => {
     for (const k of ['none', 'cac', 'sis', 'visual']) assert.ok(c.pMethods[k]);
   }
 });
+
+test('Código CAD-RADS 2.0: estenosis, P y modificadores N, HRP, I, S, G, E', async () => {
+  const { cadradsCode } = await import('../../src/calculators/logic/cadradsCode.js');
+  assert.equal(cadradsCode('3', { p: 'P3', mods: { S: true, HRP: true } }), '3/P3/HRP/S');
+  assert.equal(cadradsCode('3', { p: 'P2', mods: { N: true } }), '3/P2/N');
+  assert.equal(cadradsCode('4A', { mods: { E: true }, ischemia: '+' }), '4A/I+/E');
+  assert.equal(cadradsCode('5', { p: 'P3', mods: { G: true } }), '5/P3/G');
+  assert.equal(cadradsCode('2', { mods: { E: true, G: true, S: true, HRP: true, N: true }, ischemia: '±', p: 'P1' }), '2/P1/N/HRP/I±/S/G/E');
+  assert.equal(cadradsCode('0'), '0');
+  assert.equal(cadradsCode(null), '');
+});

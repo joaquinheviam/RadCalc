@@ -193,6 +193,12 @@ export const REFERENCES = {
     { text: 'McClelland RL, Chung H, Detrano R, Post W, Kronmal RA. Distribution of coronary artery calcium by race, gender, and age: results from the Multi-Ethnic Study of Atherosclerosis (MESA). Circulation. 2006;113(1):30-37. MESA calculator: tools.mesa-nhlbi.org/Calcium.', doi: '10.1161/CIRCULATIONAHA.105.580696' },
     { text: 'Javaid A, Dardari ZA, Mitchell JD, et al. Distribution of coronary artery calcium by age, sex, and race among patients 30-45 years old. J Am Coll Cardiol. 2022;79(19):1873-1886.', doi: '10.1016/j.jacc.2022.02.051' },
   ],
+  cacdrs: [
+    { text: 'Hecht HS, Blaha MJ, Kazerooni EA, et al. CAC-DRS: Coronary Artery Calcium Data and Reporting System. An expert consensus document of the Society of Cardiovascular Computed Tomography (SCCT). J Cardiovasc Comput Tomogr. 2018;12(3):185-191.', doi: '10.1016/j.jcct.2018.03.008' },
+    { text: 'Kumar P, Bhatia M. Coronary Artery Calcium Data and Reporting System (CAC-DRS): a primer. J Cardiovasc Imaging. 2023;31(1):1-17.', doi: '10.4250/jcvi.2022.0029' },
+    { text: 'McClelland RL, Chung H, Detrano R, Post W, Kronmal RA. Distribution of coronary artery calcium by race, gender, and age: results from the Multi-Ethnic Study of Atherosclerosis (MESA). Circulation. 2006;113(1):30-37. MESA calculator: tools.mesa-nhlbi.org/Calcium.', doi: '10.1161/CIRCULATIONAHA.105.580696' },
+    { text: 'Javaid A, Dardari ZA, Mitchell JD, et al. Distribution of coronary artery calcium by age, sex, and race among patients 30-45 years old. J Am Coll Cardiol. 2022;79(19):1873-1886.', doi: '10.1016/j.jacc.2022.02.051' },
+  ],
   lungNodule: [
     { text: 'MacMahon H, Naidich DP, Goo JM, et al. Guidelines for management of incidental pulmonary nodules detected on CT images: from the Fleischner Society 2017. Radiology. 2017;284(1):228-243.', doi: '10.1148/radiol.2017161659' },
     'National Comprehensive Cancer Network (NCCN). NCCN Clinical Practice Guidelines in Oncology: Non-Small Cell Lung Cancer. Version 6.2026 (Diagnostic Evaluation algorithm, pages DIAG-2/DIAG-3; NCCN.org).',
