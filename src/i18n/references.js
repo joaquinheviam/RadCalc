@@ -190,6 +190,8 @@ export const REFERENCES = {
   ],
   cadrads: [
     { text: 'Cury RC, Leipsic J, Abbara S, et al. CAD-RADS™ 2.0 - 2022 Coronary Artery Disease - Reporting and Data System: an expert consensus document of SCCT, ACC, ACR, and NASCI. JACC Cardiovasc Imaging. 2022;15(11):1974-2001.', doi: '10.1016/j.jcmg.2022.07.002' },
+    { text: 'McClelland RL, Chung H, Detrano R, Post W, Kronmal RA. Distribution of coronary artery calcium by race, gender, and age: results from the Multi-Ethnic Study of Atherosclerosis (MESA). Circulation. 2006;113(1):30-37. MESA calculator: tools.mesa-nhlbi.org/Calcium.', doi: '10.1161/CIRCULATIONAHA.105.580696' },
+    { text: 'Javaid A, Dardari ZA, Mitchell JD, et al. Distribution of coronary artery calcium by age, sex, and race among patients 30-45 years old. J Am Coll Cardiol. 2022;79(19):1873-1886.', doi: '10.1016/j.jacc.2022.02.051' },
   ],
   lungNodule: [
     { text: 'MacMahon H, Naidich DP, Goo JM, et al. Guidelines for management of incidental pulmonary nodules detected on CT images: from the Fleischner Society 2017. Radiology. 2017;284(1):228-243.', doi: '10.1148/radiol.2017161659' },
