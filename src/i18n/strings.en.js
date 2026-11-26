@@ -4796,7 +4796,7 @@ export default {
       preLabel: 'Native T1 (ms)',
       postLabel: 'Post-contrast T1 (ms)',
       hctSourceLabel: 'Hematocrit',
-      hctSource: { measured: 'Measured', synthetic: 'Synthetic (from blood T1)' },
+      hctSource: { measured: 'Laboratory', synthetic: 'Calculate hematocrit (no lab)' },
       hctSynNote: 'Calculated from the native blood T1 entered above. The Sardanelli 2019 normal ranges were obtained with laboratory hematocrit: if a recent hematocrit is available, prefer it.',
       hctMeasuredReport: (v) => `Hematocrit: ${v}%`,
       hctSynReport: (v, model) => `Synthetic hematocrit: ${v}% (${model})`,

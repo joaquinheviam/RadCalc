@@ -4798,7 +4798,7 @@ export default {
       preLabel: 'T1 nativo (ms)',
       postLabel: 'T1 post-contraste (ms)',
       hctSourceLabel: 'Hematocrito',
-      hctSource: { measured: 'Medido', synthetic: 'Sintético (por T1 de la sangre)' },
+      hctSource: { measured: 'De laboratorio', synthetic: 'Calcular hematocrito (sin laboratorio)' },
       hctSynNote: 'Se calcula con el T1 nativo de la sangre ingresado arriba. Los intervalos de normalidad de Sardanelli 2019 se obtuvieron con hematocrito de laboratorio: si dispone de un hematocrito reciente, prefiéralo.',
       hctMeasuredReport: (v) => `Hematocrito: ${v} %`,
       hctSynReport: (v, model) => `Hematocrito sintético: ${v} % (${model})`,
