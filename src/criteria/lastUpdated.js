@@ -15,7 +15,7 @@ export const LAST_UPDATED = {
   "thoracicglossary": null,
   "pectusHallerCI": "2026-09-21",
   "lungCancerTNM9": "2026-09-21",
-  "cadrads": "2026-09-21",
+  "cadrads": "2026-11-26",
   "cardiacSiderosis": "2026-09-23",
   "ecv": "2026-11-17",
   "mriFf": "2026-09-21",

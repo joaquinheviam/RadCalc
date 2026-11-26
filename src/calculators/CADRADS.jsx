@@ -5,6 +5,7 @@ import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 import { pFromCac, pFromSis } from './logic/cadradsP.js';
+import { cacPercentile, cacSource, groupsFor, DEFAULT_GROUP } from './logic/cacPercentile.js';
 
 export default function CADRADS() {
   const { t, lang } = useLang();
@@ -16,6 +17,11 @@ export default function CADRADS() {
   const [cac, setCac] = useState('');
   const [sis, setSis] = useState('');
   const [pVisual, setPVisual] = useState('');
+  // Percentil del CAC (opcional): edad, sexo y grupo poblacional.
+  const [pctAge, setPctAge] = useState('');
+  const [pctSex, setPctSex] = useState('');
+  // Grupo elegido por fuente: el defecto (blanco 30-44, hispano ≥ 45) se aplica en cada una.
+  const [pctGroup, setPctGroup] = useState({ javaid: '', mesa: '' });
 
   const toggleMod = (key) => setMods(prev => ({ ...prev, [key]: !prev[key] }));
   // Modificador P (CAD-RADS 2.0, tabla 2): por CAC, SIS o evaluación visual.
@@ -27,13 +33,22 @@ export default function CADRADS() {
   const pMod = pValid && stenosis !== '0' ? pRaw : '';
   const pDetail = pMethod === 'cac' ? c.reportPDetail.cac(cac) : pMethod === 'sis' ? c.reportPDetail.sis(sis) : c.reportPDetail.visual();
   const modString = [...Object.entries(mods).filter(([,v]) => v).map(([k]) => k), ...(pMod ? [pMod] : [])].join('/');
+  const ageNum = pctAge === '' ? null : Number(pctAge);
+  const pctSource = Number.isInteger(ageNum) ? cacSource(ageNum) : null;
+  const pctGroups = groupsFor(pctSource);
+  const pctGroupEff = pctSource ? (pctGroup[pctSource] || DEFAULT_GROUP[pctSource]) : '';
+  const pct = pMethod === 'cac' && cac !== '' && pctSource && pctSex
+    ? cacPercentile({ age: ageNum, sex: pctSex, group: pctGroupEff, cac: parseFloat(cac) }) : null;
+  const pctText = pct ? c.pct.result(pct, ageNum, pctSex, cac) : '';
   const resultString = stenosis ? `CAD-RADS ${stenosis}${modString ? '/' + modString : ''}` : '';
 
   const getReportText = () => {
     if (!stenosis) return '';
-    const text = c.reportText(stenosis, modString);
-    return pMod ? `${text}
-${c.reportP(pMod, c.pLevel[pMod], pDetail)}` : text;
+    const lines = [c.reportText(stenosis, modString)];
+    if (pMod) lines.push(c.reportP(pMod, c.pLevel[pMod], pDetail));
+    // CAD-RADS 0 (sin placa) con CAC > 0 es contradictorio: la UI ya lo advierte y el informe omite el percentil.
+    if (pctText && !(stenosis === '0' && pct && !pct.zero)) lines.push(pctText);
+    return lines.join('\n');
   };
   const handleCopy = () => {
     const text = getReportText();
@@ -42,7 +57,7 @@ ${c.reportP(pMod, c.pLevel[pMod], pDetail)}` : text;
   };
 
   const riskColor = !stenosis ? '' : ['0','1'].includes(stenosis) ? 'text-emerald-500' : ['2','3'].includes(stenosis) ? 'text-amber-500' : stenosis === 'N' ? 'text-slate-500 dark:text-slate-400' : 'text-red-500';
-  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMethod('cac'); setCac(''); setSis(''); setPVisual(''); };
+  const resetAll = () => { setStenosis(null); setMods({ N: false, S: false, G: false, I: false, HRP: false, E: false }); setPMethod('cac'); setCac(''); setSis(''); setPVisual(''); setPctAge(''); setPctSex(''); setPctGroup({ javaid: '', mesa: '' }); };
 
   return (
     <div className={`space-y-4 animate-in fade-in ${stenosis ? 'pb-56' : ''}`}>
@@ -83,6 +98,29 @@ ${c.reportP(pMod, c.pLevel[pMod], pDetail)}` : text;
           <div className="mt-3">
             <NumberField label={c.cacLabel} value={cac} onChange={setCac} />
             <ul className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug space-y-0.5">{c.pRanges.cac.map((r) => <li key={r}>{r}</li>)}</ul>
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 space-y-2.5">
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{c.pct.title}</p>
+              <NumberField label={c.pct.ageLabel} value={pctAge} onChange={setPctAge} small />
+              {pctAge !== '' && !pctSource && <p className="text-[11px] text-amber-600 dark:text-amber-400 leading-snug">{c.pct.ageOut}</p>}
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label={c.pct.sexLabel}>
+                {['female', 'male'].map((k) => (
+                  <button key={k} type="button" onClick={() => setPctSex(k)} aria-pressed={pctSex === k} className={`p-2.5 rounded-lg border text-xs transition-all ${pctSex === k ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pct.sex[k]}</button>
+                ))}
+              </div>
+              {pctSource && (
+                <div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{c.pct.groupLabel} ({c.pct.sourceName[pctSource]})</p>
+                  <div className="grid grid-cols-2 gap-2" role="group" aria-label={c.pct.groupLabel}>
+                    {pctGroups.map((k) => (
+                      <button key={k} type="button" onClick={() => setPctGroup((prev) => ({ ...prev, [pctSource]: k }))} aria-pressed={pctGroupEff === k} className={`p-2.5 rounded-lg border text-xs transition-all ${pctGroupEff === k ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}>{c.pct.group[k]}</button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">{c.pct.groupHint[pctSource]}</p>
+                </div>
+              )}
+              {pctText && <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">{pctText}</p>}
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{c.pct.caveat}</p>
+            </div>
           </div>
         )}
         {pMethod === 'sis' && (

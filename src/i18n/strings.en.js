@@ -254,6 +254,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-11-26', text: 'CAD-RADS 2.0: with the calcium score (Agatston), age, sex and population group can be added to obtain the CAC percentile, which is added to the report. Ages 30-44 use Javaid et al., J Am Coll Cardiol 2022 (White and Black only); ages 45-84 use MESA (McClelland et al., Circulation 2006, values from the official MESA calculator). Defaults: White at 30-44 and Hispanic from 45; neither cohort includes populations outside the US.' },
       { date: '2026-11-23', text: 'New PRECISE v2 calculator for prostate MRI in prostate cancer active surveillance (scores 1–5, 3-V/3-NonV and X), per Englman et al., Eur Urol 2024.' },
       { date: '2026-11-17', text: 'CAD-RADS 2.0: the plaque burden (P) modifier can now be assigned by any of the three methods in Table 2 of the consensus: Agatston calcium score (P1 1-100, P2 101-300, P3 301-999, P4 > 1000), segment involvement score (SIS: P1 ≤ 2, P2 3-4, P3 5-7, P4 ≥ 8) or visual assessment by number of vessels and amount of plaque. The calculator assigns the category from the entered value, does not report P for CAD-RADS 0 and includes it in the report. Reference: Cury RC, et al. JACC Cardiovasc Imaging. 2022;15:1974-2001.' },
       { date: '2026-11-17', text: 'Myocardial ECV: clarifies that the formula and normal reference intervals are the same at 1.5 T and 3 T (ECV of 25.9% at both field strengths per Gottbrecht 2019; no field-strength effect per Sardanelli 2019), unlike native T1, which does depend on field strength. References: Gottbrecht M, et al. Radiology. 2019;290:317-326. Sardanelli F, et al. Eur Radiol. 2019;29:6620-6633.' },
@@ -1998,6 +1999,33 @@ export default {
       pNotForZero: 'CAD-RADS 0 denotes absence of plaque: the P modifier is not reported (there is no P0).',
       pCaveat: 'Ranges per Table 2 of the CAD-RADS 2.0 consensus. There is no single recommended method: use the one considered most appropriate at your institution. Categories may not correspond across methods; if they differ, the document advises using CAC or total plaque burden quantification, if available.',
       reportP: (p, level, detail) => `Plaque burden: ${p} (${level}; ${detail}).`,
+      pct: {
+        title: 'CAC percentile for age, sex and group (optional)',
+        ageLabel: 'Age (completed years, 30-84)',
+        ageOut: 'Reference percentiles exist only between 30 and 84 years (completed years, no decimals).',
+        sexLabel: 'Sex',
+        sex: { female: 'Female', male: 'Male' },
+        groupLabel: 'Reference population group',
+        group: { white: 'White', black: 'Black', hispanic: 'Hispanic', chinese: 'Chinese' },
+        sourceName: { javaid: 'Javaid 2022, ages 30-44', mesa: 'MESA, ages 45-84' },
+        groupHint: {
+          javaid: 'This study only includes White and Black individuals from the US: there is no Hispanic or Latin American category. Default: White.',
+          mesa: 'MESA includes White, Black, Hispanic and Chinese-American individuals living in the US. Default: Hispanic.',
+        },
+        caveat: 'Compares the CAC with people of the same age, sex and group without symptomatic cardiovascular disease. It does not replace the absolute CAC value or equal absolute risk, and neither cohort includes populations outside the US.',
+        result: (r, age, sex, cac) => {
+          const P = (k) => `P${k}`;
+          const who = `${r.source === 'mesa' ? 'MESA' : 'Javaid 2022'}; ${({ white: 'White', black: 'Black', hispanic: 'Hispanic', chinese: 'Chinese' })[r.group]} reference population; ${sex === 'female' ? 'female' : 'male'}, ${age} years`;
+          const head = `Percentile of Agatston CAC ${cac} (${who})`;
+          if (r.zero) {
+            return r.pPositive !== null
+              ? `${head}: in this reference, ${Math.round(100 - r.pPositive)}% have CAC 0.`
+              : `${head}: no percentile assignable.`;
+          }
+          const band = r.lower === null ? `below the ${P(r.upper)}` : r.upper === null ? `at or above the ${P(r.lower)}` : r.lower === r.upper ? `approximately at the ${P(r.lower)}` : `between the ${P(r.lower)} and the ${P(r.upper)}`;
+          return `${head}: ${band}.`;
+        },
+      },
       reportPDetail: { cac: (v) => `Agatston calcium score ${v}`, sis: (v) => `SIS ${v}`, visual: () => 'visual assessment' },
       resultLabel: 'CAD-RADS result',
       reportText: (cadrads, mods) =>
@@ -2006,6 +2034,8 @@ export default {
         'CAD-RADS classifies coronary artery disease on CTA by the stenosis grade of the most severely affected segment, from CAD-RADS 0 (no plaque) to 5 (total occlusion), plus category N for non-diagnostic studies.',
         'Modifiers are appended after the main category (e.g., "CAD-RADS 3/HRP" or "CAD-RADS 4B/I"): N (nondiagnostic segment), S (stent), G (graft), I (ischemia on functional testing), HRP (high-risk plaque), E (exception, e.g., heart transplant or anomalous coronary), and P1-P4 (plaque burden by Agatston calcium score, SIS or visual assessment).',
         'CAD-RADS 0-2 generally requires no further treatment; CAD-RADS 3 warrants clinical evaluation and possible medical therapy; CAD-RADS 4A-4B usually requires ischemia testing or invasive angiography; CAD-RADS 5 warrants urgent revascularization depending on clinical context.',
+        'CAC percentile (optional, with the calcium score method): the reference is chosen by age. From 30 to 44 years, Javaid et al. 2022: 19,725 asymptomatic US adults (CARDIA, CAC Consortium and Walter Reed cohorts), with percentiles for White and Black individuals only. From 45 to 84 years, MESA: 6110 participants from six US communities, free of clinical cardiovascular disease and treated diabetes, White, Black, Hispanic and Chinese-American; values come from the official MESA calculator. At age 45 both studies have data; MESA is used.',
+        'Neither cohort includes populations from outside the US. "Hispanic" in MESA refers to Hispanic individuals living in the US. By default, White is used from 30 to 44 years (there is no Hispanic category) and Hispanic from 45; choose the group closest to the patient and interpret the percentile with caution in other populations. The range between the published percentiles is reported (Javaid: 75, 90, 95 and 97.5; MESA: 25, 50, 75 and 90); in MESA, any CAC above 0 is also above the percentage of people with CAC 0 (for example, above the P32 if 68% have CAC above 0). In Javaid, any CAC above 0 in women aged 30 to 45 is above the 90th percentile.',
       ],
     },
     lungNodule: {
