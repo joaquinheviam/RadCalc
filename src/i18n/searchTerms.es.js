@@ -4,6 +4,7 @@ export default {
   ecv: ['ecv', 'volumen extracelular', 'fraccion de volumen extracelular', 'fracción de volumen extracelular', 'mapeo t1', 't1 mapping', 'molli', 'shmolli', 'fibrosis miocardica', 'fibrosis miocárdica', 'amiloidosis cardiaca', 'amiloidosis cardíaca', 'rm cardiaca', 'rm cardíaca', 'coeficiente de particion', 'hematocrito'],
   synHct: ['hematocrito sintetico', 'hematocrito sintético', 'hto sintetico', 'ecv sintetico', 'ecv sintético', 't1 sangre', 'hematocrito rm', 'synthetic hematocrit'],
   kidneyPeds: ['riñon pediatrico', 'rinon pediatrico', 'tamaño renal', 'tamano renal', 'longitud renal', 'riñon niño', 'pediatria', 'ecografia renal'],
+  spleenPeds: ['bazo pediatrico', 'bazo niño', 'tamaño esplenico', 'tamano esplenico', 'esplenomegalia', 'longitud esplenica', 'pediatria', 'megremis'],
   altLipoma: ['lipoma', 'tumor lipomatoso atipico', 'tumor lipomatoso atípico', 'alt', 'liposarcoma', 'liposarcoma bien diferenciado', 'masa grasa', 'nagano', 'alt score'],
   mirels: ['mirels', 'criterios de mirels', 'fractura patologica', 'fractura patológica', 'metastasis osea', 'metástasis ósea', 'fijacion profilactica', 'fijación profiláctica', 'riesgo de fractura'],
   aspects: ['aspects', 'alberta stroke', 'acv', 'ictus', 'accidente cerebrovascular', 'stroke score', 'tc cerebro sin contraste', 'trombectomia', 'trombectomía', 'trombolisis', 'trombólisis', 'nucleo isquemico', 'núcleo isquémico', 'aca media', 'territorio de acm', 'pre score', 'pittsburgh', 'score pre', 'nihss'],

@@ -88,3 +88,17 @@ test('Riñón pediátrico: tabla de Viteri 2026 (Tabla 3) y puntaje Z', async ()
     assert.ok(STRINGS[lang].categories.peds);
   }
 });
+
+test('Bazo pediátrico: Megremis 2004 (Tabla 1) por edad y sexo', async () => {
+  const { SPLEEN_LENGTH, SPLEEN_GROUPS, spleenZ } = await import('../../src/calculators/logic/spleenPeds.js');
+  assert.equal(SPLEEN_GROUPS.length, 11);
+  assert.deepEqual(SPLEEN_LENGTH.m0.female, [22, 4.4, 0.57, 3.2, 5.5]);
+  assert.deepEqual(SPLEEN_LENGTH.y14.male, [13, 10.7, 0.90, 9.5, 12.5]);
+  assert.equal(Object.values(SPLEEN_LENGTH).reduce((a, g) => a + g.female[0] + g.male[0], 0), 454);
+  const r = spleenZ('y6', 'male', 8.9);
+  near(r.z, 0); assert.equal(r.band, 'normal');
+  assert.equal(spleenZ('y6', 'male', 8.9 + 2 * 0.91).band, 'normal');
+  assert.equal(spleenZ('y6', 'male', 11.0).band, 'large');
+  assert.equal(spleenZ('y6', 'male', 85), null);
+  for (const lang of ['es', 'en']) for (const k of SPLEEN_GROUPS) assert.ok(STRINGS[lang].calc.spleenPeds.ages[k]);
+});

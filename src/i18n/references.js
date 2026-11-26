@@ -55,6 +55,9 @@ export const REFERENCES = {
   kidneyPeds: [
     { text: 'Viteri B, Morales-Tisnés T, Logan J, et al. US-derived pediatric kidney length and volume percentiles by age: a big data approach. Radiol Artif Intell. 2026;8(1):e250056.', doi: '10.1148/ryai.250056' },
   ],
+  spleenPeds: [
+    { text: 'Megremis SD, Vlachonikolis IG, Tsilimigaki AM. Spleen length in childhood with US: normal values based on age, sex, and somatometric parameters. Radiology. 2004;231(1):129-134.', doi: '10.1148/radiol.2311020963' },
+  ],
   altLipoma: [
     { text: 'Nagano S, Yokouchi M, Setoguchi T, Ishidou Y, Sasaki H, Shimada H, Komiya S. Differentiation of lipoma and atypical lipomatous tumor by a scoring system: implication of increased vascularity on pathogenesis of liposarcoma. BMC Musculoskelet Disord. 2015;16:36.', doi: '10.1186/s12891-015-0491-8' },
     { text: 'Wilson MP, Haidey J, Murad MH, Sept L, Low G. Diagnostic accuracy of CT and MR features for detecting atypical lipomatous tumors and malignant liposarcomas: a systematic review and meta-analysis. Eur Radiol. 2023;33(12):8605-8616.', doi: '10.1007/s00330-023-09916-2' },

@@ -66,5 +66,6 @@ export const LAST_UPDATED = {
   "sins": "2026-09-21",
   "pecarn": "2026-09-21",
   "brainAvm": "2026-09-22",
-  "kidneyPeds": "2026-11-26"
+  "kidneyPeds": "2026-11-26",
+  "spleenPeds": "2026-11-26"
 };
