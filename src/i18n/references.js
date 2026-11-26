@@ -52,6 +52,9 @@ export const REFERENCES = {
     { text: 'Liu CY, Heckbert SR, Lai S, et al. Association of elevated NT-proBNP with myocardial fibrosis in the Multi-Ethnic Study of Atherosclerosis (MESA). J Am Coll Cardiol. 2017;70(25):3102-3109.', doi: '10.1016/j.jacc.2017.10.044' },
     { text: 'Reiter C, Puseljic M, Fuchsjäger M, Schmid J. Estimating synthetic hematocrit and extracellular volume from native blood pool T1 times at 3 Tesla CMR: derivation of a conversion equation, accuracy and comparison with published formulas. Eur J Radiol. 2024;178:111659.', doi: '10.1016/j.ejrad.2024.111659' },
   ],
+  kidneyPeds: [
+    { text: 'Viteri B, Morales-Tisnés T, Logan J, et al. US-derived pediatric kidney length and volume percentiles by age: a big data approach. Radiol Artif Intell. 2026;8(1):e250056.', doi: '10.1148/ryai.250056' },
+  ],
   altLipoma: [
     { text: 'Nagano S, Yokouchi M, Setoguchi T, Ishidou Y, Sasaki H, Shimada H, Komiya S. Differentiation of lipoma and atypical lipomatous tumor by a scoring system: implication of increased vascularity on pathogenesis of liposarcoma. BMC Musculoskelet Disord. 2015;16:36.', doi: '10.1186/s12891-015-0491-8' },
     { text: 'Wilson MP, Haidey J, Murad MH, Sept L, Low G. Diagnostic accuracy of CT and MR features for detecting atypical lipomatous tumors and malignant liposarcomas: a systematic review and meta-analysis. Eur Radiol. 2023;33(12):8605-8616.', doi: '10.1007/s00330-023-09916-2' },

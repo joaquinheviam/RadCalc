@@ -2,7 +2,7 @@
 // T1 en ms; el resultado es una fracción (0-1).
 //
 // - Chen W, et al. Circ Cardiovasc Imaging 2022;15:e013745 (doi 10.1161/CIRCIMAGING.121.013745),
-//   Tabla 2. Philips Ingenia 3 T y 1,5 T, MOLLI 5s(3s)3s; 1101 pacientes.
+//   Tabla 2. Philips Ingenia 3 T y Achieva 1,5 T, MOLLI 5s(3s)3s; 1101 pacientes.
 //   Modelos comunes (Sexo: hombre = 1, mujer = 0; Campo: 1,5 T = 1, 3 T = 0):
 //     VI: 816,325 × (1/T1) + 0,024 × Sexo − 0,094 × Campo − 0,027
 //     VD: 694,200 × (1/T1) + 0,022 × Sexo − 0,075 × Campo + 0,03
@@ -20,11 +20,12 @@ export const CHEN_SPECIFIC = {
 };
 
 // Qué datos necesita cada modelo y en qué campo se derivó (null = ambos).
+// MESA y Reiter solo valen en su campo: con el otro campo no se calcula.
 export const MODELS = {
   chenCommon: { needs: ['field', 'sex', 'pool'], field: null },
   chenSpecific: { needs: ['field', 'sex', 'pool'], field: null },
-  mesa: { needs: [], field: '1.5' },
-  reiter: { needs: [], field: '3' },
+  mesa: { needs: ['field'], field: '1.5' },
+  reiter: { needs: ['field'], field: '3' },
   local: { needs: ['a', 'b'], field: null },
 };
 
@@ -39,6 +40,7 @@ export function syntheticHct({ model, t1, field, sex, pool = 'lv', a, b }) {
   const r1 = 1 / t1;
   const needField = model === 'chenCommon' || model === 'chenSpecific';
   if (needField && (!['1.5', '3'].includes(field) || !['male', 'female'].includes(sex) || !['lv', 'rv'].includes(pool))) return null;
+  if (MODELS[model].field && field !== MODELS[model].field) return null;
   switch (model) {
     case 'chenCommon': {
       const s = sex === 'male' ? 1 : 0;

@@ -3,6 +3,7 @@ export default {
   bactip: ['bactip', 'cartilaginous tumour', 'cartilaginous tumor', 'atypical cartilaginous tumour', 'enchondroma', 'chondrosarcoma', 'endosteal scalloping', 'birmingham protocol', 'central cartilage tumor'],
   ecv: ['ecv', 'extracellular volume', 'extracellular volume fraction', 't1 mapping', 'molli', 'shmolli', 'myocardial fibrosis', 'diffuse fibrosis', 'cardiac amyloidosis', 'cardiac mri', 'cmr', 'partition coefficient', 'hematocrit'],
   synHct: ['synthetic hematocrit', 'synthetic hct', 'synthetic ecv', 'blood t1', 'hematocrit mri', 'cmr hematocrit'],
+  kidneyPeds: ['pediatric kidney', 'kidney size', 'kidney length', 'renal length', 'child kidney', 'pediatrics', 'renal ultrasound'],
   altLipoma: ['lipoma', 'atypical lipomatous tumor', 'alt', 'liposarcoma', 'well-differentiated liposarcoma', 'fatty mass', 'nagano', 'alt score'],
   mirels: ['mirels', "mirels' criteria", 'mirels score', 'pathologic fracture', 'bone metastasis', 'prophylactic fixation', 'fracture risk'],
   aspects: ['aspects', 'alberta stroke', 'stroke score', 'ischemic stroke', 'non-contrast ct brain', 'thrombectomy', 'thrombolysis', 'ischemic core', 'middle cerebral artery', 'mca territory', 'pre score', 'pittsburgh', 'nihss'],

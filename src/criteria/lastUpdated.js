@@ -65,5 +65,6 @@ export const LAST_UPDATED = {
   "sahGrading": "2026-09-21",
   "sins": "2026-09-21",
   "pecarn": "2026-09-21",
-  "brainAvm": "2026-09-22"
+  "brainAvm": "2026-09-22",
+  "kidneyPeds": "2026-11-26"
 };

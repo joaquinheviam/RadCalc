@@ -211,6 +211,7 @@ export default {
     breast: 'Breast',
     msk: 'Musculoskeletal',
     neuro: 'Neuroradiology',
+    peds: 'Pediatrics',
   },
   search: {
     placeholder: 'Search calculator or concept...',
@@ -254,6 +255,7 @@ export default {
     title: 'Update log',
     intro: 'A record of the most recent changes to RadioCalc Clinical\'s calculators and guidelines.',
     entries: [
+      { date: '2026-11-26', text: 'New Pediatrics category and new calculator Pediatric Kidney Size (Ultrasound): compares kidney length with the mean ± SD by age from Viteri et al., Radiol Artif Intell 2026 (24,664 ultrasounds, 0 to 17 years), with Z score and approximate percentile; small or enlarged beyond 2 SD.' },
       { date: '2026-11-26', text: 'New calculator Synthetic Hematocrit (Cardiac MRI), Cardiovascular category, also available inside Myocardial ECV: estimates hematocrit from native blood T1 with the equations of Chen et al., Circ Cardiovasc Imaging 2022 (common and specific models), MESA (Liu et al., J Am Coll Cardiol 2017), Reiter et al., Eur J Radiol 2024, or a local equation.' },
       { date: '2026-11-26', text: 'New calculator Coronary Artery Calcium Score (CAC-DRS), Cardiovascular category: CAC-DRS category 0-3 by Agatston score or visual assessment, N modifier by number of arteries with calcium, treatment recommendation proposed by the document (optional in the report) and percentile by age, sex and group (Javaid 2022 and MESA). Based on Hecht et al., J Cardiovasc Comput Tomogr 2018, and Kumar and Bhatia, J Cardiovasc Imaging 2023.' },
       { date: '2026-11-26', text: 'CAD-RADS 2.0: the code now follows the order of the document (stenosis, P, then N, HRP, I, S, G, E; P used to go last). The ischemia modifier now distinguishes I+, I- and I± (CT-FFR or CT perfusion), and the report adds the Agatston calcium score when entered. Based on Cury et al., Radiol Cardiothorac Imaging 2022.' },
@@ -443,26 +445,29 @@ export default {
     models: {
       chenCommon: { name: 'Chen 2022, common model', desc: 'Philips 1.5 T and 3 T, MOLLI 5s(3s)3s. Adjusts for field, sex and blood pool.' },
       chenSpecific: { name: 'Chen 2022, specific model', desc: 'Same scanner and sequence; one equation per field, sex and blood pool. Less bias in anemia.' },
-      mesa: { name: 'MESA (Liu 2017)', desc: '1.5 T, MOLLI. Left ventricular blood pool.' },
-      reiter: { name: 'Reiter 2024', desc: 'Siemens Skyra 3 T, MOLLI 5(3)3, mid-LV end-systole.' },
+      mesa: { name: 'MESA (Liu 2017)', desc: '1.5 T only, MOLLI.' },
+      reiter: { name: 'Reiter 2024', desc: '3 T only: Siemens Skyra, MOLLI 5(3)3, mid-LV end-systole.' },
       local: { name: 'Local equation', desc: 'Coefficients calibrated on your own scanner and sequence (recommended).' },
     },
     fieldLabel: 'Field strength',
     sexLabel: 'Sex',
     sex: { female: 'Female', male: 'Male' },
     poolLabel: 'Blood pool measured',
+    poolLocked: 'Blood pool: left ventricle (that of the blood T1 entered).',
     pool: { lv: 'Left ventricle', rv: 'Right ventricle' },
     aLabel: 'Slope (a)',
     bLabel: 'Intercept (b)',
     localHint: 'Hematocrit (fraction 0-1) = a × (1/T1 in ms) + b.',
-    fieldOnly: (f) => `This equation was derived only at ${f}.`,
+    fieldOnly: (f) => `This equation was derived only at ${f}: do not use it at another field strength.`,
     resultLine: (v) => `Synthetic hematocrit: ${v}%`,
-    outOfRange: 'Value outside the usual physiological range: check the T1, field and chosen equation.',
-    caveat: 'Each equation applies to the scanner and sequence it was derived on. With formulas from other centers, Reiter 2024 misclassified ECV in up to 60% of cases; a local equation is ideal.',
-    modelReport: ({ model, field, sex, pool }) => {
+    outOfRange: 'Value outside the usual physiological range (20-65%): check the T1, field and chosen equation.',
+    outOfRangeReport: '; outside the usual physiological range',
+    invalid: 'Impossible result: check that T1 is in milliseconds and the equation coefficients.',
+    caveat: 'Each equation applies to the scanner and sequence it was derived on; a local equation is ideal. In Reiter 2024, one published formula (Shang 2018) misclassified ECV in up to 60% of cases, while those of Fent 2017 and Chen 2022 performed similarly to the local one.',
+    modelReport: ({ model, field, sex, pool, a, b }) => {
       const f = field === '1.5' ? '1.5 T' : '3 T';
       const extra = (model === 'chenCommon' || model === 'chenSpecific') ? `, ${f}, ${sex === 'male' ? 'male' : 'female'}, ${pool === 'lv' ? 'LV' : 'RV'}` : '';
-      return ({ chenCommon: 'Chen 2022, common model', chenSpecific: 'Chen 2022, specific model', mesa: 'MESA equation, Liu 2017', reiter: 'Reiter 2024 equation', local: 'local equation' })[model] + extra;
+      return ({ chenCommon: 'Chen 2022, common model', chenSpecific: 'Chen 2022, specific model', mesa: 'MESA equation, Liu 2017, 1.5 T', reiter: 'Reiter 2024 equation, 3 T', local: `local equation (a = ${a}, b = ${b})` })[model] + extra;
     },
   },
   calc: {
@@ -4844,7 +4849,33 @@ export default {
         'Hematocrit is inversely related to blood T1: more red cells shorten T1. It can therefore be estimated with a linear regression on 1/native blood T1 and used to calculate ECV without a blood sample.',
         'Chen 2022 (1101 patients, Philips 1.5 and 3 T): synthetic ECV agreed with measured ECV (bias −0.10 to −0.21%) and correlated with histological fibrosis as well as measured ECV. In anemia, all models underestimated ECV; the specific model reduced that bias.',
         'Abnormally low venous or arterial oxygen saturation shortens blood T1 independently of hematocrit and may overestimate synthetic hematocrit (Chen 2022).',
-        'Equations depend on the scanner, field strength and sequence. Reiter 2024 derived a local equation (Siemens 3 T) with 8.8% of ECV misclassified, similar to the 7.5% caused by repeating venous hematocrit; with published formulas from other centers, up to 60%. If a recent hematocrit is available, use it.',
+        'Equations depend on the scanner, field strength and sequence. Reiter 2024 derived a local equation (Siemens 3 T) with 8.8% of ECV misclassified, similar to the 7.5% caused by repeating venous hematocrit. With one published formula from another center (Shang 2018) the error reached 60%; those of Fent 2017 and Chen 2022 performed similarly to the local one. If a recent hematocrit is available, use it.',
+      ],
+    },
+    kidneyPeds: {
+      title: 'Pediatric Kidney Size (Ultrasound)',
+      subtitle: 'Compares ultrasound kidney length with normal values by age, from newborns to 17 years (Viteri 2026).',
+      ageLabel: 'Age',
+      agePlaceholder: 'Select age',
+      ageHint: 'Each year includes from that age up to the next (e.g., 1 year = 1 to < 2 years).',
+      ages: { w0: '0 to < 1 week', m0: '1 week to < 4 months', m4: '4 to < 8 months', m8: '8 months to < 1 year', y1: '1 year', y2: '2 years', y3: '3 years', y4: '4 years', y5: '5 years', y6: '6 years', y7: '7 years', y8: '8 years', y9: '9 years', y10: '10 years', y11: '11 years', y12: '12 years', y13: '13 years', y14: '14 years', y15: '15 years', y16: '16 years', y17: '17 years' },
+      rightLabel: 'Right kidney (cm)',
+      leftLabel: 'Left kidney (cm)',
+      lengthHint: 'Maximum pole-to-pole length. Enter one or both kidneys.',
+      sides: { right: 'Right kidney', left: 'Left kidney' },
+      sidesShort: { right: 'R', left: 'L' },
+      bands: { small: 'small for age (< −2 SD)', normal: 'within ±2 SD for age', large: 'enlarged for age (> +2 SD)' },
+      bandsShort: { small: 'Small', normal: 'Normal', large: 'Enlarged' },
+      sideLine: (side, v, z, p, band) => `${side}: ${v} cm (Z ${z}; approximate percentile ${p}), ${band}.`,
+      refLine: (age, mean, sd, lo, hi) => `Reference (${age}, Viteri 2026): mean ${mean} ± ${sd} cm; ±2 SD: ${lo}–${hi} cm.`,
+      pctNote: 'The percentile is a normal-distribution approximation; the study published LMS percentiles in its supplementary material.',
+      resultLabel: 'Kidney length',
+      reportTitle: (age) => `Ultrasound kidney length (${age}):`,
+      usage: [
+        'Viteri et al. (Radiology: Artificial Intelligence 2026) analyzed 24,664 ultrasound reports from 18,769 children aged 0 to 18 years without kidney pathology, using natural language processing, and published the mean and SD of kidney length by age.',
+        'Use the maximum pole-to-pole length. The right-left difference (0.09 cm) and the sex difference (up to 0.06 cm) were not clinically relevant, so the same reference applies to both kidneys and sexes.',
+        'The study considers a kidney small or enlarged when more than 2 SD from the mean. Small kidneys are associated with faster function decline in premature children; enlargement is seen in infiltrative and polycystic disease, and is the expected compensatory growth of a solitary functioning kidney.',
+        'Premature children and kidneys with pathological findings were excluded; it is a single tertiary-center US cohort. Values were somewhat smaller than Rosenbaum 1984 at most ages.',
       ],
     },
     aspects: {

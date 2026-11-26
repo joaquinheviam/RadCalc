@@ -33,6 +33,7 @@ const CACDRS = lazy(() => import('./CACDRS.jsx'));
 const CardiacSiderosis = lazy(() => import('./CardiacSiderosis.jsx'));
 const MyocardialECV = lazy(() => import('./MyocardialECV.jsx'));
 const SyntheticHematocrit = lazy(() => import('./SyntheticHematocrit.jsx'));
+const KidneyPeds = lazy(() => import('./KidneyPeds.jsx'));
 const ThoracicGlossary = lazy(() => import('./ThoracicGlossary.jsx'));
 const MRIFatFraction = lazy(() => import('./MRIFatFraction.jsx'));
 const HepaticSiderosis = lazy(() => import('./HepaticSiderosis.jsx'));
@@ -153,6 +154,8 @@ export const calculators = [
   { id: 'sins', catKey: 'neuro', component: SINS },
   { id: 'pecarn', catKey: 'neuro', component: Pecarn },
   { id: 'brainAvm', catKey: 'neuro', component: BrainAVM },
+  // Pediatría
+  { id: 'kidneyPeds', catKey: 'peds', component: KidneyPeds },
 ];
 
-export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro'];
+export const categoryOrder = ['cabezaCuello', 'torax', 'cardio', 'abdomen', 'gu', 'gyn', 'breast', 'msk', 'neuro', 'peds'];

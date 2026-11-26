@@ -18,7 +18,7 @@ export default function MyocardialECV() {
   const [vals, setVals] = useState({ myoPre: '', myoPost: '', bloodPre: '', bloodPost: '', hct: '' });
   // Hematocrito medido o sintético (por T1 nativo de la sangre).
   const [hctSource, setHctSource] = useState('measured');
-  const syn = useSyntheticHct(vals.bloodPre);
+  const syn = useSyntheticHct(vals.bloodPre, { lockPool: 'lv' });
 
   const num = (x, d) => x.toLocaleString(lang === 'es' ? 'es-CL' : 'en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
   const set = (k) => (v) => setVals((prev) => ({ ...prev, [k]: v }));

@@ -211,6 +211,7 @@ export default {
     breast: 'Mama',
     msk: 'Musculoesquelética',
     neuro: 'Neurorradiología',
+    peds: 'Pediatría',
   },
   search: {
     placeholder: 'Buscar calculadora o concepto...',
@@ -254,6 +255,7 @@ export default {
     title: 'Historial de actualizaciones',
     intro: 'Un registro de los cambios más recientes en las calculadoras y guías de RadioCalc Clinical.',
     entries: [
+      { date: '2026-11-26', text: 'Nueva categoría Pediatría y nueva calculadora Tamaño Renal Pediátrico (Ecografía): compara la longitud renal con la media ± DE por edad de Viteri et al., Radiol Artif Intell 2026 (24 664 ecografías, 0 a 17 años), con puntaje Z y percentil aproximado; pequeño o aumentado a más de 2 DE.' },
       { date: '2026-11-26', text: 'Nueva calculadora Hematocrito Sintético (RM cardíaca), categoría Cardiovascular, también disponible dentro de ECV Miocárdico: estima el hematocrito desde el T1 nativo de la sangre con las ecuaciones de Chen et al., Circ Cardiovasc Imaging 2022 (modelos común y específico), MESA (Liu et al., J Am Coll Cardiol 2017), Reiter et al., Eur J Radiol 2024, o una ecuación local.' },
       { date: '2026-11-26', text: 'Nueva calculadora Score de calcio coronario (CAC-DRS), categoría Cardiovascular: categoría CAC-DRS 0-3 por score de Agatston o evaluación visual, modificador N por número de arterias con calcio, recomendación de tratamiento propuesta por el documento (opcional en el informe) y percentil por edad, sexo y grupo (Javaid 2022 y MESA). Según Hecht et al., J Cardiovasc Comput Tomogr 2018, y Kumar y Bhatia, J Cardiovasc Imaging 2023.' },
       { date: '2026-11-26', text: 'CAD-RADS 2.0: el código sigue el orden del documento (estenosis, P y luego N, HRP, I, S, G, E; antes la P iba al final). El modificador de isquemia ahora distingue I+, I- e I± (TC-FFR o perfusión por TC), y el informe agrega el score de calcio de Agatston cuando se ingresa. Según Cury et al., Radiol Cardiothorac Imaging 2022.' },
@@ -445,26 +447,29 @@ export default {
     models: {
       chenCommon: { name: 'Chen 2022, modelo común', desc: 'Philips 1,5 T y 3 T, MOLLI 5s(3s)3s. Ajusta por campo, sexo y cavidad.' },
       chenSpecific: { name: 'Chen 2022, modelo específico', desc: 'Igual equipo y secuencia; una ecuación por campo, sexo y cavidad. Menor sesgo en anemia.' },
-      mesa: { name: 'MESA (Liu 2017)', desc: '1,5 T, MOLLI. Sangre en cavidad del VI.' },
-      reiter: { name: 'Reiter 2024', desc: 'Siemens Skyra 3 T, MOLLI 5(3)3, VI medio en telesístole.' },
+      mesa: { name: 'MESA (Liu 2017)', desc: 'Solo 1,5 T, MOLLI.' },
+      reiter: { name: 'Reiter 2024', desc: 'Solo 3 T: Siemens Skyra, MOLLI 5(3)3, VI medio en telesístole.' },
       local: { name: 'Ecuación local', desc: 'Coeficientes calibrados en su propio equipo y secuencia (recomendado).' },
     },
     fieldLabel: 'Campo magnético',
     sexLabel: 'Sexo',
     sex: { female: 'Mujer', male: 'Hombre' },
     poolLabel: 'Cavidad donde se midió la sangre',
+    poolLocked: 'Cavidad: ventrículo izquierdo (la del T1 de la sangre ingresado).',
     pool: { lv: 'Ventrículo izquierdo', rv: 'Ventrículo derecho' },
     aLabel: 'Pendiente (a)',
     bLabel: 'Intercepto (b)',
     localHint: 'Hematocrito (fracción 0-1) = a × (1/T1 en ms) + b.',
-    fieldOnly: (f) => `Esta ecuación se derivó solo a ${f}.`,
+    fieldOnly: (f) => `Esta ecuación se derivó solo a ${f}: no la use con otro campo magnético.`,
     resultLine: (v) => `Hematocrito sintético: ${v} %`,
-    outOfRange: 'Valor fuera de lo fisiológico habitual: revise el T1, el campo y la ecuación elegida.',
-    caveat: 'Cada ecuación vale para el equipo y la secuencia en que se derivó. Con fórmulas de otros centros, Reiter 2024 clasificó mal el ECV hasta en el 60 % de los casos; lo ideal es una ecuación local.',
-    modelReport: ({ model, field, sex, pool }) => {
+    outOfRange: 'Valor fuera de lo fisiológico habitual (20-65 %): revise el T1, el campo y la ecuación elegida.',
+    outOfRangeReport: '; fuera del rango fisiológico habitual',
+    invalid: 'Resultado imposible: revise que el T1 esté en milisegundos y los coeficientes de la ecuación.',
+    caveat: 'Cada ecuación vale para el equipo y la secuencia en que se derivó; lo ideal es una ecuación local. En Reiter 2024, una fórmula publicada (Shang 2018) clasificó mal el ECV hasta en el 60 % de los casos, mientras que las de Fent 2017 y Chen 2022 rindieron de forma similar a la local.',
+    modelReport: ({ model, field, sex, pool, a, b }) => {
       const f = field === '1.5' ? '1,5 T' : '3 T';
       const extra = (model === 'chenCommon' || model === 'chenSpecific') ? `, ${f}, ${sex === 'male' ? 'hombre' : 'mujer'}, ${pool === 'lv' ? 'VI' : 'VD'}` : '';
-      return ({ chenCommon: 'Chen 2022, modelo común', chenSpecific: 'Chen 2022, modelo específico', mesa: 'ecuación MESA, Liu 2017', reiter: 'ecuación de Reiter 2024', local: 'ecuación local' })[model] + extra;
+      return ({ chenCommon: 'Chen 2022, modelo común', chenSpecific: 'Chen 2022, modelo específico', mesa: 'ecuación MESA, Liu 2017, 1,5 T', reiter: 'ecuación de Reiter 2024, 3 T', local: `ecuación local (a = ${a}, b = ${b})` })[model] + extra;
     },
   },
   calc: {
@@ -4846,7 +4851,33 @@ export default {
         'El hematocrito se relaciona inversamente con el T1 de la sangre: más glóbulos rojos acortan el T1. Por eso se puede estimar con una regresión lineal sobre 1/T1 nativo de la sangre y usarlo para calcular el ECV sin muestra de sangre.',
         'Chen 2022 (1101 pacientes, Philips 1,5 y 3 T): el ECV sintético concordó con el medido (sesgo de −0,10 a −0,21 %) y se correlacionó con la fibrosis histológica igual que el ECV medido. En anemia, todos los modelos subestimaron el ECV; el modelo específico redujo ese sesgo.',
         'Una saturación de oxígeno venosa o arterial anormalmente baja acorta el T1 de la sangre con independencia del hematocrito y puede sobrestimar el hematocrito sintético (Chen 2022).',
-        'Las ecuaciones dependen del equipo, el campo y la secuencia. Reiter 2024 derivó una ecuación local (Siemens 3 T) con un 8,8 % de ECV mal clasificados, similar al 7,5 % que produce repetir el hematocrito venoso; con fórmulas publicadas de otros centros, hasta el 60 %. Si dispone de un hematocrito reciente, úselo.',
+        'Las ecuaciones dependen del equipo, el campo y la secuencia. Reiter 2024 derivó una ecuación local (Siemens 3 T) con un 8,8 % de ECV mal clasificados, similar al 7,5 % que produce repetir el hematocrito venoso. Con una fórmula publicada de otro centro (Shang 2018) el error llegó al 60 %; las de Fent 2017 y Chen 2022 rindieron de forma similar a la local. Si dispone de un hematocrito reciente, úselo.',
+      ],
+    },
+    kidneyPeds: {
+      title: 'Tamaño Renal Pediátrico (Ecografía)',
+      subtitle: 'Compara la longitud renal medida por ecografía con valores normales por edad, de recién nacidos a 17 años (Viteri 2026).',
+      ageLabel: 'Edad',
+      agePlaceholder: 'Seleccione la edad',
+      ageHint: 'Cada año incluye desde esa edad hasta antes de la siguiente (ej. 1 año = 1 a < 2 años).',
+      ages: { w0: '0 a < 1 semana', m0: '1 semana a < 4 meses', m4: '4 a < 8 meses', m8: '8 meses a < 1 año', y1: '1 año', y2: '2 años', y3: '3 años', y4: '4 años', y5: '5 años', y6: '6 años', y7: '7 años', y8: '8 años', y9: '9 años', y10: '10 años', y11: '11 años', y12: '12 años', y13: '13 años', y14: '14 años', y15: '15 años', y16: '16 años', y17: '17 años' },
+      rightLabel: 'Riñón derecho (cm)',
+      leftLabel: 'Riñón izquierdo (cm)',
+      lengthHint: 'Longitud máxima polo a polo. Puede ingresar uno o ambos riñones.',
+      sides: { right: 'Riñón derecho', left: 'Riñón izquierdo' },
+      sidesShort: { right: 'Der.', left: 'Izq.' },
+      bands: { small: 'pequeño para la edad (< −2 DE)', normal: 'dentro de ±2 DE para la edad', large: 'aumentado para la edad (> +2 DE)' },
+      bandsShort: { small: 'Pequeño', normal: 'Normal', large: 'Aumentado' },
+      sideLine: (side, v, z, p, band) => `${side}: ${v} cm (Z ${z}; percentil aproximado ${p}), ${band}.`,
+      refLine: (age, mean, sd, lo, hi) => `Referencia (${age}, Viteri 2026): media ${mean} ± ${sd} cm; ±2 DE: ${lo}–${hi} cm.`,
+      pctNote: 'El percentil es una aproximación con distribución normal; el estudio publicó percentiles LMS en su material suplementario.',
+      resultLabel: 'Longitud renal',
+      reportTitle: (age) => `Longitud renal por ecografía (${age}):`,
+      usage: [
+        'Viteri et al. (Radiology: Artificial Intelligence 2026) analizaron 24 664 ecografías de 18 769 niños de 0 a 18 años sin patología renal, con procesamiento de lenguaje natural de los informes, y publicaron la media y la DE de la longitud renal por edad.',
+        'Se usa la longitud máxima polo a polo. La diferencia entre riñón derecho e izquierdo (0,09 cm) y entre sexos (hasta 0,06 cm) no fue clínicamente relevante, por lo que la referencia es la misma para ambos riñones y sexos.',
+        'El estudio considera riñón pequeño o aumentado a más de 2 DE de la media. Un riñón pequeño se asocia a deterioro más rápido de la función en prematuros; el aumento se ve en enfermedad infiltrativa y poliquística, y es el crecimiento compensatorio esperado en riñón único funcionante.',
+        'Excluyó prematuros y riñones con hallazgos patológicos; es una cohorte de un centro terciario de EE. UU. Los valores fueron algo menores que los de Rosenbaum 1984 en la mayoría de las edades.',
       ],
     },
     aspects: {
