@@ -19,7 +19,7 @@ import CategoryNav from './components/shared/CategoryNav.jsx';
 import LanguageRequestPrompt from './components/shared/LanguageRequestPrompt.jsx';
 import { useLanguageRequestPrompt } from './hooks/useLanguageRequestPrompt.js';
 import { IconChevronLeft, IconChevronDown, IconSun, IconMoon, IconSearch, IconX, IconStar, IconMail, IconCopy, IconInstagram } from './components/icons/index.js';
-import { buildMailto, buildMailTextForClipboard, INSTAGRAM_URL } from './utils/mailto.js';
+import { buildMailto, buildMailTextForClipboard, getInstagram } from './utils/mailto.js';
 import { copyToClipboard } from './utils/clipboard.js';
 import { IS_INTRANET } from './utils/buildTarget.js';
 import { useLocalStorageState } from './hooks/useLocalStorageState.js';
@@ -247,11 +247,11 @@ function AppShellLoaded() {
             {/* Dentro de una calculadora, en celular, se oculta para no apretar
                 el título (sigue en el pie de página). */}
             <a
-              href={INSTAGRAM_URL}
+              href={getInstagram(lang).url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t.common.instagramAria}
-              title="@radiocalcclinical"
+              title={getInstagram(lang).handle}
               className={`${activeEntry ? 'hidden sm:inline-flex' : 'inline-flex'} p-1.5 sm:p-2 hover:bg-white/20 rounded-full transition-colors`}
             >
               <IconInstagram size={18} />

@@ -1,5 +1,10 @@
 export const REPORT_EMAIL = 'drjoaquinhevia@gmail.com';
-export const INSTAGRAM_URL = 'https://www.instagram.com/radiocalcclinical/';
+// Cuenta de Instagram según idioma: @radiocalcclinical (ES) y @radiocalc_en (EN).
+export const INSTAGRAM = {
+  es: { handle: '@radiocalcclinical', url: 'https://www.instagram.com/radiocalcclinical/' },
+  en: { handle: '@radiocalc_en', url: 'https://www.instagram.com/radiocalc_en/' },
+};
+export const getInstagram = (lang) => INSTAGRAM[lang] || INSTAGRAM.es;
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/joaqu%C3%ADn-hevia-morel-07421675/';
 
 // type: 'bug' (reportar error) | 'update' (sugerir actualización) | 'suggestion' (sugerencia general)
