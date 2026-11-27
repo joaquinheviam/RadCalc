@@ -69,8 +69,8 @@ export function groupsFor(source) {
   return source === 'javaid' ? JAVAID_GROUPS : source === 'mesa' ? MESA_GROUPS : [];
 }
 
-// [percentil, valor de CAC] de menor a mayor percentil.
-function thresholds(source, group, sex, age) {
+// [percentil, valor de CAC] de menor a mayor percentil (lo usa también el gráfico).
+export function cacThresholds(source, group, sex, age) {
   if (source === 'javaid') {
     const t = JAVAID[group]?.[sex];
     return t ? [75, 90, 95, 97.5].map((k) => [k, t[k][age - JAVAID_MIN_AGE]]) : null;
@@ -90,7 +90,7 @@ export function cacPercentile({ age, sex, group, cac }) {
   const source = cacSource(age);
   if (!source || !['female', 'male'].includes(sex) || !groupsFor(source).includes(group)) return null;
   if (typeof cac !== 'number' || !Number.isFinite(cac) || cac < 0) return null;
-  const th = thresholds(source, group, sex, age);
+  const th = cacThresholds(source, group, sex, age);
   if (!th) return null;
   const pPositive = source === 'mesa' ? MESA[group][sex][age - MESA_MIN_AGE][0] : null;
   if (cac === 0) return { source, group, zero: true, pPositive };

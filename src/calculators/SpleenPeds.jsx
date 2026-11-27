@@ -4,12 +4,18 @@ import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 import { SPLEEN_GROUPS, spleenZ, MAX_SPLEEN } from './logic/spleenPeds.js';
+import { spleenBins } from './logic/chartData.js';
+import { BandByAgeChart } from '../components/shared/ReferenceChart.jsx';
+
+// Etiquetas del eje de edad en el borde izquierdo de cada grupo de Megremis 2004.
+const SPLEEN_TICKS = { m0: '0', m3: '3m', m6: '6m', y1: '1', y2: '2', y4: '4', y6: '6', y8: '8', y10: '10', y12: '12', y14: '14' };
 
 const COLOR = { small: 'text-amber-500', normal: 'text-emerald-500', large: 'text-red-500' };
 
 export default function SpleenPeds() {
   const { t, lang } = useLang();
   const c = t.calc.spleenPeds;
+  const ch = t.charts;
   const [showPreview, setShowPreview] = useState(false);
   const [group, setGroup] = useState('');
   const [sex, setSex] = useState('');
@@ -58,6 +64,23 @@ export default function SpleenPeds() {
           <p className={`text-sm font-semibold ${COLOR[r.band]}`}>{line}</p>
           <p className="text-xs text-slate-600 dark:text-slate-300 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{refText}</p>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.pctNote}</p>
+        </Card>
+      )}
+      {r && (
+        <Card>
+          <BandByAgeChart
+            title={ch.spleenTitle(c.sex[sex].toLowerCase())}
+            ariaLabel={ch.spleenAria(c.sex[sex].toLowerCase(), c.ages[group], ch.pointText('', shown(len), c.bands[r.band]))}
+            bins={spleenBins(sex)}
+            selected={group}
+            points={[{ value: parseFloat(len) }]}
+            ticks={SPLEEN_TICKS}
+            endTick="17"
+            xLabel={ch.ageAxis}
+            yLabel={ch.lengthAxis}
+            legendText={{ band: ch.legendBand, mean: ch.legendMean, patient: ch.legendPatient }}
+            note={ch.binsNote}
+          />
         </Card>
       )}
       <UsageNotes paragraphs={c.usage} />

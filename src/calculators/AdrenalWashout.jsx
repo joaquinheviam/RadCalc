@@ -4,6 +4,8 @@ import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { IconCheckCircle } from '../components/icons/index.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, InfoBox, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
+import { PhaseLineChart } from '../components/shared/ReferenceChart.jsx';
+import { washoutTargets } from './logic/chartData.js';
 
 // Puntos de corte según Hevia-Morel et al. (revisión suprarrenal, en preparación),
 // que a su vez sintetizan: Caoili 2002 (15 min), Blake 2006 / Kumagae 2013 (10 min),
@@ -250,6 +252,41 @@ export default function AdrenalWashout() {
           )}
         </Card>
       )}
+
+      {canPlr && (() => {
+        // Gráfico: UH por fase con los umbrales que ya usa la calculadora, marcados
+        // en la fase a la que se aplican, y la tardía que alcanzaría cada corte de lavado.
+        const ch = t.charts;
+        const fmt = (x) => x.toLocaleString(lang === 'es' ? 'es-CL' : 'en-US', { maximumFractionDigits: 1 });
+        const tg = washoutTargets({ nc: hasNc ? hNc : NaN, ven: hVen, apwCut: cfg.apwCut ?? NaN, rpwCut: cfg.rpwCut });
+        const ncRefs = !hasNc ? [] : [
+          { value: 10, label: '≤ 10', tone: 'ref' },
+          hNc <= 10 ? { value: -20, label: '≤ −20', tone: 'ref' } : { value: 43, label: '> 43', tone: 'warn' },
+        ];
+        const venRefs = hVen >= 90 ? [{ value: 110, label: '> 110', tone: 'warn' }] : [];
+        const delRefs = [
+          tg.rpw !== undefined && { value: tg.rpw, label: ch.targetRpw(fmt(tg.rpw)), tone: 'target' },
+          tg.apw !== undefined && { value: tg.apw, label: ch.targetApw(fmt(tg.apw)), tone: 'target' },
+        ].filter(Boolean);
+        const delLabel = ch.phaseDel(cfg.minutes);
+        const vals = [hasNc && `${ch.phaseNc} ${fmt(hNc)} ${ch.uh}`, `${ch.phaseVen} ${fmt(hVen)} ${ch.uh}`, `${delLabel} ${fmt(hDel)} ${ch.uh}`].filter(Boolean).join(', ');
+        return (
+          <Card>
+            <PhaseLineChart
+              title={ch.adrenalTitle}
+              ariaLabel={ch.adrenalAria(vals)}
+              phases={[
+                { key: 'nc', label: ch.phaseNc, value: hasNc ? hNc : null, refs: ncRefs },
+                { key: 'ven', label: ch.phaseVen, value: hVen, refs: venRefs },
+                { key: 'del', label: delLabel, value: hDel, refs: delRefs },
+              ]}
+              yLabel={ch.uh}
+              legendText={{ patient: ch.legendPatient, ref: ch.legendRef, target: ch.legendTarget }}
+              note={ch.adrenalNote(cfg.rpwCut, tg.apw !== undefined ? cfg.apwCut : null)}
+            />
+          </Card>
+        );
+      })()}
 
       <UsageNotes paragraphs={c.usage} />
       <References items={REFERENCES.adrenalCt} />

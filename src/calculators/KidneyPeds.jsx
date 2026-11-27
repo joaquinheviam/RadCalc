@@ -4,12 +4,18 @@ import { copyToClipboard } from '../utils/clipboard.js';
 import { REFERENCES } from '../i18n/references.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer } from '../components/shared/index.js';
 import { KIDNEY_LENGTH, kidneyZ, MAX_LENGTH } from './logic/kidneyPeds.js';
+import { kidneyBins } from './logic/chartData.js';
+import { BandByAgeChart } from '../components/shared/ReferenceChart.jsx';
+
+// Etiquetas del eje de edad en el borde izquierdo de cada grupo (cada 2 grupos; el borde final, 18, va aparte).
+const KIDNEY_TICKS = { w0: '0', m4: '4m', y1: '1', y3: '3', y5: '5', y7: '7', y9: '9', y11: '11', y13: '13', y15: '15' };
 
 const COLOR = { small: 'text-amber-500', normal: 'text-emerald-500', large: 'text-red-500' };
 
 export default function KidneyPeds() {
   const { t, lang } = useLang();
   const c = t.calc.kidneyPeds;
+  const ch = t.charts;
   const [showPreview, setShowPreview] = useState(false);
   const [group, setGroup] = useState('');
   const [right, setRight] = useState('');
@@ -25,7 +31,8 @@ export default function KidneyPeds() {
   const row = KIDNEY_LENGTH.find((r) => r[0] === group);
   const refText = row ? c.refLine(c.ages[group], num(row[1], 2), num(row[2], 2), num(row[1] - 2 * row[2], 2), num(row[1] + 2 * row[2], 2)) : '';
   const side = (k, r, v) => r && c.sideLine(c.sides[k], shown(v), sgn(r.z), pctText(r.pct), c.bands[r.band]);
-  const worst = [rr, rl].filter(Boolean).sort((a, b) => Math.abs(b.z) - Math.abs(a.z))[0];
+  const sidesIn = [['right', rr, right], ['left', rl, left]].filter(([, r]) => r);
+  const worst =[rr, rl].filter(Boolean).sort((a, b) => Math.abs(b.z) - Math.abs(a.z))[0];
 
   const getReportText = () => {
     if (!worst) return '';
@@ -61,6 +68,23 @@ export default function KidneyPeds() {
           ))}
           <p className="text-xs text-slate-600 dark:text-slate-300 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 leading-snug">{refText}</p>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{c.pctNote}</p>
+        </Card>
+      )}
+      {worst && (
+        <Card>
+          <BandByAgeChart
+            title={ch.kidneyTitle}
+            ariaLabel={ch.kidneyAria(c.ages[group], sidesIn.map(([k, r, v]) => ch.pointText(c.sides[k], shown(v), c.bands[r.band])).join('; '))}
+            bins={kidneyBins()}
+            selected={group}
+            points={sidesIn.map(([k, , v]) => ({ value: parseFloat(v), tag: sidesIn.length > 1 ? ch.kidneyTags[k] : '' }))}
+            ticks={KIDNEY_TICKS}
+            endTick="18"
+            xLabel={ch.ageAxis}
+            yLabel={ch.lengthAxis}
+            legendText={{ band: ch.legendBand, mean: ch.legendMean, patient: ch.legendPatient }}
+            note={ch.binsNote}
+          />
         </Card>
       )}
       <UsageNotes paragraphs={c.usage} />
