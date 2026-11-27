@@ -259,14 +259,20 @@ export default function AdrenalWashout() {
         const ch = t.charts;
         const fmt = (x) => x.toLocaleString(lang === 'es' ? 'es-CL' : 'en-US', { maximumFractionDigits: 1 });
         const tg = washoutTargets({ nc: hasNc ? hNc : NaN, ven: hVen, apwCut: cfg.apwCut ?? NaN, rpwCut: cfg.rpwCut });
+        // Con grasa macroscópica el lavado no define el diagnóstico: sin marcas de lavado.
+        const showTargets = !showMyelolipoma;
+        // Misma condición que el aviso de feocromocitoma (showPheo), salvo el umbral de portal.
+        const pheoRef = !hasNc || hNc >= 10;
         const ncRefs = !hasNc ? [] : [
           { value: 10, label: '≤ 10', tone: 'ref' },
           hNc <= 10 ? { value: -20, label: '≤ −20', tone: 'ref' } : { value: 43, label: '> 43', tone: 'warn' },
-        ];
-        const venRefs = hVen >= 90 ? [{ value: 110, label: '> 110', tone: 'warn' }] : [];
+          kamiyama && { value: 19, label: '≤ 19', tone: 'ref' },
+        ].filter(Boolean);
+        const venRefs = pheoRef ? [{ value: 110, label: '> 110', tone: 'warn' }] : [];
         const delRefs = [
-          tg.rpw !== undefined && { value: tg.rpw, label: ch.targetRpw(fmt(tg.rpw)), tone: 'target' },
-          tg.apw !== undefined && { value: tg.apw, label: ch.targetApw(fmt(tg.apw)), tone: 'target' },
+          showTargets && tg.rpw !== undefined && { value: tg.rpw, label: ch.targetRpw(fmt(tg.rpw)), tone: 'target' },
+          showTargets && tg.apw !== undefined && { value: tg.apw, label: ch.targetApw(fmt(tg.apw)), tone: 'target' },
+          kamiyama && { value: 50, label: '≤ 50', tone: 'ref' },
         ].filter(Boolean);
         const delLabel = ch.phaseDel(cfg.minutes);
         const vals = [hasNc && `${ch.phaseNc} ${fmt(hNc)} ${ch.uh}`, `${ch.phaseVen} ${fmt(hVen)} ${ch.uh}`, `${delLabel} ${fmt(hDel)} ${ch.uh}`].filter(Boolean).join(', ');
@@ -282,7 +288,12 @@ export default function AdrenalWashout() {
               ]}
               yLabel={ch.uh}
               legendText={{ patient: ch.legendPatient, ref: ch.legendRef, target: ch.legendTarget }}
-              note={ch.adrenalNote(cfg.rpwCut, tg.apw !== undefined ? cfg.apwCut : null)}
+              note={ch.adrenalNote({
+                pheo: pheoRef,
+                rpw: showTargets && tg.rpw !== undefined ? cfg.rpwCut : null,
+                apw: showTargets && tg.apw !== undefined ? cfg.apwCut : null,
+                kamiyama: !!kamiyama,
+              })}
             />
           </Card>
         );

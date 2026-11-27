@@ -31,16 +31,16 @@ export function useCacPercentile(cacStr, enabled = true) {
   const chart = scale && (
     <PercentileScaleChart
       scale={scale}
-      title={ch.cacTitle(`${s.sourceName[source]}; ${s.group[groupEff].toLowerCase()}, ${s.sex[sex].toLowerCase()}`)}
+      title={ch.cacTitle(`${s.sourceName[source]}; ${lang === 'es' ? s.group[groupEff].toLowerCase() : s.group[groupEff]}, ${s.sex[sex].toLowerCase()}`)}
       ariaLabel={ch.cacAria(text)}
       labels={{
         patient: scale.result.zero ? (scale.zeroPct !== null ? ch.cacPatientZeroMesa : ch.cacPatientZeroJavaid) : ch.cacPatient(fmt(cacNum)),
         cacRow: ch.cacRow,
         patientBand: ch.cacPatientBand,
         zeroLegend: ch.cacZeroLegend,
-        zeroBracket: scale.zeroPct !== null ? ch.cacZeroBracket(fmt(scale.zeroPct)) : '',
+        zeroBracket: scale.zeroPct !== null ? ch.cacZeroBracket(fmt(scale.zeroPct), scale.zeroApprox) : '',
       }}
-      note={scale.result.zero && scale.zeroPct === null ? `${ch.cacNoteZeroJavaid} ${ch.cacNote}` : ch.cacNote}
+      note={[scale.result.zero && scale.zeroPct === null && ch.cacNoteZeroJavaid, ch.cacNote, scale.zeroApprox && ch.cacZeroApproxNote].filter(Boolean).join(' ')}
     />
   );
   const reset = () => { setAge(''); setSex(''); setGroup({ javaid: '', mesa: '' }); };

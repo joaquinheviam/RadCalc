@@ -87,4 +87,16 @@ test('lavado: tardía que cumple cada corte (inversa de las fórmulas del compon
   assert.deepEqual(washoutTargets({ nc: NaN, ven: 80, apwCut: 60, rpwCut: 40 }), { rpw: 48 });
   assert.deepEqual(washoutTargets({ nc: 10, ven: 80, apwCut: NaN, rpwCut: 27 }), { rpw: 58.4 });
   assert.deepEqual(washoutTargets({ nc: 10, ven: 0, apwCut: 60, rpwCut: 40 }), {});
+  // Se trunca hacia abajo (83 × 0,73 = 60,59 → 60,5) para que el valor mostrado cumpla el corte.
+  assert.equal(washoutTargets({ nc: NaN, ven: 83, apwCut: NaN, rpwCut: 27 }).rpw, 60.5);
+});
+
+test('CAC MESA: % con CAC 0 redondeado que coincide con un percentil de CAC > 0', () => {
+  // Hombre hispano de 70 años: 25 % con CAC 0 y P25 = 1 (redondeo del calculador de MESA).
+  const s = cacScale({ age: 70, sex: 'male', group: 'hispanic', cac: 0 });
+  assert.equal(s.zeroPct, 25);
+  assert.equal(s.cuts.find((c) => c.p === 25).cac, 1);
+  assert.equal(s.zeroApprox, true);
+  assert.equal(cacScale({ age: 60, sex: 'female', group: 'hispanic', cac: 0 }).zeroApprox, false);
+  assert.equal(cacScale({ age: 36, sex: 'male', group: 'white', cac: 0 }).zeroApprox, false);
 });

@@ -6,6 +6,9 @@ import { cacPercentile, cacThresholds, MESA_MIN_AGE } from './cacPercentile.js';
 import { MESA } from './cacPercentileMesa.js';
 
 const round = (x, d = 6) => Math.round(x * 10 ** d) / 10 ** d;
+// Trunca hacia abajo a 1 decimal (tras limpiar el error de punto flotante): el
+// valor mostrado de la tardía siempre cumple el corte.
+const floor1 = (x) => Math.floor(round(x, 6) * 10) / 10;
 
 // Marcas "redondas" (paso 1, 2 o 5 × 10^n) que cubren [min, max].
 export function niceTicks(min, max, target = 5) {
@@ -48,6 +51,7 @@ export function spleenBins(sex) {
  * patient: el tramo contiene el rango de percentil del paciente (con CAC 0 en MESA,
  * el tramo de empate en 0; con CAC 0 en Javaid, ninguno: sin percentil asignable).
  * marker: percentil exacto cuando el resultado es "en torno a" un percentil.
+ * zeroApprox: el % con CAC 0 (redondeado por MESA) coincide con un percentil de CAC > 0.
  */
 export function cacScale({ age, sex, group, cac }) {
   const result = cacPercentile({ age, sex, group, cac });
@@ -77,7 +81,10 @@ export function cacScale({ age, sex, group, cac }) {
       patient: pLo !== null && from >= pLo && to <= pHi,
     };
   });
-  return { source: result.source, cuts, zeroPct, bounds, bands, marker, result };
+  // MESA redondea el % con CAC > 0 al entero: el % con CAC 0 puede coincidir con
+  // un percentil cuyo CAC es > 0 (p. ej. 25 % con CAC 0 y P25 = 1).
+  const zeroApprox = zeroPct !== null && cuts.some((c) => c.p === zeroPct && c.cac > 0);
+  return { source: result.source, cuts, zeroPct, zeroApprox, bounds, bands, marker, result };
 }
 
 /**
@@ -89,9 +96,9 @@ export function cacScale({ age, sex, group, cac }) {
  */
 export function washoutTargets({ nc, ven, apwCut, rpwCut }) {
   const out = {};
-  if (Number.isFinite(ven) && ven > 0 && Number.isFinite(rpwCut)) out.rpw = round(ven * (1 - rpwCut / 100), 1);
+  if (Number.isFinite(ven) && ven > 0 && Number.isFinite(rpwCut)) out.rpw = floor1(ven * (1 - rpwCut / 100));
   if (Number.isFinite(ven) && Number.isFinite(nc) && ven - nc > 0 && Number.isFinite(apwCut)) {
-    out.apw = round(ven - (apwCut / 100) * (ven - nc), 1);
+    out.apw = floor1(ven - (apwCut / 100) * (ven - nc));
   }
   return out;
 }

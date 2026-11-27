@@ -32,7 +32,7 @@ export default function KidneyPeds() {
   const refText = row ? c.refLine(c.ages[group], num(row[1], 2), num(row[2], 2), num(row[1] - 2 * row[2], 2), num(row[1] + 2 * row[2], 2)) : '';
   const side = (k, r, v) => r && c.sideLine(c.sides[k], shown(v), sgn(r.z), pctText(r.pct), c.bands[r.band]);
   const sidesIn = [['right', rr, right], ['left', rl, left]].filter(([, r]) => r);
-  const worst =[rr, rl].filter(Boolean).sort((a, b) => Math.abs(b.z) - Math.abs(a.z))[0];
+  const worst = [rr, rl].filter(Boolean).sort((a, b) => Math.abs(b.z) - Math.abs(a.z))[0];
 
   const getReportText = () => {
     if (!worst) return '';
