@@ -14,10 +14,10 @@ const btnCls = (active) =>
 // Muestra la anatomía relevante para diferenciar útero septado de
 // normal/arcuato: línea intercornual (referencia externa), profundidad de
 // indentación (d), grosor de pared en el fondo (w) y ángulo de indentación (α).
-function SeptateScheme() {
+function SeptateScheme({ ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 400 380" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 400 380" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Miometrio (contorno externo) */}
         <path
           fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
@@ -102,10 +102,10 @@ function CriteriaComparison({ c }) {
 // primera pregunta del cuerpo uterino. Deliberadamente esquemático — solo
 // ilustra la diferencia bilateral/unilateral, sin adelantar la sub-pregunta
 // de cuerno rudimentario (U4a/U4b), que se pregunta después.
-function DevelopmentScheme() {
+function DevelopmentScheme({ ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 440 260" className="h-auto w-full max-w-sm text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 440 260" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-sm text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Panel A: bilateral (simétrico) */}
         <path
           fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
@@ -147,10 +147,10 @@ function DevelopmentScheme() {
 // línea que conecta los dos ápices externos, y la profundidad de la hendidura
 // serosa (D) trazada perpendicular a esa línea hasta su punto más bajo — la
 // misma técnica que ya usan extDepthQ/wallThicknessQCleft más abajo.
-function BicorneScheme() {
+function BicorneScheme({ ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 400 380" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 400 380" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Miometrio (contorno externo hendido) */}
         <path
           fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
@@ -193,10 +193,10 @@ function BicorneScheme() {
 // de las paredes laterales, con ramas cornuales cortas y rectas, y contorno
 // externo del fondo plano o mínimamente convexo (a diferencia del contorno
 // convexo con indentación interna del útero septado).
-function TshapeScheme() {
+function TshapeScheme({ ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 400 380" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 400 380" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Miometrio (contorno externo del fondo plano/mínimamente convexo) */}
         <path
           fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
@@ -225,10 +225,10 @@ function TshapeScheme() {
 // cuerno rudimentario contralateral CON cavidad endometrial (U4a) vs SIN
 // cavidad/ausente (U4b) — la distinción que decide la sub-clasificación
 // ESHRE/ESGE tras la pregunta unicorneHornQ.
-function HemiuterusScheme() {
+function HemiuterusScheme({ ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 460 260" className="h-auto w-full max-w-sm text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 460 260" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-sm text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Cuerno desarrollado (hemi-útero funcional) */}
         <path
           fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"
@@ -262,6 +262,12 @@ function HemiuterusScheme() {
             principal, distinción que no cambia el esquema (se resuelve por
             texto) */}
         <line x1="290" y1="70" x2="235" y2="130" stroke="currentColor" strokeWidth="2" strokeDasharray="4 5" className="text-slate-300 dark:text-slate-700" />
+
+        {/* Rótulos de subtipo junto a cada cuerno rudimentario */}
+        <g fontFamily="system-ui, sans-serif" fontWeight="800" fontSize="20" className="fill-slate-700 dark:fill-slate-200">
+          <text x="366" y="76">U4a</text>
+          <text x="366" y="194">U4b</text>
+        </g>
 
         {/* Panel derecho inferior: cuerno rudimentario SIN cavidad / ausente (U4b) */}
         <path
@@ -569,7 +575,7 @@ export default function MullerianAnomalies() {
         <div className="space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400">{c.devDiagramIntro}</p>
           <ZoomableDiagram title={c.devDiagramTitle} labels={t.common.diagramZoom}>
-            <DevelopmentScheme />
+            <DevelopmentScheme ariaLabel={c.devDiagramTitle} />
           </ZoomableDiagram>
           <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center">
             <p>{c.devDiagramBilateralCaption}</p>
@@ -605,9 +611,9 @@ export default function MullerianAnomalies() {
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.hemiuterusDiagramIntro}</p>
             <ZoomableDiagram title={c.hemiuterusDiagramTitle} labels={t.common.diagramZoom}>
-              <HemiuterusScheme />
+              <HemiuterusScheme ariaLabel={c.hemiuterusDiagramTitle} />
             </ZoomableDiagram>
-            <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center">
+            <div className="space-y-1 text-[11px] text-slate-500 dark:text-slate-400 text-center">
               <p>{c.hemiuterusDiagramCavityCaption}</p>
               <p>{c.hemiuterusDiagramNoCavityCaption}</p>
             </div>
@@ -654,7 +660,7 @@ export default function MullerianAnomalies() {
             <div className="space-y-3">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.bicorneDiagramIntro}</p>
               <ZoomableDiagram title={c.bicorneDiagramTitle} labels={t.common.diagramZoom}>
-                <BicorneScheme />
+                <BicorneScheme ariaLabel={c.bicorneDiagramTitle} />
               </ZoomableDiagram>
               <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center text-[11px] text-slate-500 dark:text-slate-400">
                 <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.bicorneLegendW}</span>
@@ -709,8 +715,11 @@ export default function MullerianAnomalies() {
           <div className="space-y-3">
             <p className="text-xs text-slate-500 dark:text-slate-400">{c.tshapeDiagramIntro}</p>
             <ZoomableDiagram title={c.tshapeDiagramTitle} labels={t.common.diagramZoom}>
-              <TshapeScheme />
+              <TshapeScheme ariaLabel={c.tshapeDiagramTitle} />
             </ZoomableDiagram>
+            <div className="flex justify-center text-[11px] text-slate-500 dark:text-slate-400">
+              <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.tshapeLegendWall}</span>
+            </div>
           </div>
         </Accordion>
       )}
@@ -740,7 +749,7 @@ export default function MullerianAnomalies() {
             <div className="space-y-4">
               <p className="text-xs text-slate-500 dark:text-slate-400">{c.diagramIntro}</p>
               <ZoomableDiagram title={c.diagramSectionTitle} labels={t.common.diagramZoom}>
-                <SeptateScheme />
+                <SeptateScheme ariaLabel={c.diagramSectionTitle} />
               </ZoomableDiagram>
               <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center text-[11px] text-slate-500 dark:text-slate-400">
                 <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-600 mr-1 align-[-1px]"></span>{c.schemeLegendW}</span>

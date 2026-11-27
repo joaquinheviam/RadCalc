@@ -18,7 +18,7 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
         <h4 className="text-sm font-bold text-center text-slate-700 dark:text-slate-200">
           {labels.sagittalTitle}
         </h4>
-        <svg viewBox="0 0 400 360" className="w-full h-auto text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 400 360" role="img" aria-label={labels.sagittalTitle} className="w-full h-auto text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
 
           {/* ZONAS CLÍNICAS (Fondo) */}
           <g style={{ transition: 'opacity 0.3s ease' }}>
@@ -81,7 +81,7 @@ export function ItmigCompartmentsScheme({ labels, highlight }) {
         <h4 className="text-sm font-bold text-center text-slate-700 dark:text-slate-200">
           {labels.axialTitle}
         </h4>
-        <svg viewBox="0 0 400 320" className="w-full h-auto text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 400 320" role="img" aria-label={labels.axialTitle} className="w-full h-auto text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
 
           {/* ZONAS CLÍNICAS (Fondo) */}
           <g style={{ transition: 'opacity 0.3s ease' }}>

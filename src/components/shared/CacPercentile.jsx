@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useLang } from '../../i18n/LangContext.js';
 import NumberField from './NumberField.jsx';
 import { cacPercentile, cacSource, groupsFor, DEFAULT_GROUP } from '../../calculators/logic/cacPercentile.js';
+import { cacScale } from '../../calculators/logic/chartData.js';
+import { PercentileScaleChart } from './ReferenceChart.jsx';
 
 // Percentil del score de calcio (Agatston) por edad, sexo y grupo poblacional
 // (Javaid 2022 en 30-44 años, MESA en 45-84). Lo usan CAD-RADS y CAC-DRS.
 // Textos en t.cacPercentile. Devuelve los campos (JSX), el texto del resultado
 // para el informe ('' si falta algún dato) y una función para reiniciar.
 export function useCacPercentile(cacStr, enabled = true) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const s = t.cacPercentile;
   const [age, setAge] = useState('');
   const [sex, setSex] = useState('');
@@ -23,6 +25,24 @@ export function useCacPercentile(cacStr, enabled = true) {
   const pct = enabled && source && sex && Number.isFinite(cacNum)
     ? cacPercentile({ age: ageNum, sex, group: groupEff, cac: cacNum }) : null;
   const text = pct ? s.result(pct, ageNum, sex) : '';
+  const scale = pct ? cacScale({ age: ageNum, sex, group: groupEff, cac: cacNum }) : null;
+  const ch = t.charts;
+  const fmt = (x) => x.toLocaleString(lang === 'es' ? 'es-CL' : 'en-US', { maximumFractionDigits: 1 });
+  const chart = scale && (
+    <PercentileScaleChart
+      scale={scale}
+      title={ch.cacTitle(`${s.sourceName[source]}; ${lang === 'es' ? s.group[groupEff].toLowerCase() : s.group[groupEff]}, ${s.sex[sex].toLowerCase()}`)}
+      ariaLabel={ch.cacAria(text)}
+      labels={{
+        patient: scale.result.zero ? (scale.zeroPct !== null ? ch.cacPatientZeroMesa : ch.cacPatientZeroJavaid) : ch.cacPatient(fmt(cacNum)),
+        cacRow: ch.cacRow,
+        patientBand: ch.cacPatientBand,
+        zeroLegend: ch.cacZeroLegend,
+        zeroBracket: scale.zeroPct !== null ? ch.cacZeroBracket(fmt(scale.zeroPct), scale.zeroApprox) : '',
+      }}
+      note={[scale.result.zero && scale.zeroPct === null && ch.cacNoteZeroJavaid, ch.cacNote, scale.zeroApprox && ch.cacZeroApproxNote].filter(Boolean).join(' ')}
+    />
+  );
   const reset = () => { setAge(''); setSex(''); setGroup({ javaid: '', mesa: '' }); };
 
   const btn = (on) => `p-2.5 rounded-lg border text-xs transition-all ${on ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`;
@@ -48,6 +68,7 @@ export function useCacPercentile(cacStr, enabled = true) {
         </div>
       )}
       {text && <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">{text}</p>}
+      {chart && <div className="pt-1">{chart}</div>}
       <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{s.caveat}</p>
     </div>
   );

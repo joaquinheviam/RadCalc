@@ -47,7 +47,7 @@ function YesNo({ label, value, onChange, yesLabel, noLabel }) {
 // archivo de la calculadora (igual que el resto de los esquemas de
 // RadioCalc, ver p.ej. MullerianAnomalies.jsx) en lugar de un módulo
 // exportado aparte.
-function BrainAvmDiagram({ labels, activeHighlight }) {
+function BrainAvmDiagram({ labels, activeHighlight, ariaLabel }) {
   // activeHighlight: 'cortex' | 'artery' | 'nidus' | 'vein' | null — atenúa
   // los demás elementos al 20% para focalizar la atención visual.
   const getOpacity = (key) => {
@@ -58,7 +58,9 @@ function BrainAvmDiagram({ labels, activeHighlight }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
       <svg
-        viewBox="-140 -5 620 310"
+        viewBox="-140 -5 640 310"
+        role="img"
+        aria-label={ariaLabel}
         className="h-auto w-full max-w-md"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -159,28 +161,28 @@ function BrainAvmDiagram({ labels, activeHighlight }) {
           {/* Etiqueta: Corteza (Elocuencia) - Arriba Izquierda */}
           <line x1="80" y1="60" x2="120" y2="90" stroke="currentColor" strokeWidth="1.5" />
           <circle cx="120" cy="90" r="2" fill="currentColor" />
-          <text x="75" y="55" fontSize="13" fontWeight="600" textAnchor="end" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
-            {labels.cortex}
+          <text x="75" y="36" fontSize="20" fontWeight="600" textAnchor="end" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
+            {labels.cortex.split(" / ").map((ln, i, a) => (<tspan key={ln} x="75" dy={i === 0 ? 0 : 22}>{i < a.length - 1 ? `${ln} /` : ln}</tspan>))}
           </text>
 
           {/* Etiqueta: Vena de Drenaje - Arriba Derecha */}
           <line x1="330" y1="120" x2="300" y2="100" stroke="currentColor" strokeWidth="1.5" />
           <circle cx="300" cy="100" r="2" fill="currentColor" />
-          <text x="335" y="125" fontSize="13" fontWeight="600" textAnchor="start" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
+          <text x="335" y="125" fontSize="20" fontWeight="600" textAnchor="start" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
             {labels.vein}
           </text>
 
           {/* Etiqueta: Arteria Aferente - Abajo Izquierda */}
           <line x1="80" y1="260" x2="100" y2="230" stroke="currentColor" strokeWidth="1.5" />
           <circle cx="100" cy="230" r="2" fill="currentColor" />
-          <text x="75" y="265" fontSize="13" fontWeight="600" textAnchor="end" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
+          <text x="75" y="265" fontSize="20" fontWeight="600" textAnchor="end" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
             {labels.artery}
           </text>
 
           {/* Etiqueta: Nido - Abajo Derecha */}
           <line x1="260" y1="230" x2="210" y2="200" stroke="currentColor" strokeWidth="1.5" />
           <circle cx="210" cy="200" r="2" fill="currentColor" />
-          <text x="265" y="235" fontSize="13" fontWeight="600" textAnchor="start" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
+          <text x="265" y="235" fontSize="20" fontWeight="600" textAnchor="start" dominantBaseline="middle" className="fill-slate-700 dark:fill-slate-200">
             {labels.nidus}
           </text>
         </g>
@@ -198,6 +200,8 @@ export default function BrainAVM() {
   const [size, setSize] = useState(null); // 'small' (1) | 'medium' (2) | 'large' (3)
   const [eloquence, setEloquence] = useState(null); // 'no' (0) | 'yes' (1)
   const [venous, setVenous] = useState(null); // 'superficial' (0) | 'deep' (1)
+  // Última pregunta de Spetzler-Martin tocada → resalta en el esquema el elemento correspondiente.
+  const [smFocus, setSmFocus] = useState(null); // 'nidus' | 'cortex' | 'vein' | null
 
   // Escala Suplementaria Lawton-Young (se suma al puntaje SM)
   const [age, setAge] = useState(null); // 'under20' (1) | '20to40' (2) | 'over40' (3)
@@ -267,7 +271,7 @@ export default function BrainAVM() {
   }
 
   const resetAll = () => {
-    setSize(null); setEloquence(null); setVenous(null);
+    setSize(null); setEloquence(null); setVenous(null); setSmFocus(null);
     setAge(null); setBleeding(null); setNidus(null);
     setVentricular(null); setVenousAneurysm(null); setDeepLocation(null); setExcDeepDrainage(null);
   };
@@ -311,16 +315,16 @@ export default function BrainAVM() {
         <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wide">{c.smSectionTitle}</h3>
       </div>
       <Card>
-        <OptionList label={c.sizeQ} options={c.sizeOptions} value={size} onChange={setSize} />
-        <OptionList label={c.eloquenceQ} options={c.eloquenceOptions} value={eloquence} onChange={setEloquence} />
-        <OptionList label={c.venousQ} options={c.venousOptions} value={venous} onChange={setVenous} />
+        <OptionList label={c.sizeQ} options={c.sizeOptions} value={size} onChange={(v) => { setSize(v); setSmFocus('nidus'); }} />
+        <OptionList label={c.eloquenceQ} options={c.eloquenceOptions} value={eloquence} onChange={(v) => { setEloquence(v); setSmFocus('cortex'); }} />
+        <OptionList label={c.venousQ} options={c.venousOptions} value={venous} onChange={(v) => { setVenous(v); setSmFocus('vein'); }} />
       </Card>
 
       <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
         <div className="space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400">{c.diagramIntro}</p>
           <ZoomableDiagram title={c.diagramTitle} labels={t.common.diagramZoom}>
-            <BrainAvmDiagram labels={diagramLabels} />
+            <BrainAvmDiagram labels={diagramLabels} activeHighlight={smFocus} ariaLabel={c.diagramTitle} />
           </ZoomableDiagram>
         </div>
       </Accordion>

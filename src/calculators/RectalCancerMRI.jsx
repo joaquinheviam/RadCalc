@@ -34,7 +34,7 @@ function OptionButtons({ options, value, onChange }) {
 // del esquema anterior, todos los T3 (a-d) comparten un mismo color (azul) —
 // ya no se distingue T3a/b de T3c/d por buen/mal pronóstico; ese matiz queda
 // solo en la nota de texto de más abajo.
-function RectalTScheme({ labels, activeT }) {
+function RectalTScheme({ labels, activeT, ariaLabel }) {
   // Atenúa (opacidad 0.3) los tumores que no corresponden a la categoría T
   // activa; si no hay ninguna seleccionada aún, se muestran todos a opacidad
   // plena. matchKeys usa las mismas claves de estado que el resto de la
@@ -44,7 +44,7 @@ function RectalTScheme({ labels, activeT }) {
 
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 850 600" className="h-auto w-full max-w-2xl font-sans" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 850 600" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-2xl font-sans" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="shadowRectalT" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="2" dy="4" stdDeviation="4" floodOpacity="0.3" />
@@ -64,7 +64,7 @@ function RectalTScheme({ labels, activeT }) {
         <g transform="translate(485, 100)">
           <circle cx="0" cy="0" r="45" fill="#ea580c" filter="url(#shadowRectalT)" />
           <circle cx="-12" cy="-12" r="20" fill="#f97316" opacity="0.6" />
-          <text x="0" y="6" textAnchor="middle" fill="#ffffff" fontWeight="800" fontSize="18px">{labels.organ}</text>
+          <text x="0" y="8" textAnchor="middle" fill="#ffffff" fontWeight="800" fontSize="17px">{labels.organ}</text>
         </g>
 
         {/* Muscular propia — círculo interior (relleno = submucosa) */}
@@ -75,68 +75,68 @@ function RectalTScheme({ labels, activeT }) {
           d="M 330 250 C 370 240, 370 280, 390 280 C 430 270, 410 310, 420 330 C 450 340, 420 360, 430 390 C 400 420, 380 380, 360 410 C 340 440, 320 400, 300 420 C 270 410, 290 380, 270 360 C 240 350, 270 320, 280 300 C 260 270, 300 280, 330 250 Z"
           className="fill-slate-800 dark:fill-slate-950"
         />
-        <text x="350" y="355" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="16px">{labels.lumen}</text>
+        <text x="350" y="360" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="24px">{labels.lumen}</text>
 
         {/* T1/T2: confinado a la pared */}
         <g transform="translate(295, 305) rotate(-45)" style={{ opacity: getOp(['t1t2']), transition: 'opacity 0.3s' }}>
           <ellipse cx="0" cy="0" rx="15" ry="25" fill="#3b82f6" filter="url(#shadowRectalT)" />
-          <text x="0" y="5" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T1</text>
+          <text x="0" y="8" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="22px">T1</text>
         </g>
         <g transform="translate(285, 410) rotate(-30)" style={{ opacity: getOp(['t1t2']), transition: 'opacity 0.3s' }}>
           <ellipse cx="0" cy="0" rx="20" ry="35" fill="#3b82f6" filter="url(#shadowRectalT)" />
-          <text x="0" y="5" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T2</text>
+          <text x="0" y="8" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="22px">T2</text>
         </g>
 
         {/* T3 (a, b, c, d) */}
         <g transform="translate(370, 450) rotate(20)" style={{ opacity: getOp(T3_SUBKEYS), transition: 'opacity 0.3s' }}>
           <ellipse cx="0" cy="0" rx="30" ry="65" fill="#3b82f6" filter="url(#shadowRectalT)" />
-          <text x="0" y="-15" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T3</text>
-          <text x="0" y="5" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">a, b,</text>
-          <text x="0" y="25" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">c, d</text>
+          <text x="0" y="-22" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="22px">T3</text>
+          <text x="0" y="4" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="22px">a, b,</text>
+          <text x="0" y="30" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="22px">c, d</text>
         </g>
 
         {/* T3 con MRF+ (margen circunferencial <1mm) */}
         <g transform="translate(480, 360) rotate(80)" style={{ opacity: getOp(T3_SUBKEYS), transition: 'opacity 0.3s' }}>
           <ellipse cx="0" cy="0" rx="30" ry="75" fill="#3b82f6" filter="url(#shadowRectalT)" />
         </g>
-        <text x="485" y="350" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px" style={{ opacity: getOp(T3_SUBKEYS) }}>T3 MRF+</text>
-        <text x="485" y="370" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px" style={{ opacity: getOp(T3_SUBKEYS) }}>(&lt;1mm)</text>
+        <text x="485" y="346" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="20px" style={{ opacity: getOp(T3_SUBKEYS) }}>T3 MRF+</text>
+        <text x="485" y="370" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="20px" style={{ opacity: getOp(T3_SUBKEYS) }}>(&lt;1mm)</text>
 
         {/* T4a: perfora la reflexión peritoneal */}
         <g transform="translate(230, 190) rotate(-40)" style={{ opacity: getOp(['t4a']), transition: 'opacity 0.3s' }}>
           <ellipse cx="0" cy="0" rx="35" ry="110" fill="#3b82f6" filter="url(#shadowRectalT)" />
-          <text x="0" y="20" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T4a</text>
+          <text x="0" y="28" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="22px">T4a</text>
         </g>
 
         {/* T4b: atraviesa la MRF hacia un órgano/estructura adyacente */}
         <g transform="translate(430, 200) rotate(25)" style={{ opacity: getOp(['t4b']), transition: 'opacity 0.3s' }}>
           <ellipse cx="0" cy="0" rx="35" ry="110" fill="#3b82f6" filter="url(#shadowRectalT)" />
-          <text x="0" y="10" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14px">T4b</text>
+          <text x="0" y="18" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="22px">T4b</text>
         </g>
 
         {/* Etiquetas y punteros anatómicos */}
-        <text x="180" y="70" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.peritonealCavity}</text>
+        <text x="180" y="70" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="22px">{labels.peritonealCavity}</text>
         <path d="M 230 80 L 250 110" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" />
         <path d="M 330 80 L 310 110" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" />
 
-        <text x="230" y="460" transform="rotate(45 230 460)" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.mesorectum}</text>
+        <text x="230" y="460" transform="rotate(45 230 460)" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="22px">{labels.mesorectum}</text>
 
-        <text x="560" y="270" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.muscularisPropriaL1}</text>
-        <text x="560" y="290" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.muscularisPropriaL2}</text>
+        <text x="560" y="270" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="22px">{labels.muscularisPropriaL1}</text>
+        <text x="560" y="296" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="22px">{labels.muscularisPropriaL2}</text>
         <path d="M 550 280 L 440 285" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" markerEnd="url(#arrowRectalT)" />
 
-        <text x="560" y="455" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.mrf}</text>
+        <text x="560" y="455" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="22px">{labels.mrf}</text>
         <path d="M 550 450 L 510 450" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" markerEnd="url(#arrowRectalT)" />
 
-        <text x="560" y="405" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="14px">{labels.submucosa}</text>
+        <text x="560" y="405" className="fill-slate-800 dark:fill-slate-200" fontWeight="600" fontSize="22px">{labels.submucosa}</text>
         <path d="M 550 400 L 415 390" className="stroke-slate-400 dark:stroke-slate-500" strokeWidth="2" fill="none" markerEnd="url(#arrowRectalT)" />
 
         {/* Leyenda embebida de subcategorías T3 (a-d) */}
-        <g transform="translate(560, 490)" className="fill-slate-800 dark:fill-slate-200" fontWeight="700" fontSize="14px">
+        <g transform="translate(560, 490)" className="fill-slate-800 dark:fill-slate-200" fontWeight="700" fontSize="22px">
           <text x="0" y="0">{labels.legendA}</text>
-          <text x="0" y="25">{labels.legendB}</text>
-          <text x="0" y="50">{labels.legendC}</text>
-          <text x="0" y="75">{labels.legendD}</text>
+          <text x="0" y="27">{labels.legendB}</text>
+          <text x="0" y="54">{labels.legendC}</text>
+          <text x="0" y="81">{labels.legendD}</text>
         </g>
       </svg>
     </div>
@@ -155,10 +155,10 @@ function RectalTScheme({ labels, activeT }) {
 // fondo en ambos temas, y las clases CSS globales están prohibidas en esta
 // SPA de una sola página); las sombras se logran con un <filter> con id único
 // en vez de clases.
-function SphincterComplexScheme() {
+function SphincterComplexScheme({ ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="45 55 570 520" className="h-auto w-full max-w-sm" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="45 55 570 520" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-sm" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="rectSphincterTumorShadow" x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow dx="2" dy="4" stdDeviation="3" floodOpacity="0.4" />
@@ -185,13 +185,13 @@ function SphincterComplexScheme() {
           <path fill="#1d4ed8" stroke="#1e3a8a" strokeWidth="1.5" filter="url(#rectSphincterTumorShadow)" d="M 270 310 C 290 300, 310 320, 295 340 C 310 360, 290 390, 275 390 C 255 390, 245 375, 245 350 C 245 325, 250 315, 270 310 Z" />
 
           {/* Etiquetas anatómicas (lado izquierdo) */}
-          <g fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="13" fill="#ffffff" textAnchor="middle" filter="url(#rectSphincterTextShadow)">
-            <text x="217" y="440">ES</text>
-            <text x="254" y="440">ISS</text>
-            <text x="278" y="440">IS</text>
+          <g fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="17" fill="#ffffff" textAnchor="middle" filter="url(#rectSphincterTextShadow)">
+            <text x="217" y="444">ES</text>
+            <text x="254" y="444">ISS</text>
+            <text x="278" y="444">IS</text>
           </g>
           {/* Etiquetas sobre los tumores */}
-          <g fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="13" fill="#ffffff" textAnchor="middle" dominantBaseline="middle">
+          <g fontFamily="system-ui, -apple-system, sans-serif" fontWeight="700" fontSize="19" fill="#ffffff" textAnchor="middle" dominantBaseline="middle">
             <text x="274" y="352">Tu</text>
             <text x="345" y="390">Tu</text>
           </g>
@@ -208,7 +208,7 @@ function SphincterComplexScheme() {
 // (mesorrectales/presacros/mesentéricos inferiores = "*"; ilíacos
 // internos/obturatrices = "+"; ilíacos comunes/retroperitoneo = "&") no
 // cambian con la localización del tumor.
-function NodalDistributionScheme() {
+function NodalDistributionScheme({ ariaLabel }) {
   // Contenido de un panel (recto + eje vascular + estaciones ganglionares),
   // reutilizado en espejo para A y B. `inguinalTone` decide si el paquete
   // inguinal/ilíaco externo se pinta como N (azul) o M1 (rojo); `tumorLow`
@@ -230,32 +230,46 @@ function NodalDistributionScheme() {
 
         {/* Mesorrectales/rectales superiores/presacros/mesentéricos inferiores (*): siempre N */}
         <ellipse cx="130" cy="205" rx="24" ry="68" fill="#1d4ed8" opacity="0.32" />
-        <text x="130" y="148" fontSize="13" fontWeight="700" textAnchor="middle" fill="#1d4ed8" fontFamily="system-ui, sans-serif">*</text>
+        <text x="130" y="148" fontSize="28" fontWeight="800" textAnchor="middle" dominantBaseline="central" className="fill-blue-900 dark:fill-blue-100" fontFamily="system-ui, sans-serif">*</text>
 
         {/* Ilíacos internos/obturatrices (+): siempre N, sobre la rama medial */}
         <ellipse cx="93" cy="160" rx="14" ry="40" fill="#1d4ed8" opacity="0.4" transform="rotate(18 93 160)" />
-        <text x="93" y="160" fontSize="13" fontWeight="700" textAnchor="middle" fill="#1d4ed8" fontFamily="system-ui, sans-serif">+</text>
+        <text x="93" y="160" fontSize="28" fontWeight="800" textAnchor="middle" dominantBaseline="central" className="fill-blue-900 dark:fill-blue-100" fontFamily="system-ui, sans-serif">+</text>
         <ellipse cx="167" cy="160" rx="14" ry="40" fill="#1d4ed8" opacity="0.4" transform="rotate(-18 167 160)" />
-        <text x="167" y="160" fontSize="13" fontWeight="700" textAnchor="middle" fill="#1d4ed8" fontFamily="system-ui, sans-serif">+</text>
+        <text x="167" y="160" fontSize="28" fontWeight="800" textAnchor="middle" dominantBaseline="central" className="fill-blue-900 dark:fill-blue-100" fontFamily="system-ui, sans-serif">+</text>
 
         {/* Ilíacos comunes/retroperitoneo (&amp;): siempre M1, sobre el tramo común */}
         <ellipse cx="95" cy="108" rx="15" ry="32" fill="#dc2626" opacity="0.45" transform="rotate(32 95 108)" />
-        <text x="95" y="108" fontSize="13" fontWeight="700" textAnchor="middle" fill="#dc2626" fontFamily="system-ui, sans-serif">&amp;</text>
+        <text x="95" y="108" fontSize="28" fontWeight="800" textAnchor="middle" dominantBaseline="central" className="fill-red-900 dark:fill-red-100" fontFamily="system-ui, sans-serif">&amp;</text>
         <ellipse cx="165" cy="108" rx="15" ry="32" fill="#dc2626" opacity="0.45" transform="rotate(-32 165 108)" />
-        <text x="165" y="108" fontSize="13" fontWeight="700" textAnchor="middle" fill="#dc2626" fontFamily="system-ui, sans-serif">&amp;</text>
+        <text x="165" y="108" fontSize="28" fontWeight="800" textAnchor="middle" dominantBaseline="central" className="fill-red-900 dark:fill-red-100" fontFamily="system-ui, sans-serif">&amp;</text>
+
+        {/* Rótulos cortos de categoría (coherentes con la leyenda) */}
+        <g fontFamily="system-ui, sans-serif" fontWeight="800" fontSize="22" textAnchor="middle" className="fill-blue-800 dark:fill-blue-200">
+          <text x="172" y="236">N</text>
+          <text x="88" y="236">N</text>
+          <text x="42" y="150">N</text>
+          <text x="218" y="150">N</text>
+        </g>
+        <g fontFamily="system-ui, sans-serif" fontWeight="800" fontSize="22" textAnchor="middle" className="fill-red-800 dark:fill-red-200">
+          <text x="46" y="80">M1</text>
+          <text x="214" y="80">M1</text>
+        </g>
+        <text x="43" y="302" fontSize="22" fontWeight="800" textAnchor="middle" className={inguinalTone === 'n' ? 'fill-blue-800 dark:fill-blue-200' : 'fill-red-800 dark:fill-red-200'} fontFamily="system-ui, sans-serif">{inguinalTone === 'n' ? 'N' : 'M1'}</text>
+        <text x="217" y="302" fontSize="22" fontWeight="800" textAnchor="middle" className={inguinalTone === 'n' ? 'fill-blue-800 dark:fill-blue-200' : 'fill-red-800 dark:fill-red-200'} fontFamily="system-ui, sans-serif">{inguinalTone === 'n' ? 'N' : 'M1'}</text>
 
         {/* Inguinales/ilíacos externos: N o M1 según invasión del canal anal, sobre la rama lateral */}
         <ellipse cx="43" cy="225" rx="16" ry="56" fill={inguinalFill} opacity="0.4" transform="rotate(22 43 225)" />
-        <text x="43" y="225" fontSize="15" fontWeight="700" textAnchor="middle" fill={inguinalFill} fontFamily="system-ui, sans-serif">{'{'}</text>
+        <text x="43" y="225" fontSize="28" fontWeight="800" textAnchor="middle" dominantBaseline="central" className={inguinalTone === 'n' ? 'fill-blue-900 dark:fill-blue-100' : 'fill-red-900 dark:fill-red-100'} fontFamily="system-ui, sans-serif">{'{'}</text>
         <ellipse cx="217" cy="225" rx="16" ry="56" fill={inguinalFill} opacity="0.4" transform="rotate(-22 217 225)" />
-        <text x="217" y="225" fontSize="15" fontWeight="700" textAnchor="middle" fill={inguinalFill} fontFamily="system-ui, sans-serif">{'}'}</text>
+        <text x="217" y="225" fontSize="28" fontWeight="800" textAnchor="middle" dominantBaseline="central" className={inguinalTone === 'n' ? 'fill-blue-900 dark:fill-blue-100' : 'fill-red-900 dark:fill-red-100'} fontFamily="system-ui, sans-serif">{'}'}</text>
       </>
     );
   }
 
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 560 300" className="h-auto w-full max-w-xl text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 560 320" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-xl text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Panel A: recto medio/alto, sin invasión del canal anal */}
         <g transform="translate(20,10)">
           <PanelContent inguinalTone="m" tumorLow={false} />
@@ -264,8 +278,13 @@ function NodalDistributionScheme() {
         <g transform="translate(300,10)">
           <PanelContent inguinalTone="n" tumorLow />
         </g>
+        {/* Rótulos de panel */}
+        <g fontFamily="system-ui, sans-serif" fontWeight="800" fontSize="30" className="fill-slate-700 dark:fill-slate-200">
+          <text x="14" y="36">A</text>
+          <text x="294" y="36">B</text>
+        </g>
         {/* Divisor entre paneles */}
-        <line x1="285" y1="5" x2="285" y2="290" stroke="currentColor" strokeWidth="1" strokeDasharray="3 6" className="text-slate-200 dark:text-slate-700" />
+        <line x1="285" y1="5" x2="285" y2="310" stroke="currentColor" strokeWidth="1" strokeDasharray="3 6" className="text-slate-200 dark:text-slate-700" />
       </svg>
     </div>
   );
@@ -494,7 +513,7 @@ export default function RectalCancerMRI() {
 
       <Accordion icon={<IconBookOpen size={16} />} title={c.diagramTitle}>
         <ZoomableDiagram title={c.diagramTitle} labels={t.common.diagramZoom}>
-          <RectalTScheme labels={c.tSchemeLabels} activeT={tStage} />
+          <RectalTScheme labels={c.tSchemeLabels} activeT={tStage} ariaLabel={c.diagramTitle} />
         </ZoomableDiagram>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.diagramNote}</p>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">{c.diagramPrognosisNote}</p>
@@ -509,7 +528,7 @@ export default function RectalCancerMRI() {
         <>
           <Accordion icon={<IconBookOpen size={16} />} title={c.sphincterDiagramTitle}>
             <ZoomableDiagram title={c.sphincterDiagramTitle} labels={t.common.diagramZoom}>
-              <SphincterComplexScheme />
+              <SphincterComplexScheme ariaLabel={c.sphincterDiagramTitle} />
             </ZoomableDiagram>
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-2">
               <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#1d4ed8] mr-1 align-[-1px]"></span>{c.sphincterLegend1}</span>
@@ -551,7 +570,7 @@ export default function RectalCancerMRI() {
       <Accordion icon={<IconBookOpen size={16} />} title={c.nodalDiagramTitle}>
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.nodalDiagramIntro}</p>
         <ZoomableDiagram title={c.nodalDiagramTitle} labels={t.common.diagramZoom}>
-          <NodalDistributionScheme />
+          <NodalDistributionScheme ariaLabel={c.nodalDiagramTitle} />
         </ZoomableDiagram>
         <div className="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 text-center mt-2">
           <p>{c.nodalDiagramPanelA}</p>

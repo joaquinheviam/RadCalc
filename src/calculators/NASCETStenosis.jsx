@@ -19,70 +19,106 @@ const CATEGORY_COLOR = {
   occlusion: 'text-slate-500',
 };
 
-function NascetDiagram() {
+// Esquema didáctico de la bifurcación carotídea con estenosis del bulbo y las
+// tres medidas que pide la calculadora (NASCET 1991, pág. 715, y nota
+// ACR-ASNR-SPR 2025 de denominatorPrecisionNote):
+//  - Medida 1: diámetro en el sitio de mayor estrechez (lumen residual).
+//  - Medida 2: diámetro distal a la placa visible, ya en segmento de paredes
+//    paralelas, inmediatamente después del fin de la placa.
+//  - Medida 3: diámetro de la arteria normal distal al bulbo carotídeo, más
+//    distal, en ACI cervical sana de paredes paralelas.
+// Textos desde t.calc.nascetStenosis (ES/EN); colores con clases dark:.
+const NASCET_FONT = 'ui-sans-serif, system-ui, -apple-system, sans-serif';
+
+function MeasureLabel({ x, y, lines, colorClass }) {
+  const [title, ...desc] = lines;
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" className="w-full h-auto" style={{ maxWidth: '100%' }}>
-      <defs>
-        <linearGradient id="nascetBloodFlow" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#fee2e2" />
-          <stop offset="50%" stopColor="#fca5a5" />
-          <stop offset="100%" stopColor="#fee2e2" />
-        </linearGradient>
-        <linearGradient id="nascetPlaqueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#fde047" />
-          <stop offset="100%" stopColor="#eab308" />
-        </linearGradient>
-      </defs>
+    <text x={x} y={y} fontFamily={NASCET_FONT}>
+      <tspan x={x} fontSize="15" fontWeight="700" className={colorClass}>{title}</tspan>
+      {desc.map((line, i) => (
+        <tspan key={i} x={x} dy="17" fontSize="14" className="fill-slate-600 dark:fill-slate-300">{line}</tspan>
+      ))}
+    </text>
+  );
+}
 
-      <style>
-        {`
-          .nascet-title { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 24px; font-weight: 700; fill: #0f172a; }
-          .nascet-subtitle { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 16px; font-weight: 600; fill: #475569; }
-          .nascet-label-main { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 16px; font-weight: 600; fill: #1e293b; }
-          .nascet-label-sub { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; font-weight: 400; fill: #64748b; }
-          .nascet-math { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 17px; fill: #2563eb; font-weight: 700; }
-        `}
-      </style>
+function MeasureLine({ x1, x2, y, strokeClass }) {
+  return (
+    <g className={strokeClass} strokeLinecap="round">
+      <line x1={x1} y1={y} x2={x2} y2={y} strokeWidth="3.5" />
+      <path d={`M ${x1} ${y - 7} L ${x1} ${y + 7} M ${x2} ${y - 7} L ${x2} ${y + 7}`} strokeWidth="2.5" />
+    </g>
+  );
+}
 
-      {/* Pared arterial / Flujo sanguíneo de fondo */}
-      <path d="M 350 500 L 350 350 C 300 300, 300 200, 340 100 L 340 40 L 460 40 L 460 100 C 500 200, 500 300, 450 350 L 450 500 Z"
-            fill="url(#nascetBloodFlow)" stroke="#ef4444" strokeWidth="3" />
+function NascetDiagram({ c }) {
+  const leader = 'stroke-slate-400 dark:stroke-slate-500';
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 400 470"
+      className="w-full h-auto max-w-md"
+      role="img"
+      aria-label={c.diagramAria}
+    >
+      {/* Lumen: ACC, bulbo y ACI (vertical) con la ACE hacia la izquierda */}
+      <path
+        d="M 112 460 L 172 460 L 172 335 C 194 305, 196 225, 162 178 L 162 20 L 122 20 L 122 178
+           C 112 200, 108 250, 112 300 C 98 285, 76 262, 70 228 L 66 140 L 44 140 L 48 232
+           C 54 280, 84 318, 112 345 Z"
+        className="fill-rose-100 dark:fill-red-950 stroke-red-500 dark:stroke-red-400"
+        strokeWidth="3"
+        strokeLinejoin="round"
+      />
 
-      {/* Flecha de dirección del flujo sanguíneo */}
-      <g stroke="#991b1b" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="400" y1="480" x2="400" y2="410" />
-        <polyline points="390,422 400,410 410,422" />
+      {/* Placa aterosclerótica del bulbo (pared posterior y anterior) */}
+      <g fill="#facc15" stroke="#ca8a04" strokeWidth="1.5">
+        <path d="M 172 335 C 194 305, 196 225, 162 178 C 158 215, 140 250, 146 285 C 150 305, 160 322, 172 335 Z" />
+        <path d="M 117 195 C 132 225, 132 265, 112 298 C 109 260, 110 225, 117 195 Z" />
       </g>
-      <text x="420" y="450" className="nascet-label-sub" style={{ fill: '#991b1b', fontWeight: 600 }}>Dirección del flujo</text>
 
-      {/* Placa aterosclerótica izquierda */}
-      <path d="M 350 350 C 300 300, 300 200, 340 100 C 375 160, 395 260, 350 350 Z"
-            fill="url(#nascetPlaqueGrad)" stroke="#ca8a04" strokeWidth="2" />
+      {/* Dirección del flujo (de la ACC hacia la ACI) */}
+      <g className="stroke-red-700 dark:stroke-red-300" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="142" y1="448" x2="142" y2="392" />
+        <polyline points="133,403 142,392 151,403" />
+      </g>
 
-      {/* Placa aterosclerótica derecha */}
-      <path d="M 450 350 C 500 300, 500 200, 460 100 C 425 160, 405 260, 450 350 Z"
-            fill="url(#nascetPlaqueGrad)" stroke="#ca8a04" strokeWidth="2" />
+      {/* Nombres de los vasos */}
+      <g fontFamily={NASCET_FONT} fontSize="14" fontWeight="700" className="fill-slate-700 dark:fill-slate-200">
+        <text x="114" y="118" textAnchor="end">{c.diagramIca}</text>
+        <text x="55" y="130" textAnchor="middle">{c.diagramEca}</text>
+        <text x="104" y="420" textAnchor="end">{c.diagramCca}</text>
+      </g>
 
-      {/* Medida 3: diámetro distal normal (denominador) */}
-      <line x1="340" y1="70" x2="460" y2="70" stroke="#2563eb" strokeWidth="4" />
-      <path d="M 340 62 L 340 78 M 460 62 L 460 78" stroke="#2563eb" strokeWidth="3" />
-      <line x1="470" y1="70" x2="520" y2="70" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4,4" />
-      <text x="530" y="75" className="nascet-label-main">Diámetro distal normal (D)</text>
-      <text x="530" y="93" className="nascet-label-sub">Arteria sana posterior al bulbo (Medida 3)</text>
+      {/* Medida 3: arteria normal distal al bulbo */}
+      <MeasureLine x1={122} x2={162} y={62} strokeClass="stroke-blue-600 dark:stroke-blue-400" />
+      <line x1="170" y1="62" x2="198" y2="62" className={leader} strokeWidth="1.5" strokeDasharray="3 3" />
+      <MeasureLabel x={205} y={56} lines={c.diagramM3} colorClass="fill-blue-700 dark:fill-blue-300" />
 
-      {/* Medida 1: lumen residual mínimo (numerador) */}
-      <line x1="387" y1="230" x2="413" y2="230" stroke="#dc2626" strokeWidth="4" />
-      <path d="M 387 222 L 387 238 M 413 222 L 413 238" stroke="#dc2626" strokeWidth="3" />
-      <line x1="423" y1="230" x2="520" y2="230" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4,4" />
-      <text x="530" y="235" className="nascet-label-main">Lumen residual mínimo (L)</text>
-      <text x="530" y="253" className="nascet-label-sub">Mayor estrechez en el bulbo (Medida 1)</text>
+      {/* Medida 2: distal a la placa visible */}
+      <MeasureLine x1={122} x2={162} y={160} strokeClass="stroke-violet-600 dark:stroke-violet-400" />
+      <line x1="170" y1="160" x2="198" y2="160" className={leader} strokeWidth="1.5" strokeDasharray="3 3" />
+      <MeasureLabel x={205} y={154} lines={c.diagramM2} colorClass="fill-violet-700 dark:fill-violet-300" />
 
-      {/* Tarjeta de referencia (fórmula) */}
-      <rect x="40" y="40" width="260" height="150" rx="12" fill="#ffffff" stroke="#e2e8f0" strokeWidth="2" />
-      <text x="60" y="75" className="nascet-title">Método NASCET</text>
-      <text x="60" y="110" className="nascet-subtitle">Fórmula de severidad:</text>
-      <text x="60" y="145" className="nascet-math">% Estenosis = (1 - L / D) × 100</text>
+      {/* Medida 1: sitio de mayor estrechez */}
+      <MeasureLine x1={128} x2={145} y={250} strokeClass="stroke-red-600 dark:stroke-red-400" />
+      <line x1="152" y1="250" x2="198" y2="250" className={leader} strokeWidth="1.5" strokeDasharray="3 3" />
+      <MeasureLabel x={205} y={244} lines={c.diagramM1} colorClass="fill-red-700 dark:fill-red-300" />
+
+      {/* Rótulo de la placa */}
+      <line x1="186" y1="300" x2="198" y2="320" className={leader} strokeWidth="1.5" strokeDasharray="3 3" />
+      <text x="205" y="330" fontFamily={NASCET_FONT} fontSize="14" fontWeight="600" className="fill-amber-700 dark:fill-amber-300">{c.diagramPlaque}</text>
     </svg>
+  );
+}
+
+function NascetLegend({ c }) {
+  return (
+    <div className="space-y-1 text-xs leading-snug text-slate-600 dark:text-slate-300">
+      <p><span className="font-semibold text-violet-700 dark:text-violet-300">{c.diagramFormulaEligLabel}</span> {c.diagramFormulaElig}</p>
+      <p><span className="font-semibold text-blue-700 dark:text-blue-300">{c.diagramFormulaAnalysisLabel}</span> {c.diagramFormulaAnalysis}</p>
+      <p className="text-slate-500 dark:text-slate-400">{c.diagramAbbrev}</p>
+    </div>
   );
 }
 
@@ -141,11 +177,14 @@ export default function NASCETStenosis() {
     <div className={`space-y-4 animate-in fade-in ${hasAny ? 'pb-56' : ''}`}>
       <Card>
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 text-center">{c.schemeTitle}</p>
-        <ZoomableDiagram title={c.schemeTitle} labels={t.common.diagramZoom}>
+        <ZoomableDiagram title={c.schemeTitle} labels={t.common.diagramZoom} legend={<NascetLegend c={c} />}>
           <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-            <NascetDiagram />
+            <NascetDiagram c={c} />
           </div>
         </ZoomableDiagram>
+        <div className="mt-3">
+          <NascetLegend c={c} />
+        </div>
       </Card>
 
       <Card>
