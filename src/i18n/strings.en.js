@@ -3979,6 +3979,7 @@ export default {
 
       tshapeDiagramTitle: 'Teaching guide: T-shaped cavity (optional)',
       tshapeDiagramIntro: 'The T-shaped uterus is a problem of the cavity, not of the external contour: thickening of the lateral walls narrows the endometrial canal and the cornual horns become short and straight, while the external fundal contour stays flat or minimally convex (unlike the septate uterus, where the external contour is normal but there is an internal indentation).',
+      tshapeLegendWall: 'Green brackets: thickened lateral walls on each side of the central canal',
 
       tshapeQ: 'Is the endometrial cavity T-shaped (thickened lateral walls, narrow cavity, without significant fundal indentation)?',
       tshapeYes: 'Yes',

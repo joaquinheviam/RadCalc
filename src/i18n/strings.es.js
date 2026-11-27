@@ -3982,6 +3982,7 @@ export default {
 
       tshapeDiagramTitle: 'Guía didáctica: cavidad en "T" (opcional)',
       tshapeDiagramIntro: 'El útero en "T" es un problema de la cavidad, no del contorno externo: el engrosamiento de las paredes laterales estrecha el canal endometrial y las ramas cornuales quedan cortas y rectas, mientras el contorno externo del fondo permanece plano o mínimamente convexo (a diferencia del septado, donde el contorno externo es normal pero hay indentación interna).',
+      tshapeLegendWall: 'Corchetes verdes: paredes laterales engrosadas a cada lado del canal central',
       tshapeQ: '¿La cavidad endometrial tiene forma de "T" (paredes laterales engrosadas, cavidad estrecha, sin indentación fúndica significativa)?',
       tshapeYes: 'Sí',
       tshapeNo: 'No',

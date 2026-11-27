@@ -5,10 +5,10 @@ import { REFERENCES } from '../i18n/references.js';
 import { IconAlertTriangle, IconCheckCircle } from '../components/icons/index.js';
 import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewIconButton, ReportPreviewModal, References, UsageNotes, ReportBugLink, DonationButton, CalcDisclaimer, ZoomableDiagram } from '../components/shared/index.js';
 
-function PectusScheme() {
+function PectusScheme({ ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 800 600" className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 800 600" role="img" aria-label={ariaLabel} className="h-auto w-full max-w-xs text-slate-600 dark:text-slate-300" xmlns="http://www.w3.org/2000/svg">
         {/* Silueta cardiaca (referencia anatomica, discontinua) */}
         <path
           className="text-slate-500 dark:text-slate-400"
@@ -110,7 +110,7 @@ export default function PectusHallerCI() {
       <Card>
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 text-center">{c.schemeTitle}</p>
         <ZoomableDiagram title={c.schemeTitle} labels={t.common.diagramZoom}>
-          <PectusScheme />
+          <PectusScheme ariaLabel={c.schemeTitle} />
         </ZoomableDiagram>
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
           <span><span className="inline-block w-2.5 h-2.5 rounded-sm bg-sky-500 mr-1 align-[-1px]"></span>{c.schemeLegendA}</span>

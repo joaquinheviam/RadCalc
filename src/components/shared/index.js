@@ -9,7 +9,6 @@ export { default as InfoBox } from './InfoBox.jsx';
 export { default as Accordion } from './Accordion.jsx';
 export { default as References } from './References.jsx';
 export { default as UsageNotes } from './UsageNotes.jsx';
-export { default as Schematic } from './Schematic.jsx';
 export { default as AlgorithmSchema } from './AlgorithmSchema.jsx';
 export { default as ReportBugLink } from './ReportBugLink.jsx';
 export { default as CalcDisclaimer } from './CalcDisclaimer.jsx';

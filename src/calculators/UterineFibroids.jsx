@@ -50,8 +50,12 @@ function FigoFibroidDiagram({ labels, typeLabels, highlightType = null, onSelect
     };
   };
 
+  // Centros aproximados de cada nodo, para el área táctil ampliada (círculo
+  // transparente de radio 33 → ~28 px a 375 px de ancho; no altera el dibujo).
+  const NODE_CENTER = { 0: [300, 228], 1: [345, 275], 2: [430, 290], 3: [410, 152], 4: [340, 120], 5: [230, 105], 6: [170, 405], 7: [310, 445] };
   const node = (type, defaultHex, children) => (
     <g {...nodeProps(type)}>
+      {onSelectType && NODE_CENTER[type] && <circle cx={NODE_CENTER[type][0]} cy={NODE_CENTER[type][1]} r="33" fill="transparent" />}
       {onSelectType && <title>{typeLabels?.[type] || `FIGO ${type}`}</title>}
       {children(getColor(type, defaultHex))}
     </g>
@@ -59,7 +63,7 @@ function FigoFibroidDiagram({ labels, typeLabels, highlightType = null, onSelect
 
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 720 540" className="h-auto w-full max-w-lg select-none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 720 540" role={onSelectType ? 'group' : 'img'} aria-label={labels?.title || 'FIGO'} className="h-auto w-full max-w-lg select-none" xmlns="http://www.w3.org/2000/svg">
         <title>{labels?.title || 'FIGO'}</title>
         <defs>
           <filter id="figoFibroidShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -92,52 +96,52 @@ function FigoFibroidDiagram({ labels, typeLabels, highlightType = null, onSelect
         {node('0', COLOR_SUBMUCOSAL, (fill) => (<>
           <rect x="296" y="200" width="8" height="20" rx="2" fill={fill} />
           <circle cx="300" cy="225" r="20" fill={fill} />
-          <text x="300" y="230" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">0</text>
+          <text x="300" y="225" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">0</text>
         </>))}
         {/* TIPO 1: <50% intramural — centro dentro de la cavidad endometrial */}
         {node('1', COLOR_SUBMUCOSAL, (fill) => (<>
           <circle cx="345" cy="275" r="23" fill={fill} />
-          <text x="345" y="280" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">1</text>
+          <text x="345" y="275" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">1</text>
         </>))}
         {/* TIPO 2: ≥50% intramural — centro dentro del miometrio, asoma poco a la cavidad */}
         {node('2', COLOR_SUBMUCOSAL, (fill) => (<>
           <circle cx="430" cy="290" r="24" fill={fill} />
-          <text x="430" y="295" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">2</text>
+          <text x="430" y="290" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">2</text>
         </>))}
         {/* TIPO 3: 100% intramural, borde apenas toca la cavidad endometrial (contacto sin protruir) */}
         {node('3', COLOR_INTRAMURAL, (fill) => (<>
           <circle cx="410" cy="152" r="24" fill={fill} />
-          <text x="410" y="157" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">3</text>
+          <text x="410" y="152" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">3</text>
         </>))}
         {/* TIPO 4: 100% intramural, sin contacto con cavidad ni serosa */}
         {node('4', COLOR_INTRAMURAL, (fill) => (<>
           <circle cx="340" cy="120" r="24" fill={fill} />
-          <text x="340" y="125" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">4</text>
+          <text x="340" y="120" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">4</text>
         </>))}
         {/* TIPO 5: subseroso ≥50% intramural — centro dentro del miometrio, asoma poco a la serosa */}
         {node('5', COLOR_SUBSEROSAL, (fill) => (<>
           <circle cx="230" cy="105" r="24" fill={fill} />
-          <text x="230" y="110" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">5</text>
+          <text x="230" y="105" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">5</text>
         </>))}
         {/* TIPO 6: subseroso <50% intramural — centro fuera del miometrio, flotando sobre la serosa */}
         {node('6', COLOR_SUBSEROSAL, (fill) => (<>
           <circle cx="170" cy="405" r="24" fill={fill} />
-          <text x="170" y="410" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">6</text>
+          <text x="170" y="405" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">6</text>
         </>))}
         {/* TIPO 7: subseroso pediculado, totalmente externo */}
         {node('7', COLOR_SUBSEROSAL, (fill) => (<>
           <rect x="306" y="415" width="8" height="20" rx="2" fill={fill} />
           <circle cx="310" cy="450" r="22" fill={fill} />
-          <text x="310" y="455" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="14">7</text>
+          <text x="310" y="450" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="22">7</text>
         </>))}
         {/* Híbrido 2-5: ejemplo ilustrativo, no seleccionable directamente */}
         <g style={{ opacity: getOpacity('2-5') }} filter="url(#figoFibroidShadow)" className="transition-opacity duration-200">
           <title>{`${labels?.hybrid || 'Híbrido'} 2-5`}</title>
           <circle cx="510" cy="340" r="55" fill={COLOR_HYBRID} />
-          <text x="510" y="345" textAnchor="middle" fill="#ffffff" fontWeight="700" fontSize="15">2-5</text>
+          <text x="510" y="340" textAnchor="middle" dominantBaseline="central" fill="#ffffff" fontWeight="700" fontSize="24">2-5</text>
         </g>
 
-        <g className="fill-slate-700 dark:fill-slate-300" fontSize="12" fontWeight="600" fontFamily="system-ui, sans-serif">
+        <g className="fill-slate-700 dark:fill-slate-300" fontSize="22" fontWeight="600" fontFamily="system-ui, sans-serif">
           <text x="230" y="60" textAnchor="middle">{labels?.subserosal || 'Subserosal'}</text>
           <text x="440" y="70" textAnchor="middle">{labels?.intramural || 'Intramural'}</text>
           <text x="180" y="240" textAnchor="middle">{labels?.submucosal || 'Submucosal'}</text>

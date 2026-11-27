@@ -12,11 +12,13 @@ import { Card, NumberField, StickyBar, ResetIconButton, CopyIconButton, PreviewI
 // de la calculadora igual que el resto de los esquemas de RadioCalc (ver
 // BrainAVM.jsx). Los textos llegan por `labels` y se mantienen cortos para
 // que los rótulos laterales quepan dentro del viewBox.
-function CardiacSiderosisDiagram({ labels }) {
+function CardiacSiderosisDiagram({ labels, ariaLabel }) {
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-4">
       <svg
         viewBox="0 0 520 320"
+        role="img"
+        aria-label={ariaLabel}
         className="h-auto w-full max-w-lg"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -311,7 +313,7 @@ export default function CardiacSiderosis() {
         <div className="space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400">{c.diagramIntro}</p>
           <ZoomableDiagram title={c.diagramTitle} labels={t.common.diagramZoom}>
-            <CardiacSiderosisDiagram labels={c.diagramLabels} />
+            <CardiacSiderosisDiagram labels={c.diagramLabels} ariaLabel={c.diagramTitle} />
           </ZoomableDiagram>
         </div>
       </Accordion>
