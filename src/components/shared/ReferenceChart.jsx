@@ -114,11 +114,12 @@ export function BandByAgeChart({ title, ariaLabel, bins, selected, points, ticks
         </g>
       )}
       <text x={L + pw / 2} y={H - 6} textAnchor="middle" className={TXT}>{xLabel}</text>
-      <text x={4} y={T + 2} className={TXT} transform={`rotate(-90 4 ${T + 2})`} textAnchor="end" dy="7">{yLabel}</text>
+      <text x={2} y={T + 2} className={TXT} transform={`rotate(-90 2 ${T + 2})`} textAnchor="end" dy="7">{yLabel}</text>
       {si >= 0 && points.map((p, k) => {
         const cx = x(si) + bw / 2 + (points.length > 1 ? (k === 0 ? -3 : 3) : 0);
         const cy = y(p.value);
-        const right = si < bins.length / 2;
+        // Con dos puntos (D/I), el primero se rotula a la izquierda y el segundo a la derecha.
+        const right = points.length > 1 ? k === 1 : si < bins.length / 2;
         return (
           <g key={k}>
             <circle cx={cx} cy={cy} r="4" className={`${TONE.patient} stroke-white dark:stroke-slate-800`} strokeWidth="1.5" />
@@ -157,11 +158,11 @@ export function PercentileScaleChart({ scale, ariaLabel, title, labels, note }) 
   const zeroEnd = scale.zeroPct !== null && scale.zeroPct > 0 ? bx(scale.zeroPct) : null;
   const H = zeroEnd !== null ? 104 : 84;
   const legend = mx !== null ? [{ label: labels.patientBand, swatch: SWATCH.patientBand }] : [];
-  if (zeroEnd !== null) legend.push({ label: labels.zeroLegend, swatch: SWATCH.zero });
+  if (zeroEnd !== null && scale.bands.some((b) => b.zero && !b.patient)) legend.push({ label: labels.zeroLegend, swatch: SWATCH.zero });
   return (
     <ReferenceChart title={title} ariaLabel={ariaLabel} viewHeight={H} legend={legend} note={note}>
-      <text x={labelX} y={12} textAnchor={anchor} className={mx === null ? TXT : 'fill-blue-700 dark:fill-blue-300'} style={{ fontWeight: 600 }}>{labels.patient}</text>
-      {mx !== null && <path d={`M${mx - 5} 20 L${mx + 5} 20 L${mx} 27 Z`} className={TONE.patient} />}
+      <text x={labelX} y={10} textAnchor={anchor} className={mx === null ? TXT : 'fill-blue-700 dark:fill-blue-300'} style={{ fontWeight: 600 }}>{labels.patient}</text>
+      {mx !== null && <path d={`M${mx - 5} 15 L${mx + 5} 15 L${mx} 21 Z`} className={TONE.patient} />}
       {scale.bands.map((b) => (
         <rect
           key={b.from}
@@ -173,7 +174,7 @@ export function PercentileScaleChart({ scale, ariaLabel, title, labels, note }) 
           className={b.patient ? 'fill-blue-500 dark:fill-blue-400' : b.zero ? 'fill-slate-300 dark:fill-slate-600' : 'fill-slate-100 dark:fill-slate-700'}
         />
       ))}
-      {scale.marker !== null && <line x1={mx} x2={mx} y1={barY - 4} y2={barY + barH + 4} className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="3" />}
+      {scale.marker !== null && <line x1={mx} x2={mx} y1={barY} y2={barY + barH + 4} className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="3" />}
       {scale.bounds.slice(1, -1).map((p) => (
         <g key={p}>
           <text x={bx(p)} y={barY - 5} textAnchor="middle" className={cutByP[p] === undefined ? TXT : TXT_STRONG}>{pLabel(p)}</text>
@@ -202,6 +203,18 @@ function spread(items, gap, minY, maxY) {
   return s;
 }
 
+// Aleja etiquetas de una posición fija (el valor del paciente junto a su punto):
+// las de arriba suben y las de abajo (below) bajan, con al menos gap unidades entre sí.
+function aroundAnchor(items, anchorY, gap) {
+  const above = items.filter((it) => !it.below).sort((a, b) => b.y - a.y);
+  const below = items.filter((it) => it.below).sort((a, b) => a.y - b.y);
+  let lim = anchorY - gap;
+  above.forEach((it) => { if (it.y > lim) it.y = lim; lim = it.y - gap; });
+  lim = anchorY + gap;
+  below.forEach((it) => { if (it.y < lim) it.y = lim; lim = it.y + gap; });
+  return [...above, ...below];
+}
+
 /**
  * Curva de UH por fase con marcas de referencia en la fase a la que se aplican.
  * phases: [{ key, label, value|null, refs: [{ value, label, tone: 'ref'|'target'|'warn' }] }]
@@ -219,7 +232,8 @@ export function PhaseLineChart({ title, ariaLabel, phases, yLabel, legendText, n
   const y0 = yt[0];
   const y1 = yt[yt.length - 1];
   const y = (v) => T + ph - ((v - y0) / (y1 - y0)) * ph;
-  const xs = [L + 46, L + (W - L - R) / 2, W - R - 46];
+  // Columnas de fase; la última deja espacio a la derecha para sus etiquetas.
+  const xs = [L + 46, 160, 240];
   const pts = phases.map((p, i) => (Number.isFinite(p.value) ? { x: xs[i], y: y(p.value), v: p.value } : null));
   const line = pts.filter(Boolean);
   const toneCls = {
@@ -246,7 +260,7 @@ export function PhaseLineChart({ title, ariaLabel, phases, yLabel, legendText, n
           <text x={L - 4} y={y(v) + 3.5} textAnchor="end" className={TXT}>{num(v)}</text>
         </g>
       ))}
-      <text x={4} y={T} className={TXT} transform={`rotate(-90 4 ${T})`} textAnchor="end" dy="7">{yLabel}</text>
+      <text x={2} y={T} className={TXT} transform={`rotate(-90 2 ${T})`} textAnchor="end" dy="7">{yLabel}</text>
       {phases.map((p, i) => {
         const x1 = xs[i] - 20;
         const x2 = xs[i] + 20;
@@ -264,24 +278,33 @@ export function PhaseLineChart({ title, ariaLabel, phases, yLabel, legendText, n
       {line.length > 1 && (
         <polyline points={line.map((q) => `${q.x},${q.y}`).join(' ')} fill="none" className="stroke-blue-600 dark:stroke-blue-400" strokeWidth="2" strokeLinejoin="round" />
       )}
-      {phases.map((p, i) => {
-        // Etiquetas de umbral (sobre la curva, con halo): a la derecha de la marca,
-        // salvo en la última fase (a la izquierda).
-        const left = i === phases.length - 1;
-        const labs = spread(p.refs.map((r) => ({ ...r, y: y(r.value) + 3.5 })), 11, T, T + ph + 3);
-        return labs.map((r) => (
-          <text key={`${p.key}-${r.label}`} x={left ? xs[i] - 23 : xs[i] + 23} y={r.y} textAnchor={left ? 'end' : 'start'} className={`${toneTxt[r.tone]} ${HALO}`} style={haloStyle}>{r.label}</text>
-        ));
-      })}
       {line.map((q) => {
-        // Valor al lado opuesto de las etiquetas de umbral de su fase.
+        // Puntos antes que las etiquetas (con halo), para que no tapen el texto. Valor a la
+        // izquierda del punto; el de la última fase se reparte con sus etiquetas.
         const last = q.x === xs[xs.length - 1];
         return (
           <g key={q.x}>
             <circle cx={q.x} cy={q.y} r="4.5" className={`${TONE.patient} stroke-white dark:stroke-slate-800`} strokeWidth="1.5" />
-            <text x={last ? q.x + 8 : q.x - 8} y={q.y - 6} textAnchor={last ? 'start' : 'end'} className={`fill-blue-700 dark:fill-blue-300 ${HALO}`} style={{ ...haloStyle, fontWeight: 600 }}>{num(q.v, 1)}</text>
+            {!last && <text x={q.x - 8} y={q.y - 6} textAnchor="end" className={`fill-blue-700 dark:fill-blue-300 ${HALO}`} style={{ ...haloStyle, fontWeight: 600 }}>{num(q.v, 1)}</text>}
           </g>
         );
+      })}
+      {phases.map((p, i) => {
+        // Etiquetas de umbral (sobre la curva, con halo): a la derecha de la marca;
+        // en la última fase, encima de la marca, alineadas a su inicio. Ahí el valor
+        // del paciente (a la derecha del punto) entra al mismo reparto vertical.
+        const last = i === phases.length - 1;
+        const items = p.refs.map((r) => ({ ...r, y: last ? y(r.value) - 4 : y(r.value) + 3.5 }));
+        const pt = pts[i];
+        const labs = last && pt
+          // Marcas bajo el valor del paciente: etiqueta bajo su línea; las demás, encima.
+          ? [...aroundAnchor(p.refs.map((r) => (r.value < pt.v ? { ...r, below: true, y: y(r.value) + 12 } : { ...r, y: y(r.value) - 4 })), pt.y + 4, 11), { isValue: true, label: 'value', y: pt.y + 4 }]
+          : spread(items, 11, T, T + ph + 3);
+        return labs.map((r) => (r.isValue ? (
+          <text key={`${p.key}-value`} x={pt.x + 8} y={r.y} textAnchor="start" className={`fill-blue-700 dark:fill-blue-300 ${HALO}`} style={{ ...haloStyle, fontWeight: 600 }}>{num(pt.v, 1)}</text>
+        ) : (
+          <text key={`${p.key}-${r.label}`} x={last ? xs[i] - 20 : xs[i] + 23} y={r.y} textAnchor="start" className={`${toneTxt[r.tone]} ${HALO}`} style={haloStyle}>{r.label}</text>
+        )));
       })}
     </ReferenceChart>
   );
