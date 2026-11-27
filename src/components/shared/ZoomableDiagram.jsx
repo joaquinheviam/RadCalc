@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { IconMaximize, IconX, IconRefresh } from '../icons/index.js';
 
 // Envoltorio reutilizable para cualquier esquema SVG de la app: muestra el
@@ -22,9 +23,19 @@ import { IconMaximize, IconX, IconRefresh } from '../icons/index.js';
 // `labels` es el sub-objeto de i18n con expand/close/reset/hint (ver
 // t.common.diagramZoom en strings.es.js/en.js) — se pasa una sola vez desde
 // cada calculadora, nunca hardcodeado acá.
+//
+// `legend` (opcional, ReactNode): leyenda del esquema que vive fuera del SVG.
+// Se muestra bajo el diagrama dentro del visor.
+//
+// Ajuste al abrir ("fit"): en el visor el contenido se dibuja con el mismo
+// ancho que tiene en la página (así respeta sus `max-w-*` y su proporción) y
+// luego se escala para llenar el ancho/alto disponibles. Pellizco, rueda y
+// doble toque trabajan encima de ese ajuste (escala 1 = ajustado al visor).
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 4;
+const MAX_FIT = 3;
+const FIT_MARGIN = 0.96;
 const DOUBLE_TAP_SCALE = 2.5;
 const DOUBLE_TAP_MS = 300;
 
@@ -41,8 +52,33 @@ const zoomAt = (anchorX, anchorY, prevScale, nextScale, prevTx, prevTy) => {
   return { scale: s, tx: anchorX - cx * s, ty: anchorY - cy * s };
 };
 
-function ZoomStage({ children, resetLabel }) {
+function ZoomStage({ children, resetLabel, contentWidth }) {
   const containerRef = useRef(null);
+  const contentRef = useRef(null);
+  const [fit, setFit] = useState(1);
+
+  // Escala de ajuste: el contenido (a su ancho de página) se agranda o achica
+  // para caber completo en el visor. Se recalcula si cambia el tamaño del
+  // visor (p. ej., al rotar el teléfono) o del contenido.
+  useLayoutEffect(() => {
+    const box = containerRef.current;
+    const content = contentRef.current;
+    if (!box || !content) return undefined;
+    const measure = () => {
+      const w = content.offsetWidth;
+      const h = content.offsetHeight;
+      const cw = box.clientWidth;
+      const ch = box.clientHeight;
+      if (!w || !h || !cw || !ch) return;
+      setFit(Math.min(MAX_FIT, (cw * FIT_MARGIN) / w, (ch * FIT_MARGIN) / h));
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(box);
+    ro.observe(content);
+    return () => ro.disconnect();
+  }, [contentWidth]);
   const pointers = useRef(new Map());
   const gestureRef = useRef(null);
   const lastTapRef = useRef(0);
@@ -174,7 +210,17 @@ function ZoomStage({ children, resetLabel }) {
           cursor: isZoomed ? 'grab' : 'default',
         }}
       >
-        {children}
+        <div
+          ref={contentRef}
+          className="shrink-0"
+          style={{
+            width: contentWidth ? `${contentWidth}px` : undefined,
+            transform: `scale(${fit})`,
+            transformOrigin: 'center center',
+          }}
+        >
+          {children}
+        </div>
       </div>
       {isZoomed && (
         <button
@@ -190,8 +236,15 @@ function ZoomStage({ children, resetLabel }) {
   );
 }
 
-export default function ZoomableDiagram({ children, title, labels }) {
+export default function ZoomableDiagram({ children, title, labels, legend = null }) {
   const [open, setOpen] = useState(false);
+  const inlineRef = useRef(null);
+  const [contentWidth, setContentWidth] = useState(0);
+
+  const openViewer = () => {
+    setContentWidth(inlineRef.current?.offsetWidth || 0);
+    setOpen(true);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -206,10 +259,10 @@ export default function ZoomableDiagram({ children, title, labels }) {
 
   return (
     <>
-      <div className="relative">
+      <div className="relative" ref={inlineRef}>
         {children}
         <button
-          onClick={() => setOpen(true)}
+          onClick={openViewer}
           aria-label={labels.expand}
           title={labels.expand}
           className="absolute top-2 right-2 p-2 rounded-full bg-white/85 dark:bg-slate-900/75 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-200/70 dark:border-slate-700/70 hover:bg-white dark:hover:bg-slate-800 active:scale-95 transition-all backdrop-blur-sm"
@@ -218,8 +271,11 @@ export default function ZoomableDiagram({ children, title, labels }) {
         </button>
       </div>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-sm animate-in fade-in" role="dialog" aria-modal="true" aria-label={title}>
+      {open && typeof document !== 'undefined' && createPortal(
+        // z-[210]: por encima de los avisos flotantes (UpdateToast «listo para
+        // usarse sin conexión» y prompts de instalación/idioma/donación, z-[200]).
+        // Portal a body para que ningún ancestro con backdrop-blur lo encierre.
+        <div className="fixed inset-0 z-[210] flex flex-col bg-black/90 backdrop-blur-sm animate-in fade-in" role="dialog" aria-modal="true" aria-label={title}>
           <div className="flex items-center justify-between gap-3 px-4 py-3 shrink-0">
             <h2 className="text-sm font-semibold text-white truncate">{title}</h2>
             <button
@@ -231,9 +287,15 @@ export default function ZoomableDiagram({ children, title, labels }) {
               <IconX size={20} />
             </button>
           </div>
-          <ZoomStage resetLabel={labels.reset}>{children}</ZoomStage>
+          <ZoomStage resetLabel={labels.reset} contentWidth={contentWidth}>{children}</ZoomStage>
+          {legend && (
+            <div className="shrink-0 max-h-[35vh] overflow-y-auto mx-3 mt-2 rounded-xl bg-white dark:bg-slate-900 p-3 text-slate-700 dark:text-slate-200">
+              {legend}
+            </div>
+          )}
           <p className="shrink-0 text-center text-[11px] text-white/60 px-4 py-2">{labels.hint}</p>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

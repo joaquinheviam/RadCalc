@@ -125,7 +125,7 @@ function IaslcNodalMap({ labels }) {
   const nodeStroke = 'stroke-slate-700 dark:stroke-slate-300';
   return (
     <div className="flex justify-center rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 600 600" className="h-auto w-full max-w-md" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 600 600" className="h-auto w-full max-w-md" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={labels.aria}>
         {/* Vía aérea: tráquea y árbol bronquial */}
         <path
           d="M 260 80 L 340 80 L 340 290 L 430 370 L 520 340
@@ -160,7 +160,7 @@ function IaslcNodalMap({ labels }) {
           <line x1="300" y1="358" x2="570" y2="358" />
           <line x1="30" y1="430" x2="570" y2="430" />
         </g>
-        <g className="fill-slate-600 dark:fill-slate-300" fontFamily="system-ui, -apple-system, sans-serif" fontSize="11" fontWeight="700">
+        <g className="fill-slate-600 dark:fill-slate-300" fontFamily="system-ui, -apple-system, sans-serif" fontSize="13" fontWeight="700">
           <text x="35" y="65">{labels.cricoid}</text>
           <text x="35" y="145">{labels.apices}</text>
           <text x="35" y="230">{labels.lbcvInf}</text>
@@ -168,7 +168,8 @@ function IaslcNodalMap({ labels }) {
           <text x="35" y="325">{labels.azygosInf}</text>
           <text x="565" y="325" textAnchor="end">{labels.archInf}</text>
           <text x="565" y="354" textAnchor="end">{labels.lpaSup}</text>
-          <text x="35" y="425">{labels.broncInterInf}</text>
+          {/* Algo menor que el resto: a 13 rozaría los ganglios 10R */}
+          <text x="35" y="426" fontSize="11.5">{labels.broncInterInf}</text>
           <text x="565" y="425" textAnchor="end">{labels.lllBronc}</text>
         </g>
 
@@ -283,17 +284,48 @@ function IaslcNodalMap({ labels }) {
   );
 }
 
+// Texto de los chips de leyenda: elige blanco u oscuro según cuál contraste
+// más con el color del chip (WCAG), para que los chips claros (3P, 8,
+// mamarios internos…) no queden con texto blanco ilegible.
+const CHIP_DARK_TEXT = '#0f172a';
+function chipTextColor(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const lin = (v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const L = 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+  const vsWhite = 1.05 / (L + 0.05);
+  const vsDark = (L + 0.05) / (0.0137 + 0.05); // #0f172a
+  return vsDark > vsWhite ? CHIP_DARK_TEXT : '#ffffff';
+}
+
+const AXIAL_FONT = 'system-ui, -apple-system, sans-serif';
+
+// Un panel = un SVG propio, para que en móvil se apilen en vertical (grid de
+// una columna) y en pantallas anchas queden lado a lado. La anatomía y los
+// rótulos de cada panel son los mismos que en el esquema original de tres
+// paneles (mismas coordenadas, solo separados en viewBox individuales).
+function AxialPanel({ title, ariaLabel, width, height, children }) {
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={ariaLabel}>
+      <text x={width / 2} y="24" fontFamily={AXIAL_FONT} fontWeight="bold" fontSize="15" textAnchor="middle" className="fill-slate-700 dark:fill-slate-200">{title}</text>
+      {children}
+    </svg>
+  );
+}
+
 // Simplified axial-plane cross-sections at three representative levels (upper
 // mediastinum, aortic arch, subcarinal/hilar), showing the same IASLC stations
 // as IaslcNodalMap plus 3A (prevascular) and 3P (retrotracheal), which are not
 // shown on the simplified coronal overview above. Didactic schematic, not a
 // reproduction of an actual CT or of the original IASLC figure.
+// 10R y 10L van con colores distintos (verde / cian) a pedido del autor.
+const AXIAL_10R = '#0e8a15';
+const AXIAL_10L = '#0891b2';
 function AxialNodalStations({ labels }) {
   const swatchStroke = 'stroke-slate-800 dark:stroke-slate-200';
   const LegendSwatch = ({ x, fill, label, w = 35 }) => (
     <g transform={`translate(${x}, 0)`}>
-      <rect width={w} height="25" fill={fill} opacity="0.85" className={swatchStroke} strokeWidth="1" />
-      <text x={w / 2} y="16" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="600" fontSize="11" fill="#ffffff" textAnchor="middle">{label}</text>
+      <rect width={w} height="25" fill={fill} className={swatchStroke} strokeWidth="1" />
+      <text x={w / 2} y="17" fontFamily={AXIAL_FONT} fontWeight="700" fontSize="12" fill={chipTextColor(fill)} textAnchor="middle">{label}</text>
     </g>
   );
   // Base anatomy shared by the three panels (chest wall, lungs, vertebra, sternum).
@@ -307,78 +339,73 @@ function AxialNodalStations({ labels }) {
     </>
   );
   return (
-    <div className="overflow-x-auto rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 900 380" className="h-auto" style={{ width: '680px' }} xmlns="http://www.w3.org/2000/svg">
-        {/* ===== Panel A: upper mediastinum ===== */}
-        <g transform="translate(0, 0)">
-          <text x="150" y="24" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="bold" fontSize="15" textAnchor="middle" className="fill-slate-700 dark:fill-slate-200">{labels.panelA}</text>
-          <BasePanel />
-          <path d="M 115 88 Q 150 80 185 88 L 200 120 Q 150 105 100 120 Z" fill="#df9829" opacity="0.85" />
-          <path d="M 105 120 L 166 120 L 166 196 L 115 190 Z" fill="#9d1770" opacity="0.85" />
-          <path d="M 166 120 L 195 125 L 190 185 L 166 196 Z" fill="#32949c" opacity="0.85" />
-          <path d="M 134 196 L 166 196 L 175 235 L 125 235 Z" fill="#c1d93b" opacity="0.85" />
-          <circle cx="150" cy="180" r="16" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
-          <circle cx="150" cy="215" r="8" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <ellipse cx="110" cy="140" rx="14" ry="18" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="145" cy="120" r="13" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <ellipse cx="180" cy="115" rx="18" ry="14" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="190" cy="150" r="13" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <line x1="166" y1="125" x2="166" y2="196" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
-          <g transform="translate(70, 310)">
-            <LegendSwatch x={0} fill="#9d1770" label="2R" />
-            <LegendSwatch x={40} fill="#32949c" label="2L" />
-            <LegendSwatch x={80} fill="#df9829" label="3A" />
-            <LegendSwatch x={120} fill="#c1d93b" label="3P" />
-          </g>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3 sm:pt-12">
+      {/* ===== Panel A: upper mediastinum ===== */}
+      <AxialPanel title={labels.panelA} ariaLabel={labels.ariaA} width={300} height={345}>
+        <BasePanel />
+        <path d="M 115 88 Q 150 80 185 88 L 200 120 Q 150 105 100 120 Z" fill="#df9829" opacity="0.85" />
+        <path d="M 105 120 L 166 120 L 166 196 L 115 190 Z" fill="#9d1770" opacity="0.85" />
+        <path d="M 166 120 L 195 125 L 190 185 L 166 196 Z" fill="#32949c" opacity="0.85" />
+        <path d="M 134 196 L 166 196 L 175 235 L 125 235 Z" fill="#c1d93b" opacity="0.85" />
+        <circle cx="150" cy="180" r="16" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
+        <circle cx="150" cy="215" r="8" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <ellipse cx="110" cy="140" rx="14" ry="18" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="145" cy="120" r="13" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <ellipse cx="180" cy="115" rx="18" ry="14" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="190" cy="150" r="13" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <line x1="166" y1="125" x2="166" y2="196" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+        <g transform="translate(70, 310)">
+          <LegendSwatch x={0} fill="#9d1770" label="2R" />
+          <LegendSwatch x={40} fill="#32949c" label="2L" />
+          <LegendSwatch x={80} fill="#df9829" label="3A" />
+          <LegendSwatch x={120} fill="#c1d93b" label="3P" />
         </g>
+      </AxialPanel>
 
-        {/* ===== Panel B: aortic arch level ===== */}
-        <g transform="translate(300, 0)">
-          <text x="150" y="24" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="bold" fontSize="15" textAnchor="middle" className="fill-slate-700 dark:fill-slate-200">{labels.panelB}</text>
-          <BasePanel />
-          <path d="M 115 88 Q 150 80 185 88 L 200 120 Q 150 100 100 120 Z" fill="#df9829" opacity="0.85" />
-          <path d="M 105 120 L 156 120 L 156 196 L 115 190 Z" fill="#1fcc25" opacity="0.85" />
-          <path d="M 156 120 L 195 130 L 180 220 L 156 210 Z" fill="#1d3bc4" opacity="0.85" />
-          <path d="M 200 110 Q 250 140 240 210 L 210 210 Z" fill="#de1010" opacity="0.85" />
-          <path d="M 124 196 L 156 196 L 165 245 L 125 245 Z" fill="#c1d93b" opacity="0.85" />
-          <circle cx="140" cy="180" r="16" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
-          <ellipse cx="155" cy="225" rx="8" ry="6" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="170" cy="210" r="8" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <path d="M 160 120 C 190 110 230 130 230 180 C 230 240 210 240 180 240 C 170 190 150 160 160 120 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="120" cy="140" r="14" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <line x1="156" y1="125" x2="156" y2="196" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
-          <g transform="translate(50, 310)">
-            <LegendSwatch x={0} fill="#df9829" label="3A" />
-            <LegendSwatch x={40} fill="#c1d93b" label="3P" />
-            <LegendSwatch x={80} fill="#1fcc25" label="4R" />
-            <LegendSwatch x={120} fill="#1d3bc4" label="4L" />
-            <LegendSwatch x={160} fill="#de1010" label="6" />
-          </g>
+      {/* ===== Panel B: aortic arch level ===== */}
+      <AxialPanel title={labels.panelB} ariaLabel={labels.ariaB} width={300} height={345}>
+        <BasePanel />
+        <path d="M 115 88 Q 150 80 185 88 L 200 120 Q 150 100 100 120 Z" fill="#df9829" opacity="0.85" />
+        <path d="M 105 120 L 156 120 L 156 196 L 115 190 Z" fill="#1fcc25" opacity="0.85" />
+        <path d="M 156 120 L 195 130 L 180 220 L 156 210 Z" fill="#1d3bc4" opacity="0.85" />
+        <path d="M 200 110 Q 250 140 240 210 L 210 210 Z" fill="#de1010" opacity="0.85" />
+        <path d="M 124 196 L 156 196 L 165 245 L 125 245 Z" fill="#c1d93b" opacity="0.85" />
+        <circle cx="140" cy="180" r="16" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
+        <ellipse cx="155" cy="225" rx="8" ry="6" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="170" cy="210" r="8" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <path d="M 160 120 C 190 110 230 130 230 180 C 230 240 210 240 180 240 C 170 190 150 160 160 120 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="120" cy="140" r="14" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <line x1="156" y1="125" x2="156" y2="196" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+        <g transform="translate(50, 310)">
+          <LegendSwatch x={0} fill="#df9829" label="3A" />
+          <LegendSwatch x={40} fill="#c1d93b" label="3P" />
+          <LegendSwatch x={80} fill="#1fcc25" label="4R" />
+          <LegendSwatch x={120} fill="#1d3bc4" label="4L" />
+          <LegendSwatch x={160} fill="#de1010" label="6" />
         </g>
+      </AxialPanel>
 
-        {/* ===== Panel C: subcarinal / hilar level ===== */}
-        <g transform="translate(600, 0)">
-          <text x="150" y="24" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="bold" fontSize="15" textAnchor="middle" className="fill-slate-700 dark:fill-slate-200">{labels.panelC}</text>
-          <BasePanel />
-          <path d="M 135 180 L 165 180 L 190 210 L 140 210 Z" fill="#511c8a" opacity="0.85" />
-          <path d="M 145 220 L 175 215 L 185 240 L 145 255 Z" fill="#e8c61a" opacity="0.85" />
-          <path d="M 75 170 C 60 195 90 220 115 205 C 105 185 90 175 75 170 Z" fill="#0e8a15" opacity="0.85" />
-          <path d="M 200 170 C 220 170 245 195 225 215 C 205 210 195 190 200 170 Z" fill="#0e8a15" opacity="0.85" />
-          <ellipse cx="120" cy="195" rx="14" ry="10" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
-          <ellipse cx="180" cy="195" rx="14" ry="10" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
-          <circle cx="160" cy="225" r="8" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="130" cy="120" r="22" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="95" cy="135" r="12" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="170" cy="255" r="16" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <path d="M 150 120 C 180 110 200 130 200 160 C 200 180 230 190 220 210 C 200 190 180 170 140 170 C 100 170 80 180 70 175 C 90 150 120 150 150 120 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <g transform="translate(70, 310)">
-            <LegendSwatch x={0} fill="#511c8a" label="7" />
-            <LegendSwatch x={40} fill="#e8c61a" label="8" />
-            <LegendSwatch x={80} fill="#0e8a15" label="10R" />
-            <LegendSwatch x={120} fill="#0e8a15" label="10L" />
-          </g>
+      {/* ===== Panel C: subcarinal / hilar level ===== */}
+      <AxialPanel title={labels.panelC} ariaLabel={labels.ariaC} width={300} height={345}>
+        <BasePanel />
+        <path d="M 135 180 L 165 180 L 190 210 L 140 210 Z" fill="#511c8a" opacity="0.85" />
+        <path d="M 145 220 L 175 215 L 185 240 L 145 255 Z" fill="#e8c61a" opacity="0.85" />
+        <path d="M 75 170 C 60 195 90 220 115 205 C 105 185 90 175 75 170 Z" fill={AXIAL_10R} opacity="0.85" />
+        <path d="M 200 170 C 220 170 245 195 225 215 C 205 210 195 190 200 170 Z" fill={AXIAL_10L} opacity="0.85" />
+        <ellipse cx="120" cy="195" rx="14" ry="10" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
+        <ellipse cx="180" cy="195" rx="14" ry="10" fill="#000000" stroke="#cbd5e1" strokeWidth="1.5" />
+        <circle cx="160" cy="225" r="8" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="130" cy="120" r="22" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="95" cy="135" r="12" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="170" cy="255" r="16" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <path d="M 150 120 C 180 110 200 130 200 160 C 200 180 230 190 220 210 C 200 190 180 170 140 170 C 100 170 80 180 70 175 C 90 150 120 150 150 120 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <g transform="translate(70, 310)">
+          <LegendSwatch x={0} fill="#511c8a" label="7" />
+          <LegendSwatch x={40} fill="#e8c61a" label="8" />
+          <LegendSwatch x={80} fill={AXIAL_10R} label="10R" />
+          <LegendSwatch x={120} fill={AXIAL_10L} label="10L" />
         </g>
-      </svg>
+      </AxialPanel>
     </div>
   );
 }
@@ -397,43 +424,41 @@ function NonRegionalNodes({ labels }) {
       <path d="M 120 60 Q 200 50 280 60 L 260 72 Q 200 60 140 72 Z" fill="#f8fafc" stroke="#e2e8f0" strokeWidth="1" />
     </>
   );
+  const Chip = ({ x = 0, w, fill, stroke, label }) => (
+    <g transform={`translate(${x}, 0)`}>
+      <rect width={w} height="25" fill={fill} stroke={stroke} strokeWidth="1" />
+      <text x={w / 2} y="17" fontFamily={AXIAL_FONT} fontWeight="700" fontSize="12" fill={chipTextColor(fill)} textAnchor="middle">{label}</text>
+    </g>
+  );
   return (
-    <div className="overflow-x-auto rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3">
-      <svg viewBox="0 0 800 380" className="h-auto" style={{ width: '620px' }} xmlns="http://www.w3.org/2000/svg">
-        {/* ===== Panel A: internal mammary and intercostal ===== */}
-        <g transform="translate(0, 0)">
-          <text x="200" y="24" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="bold" fontSize="15" textAnchor="middle" className="fill-slate-700 dark:fill-slate-200">{labels.panelA}</text>
-          <BasePanel />
-          <path d="M 150 130 C 180 110 250 120 250 170 C 250 230 180 230 150 200 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <ellipse cx="145" cy="85" rx="18" ry="9" fill="#22c55e" opacity="0.7" />
-          <ellipse cx="255" cy="85" rx="18" ry="9" fill="#22c55e" opacity="0.7" />
-          <ellipse cx="170" cy="255" rx="15" ry="9" transform="rotate(-25 170 255)" fill="#eab308" opacity="0.7" />
-          <ellipse cx="230" cy="255" rx="15" ry="9" transform="rotate(25 230 255)" fill="#eab308" opacity="0.7" />
-          <g transform="translate(45, 325)">
-            <rect width="100" height="25" fill="#22c55e" opacity="0.7" stroke="#166534" strokeWidth="1" />
-            <text x="50" y="16" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="600" fontSize="11" fill="#ffffff" textAnchor="middle">{labels.legendMammary}</text>
-            <rect x="110" width="100" height="25" fill="#eab308" opacity="0.7" stroke="#854d0e" strokeWidth="1" />
-            <text x="160" y="16" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="600" fontSize="11" textAnchor="middle" className="fill-slate-800">{labels.legendIntercostal}</text>
-          </g>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-xl bg-slate-50 dark:bg-slate-900/40 p-3 sm:pt-12">
+      {/* ===== Panel A: internal mammary and intercostal ===== */}
+      <AxialPanel title={labels.panelA} ariaLabel={labels.ariaA} width={400} height={360}>
+        <BasePanel />
+        <path d="M 150 130 C 180 110 250 120 250 170 C 250 230 180 230 150 200 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <ellipse cx="145" cy="85" rx="18" ry="9" fill="#22c55e" opacity="0.7" />
+        <ellipse cx="255" cy="85" rx="18" ry="9" fill="#22c55e" opacity="0.7" />
+        <ellipse cx="170" cy="255" rx="15" ry="9" transform="rotate(-25 170 255)" fill="#eab308" opacity="0.7" />
+        <ellipse cx="230" cy="255" rx="15" ry="9" transform="rotate(25 230 255)" fill="#eab308" opacity="0.7" />
+        <g transform="translate(70, 325)">
+          <Chip w={125} fill="#22c55e" stroke="#166534" label={labels.legendMammary} />
+          <Chip x={135} w={125} fill="#eab308" stroke="#854d0e" label={labels.legendIntercostal} />
         </g>
+      </AxialPanel>
 
-        {/* ===== Panel B: pericardiophrenic and pericaval ===== */}
-        <g transform="translate(400, 0)">
-          <text x="200" y="24" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="bold" fontSize="15" textAnchor="middle" className="fill-slate-700 dark:fill-slate-200">{labels.panelB}</text>
-          <BasePanel />
-          <path d="M 160 85 C 240 85, 290 130, 270 180 C 255 220, 195 240, 150 210 C 125 190, 115 130, 160 85 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="130" cy="190" r="15" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <circle cx="200" cy="245" r="10" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <ellipse cx="195" cy="83" rx="34" ry="12" transform="rotate(-12 195 83)" fill="#ec4899" opacity="0.75" />
-          <ellipse cx="123" cy="178" rx="16" ry="10" transform="rotate(25 123 178)" fill="#0ea5e9" opacity="0.75" />
-          <g transform="translate(10, 325)">
-            <rect width="115" height="25" fill="#ec4899" opacity="0.75" stroke="#9d174d" strokeWidth="1" />
-            <text x="57.5" y="16" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="600" fontSize="11" fill="#ffffff" textAnchor="middle">{labels.legendPericardio}</text>
-            <rect x="120" width="105" height="25" fill="#0ea5e9" opacity="0.75" stroke="#0369a1" strokeWidth="1" />
-            <text x="172.5" y="16" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="600" fontSize="11" fill="#ffffff" textAnchor="middle">{labels.legendPericava}</text>
-          </g>
+      {/* ===== Panel B: pericardiophrenic and pericaval ===== */}
+      <AxialPanel title={labels.panelB} ariaLabel={labels.ariaB} width={400} height={360}>
+        <BasePanel />
+        <path d="M 160 85 C 240 85, 290 130, 270 180 C 255 220, 195 240, 150 210 C 125 190, 115 130, 160 85 Z" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="130" cy="190" r="15" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <circle cx="200" cy="245" r="10" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+        <ellipse cx="195" cy="83" rx="34" ry="12" transform="rotate(-12 195 83)" fill="#ec4899" opacity="0.75" />
+        <ellipse cx="123" cy="178" rx="16" ry="10" transform="rotate(25 123 178)" fill="#0ea5e9" opacity="0.75" />
+        <g transform="translate(55, 325)">
+          <Chip w={140} fill="#ec4899" stroke="#9d174d" label={labels.legendPericardio} />
+          <Chip x={150} w={140} fill="#0ea5e9" stroke="#0369a1" label={labels.legendPericava} />
         </g>
-      </svg>
+      </AxialPanel>
     </div>
   );
 }
@@ -789,7 +814,7 @@ export default function LungCancerTNM9() {
       {!isTis && (
         <Accordion icon={<IconBookOpen size={16} />} title={c.nodalMapTitle}>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.nodalMapIntro}</p>
-          <ZoomableDiagram title={c.nodalMapTitle} labels={t.common.diagramZoom}>
+          <ZoomableDiagram title={c.nodalMapTitle} labels={t.common.diagramZoom} legend={<p className="text-xs leading-snug">{c.nodalMapNote}</p>}>
             <IaslcNodalMap labels={c.nodalMapLabels} />
           </ZoomableDiagram>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.nodalMapNote}</p>
@@ -799,7 +824,7 @@ export default function LungCancerTNM9() {
       {!isTis && (
         <Accordion icon={<IconBookOpen size={16} />} title={c.axialMapTitle}>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.axialMapIntro}</p>
-          <ZoomableDiagram title={c.axialMapTitle} labels={t.common.diagramZoom}>
+          <ZoomableDiagram title={c.axialMapTitle} labels={t.common.diagramZoom} legend={<p className="text-xs leading-snug">{c.axialMapNote}</p>}>
             <AxialNodalStations labels={c.axialMapLabels} />
           </ZoomableDiagram>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.axialMapNote}</p>
@@ -809,7 +834,7 @@ export default function LungCancerTNM9() {
       {!isTis && (
         <Accordion icon={<IconBookOpen size={16} />} title={c.nonRegionalMapTitle}>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{c.nonRegionalMapIntro}</p>
-          <ZoomableDiagram title={c.nonRegionalMapTitle} labels={t.common.diagramZoom}>
+          <ZoomableDiagram title={c.nonRegionalMapTitle} labels={t.common.diagramZoom} legend={<p className="text-xs leading-snug">{c.nonRegionalMapNote}</p>}>
             <NonRegionalNodes labels={c.nonRegionalMapLabels} />
           </ZoomableDiagram>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-snug">{c.nonRegionalMapNote}</p>
