@@ -23,3 +23,4 @@ export { default as ZoomableDiagram } from './ZoomableDiagram.jsx';
 export { default as PreviewIconButton } from './PreviewIconButton.jsx';
 export { default as ReportPreviewModal } from './ReportPreviewModal.jsx';
 export { default as CriteriaReferences } from './CriteriaReferences.jsx';
+export { default as ReferenceChart, BandByAgeChart, PercentileScaleChart, PhaseLineChart } from './ReferenceChart.jsx';
